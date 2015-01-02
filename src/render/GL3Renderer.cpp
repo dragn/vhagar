@@ -49,7 +49,7 @@ GL3Renderer::GL3Renderer(SDL_Window *window) : window(window) {
   glGetShaderiv(vertexShaderID, GL_COMPILE_STATUS, &result);
   glGetShaderiv(vertexShaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
   glGetShaderInfoLog(vertexShaderID, 256, &infoLogLength, buffer);
-  LOG(ERROR) << buffer;
+  if (buffer[0]) LOG(ERROR) << buffer;
 
   LOG(INFO) << "Compiling fragment shader";
   const char *fragmentShaderCode = readFile("src/shader/FragmentShader.glsl").c_str();
@@ -59,7 +59,7 @@ GL3Renderer::GL3Renderer(SDL_Window *window) : window(window) {
   glGetShaderiv(fragmentShaderID, GL_COMPILE_STATUS, &result);
   glGetShaderiv(fragmentShaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
   glGetShaderInfoLog(fragmentShaderID, 256, &infoLogLength, buffer);
-  LOG(ERROR) << buffer;
+  if (buffer[0]) LOG(ERROR) << buffer;
 
   LOG(INFO) << "Linking program";
   programID = glCreateProgram();
@@ -70,7 +70,7 @@ GL3Renderer::GL3Renderer(SDL_Window *window) : window(window) {
   glGetProgramiv(programID, GL_COMPILE_STATUS, &result);
   glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &infoLogLength);
   glGetProgramInfoLog(programID, 256, &infoLogLength, buffer);
-  LOG(ERROR) << buffer;
+  if (buffer[0]) LOG(ERROR) << buffer;
 
   glDeleteShader(vertexShaderID);
   glDeleteShader(fragmentShaderID);
@@ -83,9 +83,7 @@ void
 GL3Renderer::render(Scene *scene) {
 
   Camera cam = scene->camera;
-  View = glm::lookAt(cam.position,
-      cam.position + cam.direction,
-      glm::vec3(0,1,0));
+  View = cam.view();
   
   MVP = Projection * View * Model;
 
