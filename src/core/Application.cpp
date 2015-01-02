@@ -21,6 +21,8 @@ Application::run() {
 
   GL3Renderer *rndr = new GL3Renderer(window);
 
+  rndr->prepare(&scene);
+
   scene.camera.pos(V3(0, 0, 5));
   playerController.control(&scene.camera);
 

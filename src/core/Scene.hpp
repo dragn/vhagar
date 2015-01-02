@@ -1,7 +1,17 @@
 #pragma once
 
-#include "Camera.hpp"
+#include "Drawable.hpp"
+#include "Controllable.hpp"
 
-struct Scene {
-  Camera camera;
+class Scene {
+
+  public:
+    Scene();
+
+    Controllable camera;
+
+    const std::vector<Drawable> objects() { return _objects; };
+
+  private:
+    std::vector<Drawable> _objects;
 };
