@@ -5,7 +5,48 @@
 
 #include "GLUtils.hpp"
 
+const GLfloat uvData[] = {
+  891/1920, 97/1080,
+  0.000103f, 1.0f-0.336048f,
+  0.335973f, 1.0f-0.335903f,
+  1.000023f, 1.0f-0.000013f,
+  0.667979f, 1.0f-0.335851f,
+  0.999958f, 1.0f-0.336064f,
+  0.667979f, 1.0f-0.335851f,
+  0.336024f, 1.0f-0.671877f,
+  0.667969f, 1.0f-0.671889f,
+  1.000023f, 1.0f-0.000013f,
+  0.668104f, 1.0f-0.000013f,
+  0.667979f, 1.0f-0.335851f,
+  891/1920, 97/1080,
+  0.335973f, 1.0f-0.335903f,
+  0.336098f, 1.0f-0.000071f,
+  0.667979f, 1.0f-0.335851f,
+  0.335973f, 1.0f-0.335903f,
+  0.336024f, 1.0f-0.671877f,
+  1.000004f, 1.0f-0.671847f,
+  0.999958f, 1.0f-0.336064f,
+  0.667979f, 1.0f-0.335851f,
+  0.668104f, 1.0f-0.000013f,
+  0.335973f, 1.0f-0.335903f,
+  0.667979f, 1.0f-0.335851f,
+  0.335973f, 1.0f-0.335903f,
+  0.668104f, 1.0f-0.000013f,
+  0.336098f, 1.0f-0.000071f,
+  0.000103f, 1.0f-0.336048f,
+  0.000004f, 1.0f-0.671870f,
+  0.336024f, 1.0f-0.671877f,
+  0.000103f, 1.0f-0.336048f,
+  0.336024f, 1.0f-0.671877f,
+  0.335973f, 1.0f-0.335903f,
+  0.667969f, 1.0f-0.671889f,
+  1.000004f, 1.0f-0.671847f,
+  0.667979f, 1.0f-0.335851f
+};
+
+GLuint uvBuffer;
 GLuint programID;
+GLuint textureID;
 
 glm::mat4 Projection;
 
@@ -22,37 +63,26 @@ GL3Renderer::GL3Renderer(SDL_Window *window) : window(window), objCount(0) {
   glDepthFunc(GL_LESS);
 }
 
-GL3Renderer::~GL3Renderer() {
-  release();
-}
-
-void
-GL3Renderer::release() {
-  /* if (vertexDataBuffers != nullptr) delete [] vertexDataBuffers;
-     if (colorDataBuffers != nullptr) delete [] colorDataBuffers;
-     if (models != nullptr) delete [] models;*/
-  objCount = 0;
-}
-
 void
 GL3Renderer::prepare(Scene *scene) {
-  release();
+  auto *objs = scene->objects();
+  objCount = objs->size();
 
-  std::vector<Drawable> objs = scene->objects();
-  objCount = objs.size();
+  vertexDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
+  colorDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
+  models = uptr<M4[]>(new M4[objCount]);
 
-  vertexDataBuffers = new GLuint[objCount];
-  colorDataBuffers = new GLuint[objCount];
-  models = new M4[objCount];
-
-  Drawable obj;
+  Drawable *obj;
 
   for (int i = 0; i < objCount; i++) {
-    obj = objs[i];
-    vertexDataBuffers[i] = GLUtils::bufferData(obj.vertexDataSize, obj.vertexData);
-    colorDataBuffers[i] = GLUtils::bufferData(obj.colorDataSize, obj.colorData);
-    models[i] = glm::translate(glm::scale(M4(1.0f), obj.scale()), obj.pos());
+    obj = objs->at(i).get();
+    vertexDataBuffers[i] = GLUtils::bufferData(obj->vertexDataSize(), obj->vertexData());
+    colorDataBuffers[i] = GLUtils::bufferData(obj->colorDataSize(), obj->colorData());
+    models[i] = glm::translate(glm::scale(M4(1.0f), obj->scale()), obj->pos());
   }
+
+  uvBuffer = GLUtils::bufferData(sizeof(uvData), uvData);
+  textureID = GLUtils::loadTexture("images/dice.bmp");
 }
 
 void

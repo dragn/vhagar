@@ -3,6 +3,7 @@
 #include <glog/logging.h>
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include "../scenes/SpaceScene.hpp"
 
 void
 Application::run() {
@@ -21,10 +22,11 @@ Application::run() {
 
   GL3Renderer *rndr = new GL3Renderer(window);
 
-  rndr->prepare(&scene);
+  scene.reset(new SpaceScene());
+  rndr->prepare(scene.get());
 
-  scene.camera.pos(V3(0, 0, 5));
-  playerController.control(&scene.camera);
+  scene->camera.pos(V3(0, 0, 5));
+  playerController.control(&scene->camera);
 
   Uint32 last = SDL_GetTicks();
   Uint32 next;
@@ -34,7 +36,7 @@ Application::run() {
     tick(next - last);
     last = next;
     if (lastRender - SDL_GetTicks() > 40) {
-      rndr->render(&scene);
+      rndr->render(scene.get());
       lastRender = SDL_GetTicks();
     }
   }

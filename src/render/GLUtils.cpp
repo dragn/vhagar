@@ -60,4 +60,20 @@ namespace GLUtils {
     glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
     return id;
   }
+
+  GLuint loadTexture(const char *filename) {
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    SDL_Surface *tex = SDL_LoadBMP("images/dice.bmp");
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex->w, tex->h, 0, GL_RGB, GL_UNSIGNED_BYTE, tex->pixels);
+    SDL_FreeSurface(tex);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    return textureID;
+  }
 }

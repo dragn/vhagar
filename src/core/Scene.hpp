@@ -1,17 +1,15 @@
 #pragma once
 
-#include "Drawable.hpp"
+#include "../drawable/Drawable.hpp"
 #include "Controllable.hpp"
 
 class Scene {
 
   public:
-    Scene();
-
     Controllable camera;
 
-    const std::vector<Drawable> objects() { return _objects; };
+    std::vector<uptr<Drawable>> *objects() { return &_objects; };
 
-  private:
-    std::vector<Drawable> _objects;
+  protected:
+    std::vector<uptr<Drawable>> _objects;
 };

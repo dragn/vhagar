@@ -1,6 +1,6 @@
-#include "Scene.hpp"
+#include "Box.hpp"
 
-static const GLfloat v_data[] = {
+GLfloat v_data[] = {
   -1.0f,-1.0f,-1.0f, // triangle 1 : begin
   -1.0f,-1.0f, 1.0f,
   -1.0f, 1.0f, 1.0f, // triangle 1 : end
@@ -39,7 +39,7 @@ static const GLfloat v_data[] = {
   1.0f,-1.0f, 1.0f
 };
 
-static const GLfloat color_data[] = {
+GLfloat color_data[] = {
   0.583f,  0.771f,  0.014f,
   0.609f,  0.115f,  0.436f,
   0.327f,  0.483f,  0.844f,
@@ -78,26 +78,9 @@ static const GLfloat color_data[] = {
   0.982f,  0.099f,  0.879f
 };
 
-Scene::Scene() {
-  Drawable box1, box2;
-
-  box1.vertexDataSize = sizeof(v_data);
-  box1.vertexData = v_data;
-
-  box1.colorDataSize = sizeof(color_data);
-  box1.colorData = color_data;
-
-  box2.vertexDataSize = sizeof(v_data);
-  box2.vertexData = v_data;
-
-  box2.colorDataSize = sizeof(color_data);
-  box2.colorData = color_data;
-
-  box1.pos(V3(0, 1, 0));
-  box2.pos(V3(-1, 0, -3));
-
-  box2.scale(V3(0.5, 2, 0.5)); 
-
-  _objects.push_back(box1);
-  _objects.push_back(box2);
+Box::Box() {
+  _vertexDataSize = sizeof(v_data);
+  _vertexData.reset(v_data);
+  _colorDataSize = sizeof(color_data);
+  _colorData = uptr<GLfloat[]>(color_data);
 }
