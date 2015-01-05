@@ -5,6 +5,8 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include "../scenes/SpaceScene.hpp"
 
+const Uint32 FPS_LIMIT = 60;
+
 void
 Application::run() {
   // Window mode MUST include SDL_WINDOW_OPENGL for use with OpenGL.
@@ -30,14 +32,24 @@ Application::run() {
 
   Uint32 last = SDL_GetTicks();
   Uint32 next;
-  Uint32 lastRender = SDL_GetTicks();
+  Uint32 lastRender = last;
+  Uint32 lastFPSprint = last;
+  Uint32 frames;
+  Uint32 spf = 1000 / FPS_LIMIT;
+
   while (handleEvents()) {
     next = SDL_GetTicks();
     tick(next - last);
     last = next;
-    if (lastRender - SDL_GetTicks() > 40) {
+    if (SDL_GetTicks() - lastRender > spf) {
       rndr->render(scene.get());
       lastRender = SDL_GetTicks();
+      frames++;
+      if (lastRender - lastFPSprint > 1000) {
+        LOG(INFO) << (lastRender - lastFPSprint) / frames << " ms/frame";
+        lastFPSprint = lastRender;
+        frames = 0;
+      }
     }
   }
 
