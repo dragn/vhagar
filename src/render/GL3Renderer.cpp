@@ -67,22 +67,38 @@ void
 GL3Renderer::prepare(Scene *scene) {
   auto *objs = scene->objects();
   objCount = objs->size();
+  LOG(INFO) << "objCount: " << objCount;
 
   vertexDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
+  vertexDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
+  normalDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
+  normalDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
   colorDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
+  colorDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
   models = uptr<M4[]>(new M4[objCount]);
 
   Drawable *obj;
 
+  // Buffer all objects in the scene
   for (int i = 0; i < objCount; i++) {
     obj = objs->at(i).get();
-    vertexDataBuffers[i] = GLUtils::bufferData(obj->vertexDataSize(), obj->vertexData());
-    colorDataBuffers[i] = GLUtils::bufferData(obj->colorDataSize(), obj->colorData());
+
+    vertexDataBuffers[i] = GLUtils::bufferData(obj->_vertexDataSize * sizeof(GLfloat), obj->_vertexData.get());
+    vertexDataSizes[i] = obj->_vertexDataSize;
+
+    normalDataBuffers[i] = GLUtils::bufferData(obj->_normalDataSize * sizeof(GLfloat), obj->_normalData.get());
+    normalDataSizes[i] = obj->_normalDataSize;
+
+    colorDataBuffers[i] = GLUtils::bufferData(obj->_colorDataSize * sizeof(GLfloat), obj->_colorData.get());
+    colorDataSizes[i] = obj->_colorDataSize;
+
     models[i] = glm::translate(glm::scale(M4(1.0f), obj->scale()), obj->pos());
   }
 
+  // setup lighting
+
   uvBuffer = GLUtils::bufferData(sizeof(uvData), uvData);
-  textureID = GLUtils::loadTexture("images/dice.bmp");
+  //  textureID = GLUtils::loadTexture("images/dice.bmp");
 }
 
 void
@@ -96,10 +112,16 @@ GL3Renderer::render(Scene *scene) {
 
   glUseProgram(programID);
 
+  V3 lightPos = cam->pos() + V3(0, 20, 10);
+  GLUtils::putUniformVec3(programID, "LightPosition_worldspace", lightPos);
+
+  M4 MVP;
+
   for (int i = 0; i < objCount; i++) {
-    M4 MVP = Projection * View * models[i];
-    GLuint MatrixID = glGetUniformLocation(programID, "MVP");
-    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    MVP = Projection * View * models[i];
+    GLUtils::putUniformMat4(programID, "MVP", MVP);
+    GLUtils::putUniformMat4(programID, "M", models[i]);
+    GLUtils::putUniformMat4(programID, "V", View);
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexDataBuffers[i]);
@@ -109,10 +131,15 @@ GL3Renderer::render(Scene *scene) {
     glBindBuffer(GL_ARRAY_BUFFER, colorDataBuffers[i]);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 
-    glDrawArrays(GL_TRIANGLES, 0, 3 * 12);
+    glEnableVertexAttribArray(2);
+    glBindBuffer(GL_ARRAY_BUFFER, normalDataBuffers[i]);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+
+    glDrawArrays(GL_TRIANGLES, 0, vertexDataSizes[i]);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
   }
 
   SDL_GL_SwapWindow(window);

@@ -10,7 +10,7 @@ class Application {
     uptr<Scene> scene;
   private:
     SDL_Window *window;
-    Uint32 windowID;
+    Uint32 windowID = -1;
     bool handleEvents();
     bool handleEvent(SDL_Event *event);
     void tick(Uint32 millis);

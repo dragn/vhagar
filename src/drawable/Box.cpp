@@ -79,8 +79,8 @@ GLfloat color_data[] = {
 };
 
 Box::Box() {
-  _vertexDataSize = sizeof(v_data);
+  _vertexDataSize = 36 * 3;
   _vertexData.reset(v_data);
-  _colorDataSize = sizeof(color_data);
-  _colorData = uptr<GLfloat[]>(color_data);
+  _colorDataSize = 36 * 3;
+  _colorData.reset(color_data);
 }

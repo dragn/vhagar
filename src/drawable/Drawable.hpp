@@ -1,15 +1,19 @@
 #pragma once
 
 #include "../core/Object.hpp"
-#include <GLES3/gl3.h>
+#include "../core/Common.hpp"
 
 class Drawable : public Object {
 
-  public:
-    virtual GLsizeiptr vertexDataSize() = 0;
-    virtual GLfloat *vertexData() = 0;
+  friend class GL3Renderer;
 
-    virtual GLsizeiptr colorDataSize() = 0;
-    virtual GLfloat *colorData() = 0;
+  protected:
+  GLsizeiptr _vertexDataSize;
+  uptr<GLfloat[]> _vertexData;
 
+  GLsizeiptr _colorDataSize;
+  uptr<GLfloat[]> _colorData;
+
+  GLsizeiptr _normalDataSize;
+  uptr<GLfloat[]> _normalData;
 };

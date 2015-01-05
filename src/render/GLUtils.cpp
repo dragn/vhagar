@@ -54,6 +54,7 @@ namespace GLUtils {
   }
 
   GLuint bufferData(GLsizeiptr size, const GLfloat *data) {
+    LOG(INFO) << "Allocating buffer of size: " << size;
     GLuint id;
     glGenBuffers(1, &id);
     glBindBuffer(GL_ARRAY_BUFFER, id);
@@ -66,7 +67,7 @@ namespace GLUtils {
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID);
 
-    SDL_Surface *tex = SDL_LoadBMP("images/dice.bmp");
+    SDL_Surface *tex = SDL_LoadBMP(filename);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex->w, tex->h, 0, GL_RGB, GL_UNSIGNED_BYTE, tex->pixels);
     SDL_FreeSurface(tex);
 
@@ -75,5 +76,15 @@ namespace GLUtils {
     glGenerateMipmap(GL_TEXTURE_2D);
 
     return textureID;
+  }
+
+  void putUniformMat4(GLuint programID, const char *name, M4 &data) {
+    GLuint id = glGetUniformLocation(programID, name);
+    glUniformMatrix4fv(id, 1, GL_FALSE, &data[0][0]);
+  }
+
+  void putUniformVec3(GLuint programID, const char *name, V3 &data) {
+    GLuint id = glGetUniformLocation(programID, name);
+    glUniform3fv(id, 1, &data[0]);
   }
 }
