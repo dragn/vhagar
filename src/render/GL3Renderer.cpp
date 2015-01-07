@@ -83,7 +83,7 @@ GL3Renderer::prepare(Scene *scene) {
 
   indexDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
   indexDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
-  models = uptr<M4[]>(new M4[objCount]);
+  models = uptr<M4*[]>(new M4*[objCount]);
 
   Drawable *obj;
 
@@ -109,7 +109,7 @@ GL3Renderer::prepare(Scene *scene) {
     indexDataBuffers[i] = GLUtils::bufferElementArray(obj->_indexDataSize, obj->_indexData.get());
     indexDataSizes[i] = obj->_indexDataSize;
 
-    models[i] = glm::translate(glm::scale(M4(1.0f), obj->scale()), obj->pos());
+    models[i] = &obj->modelMatrix;
   }
 
   //uvBuffer = GLUtils::bufferData(sizeof(uvData), uvData);
@@ -117,25 +117,24 @@ GL3Renderer::prepare(Scene *scene) {
 }
 
 void
-GL3Renderer::render(Scene *scene) {
+GL3Renderer::render(Scene *scene, Object *camera) {
 
-  Object *cam = &scene->camera;
-  M4 View = glm::lookAt(cam->pos(), cam->pos() + cam->forward(), V3(0, 1, 0));
+  M4 View = glm::lookAt(camera->pos(), camera->pos() + camera->forward(), V3(0, 1, 0));
 
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glUseProgram(programID);
 
-  V3 lightPos = cam->pos() + V3(0, 20, 10);
+  V3 lightPos = camera->pos() + V3(0, 20, 10);
   GLUtils::putUniformVec3(programID, "LightPosition_worldspace", lightPos);
 
   M4 MVP;
 
   for (int i = 0; i < objCount; i++) {
-    MVP = Projection * View * models[i];
+    MVP = Projection * View * *(models[i]);
     GLUtils::putUniformMat4(programID, "MVP", MVP);
-    GLUtils::putUniformMat4(programID, "M", models[i]);
+    GLUtils::putUniformMat4(programID, "M", *(models[i]));
     GLUtils::putUniformMat4(programID, "V", View);
 
     glEnableVertexAttribArray(0);
@@ -146,17 +145,23 @@ GL3Renderer::render(Scene *scene) {
     glBindBuffer(GL_ARRAY_BUFFER, normalDataBuffers[i]);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 
-    glEnableVertexAttribArray(2);
-    glBindBuffer(GL_ARRAY_BUFFER, aColorDataBuffers[i]);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+    if (aColorDataSizes[i] > 0) {
+      glEnableVertexAttribArray(2);
+      glBindBuffer(GL_ARRAY_BUFFER, aColorDataBuffers[i]);
+      glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+    }
 
-    glEnableVertexAttribArray(3);
-    glBindBuffer(GL_ARRAY_BUFFER, dColorDataBuffers[i]);
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+    if (dColorDataSizes[i] > 0) {
+      glEnableVertexAttribArray(3);
+      glBindBuffer(GL_ARRAY_BUFFER, dColorDataBuffers[i]);
+      glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+    }
 
-    glEnableVertexAttribArray(4);
-    glBindBuffer(GL_ARRAY_BUFFER, sColorDataBuffers[i]);
-    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+    if (sColorDataSizes[i] > 0) {
+      glEnableVertexAttribArray(4);
+      glBindBuffer(GL_ARRAY_BUFFER, sColorDataBuffers[i]);
+      glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+    }
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexDataBuffers[i]);
     glDrawElements(GL_TRIANGLES, indexDataSizes[i], GL_UNSIGNED_INT, (void*)0);

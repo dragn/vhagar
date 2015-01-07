@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Common.hpp"
+#include "Utils.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 /**
  * Object is something that could be placed in Scene,
@@ -12,30 +14,36 @@
 class Object {
   public:
 
+    Object();
+
     /* Position setter */
-    void inline pos(V3 pos) { _pos = pos; };
+    void pos(V3 pos);
 
     /* Position getter */
-    const inline V3 pos() { return _pos; };
+    const V3 pos();
 
     /* Scale setter */
-    void inline scale(V3 scale) { _scale = scale; };
+    void scale(V3 scale);
 
     /* Scale getter */
-    V3 inline scale() { return _scale; };
+    V3 scale();
 
-    /* Rotation setters */
-    void inline yaw(float yaw) { _yaw = yaw; };
+    V3 forward();
+    V3 up();
 
-    /* Rotation getters */
-    float inline yaw() { return _yaw; };
+    Rot rot();
+    void rotate(Rot rot);
+    void orient(Rot rot);
 
-    V3 forward() {
-      return glm::rotateY(V3(0, 0, -1), - _yaw);
-    };
+    void recalcModel();
+
+    M4 modelMatrix;
 
   private:
     V3 _pos = V3(0, 0, 0);
     V3 _scale = V3(1, 1, 1);
+
     float _yaw = 0;
+    float _pitch = 0;
+    M4 _rot = M4(1.0f);
 };

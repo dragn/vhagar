@@ -1,17 +1,17 @@
 #pragma once
 
 #include "../core/Common.hpp"
-#include "Renderer.hpp"
+#include "../core/Scene.hpp"
 #include <GLES3/gl3.h>
 #include <SDL2/SDL.h>
 
-class GL3Renderer : public Renderer {
+class GL3Renderer {
 
   public:
     GL3Renderer(SDL_Window *window);
 
     void prepare(Scene *scene);
-    void render(Scene *scene);
+    void render(Scene *scene, Object *camera);
 
   private:
     SDL_Window *window;
@@ -31,5 +31,5 @@ class GL3Renderer : public Renderer {
 
     uptr<GLuint[]> indexDataBuffers;
     uptr<GLuint[]> indexDataSizes;
-    uptr<M4[]> models;
+    uptr<M4*[]> models;
 };

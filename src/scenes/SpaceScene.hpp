@@ -6,4 +6,5 @@
 class SpaceScene : public Scene {
   public:
     SpaceScene();
+    sptr<Controllable> ship;
 };

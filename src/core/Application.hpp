@@ -7,7 +7,6 @@
 class Application {
   public:
     void run();
-    uptr<Scene> scene;
   private:
     SDL_Window *window;
     Uint32 windowID = -1;

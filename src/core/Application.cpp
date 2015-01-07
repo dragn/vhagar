@@ -26,13 +26,19 @@ Application::run() {
   // Create an OpenGL context associated with the window.
   SDL_GLContext glcontext = SDL_GL_CreateContext(window);
 
-  GL3Renderer *rndr = new GL3Renderer(window);
+  uptr<GL3Renderer> rndr(new GL3Renderer(window));
+  uptr<Scene> scene(new SpaceScene());
 
-  scene.reset(new SpaceScene());
   rndr->prepare(scene.get());
 
-  scene->camera.pos(V3(0, 0, 5));
-  playerController.control(&scene->camera);
+  playerController.camera.pos(V3(0, 0, 5));
+  playerController.scene = scene.get();
+
+  Object *ship = scene->getNamedObject("PlayerShip");
+  if (ship != NULL) playerController.control(ship);
+  else {
+    LOG(FATAL) << "No PlayerShip found!";
+  }
 
   Uint32 last = SDL_GetTicks();
   Uint32 next;
@@ -41,12 +47,14 @@ Application::run() {
   Uint32 frames;
   Uint32 spf = 1000 / FPS_LIMIT;
 
+  Scene *scenePtr = scene.get();
+  Object *cameraPtr = &playerController.camera;
   while (handleEvents()) {
     next = SDL_GetTicks();
     tick(next - last);
     last = next;
     if (SDL_GetTicks() - lastRender > spf) {
-      rndr->render(scene.get());
+      rndr->render(scenePtr, cameraPtr);
       lastRender = SDL_GetTicks();
       frames++;
       if (lastRender - lastFPSprint > 1000) {

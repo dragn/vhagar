@@ -8,7 +8,7 @@
  */
 
 class Controllable : public Object {
-  
+
   public:
 
     Controllable() : moveSpeed(5), turnSpeed(0.05) {}
@@ -24,6 +24,6 @@ class Controllable : public Object {
       pos(pos() + value * moveSpeed * rightVector);
     }
     void turnRight(float value) {
-      yaw(yaw() + turnSpeed * value);
+      // yaw(yaw() + turnSpeed * value);
     }
 };
