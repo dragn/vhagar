@@ -1,7 +1,7 @@
 #version 300 es
 
 layout(location = 0) in vec3 vertexPos_modelspace;
-layout(location = 1) in vec3 vertexColor;
+//layout(location = 1) in vec3 vertexColor;
 layout(location = 2) in vec3 vertexNormal_modelspace;
 
 out vec3 fragmentColor;
@@ -30,5 +30,5 @@ void main() {
 
   Normal_cameraspace = (V * M * vec4(vertexNormal_modelspace, 0)).xyz;
 
-  fragmentColor = vertexColor;
+  fragmentColor = vec3(0.5, 0.5, 0.5);
 }

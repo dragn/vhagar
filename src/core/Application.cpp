@@ -7,11 +7,15 @@
 
 const Uint32 FPS_LIMIT = 60;
 
+const Uint32 SCREEN_WIDTH = 1024;
+const Uint32 SCREEN_HEIGHT = 768;
+
 void
 Application::run() {
   // Window mode MUST include SDL_WINDOW_OPENGL for use with OpenGL.
   window = SDL_CreateWindow(
-      "GameEngine Demo", 0, 0, 800, 600, 
+      "GameEngine Demo", 0, 0,
+      SCREEN_WIDTH, SCREEN_HEIGHT,
       SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE);
 
   windowID = SDL_GetWindowID(window);
@@ -53,7 +57,6 @@ Application::run() {
     }
   }
 
-  // Once finished with OpenGL functions, the SDL_GLContext can be deleted.
   SDL_GL_DeleteContext(glcontext);
   SDL_DestroyWindow(window);
 }

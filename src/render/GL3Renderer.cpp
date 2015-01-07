@@ -75,6 +75,8 @@ GL3Renderer::prepare(Scene *scene) {
   normalDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
   colorDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
   colorDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
+  indexDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
+  indexDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
   models = uptr<M4[]>(new M4[objCount]);
 
   Drawable *obj;
@@ -83,21 +85,19 @@ GL3Renderer::prepare(Scene *scene) {
   for (int i = 0; i < objCount; i++) {
     obj = objs->at(i).get();
 
-    vertexDataBuffers[i] = GLUtils::bufferData(obj->_vertexDataSize * sizeof(GLfloat), obj->_vertexData.get());
+    vertexDataBuffers[i] = GLUtils::bufferData(obj->_vertexDataSize, obj->_vertexData.get());
     vertexDataSizes[i] = obj->_vertexDataSize;
 
-    normalDataBuffers[i] = GLUtils::bufferData(obj->_normalDataSize * sizeof(GLfloat), obj->_normalData.get());
+    normalDataBuffers[i] = GLUtils::bufferData(obj->_normalDataSize, obj->_normalData.get());
     normalDataSizes[i] = obj->_normalDataSize;
 
-    colorDataBuffers[i] = GLUtils::bufferData(obj->_colorDataSize * sizeof(GLfloat), obj->_colorData.get());
-    colorDataSizes[i] = obj->_colorDataSize;
+    indexDataBuffers[i] = GLUtils::bufferElementArray(obj->_indexDataSize, obj->_indexData.get());
+    indexDataSizes[i] = obj->_indexDataSize;
 
     models[i] = glm::translate(glm::scale(M4(1.0f), obj->scale()), obj->pos());
   }
 
-  // setup lighting
-
-  uvBuffer = GLUtils::bufferData(sizeof(uvData), uvData);
+  //uvBuffer = GLUtils::bufferData(sizeof(uvData), uvData);
   //  textureID = GLUtils::loadTexture("images/dice.bmp");
 }
 
@@ -135,7 +135,8 @@ GL3Renderer::render(Scene *scene) {
     glBindBuffer(GL_ARRAY_BUFFER, normalDataBuffers[i]);
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 
-    glDrawArrays(GL_TRIANGLES, 0, vertexDataSizes[i]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexDataBuffers[i]);
+    glDrawElements(GL_TRIANGLES, indexDataSizes[i], GL_UNSIGNED_INT, (void*)0);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

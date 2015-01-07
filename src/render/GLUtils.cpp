@@ -58,7 +58,16 @@ namespace GLUtils {
     GLuint id;
     glGenBuffers(1, &id);
     glBindBuffer(GL_ARRAY_BUFFER, id);
-    glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, size * sizeof(GLfloat), data, GL_STATIC_DRAW);
+    return id;
+  }
+
+  GLuint bufferElementArray(GLsizeiptr size, const GLuint *data) {
+    LOG(INFO) << "Allocating buffer of size: " << size;
+    GLuint id;
+    glGenBuffers(1, &id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size * sizeof(GLuint), data, GL_STATIC_DRAW);
     return id;
   }
 
