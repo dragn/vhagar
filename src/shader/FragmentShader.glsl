@@ -1,6 +1,10 @@
 #version 300 es
 in lowp vec2 UV;
-in lowp vec3 fragmentColor;
+
+in lowp vec3 fragmentAColor;
+in lowp vec3 fragmentDColor;
+in lowp vec3 fragmentSColor;
+
 in lowp vec3 Normal_cameraspace;
 in lowp vec3 LightDirection_cameraspace;
 in lowp vec3 EyeDirection_cameraspace;
@@ -22,7 +26,8 @@ void main() {
   lowp float LightPower = 500f;
 
   if (LightDistance > 0f) {
-    color = fragmentColor * 0.1 +
-      fragmentColor * (cosTheta + pow(cosAlpha, 5)) * LightPower / (LightDistance * LightDistance);
+    color = fragmentAColor * 0.1 +
+      fragmentDColor * cosTheta * LightPower / (LightDistance * LightDistance) +
+      fragmentSColor * pow(cosAlpha, 5) * LightPower / (LightDistance * LightDistance);
   }
 }

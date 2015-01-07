@@ -1,10 +1,16 @@
 #version 300 es
 
 layout(location = 0) in vec3 vertexPos_modelspace;
-//layout(location = 1) in vec3 vertexColor;
-layout(location = 2) in vec3 vertexNormal_modelspace;
+layout(location = 1) in vec3 vertexNormal_modelspace;
 
-out vec3 fragmentColor;
+layout(location = 2) in vec3 vertexAColor;
+layout(location = 3) in vec3 vertexDColor;
+layout(location = 4) in vec3 vertexSColor;
+
+out vec3 fragmentAColor;
+out vec3 fragmentDColor;
+out vec3 fragmentSColor;
+
 out vec3 Normal_cameraspace;
 out vec3 LightDirection_cameraspace;
 out vec3 EyeDirection_cameraspace;
@@ -30,5 +36,7 @@ void main() {
 
   Normal_cameraspace = (V * M * vec4(vertexNormal_modelspace, 0)).xyz;
 
-  fragmentColor = vec3(0.5, 0.5, 0.5);
+  fragmentAColor = vertexAColor;
+  fragmentDColor = vertexDColor;
+  fragmentSColor = vertexSColor;
 }

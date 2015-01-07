@@ -73,8 +73,14 @@ GL3Renderer::prepare(Scene *scene) {
   vertexDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
   normalDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
   normalDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
-  colorDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
-  colorDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
+
+  aColorDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
+  aColorDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
+  sColorDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
+  sColorDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
+  dColorDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
+  dColorDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
+
   indexDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
   indexDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
   models = uptr<M4[]>(new M4[objCount]);
@@ -90,6 +96,15 @@ GL3Renderer::prepare(Scene *scene) {
 
     normalDataBuffers[i] = GLUtils::bufferData(obj->_normalDataSize, obj->_normalData.get());
     normalDataSizes[i] = obj->_normalDataSize;
+
+    aColorDataBuffers[i] = GLUtils::bufferData(obj->_aColorDataSize, obj->_aColorData.get());    
+    aColorDataSizes[i] = obj->_aColorDataSize;
+
+    dColorDataBuffers[i] = GLUtils::bufferData(obj->_dColorDataSize, obj->_dColorData.get());    
+    dColorDataSizes[i] = obj->_dColorDataSize;
+
+    sColorDataBuffers[i] = GLUtils::bufferData(obj->_sColorDataSize, obj->_sColorData.get());    
+    sColorDataSizes[i] = obj->_sColorDataSize;
 
     indexDataBuffers[i] = GLUtils::bufferElementArray(obj->_indexDataSize, obj->_indexData.get());
     indexDataSizes[i] = obj->_indexDataSize;
@@ -128,12 +143,20 @@ GL3Renderer::render(Scene *scene) {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 
     glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, colorDataBuffers[i]);
+    glBindBuffer(GL_ARRAY_BUFFER, normalDataBuffers[i]);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 
     glEnableVertexAttribArray(2);
-    glBindBuffer(GL_ARRAY_BUFFER, normalDataBuffers[i]);
+    glBindBuffer(GL_ARRAY_BUFFER, aColorDataBuffers[i]);
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+
+    glEnableVertexAttribArray(3);
+    glBindBuffer(GL_ARRAY_BUFFER, dColorDataBuffers[i]);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+
+    glEnableVertexAttribArray(4);
+    glBindBuffer(GL_ARRAY_BUFFER, sColorDataBuffers[i]);
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexDataBuffers[i]);
     glDrawElements(GL_TRIANGLES, indexDataSizes[i], GL_UNSIGNED_INT, (void*)0);
@@ -141,6 +164,8 @@ GL3Renderer::render(Scene *scene) {
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(3);
+    glDisableVertexAttribArray(4);
   }
 
   SDL_GL_SwapWindow(window);

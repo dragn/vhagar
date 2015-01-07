@@ -81,6 +81,6 @@ GLfloat color_data[] = {
 Box::Box() {
   _vertexDataSize = 36 * 3;
   _vertexData.reset(v_data);
-  _ambientColorDataSize = 36 * 3;
-  _ambientColorData.reset(color_data);
+  _aColorDataSize = 36 * 3;
+  _aColorData.reset(color_data);
 }

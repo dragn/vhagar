@@ -11,14 +11,14 @@ class Drawable : public Object {
   GLsizeiptr _vertexDataSize = 0;
   uptr<GLfloat[]> _vertexData;
 
-  GLsizeiptr _ambientColorDataSize = 0;
-  uptr<GLfloat[]> _ambientColorData;
+  GLsizeiptr _aColorDataSize = 0;
+  uptr<GLfloat[]> _aColorData;
 
-  GLsizeiptr _diffuseColorDataSize = 0;
-  uptr<GLfloat[]> _diffuseColorData;
+  GLsizeiptr _dColorDataSize = 0;
+  uptr<GLfloat[]> _dColorData;
 
-  GLsizeiptr _specularColorDataSize = 0;
-  uptr<GLfloat[]> _specularColorData;
+  GLsizeiptr _sColorDataSize = 0;
+  uptr<GLfloat[]> _sColorData;
 
   GLsizeiptr _normalDataSize = 0;
   uptr<GLfloat[]> _normalData;

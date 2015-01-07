@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <limits>
+#include <glm/gtx/string_cast.hpp>
 #include <map>
 
 const size_t MAX_LEN = 512;
@@ -15,7 +16,6 @@ bool checkFilename(const char *objFilename) {
     LOG(ERROR) << "Filename too long: " << objFilename;
     return false;
   }
-  LOG(INFO) << objFilename + (len - 4);
   return strncmp(objFilename + (len - 4), ".obj", 4) == 0;
 }
 
@@ -24,6 +24,30 @@ void getMtlFilename(char *mtlFilename, const char *objFilename) {
   size_t len = strlen(objFilename);
   strncpy(mtlFilename, objFilename, MAX_LEN);
   strcpy(mtlFilename + (len - 4), ".mtl");
+}
+
+void readMaterials(FILE *mtlFile,
+    std::map<std::string, V3> &aColorMap,
+    std::map<std::string, V3> &dColorMap,
+    std::map<std::string, V3> &sColorMap) {
+  char line[MAX_LEN], material[MAX_LEN];
+  V3 vec3;
+
+  while (fgets(line, MAX_LEN, mtlFile) != NULL) {
+    sscanf(line, "newmtl %s", material);
+    if (sscanf(line, "Ka %f %f %f", &vec3.x, &vec3.y, &vec3.z)) {
+      aColorMap.insert(std::pair<std::string, V3>(std::string(material), vec3));
+      LOG(INFO) << material << ": " << glm::to_string(vec3); 
+    }
+    if (sscanf(line, "Kd %f %f %f", &vec3.x, &vec3.y, &vec3.z)) {
+      dColorMap.insert(std::pair<std::string, V3>(std::string(material), vec3));
+      LOG(INFO) << material << ": " << glm::to_string(vec3); 
+    }
+    if (sscanf(line, "Ks %f %f %f", &vec3.x, &vec3.y, &vec3.z)) {
+      sColorMap.insert(std::pair<std::string, V3>(std::string(material), vec3));
+      LOG(INFO) << material << ": " << glm::to_string(vec3); 
+    }
+  } 
 }
 
 /**
@@ -57,9 +81,10 @@ Wavefront::Wavefront(const char *objFilename) {
     LOG(INFO) << "No material library found at " << mtlFilename;
   }
 
-  std::vector<V3> vertices, normals, uvs;
+  std::vector<V3> vertices, normals, uvs, aColor, dColor, sColor;
 
-  char line[MAX_LEN] = {0};
+  char line[MAX_LEN] = {0}, temp[MAX_LEN] = "";
+  std::string mtl = "";
   char s1[32], s2[32], s3[32];
   V3 vec3;
   size_t index;
@@ -69,33 +94,44 @@ Wavefront::Wavefront(const char *objFilename) {
   std::vector<size_t> indices;
 
   std::map<std::string, size_t> materials;
-  std::vector<V3> mtlAmbientColor, mtlDiffuseColor, mtlSpecularColor;
+  std::map<std::string, V3> mtlAColor, mtlDColor, mtlSColor;
+
+  if (mtlFile != NULL) {
+    readMaterials(mtlFile, mtlAColor, mtlDColor, mtlSColor);
+  }
 
   while (!feof(objFile)) {
 
     // read next line
     if (fgets(line, MAX_LEN, objFile) == NULL) break;
 
-    if (strncmp(line, "v ", 2) == 0) {
-      sscanf(line, "v %f %f %f", &vec3.x, &vec3.y, &vec3.z);
+    if (sscanf(line, "usemtl %s", temp)) {
+      mtl = temp;
+      LOG(INFO) << "Using material: " << mtl;
+      map.clear(); // clear the map, so vertices with different material won't get the same index
+    }
+
+    if (sscanf(line, "v %f %f %f", &vec3.x, &vec3.y, &vec3.z)) {
       vertices.push_back(vec3);
 
-    } else if (strncmp(line, "vt ", 3) == 0) {
-      sscanf(line, "vt %f %f %f", &vec3.x, &vec3.y, &vec3.z);
+    } else if (sscanf(line, "vt %f %f %f", &vec3.x, &vec3.y, &vec3.z)) {
       uvs.push_back(vec3);
 
-    } else if (strncmp(line, "vn ", 3) == 0) {
-      sscanf(line, "vn %f %f %f", &vec3.x, &vec3.y, &vec3.z);
+    } else if (sscanf(line, "vn %f %f %f", &vec3.x, &vec3.y, &vec3.z)) {
       normals.push_back(vec3);
 
-    } else if (strncmp(line, "f ", 2) == 0) {
-      sscanf(line, "f %s %s %s", &s1, &s2, &s3);
+    } else if (sscanf(line, "f %s %s %s", &s1, &s2, &s3)) {
 
-      // finding vertices with identical values for position/normals/uv
+      // finding vertices with identical values for position/normals/uv (and material)
       if (map.count(std::string(s1))) {
         indices.push_back(map[s1]);
       } else {
         values.push_back(std::string(s1));
+        if (!mtl.empty()) {
+          aColor.push_back(mtlAColor[mtl]);
+          dColor.push_back(mtlDColor[mtl]);
+          sColor.push_back(mtlSColor[mtl]);
+        }
         map.insert(std::pair<std::string, size_t>(s1, values.size() - 1));
         indices.push_back(values.size() - 1);
       }
@@ -103,6 +139,11 @@ Wavefront::Wavefront(const char *objFilename) {
         indices.push_back(map[s2]);
       } else {
         values.push_back(std::string(s2));
+        if (!mtl.empty()) {
+          aColor.push_back(mtlAColor[mtl]);
+          dColor.push_back(mtlDColor[mtl]);
+          sColor.push_back(mtlSColor[mtl]);
+        }
         map.insert(std::pair<std::string, size_t>(s2, values.size() - 1));
         indices.push_back(values.size() - 1);
       }
@@ -110,11 +151,20 @@ Wavefront::Wavefront(const char *objFilename) {
         indices.push_back(map[s3]);
       } else {
         values.push_back(std::string(s3));
+        if (!mtl.empty()) {
+          aColor.push_back(mtlAColor[mtl]);
+          dColor.push_back(mtlDColor[mtl]);
+          sColor.push_back(mtlSColor[mtl]);
+        }
         map.insert(std::pair<std::string, size_t>(s3, values.size() - 1));
         indices.push_back(values.size() - 1);
       }
     }
   }
+
+  //  LOG(INFO) << "aColor size: " << aColor.size();
+  //  LOG(INFO) << "dColor size: " << dColor.size();
+  //  LOG(INFO) << "sColor size: " << sColor.size();
 
   if (mtlFile != NULL) fclose(mtlFile);
   fclose(objFile);
@@ -125,8 +175,27 @@ Wavefront::Wavefront(const char *objFilename) {
 
   _vertexDataSize = size;
   _vertexData.reset(new GLfloat[size]);
+
   _normalDataSize = size;
   _normalData.reset(new GLfloat[size]);
+
+  if (aColor.size() > 0) {
+    _aColorDataSize = size;
+    _aColorData.reset(new GLfloat[size]);
+  }
+
+  if (dColor.size() > 0) {
+    _dColorDataSize = size;
+    _dColorData.reset(new GLfloat[size]);
+  }
+
+  if (sColor.size() > 0) {
+    _sColorDataSize = size;
+    _sColorData.reset(new GLfloat[size]);
+  }
+
+  _indexDataSize = indices.size();
+  _indexData.reset(new GLuint[indices.size()]);
 
   unsigned int v, vt, vn;
   std::string str;
@@ -150,10 +219,25 @@ Wavefront::Wavefront(const char *objFilename) {
       _normalData[3*i+1] = normals[vn - 1].y;
       _normalData[3*i+2] = normals[vn - 1].z;
     }
-  }
 
-  _indexDataSize = indices.size();
-  _indexData.reset(new GLuint[indices.size()]);
+    if (i < aColor.size()) {
+      _aColorData[3*i]     = aColor[i].x;
+      _aColorData[3*i + 1] = aColor[i].y;
+      _aColorData[3*i + 2] = aColor[i].z;
+    }
+
+    if (i < dColor.size()) {
+      _dColorData[3*i]     = dColor[i].x;
+      _dColorData[3*i + 1] = dColor[i].y;
+      _dColorData[3*i + 2] = dColor[i].z;
+    }
+
+    if (i < sColor.size()) {
+      _sColorData[3*i]     = sColor[i].x;
+      _sColorData[3*i + 1] = sColor[i].y;
+      _sColorData[3*i + 2] = sColor[i].z;
+    }
+  }
 
   for (int i = 0; i < indices.size(); i++) {
     _indexData[i] = indices[i];

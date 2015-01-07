@@ -21,8 +21,14 @@ class GL3Renderer : public Renderer {
     uptr<GLuint[]> vertexDataSizes;
     uptr<GLuint[]> normalDataBuffers;
     uptr<GLuint[]> normalDataSizes;
-    uptr<GLuint[]> colorDataBuffers;
-    uptr<GLuint[]> colorDataSizes;
+
+    uptr<GLuint[]> aColorDataBuffers;
+    uptr<GLuint[]> aColorDataSizes;
+    uptr<GLuint[]> dColorDataBuffers;
+    uptr<GLuint[]> dColorDataSizes;
+    uptr<GLuint[]> sColorDataBuffers;
+    uptr<GLuint[]> sColorDataSizes;
+
     uptr<GLuint[]> indexDataBuffers;
     uptr<GLuint[]> indexDataSizes;
     uptr<M4[]> models;
