@@ -1,5 +1,7 @@
 #pragma once
 
+#define GLM_FORCE_RADIANS
+
 #include <memory>
 #include <SDL2/SDL.h>
 #include <glm/glm.hpp>

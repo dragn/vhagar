@@ -23,11 +23,13 @@ void main() {
   lowp float cosAlpha = clamp(dot(E, R), 0, 1);  
 
   lowp float cosTheta = clamp(dot(n, l), 0, 1);
-  lowp float LightPower = 500f;
+  lowp float LightPower = 1f;
+
+  lowp vec3 temp;
 
   if (LightDistance > 0f) {
     color = fragmentAColor * 0.1 +
-      fragmentDColor * cosTheta * LightPower / (LightDistance * LightDistance) +
-      fragmentSColor * pow(cosAlpha, 5) * LightPower / (LightDistance * LightDistance);
+      fragmentDColor * cosTheta * LightPower +
+      fragmentSColor * pow(cosAlpha, 5) * LightPower;
   }
 }

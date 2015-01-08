@@ -50,68 +50,53 @@ GLuint textureID;
 
 glm::mat4 Projection;
 
-GL3Renderer::GL3Renderer(SDL_Window *window) : window(window), objCount(0) {
+GL3Renderer::GL3Renderer(SDL_Window *window) : window(window) {
   programID = GLUtils::compileProgram("src/shader/VertexShader.glsl", "src/shader/FragmentShader.glsl");
 
   Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 
   // Enable backface culling
-  glEnable(GL_CULL_FACE);
+  glDisable(GL_CULL_FACE);
   // Enable depth test
   glEnable(GL_DEPTH_TEST);
   // Accept fragment if it closer to the camera than the former one
   glDepthFunc(GL_LESS);
+  //glEnable(GL_BLEND);
+  //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void
 GL3Renderer::prepare(Scene *scene) {
   auto *objs = scene->objects();
-  objCount = objs->size();
-  LOG(INFO) << "objCount: " << objCount;
 
-  vertexDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
-  vertexDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
-  normalDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
-  normalDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
+  buffers.clear();
+  models.clear();
 
-  aColorDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
-  aColorDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
-  sColorDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
-  sColorDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
-  dColorDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
-  dColorDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
-
-  indexDataBuffers = uptr<GLuint[]>(new GLuint[objCount]);
-  indexDataSizes = uptr<GLuint[]>(new GLuint[objCount]);
-  models = uptr<M4*[]>(new M4*[objCount]);
-
-  Drawable *obj;
+  const Mesh *obj;
+  _bufferNames bn;
 
   // Buffer all objects in the scene
-  for (int i = 0; i < objCount; i++) {
-    obj = objs->at(i).get();
+  for (size_t i = 0; i < objs->size(); i++) {
+    if (objs->at(i)->hasMesh()) {
 
-    vertexDataBuffers[i] = GLUtils::bufferData(obj->_vertexDataSize, obj->_vertexData.get());
-    vertexDataSizes[i] = obj->_vertexDataSize;
+      obj = objs->at(i)->mesh();
 
-    normalDataBuffers[i] = GLUtils::bufferData(obj->_normalDataSize, obj->_normalData.get());
-    normalDataSizes[i] = obj->_normalDataSize;
+      bn.vertexSize = obj->_vertexDataSize;
+      bn.indexSize = obj->_indexDataSize;
 
-    aColorDataBuffers[i] = GLUtils::bufferData(obj->_aColorDataSize, obj->_aColorData.get());    
-    aColorDataSizes[i] = obj->_aColorDataSize;
+      bn.indexBuf = GLUtils::bufferElementArray(obj->_indexDataSize, obj->_indexData.get());
+      bn.vertexBuf = GLUtils::bufferData(obj->_vertexDataSize, obj->_vertexData.get());
+      bn.normalBuf = GLUtils::bufferData(obj->_normalDataSize, obj->_normalData.get());
+      bn.aColorBuf = GLUtils::bufferData(obj->_aColorDataSize, obj->_aColorData.get());    
+      bn.dColorBuf = GLUtils::bufferData(obj->_dColorDataSize, obj->_dColorData.get());    
+      bn.sColorBuf = GLUtils::bufferData(obj->_sColorDataSize, obj->_sColorData.get());    
 
-    dColorDataBuffers[i] = GLUtils::bufferData(obj->_dColorDataSize, obj->_dColorData.get());    
-    dColorDataSizes[i] = obj->_dColorDataSize;
-
-    sColorDataBuffers[i] = GLUtils::bufferData(obj->_sColorDataSize, obj->_sColorData.get());    
-    sColorDataSizes[i] = obj->_sColorDataSize;
-
-    indexDataBuffers[i] = GLUtils::bufferElementArray(obj->_indexDataSize, obj->_indexData.get());
-    indexDataSizes[i] = obj->_indexDataSize;
-
-    models[i] = &obj->modelMatrix;
+      models.push_back(&objs->at(i)->modelMatrix);
+      buffers.push_back(bn);
+    }
   }
 
+  LOG(INFO) << "objCount: " << buffers.size();
   //uvBuffer = GLUtils::bufferData(sizeof(uvData), uvData);
   //  textureID = GLUtils::loadTexture("images/dice.bmp");
 }
@@ -126,45 +111,43 @@ GL3Renderer::render(Scene *scene, Object *camera) {
 
   glUseProgram(programID);
 
-  V3 lightPos = camera->pos() + V3(0, 20, 10);
+  V3 lightPos = V3(0, 100, 0);
   GLUtils::putUniformVec3(programID, "LightPosition_worldspace", lightPos);
 
   M4 MVP;
+  _bufferNames bn;
 
-  for (int i = 0; i < objCount; i++) {
+  for (int i = 0; i < buffers.size(); i++) {
+    bn = buffers[i];
+
     MVP = Projection * View * *(models[i]);
     GLUtils::putUniformMat4(programID, "MVP", MVP);
     GLUtils::putUniformMat4(programID, "M", *(models[i]));
     GLUtils::putUniformMat4(programID, "V", View);
 
     glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexDataBuffers[i]);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
+    glEnableVertexAttribArray(4);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, bn.vertexBuf);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, normalDataBuffers[i]);
+    glBindBuffer(GL_ARRAY_BUFFER, bn.normalBuf);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 
-    if (aColorDataSizes[i] > 0) {
-      glEnableVertexAttribArray(2);
-      glBindBuffer(GL_ARRAY_BUFFER, aColorDataBuffers[i]);
-      glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
-    }
+    glBindBuffer(GL_ARRAY_BUFFER, bn.aColorBuf);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 
-    if (dColorDataSizes[i] > 0) {
-      glEnableVertexAttribArray(3);
-      glBindBuffer(GL_ARRAY_BUFFER, dColorDataBuffers[i]);
-      glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
-    }
+    glBindBuffer(GL_ARRAY_BUFFER, bn.dColorBuf);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 
-    if (sColorDataSizes[i] > 0) {
-      glEnableVertexAttribArray(4);
-      glBindBuffer(GL_ARRAY_BUFFER, sColorDataBuffers[i]);
-      glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
-    }
+    glBindBuffer(GL_ARRAY_BUFFER, bn.sColorBuf);
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexDataBuffers[i]);
-    glDrawElements(GL_TRIANGLES, indexDataSizes[i], GL_UNSIGNED_INT, (void*)0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bn.indexBuf);
+    glDrawElements(GL_TRIANGLES, bn.indexSize, GL_UNSIGNED_INT, (void*)0);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

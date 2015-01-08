@@ -23,13 +23,15 @@ Application::run() {
   // Set relative mouse mod
   SDL_SetRelativeMouseMode(SDL_TRUE);
 
+  //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+
   // Create an OpenGL context associated with the window.
   SDL_GLContext glcontext = SDL_GL_CreateContext(window);
 
-  uptr<GL3Renderer> rndr(new GL3Renderer(window));
+  GL3Renderer renderer(window);
   uptr<Scene> scene(new SpaceScene());
 
-  rndr->prepare(scene.get());
+  renderer.prepare(scene.get());
 
   playerController.camera.pos(V3(0, 0, 5));
   playerController.scene = scene.get();
@@ -49,12 +51,18 @@ Application::run() {
 
   Scene *scenePtr = scene.get();
   Object *cameraPtr = &playerController.camera;
+
+  // Main loop
   while (handleEvents()) {
     next = SDL_GetTicks();
     tick(next - last);
     last = next;
     if (SDL_GetTicks() - lastRender > spf) {
-      rndr->render(scenePtr, cameraPtr);
+      renderer.render(scenePtr, cameraPtr);
+      int error = glGetError();
+      if (error != GL_NO_ERROR) {
+        LOG(ERROR) << "GL ERROR: " << error;
+      }
       lastRender = SDL_GetTicks();
       frames++;
       if (lastRender - lastFPSprint > 1000) {

@@ -5,6 +5,18 @@
 #include <GLES3/gl3.h>
 #include <SDL2/SDL.h>
 
+struct _bufferNames {
+  GLuint indexBuf;
+  GLuint vertexBuf;
+  GLuint normalBuf;
+  GLuint aColorBuf;
+  GLuint dColorBuf;
+  GLuint sColorBuf;
+
+  GLsizei indexSize;
+  GLsizei vertexSize;
+};
+
 class GL3Renderer {
 
   public:
@@ -16,20 +28,6 @@ class GL3Renderer {
   private:
     SDL_Window *window;
 
-    GLuint objCount;
-    uptr<GLuint[]> vertexDataBuffers;
-    uptr<GLuint[]> vertexDataSizes;
-    uptr<GLuint[]> normalDataBuffers;
-    uptr<GLuint[]> normalDataSizes;
-
-    uptr<GLuint[]> aColorDataBuffers;
-    uptr<GLuint[]> aColorDataSizes;
-    uptr<GLuint[]> dColorDataBuffers;
-    uptr<GLuint[]> dColorDataSizes;
-    uptr<GLuint[]> sColorDataBuffers;
-    uptr<GLuint[]> sColorDataSizes;
-
-    uptr<GLuint[]> indexDataBuffers;
-    uptr<GLuint[]> indexDataSizes;
-    uptr<M4*[]> models;
+    std::vector<M4*> models;
+    std::vector<_bufferNames> buffers;
 };

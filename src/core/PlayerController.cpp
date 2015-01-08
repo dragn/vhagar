@@ -54,7 +54,7 @@ PlayerController::_handleMouse(Sint32 xrel, Sint32 yrel) {
   // if some object is possessed turn camera around it
   if (_object == nullptr) return;
 
-  cameraBoom.rotate(Rot(xrel * cameraTurnSpeed, yrel * cameraTurnSpeed, 0.0f)); 
+  cameraBoom.rotate(Rot(- xrel * cameraTurnSpeed, - yrel * cameraTurnSpeed, 0.0f)); 
 
   // Attach camera boom to object
   _updateCameraPos();

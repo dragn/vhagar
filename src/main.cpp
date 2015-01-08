@@ -9,7 +9,10 @@ int main(int argc, char ** argv) {
   LOG(INFO) << "Starting application";
 
   LOG(INFO) << "SDL Initialization";
-  SDL_Init(SDL_INIT_VIDEO);
+  if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    LOG(FATAL) << SDL_GetError();
+    return 1;
+  }
 
   Application app;
 

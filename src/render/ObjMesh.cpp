@@ -1,4 +1,4 @@
-#include "Wavefront.hpp"
+#include "Mesh.hpp"
 #include "../core/Common.hpp"
 #include <cstdio>
 #include <iostream>
@@ -53,7 +53,7 @@ void readMaterials(FILE *mtlFile,
 /**
  * Constructor
  **/
-Wavefront::Wavefront(const char *objFilename) {
+ObjMesh::ObjMesh(const char *objFilename) {
 
   // Open objFile specified by 'objFilename' (should and with .obj)
   if (!checkFilename(objFilename)) {
@@ -68,7 +68,6 @@ Wavefront::Wavefront(const char *objFilename) {
 
   // File opened successfully, go on
   LOG(INFO) << "Reading objFile " << objFilename;
-  _isOk = true;
 
   // Try to open material library for this object
   char mtlFilename[MAX_LEN];
@@ -179,20 +178,14 @@ Wavefront::Wavefront(const char *objFilename) {
   _normalDataSize = size;
   _normalData.reset(new GLfloat[size]);
 
-  if (aColor.size() > 0) {
-    _aColorDataSize = size;
-    _aColorData.reset(new GLfloat[size]);
-  }
+  _aColorDataSize = size;
+  _aColorData.reset(new GLfloat[size]);
 
-  if (dColor.size() > 0) {
-    _dColorDataSize = size;
-    _dColorData.reset(new GLfloat[size]);
-  }
+  _dColorDataSize = size;
+  _dColorData.reset(new GLfloat[size]);
 
-  if (sColor.size() > 0) {
-    _sColorDataSize = size;
-    _sColorData.reset(new GLfloat[size]);
-  }
+  _sColorDataSize = size;
+  _sColorData.reset(new GLfloat[size]);
 
   _indexDataSize = indices.size();
   _indexData.reset(new GLuint[indices.size()]);

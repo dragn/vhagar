@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/string_cast.hpp>
+#include "../render/Mesh.hpp"
 
 /**
  * Object is something that could be placed in Scene,
@@ -39,6 +40,9 @@ class Object {
 
     M4 modelMatrix;
 
+    bool hasMesh() { return !!_mesh; }
+    const Mesh *mesh() { return _mesh.get(); }
+
   private:
     V3 _pos = V3(0, 0, 0);
     V3 _scale = V3(1, 1, 1);
@@ -46,4 +50,7 @@ class Object {
     float _yaw = 0;
     float _pitch = 0;
     M4 _rot = M4(1.0f);
+
+  protected:
+    uptr<Mesh> _mesh;
 };

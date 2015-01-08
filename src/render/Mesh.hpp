@@ -1,9 +1,8 @@
 #pragma once
 
-#include "../core/Object.hpp"
 #include "../core/Common.hpp"
 
-class Drawable : public Object {
+class Mesh {
 
   friend class GL3Renderer;
 
@@ -28,4 +27,9 @@ class Drawable : public Object {
 
   GLsizei _materialIndexDataSize = 0;
   uptr<GLsizei[]> _materialIndexData;
+};
+
+class ObjMesh : public Mesh {
+  public:
+    ObjMesh(const char *filename);
 };

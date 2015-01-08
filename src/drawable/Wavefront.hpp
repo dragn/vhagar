@@ -1,15 +1,13 @@
 #pragma once
 
-#include "Drawable.hpp"
+#include "../core/Object.hpp"
 
-class Wavefront : public Drawable {
+/**
+ * An object that reads its mesh from .obj file
+ **/
+class Wavefront : public Object {
   public:
-    Wavefront(const char *filename);
-
-    bool isOk() {
-      return _isOk;
+    Wavefront(const char *filename) {
+      _mesh = uptr<Mesh>(new ObjMesh(filename));
     }
-
-  private:
-    bool _isOk = false;
 };
