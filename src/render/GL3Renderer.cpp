@@ -10,7 +10,7 @@ GLuint programID;
 glm::mat4 Projection;
 
 GL3Renderer::GL3Renderer(SDL_Window *window) : window(window) {
-  programID = GLUtils::compileProgram("src/shader/VertexShader.glsl", "src/shader/FragmentShader.glsl");
+  programID = GLUtils::getShaderProgram("SimpleShader");
 
   Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 

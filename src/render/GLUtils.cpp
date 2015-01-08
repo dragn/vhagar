@@ -4,7 +4,9 @@
 #include <sstream>
 #include <string>
 
-void compileShader(GLuint shaderID, const char* filename) {
+std::map<std::string, GLuint> shaderPrograms;
+
+void compileShader(GLuint shaderID, const std::string &filename) {
   char buffer[256];
   int infoLogLength;
 
@@ -25,33 +27,33 @@ void compileShader(GLuint shaderID, const char* filename) {
   if (buffer[0]) LOG(FATAL) << "Error compiling shader:\n" << buffer;
 }
 
+GLuint compileProgram(const std::string &vertexShader, const std::string &fragmentShader) {
+  GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+  GLuint fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+
+  compileShader(vertexShaderID, vertexShader);
+  compileShader(fragmentShaderID, fragmentShader);
+
+  LOG(INFO) << "Linking program";
+  GLuint programID = glCreateProgram();
+  glAttachShader(programID, vertexShaderID);
+  glAttachShader(programID, fragmentShaderID);
+  glLinkProgram(programID);
+
+  char buffer[256];
+  int infoLogLength;
+
+  glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &infoLogLength);
+  glGetProgramInfoLog(programID, 256, &infoLogLength, buffer);
+  if (buffer[0]) LOG(FATAL) << buffer;
+
+  glDeleteShader(vertexShaderID);
+  glDeleteShader(fragmentShaderID);
+
+  return programID;
+}
+
 namespace GLUtils {
-
-  GLuint compileProgram(const char* vertexShader, const char* fragmentShader) {
-    GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-    GLuint fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
-
-    compileShader(vertexShaderID, vertexShader);
-    compileShader(fragmentShaderID, fragmentShader);
-
-    LOG(INFO) << "Linking program";
-    GLuint programID = glCreateProgram();
-    glAttachShader(programID, vertexShaderID);
-    glAttachShader(programID, fragmentShaderID);
-    glLinkProgram(programID);
-
-    char buffer[256];
-    int infoLogLength;
-
-    glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &infoLogLength);
-    glGetProgramInfoLog(programID, 256, &infoLogLength, buffer);
-    if (buffer[0]) LOG(FATAL) << buffer;
-
-    glDeleteShader(vertexShaderID);
-    glDeleteShader(fragmentShaderID);
-
-    return programID;
-  }
 
   GLuint bufferData(GLsizeiptr size, const GLfloat *data) {
     LOG(INFO) << "Allocating buffer of size: " << size;
@@ -95,5 +97,18 @@ namespace GLUtils {
   void putUniformVec3(GLuint programID, const char *name, V3 &data) {
     GLuint id = glGetUniformLocation(programID, name);
     glUniform3fv(id, 1, &data[0]);
+  }
+
+  GLuint getShaderProgram(const std::string &key) {
+    GLuint programID;
+
+    if (shaderPrograms.count(key)) {
+      return shaderPrograms[key];
+    } else {
+      programID = compileProgram("src/shaders/" + key + "_VS.glsl",
+          "src/shaders/" + key + "_FS.glsl");
+      shaderPrograms.insert(std::pair<std::string, GLuint>(key, programID));
+      return programID;
+    }
   }
 }
