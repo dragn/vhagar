@@ -5,29 +5,33 @@
 #include <GLES3/gl3.h>
 #include <SDL2/SDL.h>
 
-struct _bufferNames {
-  GLuint indexBuf;
-  GLuint vertexBuf;
-  GLuint normalBuf;
-  GLuint aColorBuf;
-  GLuint dColorBuf;
-  GLuint sColorBuf;
-
-  GLsizei indexSize;
-  GLsizei vertexSize;
-};
-
+/**
+ * OpenGL 3 renderer
+ **/
 class GL3Renderer {
 
   public:
     GL3Renderer(SDL_Window *window);
 
+    // Prepares new scene for rendering.
+    // Should only be called once per scene before rendering.
     void prepare(Scene *scene);
+
+    // Renders the scene to the screen, using specified camera. (call from main loop)
     void render(Scene *scene, Object *camera);
 
   private:
     SDL_Window *window;
 
     std::vector<M4*> models;
-    std::vector<_bufferNames> buffers;
+
+    struct bufferInfo {
+      GLuint attribBuffer = 0;
+      GLsizei attribSize = 0;
+      GLuint indexBuffer = 0;
+      GLsizei indexSize = 0;
+    };
+
+    std::vector<bufferInfo> buffers;
 };
+

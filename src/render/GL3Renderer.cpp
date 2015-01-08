@@ -5,48 +5,7 @@
 
 #include "GLUtils.hpp"
 
-const GLfloat uvData[] = {
-  891/1920, 97/1080,
-  0.000103f, 1.0f-0.336048f,
-  0.335973f, 1.0f-0.335903f,
-  1.000023f, 1.0f-0.000013f,
-  0.667979f, 1.0f-0.335851f,
-  0.999958f, 1.0f-0.336064f,
-  0.667979f, 1.0f-0.335851f,
-  0.336024f, 1.0f-0.671877f,
-  0.667969f, 1.0f-0.671889f,
-  1.000023f, 1.0f-0.000013f,
-  0.668104f, 1.0f-0.000013f,
-  0.667979f, 1.0f-0.335851f,
-  891/1920, 97/1080,
-  0.335973f, 1.0f-0.335903f,
-  0.336098f, 1.0f-0.000071f,
-  0.667979f, 1.0f-0.335851f,
-  0.335973f, 1.0f-0.335903f,
-  0.336024f, 1.0f-0.671877f,
-  1.000004f, 1.0f-0.671847f,
-  0.999958f, 1.0f-0.336064f,
-  0.667979f, 1.0f-0.335851f,
-  0.668104f, 1.0f-0.000013f,
-  0.335973f, 1.0f-0.335903f,
-  0.667979f, 1.0f-0.335851f,
-  0.335973f, 1.0f-0.335903f,
-  0.668104f, 1.0f-0.000013f,
-  0.336098f, 1.0f-0.000071f,
-  0.000103f, 1.0f-0.336048f,
-  0.000004f, 1.0f-0.671870f,
-  0.336024f, 1.0f-0.671877f,
-  0.000103f, 1.0f-0.336048f,
-  0.336024f, 1.0f-0.671877f,
-  0.335973f, 1.0f-0.335903f,
-  0.667969f, 1.0f-0.671889f,
-  1.000004f, 1.0f-0.671847f,
-  0.667979f, 1.0f-0.335851f
-};
-
-GLuint uvBuffer;
 GLuint programID;
-GLuint textureID;
 
 glm::mat4 Projection;
 
@@ -67,32 +26,50 @@ GL3Renderer::GL3Renderer(SDL_Window *window) : window(window) {
 
 void
 GL3Renderer::prepare(Scene *scene) {
-  auto *objs = scene->objects();
 
-  buffers.clear();
+  for (auto &info : buffers) {
+    if (info.attribBuffer > 0) glDeleteBuffers(1, &info.attribBuffer);
+    if (info.indexBuffer > 0) glDeleteBuffers(1, &info.indexBuffer);
+  }
+
   models.clear();
 
-  const Mesh *obj;
-  _bufferNames bn;
+  const Mesh *mesh;
+  bufferInfo info;
 
   // Buffer all objects in the scene
-  for (size_t i = 0; i < objs->size(); i++) {
-    if (objs->at(i)->hasMesh()) {
+  for (auto obj : *scene->objects()) {
+    if (obj->hasMesh()) {
 
-      obj = objs->at(i)->mesh();
+      mesh = obj->mesh();
 
-      bn.vertexSize = obj->_vertexDataSize;
-      bn.indexSize = obj->_indexDataSize;
+      // specify sizes
+      info.attribSize = mesh->_attribSize;
+      info.indexSize = mesh->_indexSize;
 
-      bn.indexBuf = GLUtils::bufferElementArray(obj->_indexDataSize, obj->_indexData.get());
-      bn.vertexBuf = GLUtils::bufferData(obj->_vertexDataSize, obj->_vertexData.get());
-      bn.normalBuf = GLUtils::bufferData(obj->_normalDataSize, obj->_normalData.get());
-      bn.aColorBuf = GLUtils::bufferData(obj->_aColorDataSize, obj->_aColorData.get());    
-      bn.dColorBuf = GLUtils::bufferData(obj->_dColorDataSize, obj->_dColorData.get());    
-      bn.sColorBuf = GLUtils::bufferData(obj->_sColorDataSize, obj->_sColorData.get());    
+      // buffer index data
+      info.indexBuffer = GLUtils::bufferElementArray(info.indexSize, mesh->_indexData.get());
 
-      models.push_back(&objs->at(i)->modelMatrix);
-      buffers.push_back(bn);
+      // buffer attribute data
+      GLuint buf;
+      glGenBuffers(1, &buf);
+      glBindBuffer(GL_ARRAY_BUFFER, buf);
+
+      GLuint bytes = info.attribSize * sizeof(GLfloat);
+      glBufferData(GL_ARRAY_BUFFER, 5 * bytes, NULL, GL_STATIC_DRAW);
+
+      glBufferSubData(GL_ARRAY_BUFFER, 0 * bytes, bytes, mesh->_vertexData.get());
+      glBufferSubData(GL_ARRAY_BUFFER, 1 * bytes, bytes, mesh->_normalData.get());
+      glBufferSubData(GL_ARRAY_BUFFER, 2 * bytes, bytes, mesh->_aColorData.get());
+      glBufferSubData(GL_ARRAY_BUFFER, 3 * bytes, bytes, mesh->_dColorData.get());
+      glBufferSubData(GL_ARRAY_BUFFER, 4 * bytes, bytes, mesh->_sColorData.get());
+
+      info.attribBuffer = buf;
+
+      buffers.push_back(info);
+
+      // Store model matrix pointers
+      models.push_back(&obj->modelMatrix);
     }
   }
 
@@ -115,10 +92,11 @@ GL3Renderer::render(Scene *scene, Object *camera) {
   GLUtils::putUniformVec3(programID, "LightPosition_worldspace", lightPos);
 
   M4 MVP;
-  _bufferNames bn;
+  bufferInfo info;
+  GLuint bytes;
 
   for (int i = 0; i < buffers.size(); i++) {
-    bn = buffers[i];
+    info = buffers[i];
 
     MVP = Projection * View * *(models[i]);
     GLUtils::putUniformMat4(programID, "MVP", MVP);
@@ -130,24 +108,19 @@ GL3Renderer::render(Scene *scene, Object *camera) {
     glEnableVertexAttribArray(2);
     glEnableVertexAttribArray(3);
     glEnableVertexAttribArray(4);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, bn.vertexBuf);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, bn.normalBuf);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+    bytes = info.attribSize * sizeof(GLfloat);
 
-    glBindBuffer(GL_ARRAY_BUFFER, bn.aColorBuf);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+    glBindBuffer(GL_ARRAY_BUFFER, info.attribBuffer);
+    void *offset = 0;
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, offset);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, offset + bytes);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, offset + 2 * bytes);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, offset + 3 * bytes);
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, offset + 4 * bytes);
 
-    glBindBuffer(GL_ARRAY_BUFFER, bn.dColorBuf);
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, bn.sColorBuf);
-    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bn.indexBuf);
-    glDrawElements(GL_TRIANGLES, bn.indexSize, GL_UNSIGNED_INT, (void*)0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, info.indexBuffer);
+    glDrawElements(GL_TRIANGLES, info.indexSize, GL_UNSIGNED_INT, (void*)0);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

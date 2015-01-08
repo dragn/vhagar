@@ -46,7 +46,7 @@ Application::run() {
   Uint32 next;
   Uint32 lastRender = last;
   Uint32 lastFPSprint = last;
-  Uint32 frames;
+  Uint32 frames = 0;
   Uint32 spf = 1000 / FPS_LIMIT;
 
   Scene *scenePtr = scene.get();
@@ -55,15 +55,17 @@ Application::run() {
   // Main loop
   while (handleEvents()) {
     next = SDL_GetTicks();
-    tick(next - last);
-    last = next;
-    if (SDL_GetTicks() - lastRender > spf) {
+    if (next != last) {
+      tick(next - last);
+      last = next;
+    }
+    if (next - lastRender > spf) {
       renderer.render(scenePtr, cameraPtr);
       int error = glGetError();
       if (error != GL_NO_ERROR) {
         LOG(ERROR) << "GL ERROR: " << error;
       }
-      lastRender = SDL_GetTicks();
+      lastRender = next;
       frames++;
       if (lastRender - lastFPSprint > 1000) {
         LOG(INFO) << (lastRender - lastFPSprint) / frames << " ms/frame";

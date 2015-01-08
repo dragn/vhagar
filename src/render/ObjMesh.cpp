@@ -172,22 +172,14 @@ ObjMesh::ObjMesh(const char *objFilename) {
 
   LOG(INFO) << "data size: " << size;
 
-  _vertexDataSize = size;
+  _attribSize = size;
   _vertexData.reset(new GLfloat[size]);
-
-  _normalDataSize = size;
   _normalData.reset(new GLfloat[size]);
-
-  _aColorDataSize = size;
   _aColorData.reset(new GLfloat[size]);
-
-  _dColorDataSize = size;
   _dColorData.reset(new GLfloat[size]);
-
-  _sColorDataSize = size;
   _sColorData.reset(new GLfloat[size]);
-
-  _indexDataSize = indices.size();
+  
+  _indexSize = indices.size();
   _indexData.reset(new GLuint[indices.size()]);
 
   unsigned int v, vt, vn;
