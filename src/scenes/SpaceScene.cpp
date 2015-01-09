@@ -25,5 +25,7 @@ SpaceScene::SpaceScene() {
   box->scale(V3(3.0f));
   addObject(box);
 
-  addObject(new Object());
+  addNamedObject("Asteroid", new Wavefront("models/Asteroid.obj"));
+  getNamedObject("Asteroid")->pos(V3(0, -40, 0));
+  getNamedObject("Asteroid")->scale(V3(15.f));
 }
