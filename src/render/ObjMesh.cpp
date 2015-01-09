@@ -178,7 +178,7 @@ ObjMesh::ObjMesh(const char *objFilename) {
   _aColorData.reset(new GLfloat[size]);
   _dColorData.reset(new GLfloat[size]);
   _sColorData.reset(new GLfloat[size]);
-  
+
   _indexSize = indices.size();
   _indexData.reset(new GLuint[indices.size()]);
 

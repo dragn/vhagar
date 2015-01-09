@@ -28,7 +28,11 @@ V3 Object::up() { return V3(_rot * glm::vec4(0, 1, 0, 0)); };
 
 void Object::orient(Rot rot) {
   _yaw = rot.yaw;
+  while (_yaw > 2 * M_PI) _yaw -= 2 * M_PI;
+  while (_yaw < 0) _yaw += 2 * M_PI;
   _pitch = rot.pitch;
+  if (_pitch > 1.57) _pitch = 1.57;
+  if (_pitch < - 1.57) _pitch = - 1.57;
   recalcModel(); 
 }
 
@@ -38,9 +42,12 @@ Rot Object::rot() {
 
 void Object::rotate(Rot rot) {
   _yaw += rot.yaw;
+  while (_yaw > 2 * M_PI) _yaw -= 2 * M_PI;
+  while (_yaw < 0) _yaw += 2 * M_PI;
+
   _pitch += rot.pitch;
-  if (_pitch > 89.9) _pitch = 89.9;
-  if (_pitch < - 89.9) _pitch = - 89.9;
+  if (_pitch > 1.57) _pitch = 1.57;
+  if (_pitch < - 1.57) _pitch = - 1.57;
   recalcModel(); 
 }
 

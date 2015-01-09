@@ -3,8 +3,19 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <SDL2/SDL_image.h>
 
 std::map<std::string, GLuint> shaderPrograms;
+
+SDL_Surface *loadImage(const std::string &filename) {
+  SDL_Surface *tex = IMG_Load(filename.c_str());
+  if (tex == NULL) {
+    LOG(ERROR) << "Could not load texture " << filename;
+  } else {
+    LOG(INFO) << "Loaded texture " << filename << " (" << tex->w << ", " << tex->h << ")";
+  }
+  return tex;
+}
 
 void compileShader(GLuint shaderID, const std::string &filename) {
   char buffer[256];
@@ -73,30 +84,80 @@ namespace GLUtils {
     return id;
   }
 
-  GLuint loadTexture(const char *filename) {
+  GLuint loadCubeMapTexture(
+      const std::string &px,
+      const std::string &nx,
+      const std::string &py,
+      const std::string &ny,
+      const std::string &pz,
+      const std::string &nz) {
     GLuint textureID;
     glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
-    SDL_Surface *tex = SDL_LoadBMP(filename);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex->w, tex->h, 0, GL_RGB, GL_UNSIGNED_BYTE, tex->pixels);
-    SDL_FreeSurface(tex);
+    GLuint modes[] = {
+      GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+      GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+      GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+      GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+      GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+      GL_TEXTURE_CUBE_MAP_NEGATIVE_Z };
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    const std::string files[] = { px, nx, py, ny, pz, nz };
+
+    for (size_t i = 0; i < 6; i++) {
+      SDL_Surface *tex = loadImage(files[i]);
+      if (tex != NULL) {
+        glTexImage2D(modes[i], 0, GL_RGB, tex->h, tex->h, 0, GL_RGB, GL_UNSIGNED_BYTE, tex->pixels);
+        SDL_FreeSurface(tex);
+      }
+
+    }
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
     return textureID;
   }
 
-  void putUniformMat4(GLuint programID, const char *name, M4 &data) {
-    GLuint id = glGetUniformLocation(programID, name);
+  GLuint loadTexture(const std::string &filename) {
+    GLuint textureID;
+    SDL_Surface *tex = SDL_LoadBMP(filename.c_str());
+    if (tex == NULL) {
+      LOG(ERROR) << "Could not load texture " << filename;
+      return -1;
+    } else {
+      LOG(INFO) << "Loaded texture " << filename << " (" << tex->w << ", " << tex->h << ")";
+    }
+
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex->w, tex->h, 0, GL_RGB, GL_UNSIGNED_BYTE, tex->pixels);
+    SDL_FreeSurface(tex);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    return textureID;
+  }
+
+  void putUniformMat4(GLuint programID, const std::string &name, M4 &data) {
+    GLuint id = glGetUniformLocation(programID, name.c_str());
     glUniformMatrix4fv(id, 1, GL_FALSE, &data[0][0]);
   }
 
-  void putUniformVec3(GLuint programID, const char *name, V3 &data) {
-    GLuint id = glGetUniformLocation(programID, name);
+  void putUniformVec3(GLuint programID, const std::string &name, V3 &data) {
+    GLuint id = glGetUniformLocation(programID, name.c_str());
     glUniform3fv(id, 1, &data[0]);
+  }
+
+  void putUniformFloat(GLuint programID, const std::string &name, float data) {
+    GLuint id = glGetUniformLocation(programID, name.c_str());
+    glUniform1f(id, data);
   }
 
   GLuint getShaderProgram(const std::string &key) {

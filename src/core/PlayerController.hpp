@@ -24,7 +24,7 @@ class PlayerController {
     Object camera;
     Arm cameraBoom;
 
-    float cameraTurnSpeed = 0.005;
+    float cameraTurnSpeed = 0.001;
     Scene *scene = NULL;
 
   private:

@@ -6,6 +6,8 @@
 
 class Application {
   public:
+    static const Uint32 SCREEN_WIDTH = 1024;
+    static const Uint32 SCREEN_HEIGHT = 768;
     void run();
   private:
     SDL_Window *window;

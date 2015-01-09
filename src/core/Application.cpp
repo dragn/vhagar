@@ -7,8 +7,20 @@
 
 const Uint32 FPS_LIMIT = 60;
 
-const Uint32 SCREEN_WIDTH = 1024;
-const Uint32 SCREEN_HEIGHT = 768;
+void reportGLError(int error) {
+  switch (error) {
+    case GL_NO_ERROR:
+      return;
+    case GL_INVALID_OPERATION:
+      LOG(ERROR) << "GL ERROR: INVALID_OPERATION";
+      return;
+    case GL_INVALID_VALUE:
+      LOG(ERROR) << "GL ERROR: INVALID_VALUE";
+      return;
+    default:
+      LOG(ERROR) << "GL ERROR: " << error;
+  }
+}
 
 void
 Application::run() {
@@ -48,6 +60,7 @@ Application::run() {
   Uint32 lastFPSprint = last;
   Uint32 frames = 0;
   Uint32 spf = 1000 / FPS_LIMIT;
+  Uint32 error;
 
   Scene *scenePtr = scene.get();
   Object *cameraPtr = &playerController.camera;
@@ -61,10 +74,8 @@ Application::run() {
     }
     if (next - lastRender > spf) {
       renderer.render(scenePtr, cameraPtr);
-      int error = glGetError();
-      if (error != GL_NO_ERROR) {
-        LOG(ERROR) << "GL ERROR: " << error;
-      }
+      error = glGetError();
+      if (error) reportGLError(error);
       lastRender = next;
       frames++;
       if (lastRender - lastFPSprint > 1000) {
