@@ -12,7 +12,7 @@ void Object::pos(V3 pos) {
 };
 
 /* Position getter */
-const V3 Object::pos() { return _pos; };
+const V3 Object::pos() const { return _pos; };
 
 /* Scale setter */
 void Object::scale(V3 scale) {
@@ -21,10 +21,10 @@ void Object::scale(V3 scale) {
 };
 
 /* Scale getter */
-V3 Object::scale() { return _scale; };
+V3 Object::scale() const { return _scale; };
 
-V3 Object::forward() { return V3(_rot * glm::vec4(0, 0, -1, 0)); };
-V3 Object::up() { return V3(_rot * glm::vec4(0, 1, 0, 0)); };
+V3 Object::forward() const { return V3(_rot * glm::vec4(0, 0, -1, 0)); };
+V3 Object::up() const { return V3(_rot * glm::vec4(0, 1, 0, 0)); };
 
 void Object::orient(Rot rot) {
   _yaw = rot.yaw;
@@ -36,7 +36,7 @@ void Object::orient(Rot rot) {
   recalcModel(); 
 }
 
-Rot Object::rot() {
+Rot Object::rot() const {
   return Rot(_yaw, _pitch, 0);
 }
 

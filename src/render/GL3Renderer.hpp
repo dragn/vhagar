@@ -14,10 +14,10 @@ class GL3Renderer {
 
     // Prepares new scene for rendering.
     // Should only be called once per scene before rendering.
-    void prepare(Scene *scene);
+    void prepare(const Scene &scene);
 
     // Renders the scene to the screen, using specified camera. (call from main loop)
-    void render(Scene *scene, Object *camera);
+    void render(const Scene &scene, const Object &camera);
 
   private:
     SDL_Window *window;

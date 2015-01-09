@@ -41,14 +41,14 @@ Application::run() {
   SDL_GLContext glcontext = SDL_GL_CreateContext(window);
 
   GL3Renderer renderer(window);
-  uptr<Scene> scene(new SpaceScene());
+  SpaceScene scene;
 
-  renderer.prepare(scene.get());
+  renderer.prepare(scene);
 
   playerController.camera.pos(V3(0, 0, 5));
-  playerController.scene = scene.get();
+  playerController.scene = &scene;
 
-  Object *ship = scene->getNamedObject("PlayerShip");
+  Object *ship = scene.getNamedObject("PlayerShip");
   if (ship != NULL) playerController.control(ship);
   else {
     LOG(FATAL) << "No PlayerShip found!";
@@ -62,9 +62,6 @@ Application::run() {
   Uint32 spf = 1000 / FPS_LIMIT;
   Uint32 error;
 
-  Scene *scenePtr = scene.get();
-  Object *cameraPtr = &playerController.camera;
-
   // Main loop
   while (handleEvents()) {
     next = SDL_GetTicks();
@@ -73,7 +70,7 @@ Application::run() {
       last = next;
     }
     if (next - lastRender > spf) {
-      renderer.render(scenePtr, cameraPtr);
+      renderer.render(scene, playerController.camera);
       error = glGetError();
       if (error) reportGLError(error);
       lastRender = next;

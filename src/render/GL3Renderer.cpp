@@ -10,62 +10,23 @@ GLuint programID;
 
 glm::mat4 Projection;
 
-const float FOV = 45;
-const float viewDistance = 100;
-GLuint textureID;
-
-static const GLfloat skyMesh[] = {
-  -1.0f,-1.0f,-1.0f, // triangle 1 : begin
-  -1.0f,-1.0f, 1.0f,
-  -1.0f, 1.0f, 1.0f, // triangle 1 : end
-  1.0f, 1.0f,-1.0f, // triangle 2 : begin
-  -1.0f,-1.0f,-1.0f,
-  -1.0f, 1.0f,-1.0f, // triangle 2 : end
-  1.0f,-1.0f, 1.0f,
-  -1.0f,-1.0f,-1.0f,
-  1.0f,-1.0f,-1.0f,
-  1.0f, 1.0f,-1.0f,
-  1.0f,-1.0f,-1.0f,
-  -1.0f,-1.0f,-1.0f,
-  -1.0f,-1.0f,-1.0f,
-  -1.0f, 1.0f, 1.0f,
-  -1.0f, 1.0f,-1.0f,
-  1.0f,-1.0f, 1.0f,
-  -1.0f,-1.0f, 1.0f,
-  -1.0f,-1.0f,-1.0f,
-  -1.0f, 1.0f, 1.0f,
-  -1.0f,-1.0f, 1.0f,
-  1.0f,-1.0f, 1.0f,
-  1.0f, 1.0f, 1.0f,
-  1.0f,-1.0f,-1.0f,
-  1.0f, 1.0f,-1.0f,
-  1.0f,-1.0f,-1.0f,
-  1.0f, 1.0f, 1.0f,
-  1.0f,-1.0f, 1.0f,
-  1.0f, 1.0f, 1.0f,
-  1.0f, 1.0f,-1.0f,
-  -1.0f, 1.0f,-1.0f,
-  1.0f, 1.0f, 1.0f,
-  -1.0f, 1.0f,-1.0f,
-  -1.0f, 1.0f, 1.0f,
-  1.0f, 1.0f, 1.0f,
-  -1.0f, 1.0f, 1.0f,
-  1.0f,-1.0f, 1.0f
-};
-
+GLuint skyTexture;
 GLuint skyMeshBuf;
-GLuint skyProgram;
+GLuint skyMeshIdxBuf;
+GLuint skyProgram = 0;
 GLuint fbo;
 GLuint width = Application::SCREEN_WIDTH;
 GLuint height = Application::SCREEN_HEIGHT;
 
+ObjMesh skyMesh("models/skybox.obj");
+
 GL3Renderer::GL3Renderer(SDL_Window *window) : window(window) {
   programID = GLUtils::getShaderProgram("SimpleShader");
 
-  Projection = glm::perspective(FOV, 4.0f / 3.0f, 0.1f, viewDistance);
+  Projection = glm::perspective(45.f, 4.0f / 3.0f, 0.1f, 100.f);
 
   // Enable backface culling
-  glDisable(GL_CULL_FACE);
+  glEnable(GL_CULL_FACE);
   // Enable depth test
   glEnable(GL_DEPTH_TEST);
   // Accept fragment if it closer to the camera than the former one
@@ -75,6 +36,7 @@ GL3Renderer::GL3Renderer(SDL_Window *window) : window(window) {
   glEnable(GL_TEXTURE_CUBE_MAP);
   glEnable(GL_MULTISAMPLE);
 
+  // setting up multisampling
   GLuint tex, depth_tex;
   GLuint num_samples = 8;
   glGenTextures( 1, &tex );
@@ -92,7 +54,7 @@ GL3Renderer::GL3Renderer(SDL_Window *window) : window(window) {
 }
 
 void
-GL3Renderer::prepare(Scene *scene) {
+GL3Renderer::prepare(const Scene &scene) {
 
   for (auto &info : buffers) {
     if (info.attribBuffer > 0) glDeleteBuffers(1, &info.attribBuffer);
@@ -105,7 +67,7 @@ GL3Renderer::prepare(Scene *scene) {
   bufferInfo info;
 
   // Buffer all objects in the scene
-  for (auto obj : *scene->objects()) {
+  for (auto obj : *scene.objects()) {
     if (obj->hasMesh()) {
 
       mesh = obj->mesh();
@@ -140,56 +102,51 @@ GL3Renderer::prepare(Scene *scene) {
     }
   }
 
+  // Set up skybox
   //uvBuffer = GLUtils::bufferData(sizeof(uvData), uvData);
-  glActiveTexture(GL_TEXTURE0);
-  textureID = GLUtils::loadCubeMapTexture(
-      "images/space/pink_planet_neg_x.tga",
-      "images/space/pink_planet_pos_x.tga",
-      "images/space/pink_planet_pos_y.tga",
-      "images/space/pink_planet_neg_y.tga",
-      "images/space/pink_planet_pos_z.tga",
-      "images/space/pink_planet_neg_z.tga"
-      );
+  if (scene.skyBox.pos_x.size() > 0) {
+    skyTexture = GLUtils::loadCubeMapTexture(scene.skyBox);
+    skyProgram = GLUtils::getShaderProgram("SkyDome");
 
-  skyProgram = GLUtils::getShaderProgram("SkyDome");
-
-  glGenBuffers(1, &skyMeshBuf);
-  glBindBuffer(GL_ARRAY_BUFFER, skyMeshBuf);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(skyMesh), skyMesh, GL_STATIC_DRAW);
-
-  LOG(INFO) << "tex id " << textureID;
+    skyMeshBuf = GLUtils::bufferData(skyMesh._attribSize, skyMesh._vertexData.get());
+    skyMeshIdxBuf = GLUtils::bufferElementArray(skyMesh._indexSize, skyMesh._indexData.get());
+  }
 }
 
 void
-GL3Renderer::render(Scene *scene, Object *camera) {
+GL3Renderer::render(const Scene &scene, const Object &camera) {
 
   M4 MVP;
-  M4 View = glm::lookAt(camera->pos(), camera->pos() + camera->forward(), V3(0, 1, 0));
+  M4 View = glm::lookAt(camera.pos(), camera.pos() + camera.forward(), V3(0, 1, 0));
 
   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  // render sky dome
-  glDepthMask(GL_FALSE);
-  glUseProgram(skyProgram);
-  MVP = Projection * View * glm::scale(M4(1.0f), V3(50.f, 50.f, 50.f));
-  GLUtils::putUniformMat4(skyProgram, "MVP", MVP);
+  // render sky box
+  if (skyProgram > 0) {
+    glDisable(GL_CULL_FACE);
+    glDepthMask(GL_FALSE);
+    glUseProgram(skyProgram);
+    MVP = Projection * View * glm::scale(M4(1.0f), V3(50.f, 50.f, 50.f));
+    GLUtils::putUniformMat4(skyProgram, "MVP", MVP);
 
-  glBindBuffer(GL_ARRAY_BUFFER, skyMeshBuf);
-  glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+    glBindBuffer(GL_ARRAY_BUFFER, skyMeshBuf);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
-  glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-  glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skyTexture);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skyMeshIdxBuf);
+    glDrawElements(GL_TRIANGLES, skyMesh._indexSize, GL_UNSIGNED_INT, (void*) 0);
 
-  glDisableVertexAttribArray(0);
-  glDepthMask(GL_TRUE);
-
+    glDisableVertexAttribArray(0);
+    glDepthMask(GL_TRUE);
+  }
 
   // render scene objects
   glUseProgram(programID);
+  glEnable(GL_CULL_FACE);
 
   V3 lightPos = V3(0, 100, 0);
   GLUtils::putUniformVec3(programID, "LightPosition_worldspace", lightPos);

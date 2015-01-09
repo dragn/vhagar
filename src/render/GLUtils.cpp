@@ -84,13 +84,7 @@ namespace GLUtils {
     return id;
   }
 
-  GLuint loadCubeMapTexture(
-      const std::string &px,
-      const std::string &nx,
-      const std::string &py,
-      const std::string &ny,
-      const std::string &pz,
-      const std::string &nz) {
+  GLuint loadCubeMapTexture(const Scene::SkyBox &skyBox) {
     GLuint textureID;
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
@@ -103,7 +97,7 @@ namespace GLUtils {
       GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
       GL_TEXTURE_CUBE_MAP_NEGATIVE_Z };
 
-    const std::string files[] = { px, nx, py, ny, pz, nz };
+    const std::string files[] = { skyBox.pos_x, skyBox.neg_x, skyBox.pos_y, skyBox.neg_y, skyBox.pos_z, skyBox.neg_z };
 
     for (size_t i = 0; i < 6; i++) {
       SDL_Surface *tex = loadImage(files[i]);

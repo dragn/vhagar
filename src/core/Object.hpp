@@ -21,18 +21,18 @@ class Object {
     void pos(V3 pos);
 
     /* Position getter */
-    const V3 pos();
+    const V3 pos() const;
 
     /* Scale setter */
     void scale(V3 scale);
 
     /* Scale getter */
-    V3 scale();
+    V3 scale() const;
 
-    V3 forward();
-    V3 up();
+    V3 forward() const;
+    V3 up() const;
 
-    Rot rot();
+    Rot rot() const;
     void rotate(Rot rot);
     void orient(Rot rot);
 
@@ -40,8 +40,8 @@ class Object {
 
     M4 modelMatrix;
 
-    bool hasMesh() { return !!_mesh; }
-    const Mesh *mesh() { return _mesh.get(); }
+    bool hasMesh() const { return !!_mesh; }
+    const Mesh *mesh() const { return _mesh.get(); }
 
   private:
     V3 _pos = V3(0, 0, 0);

@@ -6,7 +6,17 @@
 class Scene {
 
   public:
-    const std::vector<sptr<Object>> *objects() { return &_objects; };
+
+    struct SkyBox {
+      std::string pos_x;
+      std::string neg_x;
+      std::string pos_y;
+      std::string neg_y;
+      std::string pos_z;
+      std::string neg_z;
+    } skyBox;
+
+    const std::vector<sptr<Object>> *objects() const { return &_objects; };
 
     void addObject(Object *object) {
       _objects.push_back(sptr<Object>(object)); 

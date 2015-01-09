@@ -4,6 +4,13 @@
 
 SpaceScene::SpaceScene() {
 
+  skyBox.pos_x = "images/space/pink_planet_neg_x.tga";
+  skyBox.neg_x = "images/space/pink_planet_pos_x.tga";
+  skyBox.pos_y = "images/space/pink_planet_pos_y.tga";
+  skyBox.neg_y = "images/space/pink_planet_neg_y.tga";
+  skyBox.pos_z = "images/space/pink_planet_pos_z.tga";
+  skyBox.neg_z = "images/space/pink_planet_neg_z.tga";
+
   Wavefront *ship = new Wavefront("models/SimpleShip/Spaceship.obj");
   //Wavefront *ship = new Wavefront("/home/dragn/SportSpaceship/SportsSpaceship.obj");
   ship->pos(V3(0, 0, 0));
