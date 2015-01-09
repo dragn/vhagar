@@ -2,7 +2,6 @@
 
 #include "../core/Common.hpp"
 #include "../core/Scene.hpp"
-#include <GLES3/gl3.h>
 #include <SDL2/SDL.h>
 
 /**

@@ -1,12 +1,14 @@
 #pragma once
 
 #define GLM_FORCE_RADIANS
+#define GL_GLEXT_PROTOTYPES
 
 #include <memory>
 #include <SDL2/SDL.h>
 #include <glm/glm.hpp>
 #include <glog/logging.h>
-#include <GLES3/gl3.h>
+#include <GL/gl.h>
+#include <GL/glext.h>
 
 typedef glm::vec4 V4;
 typedef glm::vec3 V3;

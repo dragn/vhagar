@@ -55,6 +55,9 @@ static const GLfloat skyMesh[] = {
 
 GLuint skyMeshBuf;
 GLuint skyProgram;
+GLuint fbo;
+GLuint width = Application::SCREEN_WIDTH;
+GLuint height = Application::SCREEN_HEIGHT;
 
 GL3Renderer::GL3Renderer(SDL_Window *window) : window(window) {
   programID = GLUtils::getShaderProgram("SimpleShader");
@@ -70,6 +73,22 @@ GL3Renderer::GL3Renderer(SDL_Window *window) : window(window) {
   //glEnable(GL_BLEND);
   //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_TEXTURE_CUBE_MAP);
+  glEnable(GL_MULTISAMPLE);
+
+  GLuint tex, depth_tex;
+  GLuint num_samples = 8;
+  glGenTextures( 1, &tex );
+  glBindTexture( GL_TEXTURE_2D_MULTISAMPLE, tex );
+  glTexImage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE, num_samples, GL_RGBA8, width, height, false );
+
+  glGenTextures( 1, &depth_tex );
+  glBindTexture( GL_TEXTURE_2D_MULTISAMPLE, depth_tex );
+  glTexImage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE, num_samples, GL_DEPTH_COMPONENT, width, height, false );
+
+  glGenFramebuffers( 1, &fbo );
+  glBindFramebuffer( GL_FRAMEBUFFER, fbo );
+  glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, tex, 0 );
+  glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D_MULTISAMPLE, depth_tex, 0 );
 }
 
 void
@@ -147,6 +166,8 @@ GL3Renderer::render(Scene *scene, Object *camera) {
   M4 MVP;
   M4 View = glm::lookAt(camera->pos(), camera->pos() + camera->forward(), V3(0, 1, 0));
 
+  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -209,6 +230,11 @@ GL3Renderer::render(Scene *scene, Object *camera) {
     glDisableVertexAttribArray(3);
     glDisableVertexAttribArray(4);
   }
+
+  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);   // Make sure no FBO is set as the draw framebuffer
+  glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo); // Make sure your multisampled FBO is the read framebuffer
+  glDrawBuffer(GL_BACK);                       // Set the back buffer as the draw buffer
+  glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
   SDL_GL_SwapWindow(window);
 }
