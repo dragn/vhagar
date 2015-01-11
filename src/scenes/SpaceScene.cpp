@@ -1,6 +1,6 @@
 #include "SpaceScene.hpp"
 
-#include "../drawable/Wavefront.hpp"
+#include "../objects/Wavefront.hpp"
 
 SpaceScene::SpaceScene() {
 

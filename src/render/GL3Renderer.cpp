@@ -132,7 +132,7 @@ void
 GL3Renderer::render(const Scene &scene, const Object &camera) {
 
   M4 MVP;
-  M4 View = glm::lookAt(camera.pos(), camera.pos() + camera.forward(), V3(0, 1, 0));
+  M4 View = glm::lookAt(camera.pos(), camera.pos() + camera.forward(), camera.up());
 
   if (multisample) {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
@@ -146,7 +146,8 @@ GL3Renderer::render(const Scene &scene, const Object &camera) {
     glDisable(GL_CULL_FACE);
     glDepthMask(GL_FALSE);
     glUseProgram(skyProgram);
-    MVP = Projection * View * glm::scale(glm::translate(M4(1.0f), camera.pos()), V3(50.f, 50.f, 50.f));
+    M4 SkyView = glm::lookAt(V3(0, 0, 0), camera.forward(), camera.up());
+    MVP = Projection * SkyView * glm::scale(M4(1.0f), V3(50.f, 50.f, 50.f));
     GLUtils::putUniformMat4(skyProgram, "MVP", MVP);
 
     glBindBuffer(GL_ARRAY_BUFFER, skyMeshBuf);
