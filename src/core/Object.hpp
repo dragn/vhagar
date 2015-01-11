@@ -21,7 +21,7 @@ class Object {
     void pos(V3 pos);
 
     /* Position getter */
-    const V3 pos() const;
+    V3 pos() const;
 
     /* Scale setter */
     void scale(V3 scale);

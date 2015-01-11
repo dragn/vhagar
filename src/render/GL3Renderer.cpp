@@ -18,9 +18,16 @@ GLuint fbo;
 GLuint width = Application::SCREEN_WIDTH;
 GLuint height = Application::SCREEN_HEIGHT;
 
+bool multisample = false;
+
 ObjMesh skyMesh("models/skybox.obj");
 
 GL3Renderer::GL3Renderer(SDL_Window *window) : window(window) {
+
+  LOG(INFO) << "Initializing OpenGL renderer";
+  LOG(INFO) << "OpenGL Version: " << glGetString(GL_VERSION);
+  LOG(INFO) << "GLSL Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION);
+
   programID = GLUtils::getShaderProgram("SimpleShader");
 
   Projection = glm::perspective(45.f, 4.0f / 3.0f, 0.1f, 100.f);
@@ -34,23 +41,31 @@ GL3Renderer::GL3Renderer(SDL_Window *window) : window(window) {
   //glEnable(GL_BLEND);
   //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_TEXTURE_CUBE_MAP);
-  glEnable(GL_MULTISAMPLE);
 
-  // setting up multisampling
-  GLuint tex, depth_tex;
-  GLuint num_samples = 8;
-  glGenTextures( 1, &tex );
-  glBindTexture( GL_TEXTURE_2D_MULTISAMPLE, tex );
-  glTexImage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE, num_samples, GL_RGBA8, width, height, false );
+  int maxSamples;
 
-  glGenTextures( 1, &depth_tex );
-  glBindTexture( GL_TEXTURE_2D_MULTISAMPLE, depth_tex );
-  glTexImage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE, num_samples, GL_DEPTH_COMPONENT, width, height, false );
+  glGetIntegerv(GL_MAX_INTEGER_SAMPLES, &maxSamples);
+  multisample = (maxSamples > 1);
+  LOG(INFO) << "Multi-sampling is: " << (multisample ? "enabled" : "disabled");
 
-  glGenFramebuffers( 1, &fbo );
-  glBindFramebuffer( GL_FRAMEBUFFER, fbo );
-  glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, tex, 0 );
-  glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D_MULTISAMPLE, depth_tex, 0 );
+  if (multisample) {
+    glEnable(GL_MULTISAMPLE);
+    // setting up multisampling
+    GLuint tex, depth_tex;
+    GLuint num_samples = maxSamples >= 8 ? 8 : 1;
+    glGenTextures( 1, &tex );
+    glBindTexture( GL_TEXTURE_2D_MULTISAMPLE, tex );
+    glTexImage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE, num_samples, GL_RGBA8, width, height, false );
+
+    glGenTextures( 1, &depth_tex );
+    glBindTexture( GL_TEXTURE_2D_MULTISAMPLE, depth_tex );
+    glTexImage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE, num_samples, GL_DEPTH_COMPONENT, width, height, false );
+
+    glGenFramebuffers( 1, &fbo );
+    glBindFramebuffer( GL_FRAMEBUFFER, fbo );
+    glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, tex, 0 );
+    glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D_MULTISAMPLE, depth_tex, 0 );
+  }
 }
 
 void
@@ -119,7 +134,9 @@ GL3Renderer::render(const Scene &scene, const Object &camera) {
   M4 MVP;
   M4 View = glm::lookAt(camera.pos(), camera.pos() + camera.forward(), V3(0, 1, 0));
 
-  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+  if (multisample) {
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+  }
 
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -129,7 +146,7 @@ GL3Renderer::render(const Scene &scene, const Object &camera) {
     glDisable(GL_CULL_FACE);
     glDepthMask(GL_FALSE);
     glUseProgram(skyProgram);
-    MVP = Projection * View * glm::scale(M4(1.0f), V3(50.f, 50.f, 50.f));
+    MVP = Projection * View * glm::scale(glm::translate(M4(1.0f), camera.pos()), V3(50.f, 50.f, 50.f));
     GLUtils::putUniformMat4(skyProgram, "MVP", MVP);
 
     glBindBuffer(GL_ARRAY_BUFFER, skyMeshBuf);
@@ -142,11 +159,11 @@ GL3Renderer::render(const Scene &scene, const Object &camera) {
 
     glDisableVertexAttribArray(0);
     glDepthMask(GL_TRUE);
+    glEnable(GL_CULL_FACE);
   }
 
   // render scene objects
   glUseProgram(programID);
-  glEnable(GL_CULL_FACE);
 
   V3 lightPos = V3(0, 100, 0);
   GLUtils::putUniformVec3(programID, "LightPosition_worldspace", lightPos);
@@ -188,10 +205,12 @@ GL3Renderer::render(const Scene &scene, const Object &camera) {
     glDisableVertexAttribArray(4);
   }
 
-  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);   // Make sure no FBO is set as the draw framebuffer
-  glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo); // Make sure your multisampled FBO is the read framebuffer
-  glDrawBuffer(GL_BACK);                       // Set the back buffer as the draw buffer
-  glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+  if (multisample) {
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);   // Make sure no FBO is set as the draw framebuffer
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo); // Make sure your multisampled FBO is the read framebuffer
+    glDrawBuffer(GL_BACK);                       // Set the back buffer as the draw buffer
+    glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+  }
 
   SDL_GL_SwapWindow(window);
 }

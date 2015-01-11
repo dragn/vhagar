@@ -1,4 +1,4 @@
-#version 300 es
+// Supported in 3.30 and 3.00 ES
 
 layout(location = 0) in vec3 vertexPos_modelspace;
 layout(location = 1) in vec3 vertexNormal_modelspace;

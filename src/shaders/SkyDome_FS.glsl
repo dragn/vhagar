@@ -1,4 +1,4 @@
-#version 300 es
+// Supported in 3.30 and 3.00 ES
 
 in lowp vec3 texCoord;
 

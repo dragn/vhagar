@@ -12,7 +12,7 @@ void Object::pos(V3 pos) {
 };
 
 /* Position getter */
-const V3 Object::pos() const { return _pos; };
+V3 Object::pos() const { return _pos; };
 
 /* Scale setter */
 void Object::scale(V3 scale) {

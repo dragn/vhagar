@@ -22,6 +22,15 @@ PlayerController::handleEvent(SDL_Event *event) {
     case SDL_MOUSEMOTION:
       _handleMouse(event->motion.xrel, event->motion.yrel);
       break;
+
+    case SDL_MOUSEBUTTONDOWN:
+      if (event->button.button == SDL_BUTTON_X2) {
+        if (cameraBoom.length < 40) cameraBoom.length += 2;
+      } else if (event->button.button == SDL_BUTTON_X1) {
+        if (cameraBoom.length > 10) cameraBoom.length -= 2;
+      }
+      _updateCameraPos();
+      break;
   }
 }
 

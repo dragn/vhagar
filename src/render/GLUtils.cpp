@@ -21,13 +21,24 @@ void compileShader(GLuint shaderID, const std::string &filename) {
   char buffer[256];
   int infoLogLength;
 
+  std::string glslVersion;
+  int majorVersion, minorVersion;
+  glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
+  glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
+
+  if (majorVersion > 3 || (majorVersion == 3 && minorVersion > 2)) {
+    glslVersion = "#version 330\n";
+  } else {
+    glslVersion = "#version 300 es";
+  }
+
   // ???
   LOG(INFO) << "Compiling " << filename;
   std::ifstream ifs(filename);
   std::stringstream ss;
   ss << ifs.rdbuf();
 
-  std::string code_string = ss.str();
+  std::string code_string = glslVersion + ss.str();
   const char* code = code_string.c_str();
 
   glShaderSource(shaderID, 1, &code, NULL);

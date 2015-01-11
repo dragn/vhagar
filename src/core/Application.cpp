@@ -24,6 +24,7 @@ void reportGLError(int error) {
 
 void
 Application::run() {
+
   // Window mode MUST include SDL_WINDOW_OPENGL for use with OpenGL.
   window = SDL_CreateWindow(
       "GameEngine Demo", 0, 0,
@@ -34,8 +35,6 @@ Application::run() {
 
   // Set relative mouse mod
   SDL_SetRelativeMouseMode(SDL_TRUE);
-
-  //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 
   // Create an OpenGL context associated with the window.
   SDL_GLContext glcontext = SDL_GL_CreateContext(window);
