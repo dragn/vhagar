@@ -7,6 +7,8 @@ Current features:
 - .obj file import.
 - Scene, objects, camera, player controller.
 
+Based on: SDL, OpenGL, glog
+
 Config with cmake:
 
     $ cmake ./
