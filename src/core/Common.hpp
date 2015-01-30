@@ -4,9 +4,16 @@
 #define GL_GLEXT_PROTOTYPES
 
 #include <memory>
-#include <SDL2/SDL.h>
+#include "SDL.h"
 #include <glm/glm.hpp>
+
+#ifdef WITH_GLOG
 #include <glog/logging.h>
+#else
+#include <iostream>
+#define LOG(X) std::cout
+#endif
+
 #include <GL/gl.h>
 #include <GL/glext.h>
 

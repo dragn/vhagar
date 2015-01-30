@@ -1,6 +1,5 @@
 #include "Application.hpp"
 #include "../render/GL3Renderer.hpp"
-#include <glog/logging.h>
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include "../scenes/SpaceScene.hpp"

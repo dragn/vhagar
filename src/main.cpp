@@ -1,10 +1,12 @@
-#include <SDL2/SDL.h>
-#include <glog/logging.h>
+#include "core/Common.hpp"
 #include "core/Application.hpp"
 
 int main(int argc, char ** argv) {
+
+#ifdef WITH_GLOG
   google::InitGoogleLogging(argv[0]);
   google::InstallFailureSignalHandler();
+#endif
 
   LOG(INFO) << "Starting application";
 

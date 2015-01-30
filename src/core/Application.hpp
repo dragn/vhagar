@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL2/SDL.h>
+#include "Common.hpp"
 #include "../core/Scene.hpp"
 #include "PlayerController.hpp"
 

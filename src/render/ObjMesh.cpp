@@ -6,6 +6,7 @@
 #include <limits>
 #include <glm/gtx/string_cast.hpp>
 #include <map>
+#include <vector>
 
 const size_t MAX_LEN = 512;
 
