@@ -2,7 +2,6 @@
 
 #include "../core/Common.hpp"
 #include "../core/Scene.hpp"
-#include <SDL2/SDL.h>
 
 /**
  * OpenGL 3 renderer

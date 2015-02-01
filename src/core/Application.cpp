@@ -38,6 +38,14 @@ Application::run() {
   // Create an OpenGL context associated with the window.
   SDL_GLContext glcontext = SDL_GL_CreateContext(window);
 
+  GLenum err = glewInit();
+  if (err != GLEW_OK) {
+	LOG(FATAL) << "Glew Error: " << glewGetErrorString(err);
+	SDL_GL_DeleteContext(glcontext);
+	SDL_DestroyWindow(window);
+	return;
+  }
+
   GL3Renderer renderer(window);
   SpaceScene scene;
 

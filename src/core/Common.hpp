@@ -11,11 +11,11 @@
 #include <glog/logging.h>
 #else
 #include <iostream>
-#define LOG(X) std::cout
+#define LOG(X) std::cout << std::endl; std::cout
 #endif
 
+#include <GL/glew.h>
 #include <GL/gl.h>
-#include <GL/glext.h>
 
 typedef glm::vec4 V4;
 typedef glm::vec3 V3;

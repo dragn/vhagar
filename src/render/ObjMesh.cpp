@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <limits>
 #include <glm/gtx/string_cast.hpp>
 #include <map>
