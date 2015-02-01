@@ -2,6 +2,7 @@
 
 #include "Controllable.hpp"
 #include <map>
+#include <vector>
 
 class Scene {
 

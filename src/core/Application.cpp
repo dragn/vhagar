@@ -1,6 +1,5 @@
 #include "Application.hpp"
 #include "../render/GL3Renderer.hpp"
-#include <glog/logging.h>
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include "../scenes/SpaceScene.hpp"
@@ -38,6 +37,14 @@ Application::run() {
 
   // Create an OpenGL context associated with the window.
   SDL_GLContext glcontext = SDL_GL_CreateContext(window);
+
+  GLenum err = glewInit();
+  if (err != GLEW_OK) {
+	LOG(FATAL) << "Glew Error: " << glewGetErrorString(err);
+	SDL_GL_DeleteContext(glcontext);
+	SDL_DestroyWindow(window);
+	return;
+  }
 
   GL3Renderer renderer(window);
   SpaceScene scene;
