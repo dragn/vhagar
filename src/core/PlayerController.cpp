@@ -72,7 +72,7 @@ PlayerController::_handleMouse(Sint32 xrel, Sint32 yrel) {
 void
 PlayerController::tick(Uint32 delta) {
   if (_object == nullptr) return;
-  float sec = delta / 1000.0f;
+  //float sec = delta / 1000.0f;
   if (_pressed['w']) {
     _updateCameraPos();
   }

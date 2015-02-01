@@ -171,7 +171,7 @@ GL3Renderer::render(const Scene &scene, const Object &camera) {
   bufferInfo info;
   GLuint size;
 
-  for (int i = 0; i < buffers.size(); i++) {
+  for (size_t i = 0; i < buffers.size(); i++) {
     info = buffers[i];
 
     MVP = Projection * View * *(models[i]);

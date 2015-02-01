@@ -88,8 +88,6 @@ ObjMesh::ObjMesh(const char *objFilename) {
   std::string mtl = "";
   char s1[32], s2[32], s3[32];
   V3 vec3;
-  size_t index;
-  size_t v1, v2, v3, t1, t2, t3, n1, n2, n3;
   std::map<std::string, size_t> map;
   std::vector<std::string> values;
   std::vector<size_t> indices;
@@ -121,7 +119,7 @@ ObjMesh::ObjMesh(const char *objFilename) {
     } else if (sscanf(line, "vn %f %f %f", &vec3.x, &vec3.y, &vec3.z)) {
       normals.push_back(vec3);
 
-    } else if (sscanf(line, "f %s %s %s", &s1, &s2, &s3)) {
+    } else if (sscanf(line, "f %s %s %s", s1, s2, s3)) {
 
       // finding vertices with identical values for position/normals/uv (and material)
       if (map.count(std::string(s1))) {
@@ -188,7 +186,7 @@ ObjMesh::ObjMesh(const char *objFilename) {
   std::string str;
 
   // Fill vertex data and normal data
-  for (int i = 0; i < values.size(); i++) {
+  for (size_t i = 0; i < values.size(); i++) {
     str = values[i];
     if (str.find("//") != std::string::npos) {
       sscanf(str.c_str(), "%d//%d", &v, &vn);
@@ -226,7 +224,7 @@ ObjMesh::ObjMesh(const char *objFilename) {
     }
   }
 
-  for (int i = 0; i < indices.size(); i++) {
+  for (size_t i = 0; i < indices.size(); i++) {
     _indexData[i] = indices[i];
   }
 
