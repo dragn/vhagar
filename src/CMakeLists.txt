@@ -19,7 +19,7 @@ endif (SDL2_FOUND)
 if (GLOG_FOUND)
     set(GAMEENGINE_COMPILE_FLAGS "${GAMEENGINE_COMPILE_FLAGS} -DWITH_GLOG")
     include_directories(${GLOG_INCLUDE_DIR})
-    list(APPEND GAMEENGINE_LIBRARIES"${GLOG_LIBRARY}")
+    list(APPEND GAMEENGINE_LIBRARIES "${GLOG_LIBRARY}")
 endif (GLOG_FOUND)
 
 if (GLM_FOUND)
@@ -40,6 +40,12 @@ endif()
 add_executable (GameEngine main.cpp ${GameEngine_SRC})
 target_link_libraries (GameEngine ${GAMEENGINE_LIBRARIES})
 
-if (GAME_ENGINE_COMPILE_FLAGS)
-	set_target_properties (GameEngine PROPERTIES COMPILE_FLAGS ${GAMEENGINE_COMPILE_FLAGS})
+target_compile_features(GameEngine PRIVATE cxx_alias_templates)
+target_compile_features(GameEngine PRIVATE cxx_auto_type)
+target_compile_features(GameEngine PRIVATE cxx_nullptr)
+
+if (CMAKE_COMPILER_IS_GNUCXX)
+  set(GAMEENGINE_COMPILE_FLAGS "${GAMEENGINE_COMPILE_FLAGS} -Wall")
 endif()
+
+set_target_properties (GameEngine PROPERTIES COMPILE_FLAGS ${GAMEENGINE_COMPILE_FLAGS})
