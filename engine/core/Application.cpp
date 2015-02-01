@@ -40,10 +40,10 @@ Application::run() {
 
   GLenum err = glewInit();
   if (err != GLEW_OK) {
-	LOG(FATAL) << "Glew Error: " << glewGetErrorString(err);
-	SDL_GL_DeleteContext(glcontext);
-	SDL_DestroyWindow(window);
-	return;
+    LOG(FATAL) << "Glew Error: " << glewGetErrorString(err);
+    SDL_GL_DeleteContext(glcontext);
+    SDL_DestroyWindow(window);
+    return;
   }
 
   GL3Renderer renderer(window);

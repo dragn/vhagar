@@ -1,7 +1,6 @@
 #include "GLUtils.hpp"
 #include "../core/Common.hpp"
-#include <fstream>
-#include <sstream>
+#include "../shaders/Shaders.hpp"
 #include <string>
 #include "SDL_image.h"
 
@@ -34,11 +33,8 @@ void compileShader(GLuint shaderID, const std::string &filename) {
 
   // ???
   LOG(INFO) << "Compiling " << filename;
-  std::ifstream ifs(filename);
-  std::stringstream ss;
-  ss << ifs.rdbuf();
 
-  std::string code_string = glslVersion + ss.str();
+  std::string code_string = glslVersion + GameEngine::Shaders.at(filename);
   const char* code = code_string.c_str();
 
   glShaderSource(shaderID, 1, &code, NULL);
@@ -171,8 +167,7 @@ namespace GLUtils {
     if (shaderPrograms.count(key)) {
       return shaderPrograms[key];
     } else {
-      programID = compileProgram("src/shaders/" + key + "_VS.glsl",
-          "src/shaders/" + key + "_FS.glsl");
+      programID = compileProgram(key + "_VS.glsl", key + "_FS.glsl");
       shaderPrograms.insert(std::pair<std::string, GLuint>(key, programID));
       return programID;
     }
