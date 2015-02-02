@@ -1,15 +1,23 @@
 #pragma once
 
-#include "../core/Common.hpp"
-#include "../core/Scene.hpp"
+#include "../Common.hpp"
 #include <string>
 #include <map>
 
-namespace GLUtils {
+namespace Vhagar {
+  struct CubeMap {
+    std::string pos_x;
+    std::string neg_x;
+    std::string pos_y;
+    std::string neg_y;
+    std::string pos_z;
+    std::string neg_z;
+  };
+
   GLuint bufferData(GLsizeiptr size, const GLfloat *data);
   GLuint bufferElementArray(GLsizeiptr size, const GLuint *data);
   GLuint loadTexture(const std::string &filename);
-  GLuint loadCubeMapTexture(const Scene::SkyBox &skyBox);
+  GLuint loadCubeMapTexture(const CubeMap &skyBox);
 
   void putUniformMat4(GLuint programID, const std::string &name, M4 &data);
   void putUniformVec3(GLuint programID, const std::string &name, V3 &data);

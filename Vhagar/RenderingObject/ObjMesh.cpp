@@ -1,5 +1,5 @@
 #include "Mesh.hpp"
-#include "../core/Common.hpp"
+#include "../Common.hpp"
 #include <cstdio>
 #include <iostream>
 #include <string>
@@ -55,7 +55,7 @@ void readMaterials(FILE *mtlFile,
 /**
  * Constructor
  **/
-ObjMesh::ObjMesh(const char *objFilename) {
+Vhagar::ObjMesh::ObjMesh(const char *objFilename) {
 
   // Open objFile specified by 'objFilename' (should and with .obj)
   if (!checkFilename(objFilename)) {

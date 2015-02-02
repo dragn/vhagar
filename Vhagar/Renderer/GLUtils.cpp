@@ -1,77 +1,83 @@
 #include "GLUtils.hpp"
-#include "../core/Common.hpp"
-#include "../shaders/Shaders.hpp"
+#include "../Common.hpp"
+#include "../Shaders/Shaders.hpp"
 #include <string>
 #include "SDL_image.h"
 
-std::map<std::string, GLuint> shaderPrograms;
+namespace Vhagar {
 
-SDL_Surface *loadImage(const std::string &filename) {
-  SDL_Surface *tex = IMG_Load(filename.c_str());
-  if (tex == NULL) {
-    LOG(ERROR) << "Could not load texture " << filename;
-  } else {
-    LOG(INFO) << "Loaded texture " << filename << " (" << tex->w << ", " << tex->h << ")";
-  }
-  return tex;
-}
+  std::map<std::string, GLuint> shaderPrograms;
 
-void compileShader(GLuint shaderID, const std::string &filename) {
-  char buffer[256];
-  int infoLogLength;
-
-  std::string glslVersion;
-  int majorVersion, minorVersion;
-  glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
-  glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
-
-  if (majorVersion > 3 || (majorVersion == 3 && minorVersion > 2)) {
-    glslVersion = "#version 330\n";
-  } else {
-    glslVersion = "#version 300 es";
+  SDL_Surface *loadImage(const std::string &filename) {
+    SDL_Surface *tex = IMG_Load(filename.c_str());
+    if (tex == NULL) {
+      LOG(ERROR) << "Could not load texture " << filename;
+    } else {
+      LOG(INFO) << "Loaded texture " << filename << " (" << tex->w << ", " << tex->h << ")";
+    }
+    return tex;
   }
 
-  // ???
-  LOG(INFO) << "Compiling " << filename;
+  void compileShader(GLuint shaderID, const std::string &filename) {
+    char buffer[256];
+    int infoLogLength;
 
-  std::string code_string = glslVersion + GameEngine::Shaders.at(filename);
-  const char* code = code_string.c_str();
+    std::string glslVersion;
+    int majorVersion, minorVersion;
+    glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
+    glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
 
-  glShaderSource(shaderID, 1, &code, NULL);
-  glCompileShader(shaderID);
+    if (majorVersion > 3 || (majorVersion == 3 && minorVersion > 2)) {
+      glslVersion = "#version 330\n";
+    } else {
+      glslVersion = "#version 300 es";
+    }
 
-  glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
-  glGetShaderInfoLog(shaderID, 256, &infoLogLength, buffer);
-  if (buffer[0]) LOG(FATAL) << "Error compiling shader:\n" << buffer;
-}
+    // ???
+    LOG(INFO) << "Compiling " << filename;
 
-GLuint compileProgram(const std::string &vertexShader, const std::string &fragmentShader) {
-  GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-  GLuint fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+    std::string code_string = glslVersion + Vhagar::Shaders.at(filename);
+    const char* code = code_string.c_str();
 
-  compileShader(vertexShaderID, vertexShader);
-  compileShader(fragmentShaderID, fragmentShader);
+    glShaderSource(shaderID, 1, &code, NULL);
+    glCompileShader(shaderID);
 
-  LOG(INFO) << "Linking program";
-  GLuint programID = glCreateProgram();
-  glAttachShader(programID, vertexShaderID);
-  glAttachShader(programID, fragmentShaderID);
-  glLinkProgram(programID);
+    glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
+    glGetShaderInfoLog(shaderID, 256, &infoLogLength, buffer);
+    if (buffer[0]) LOG(FATAL) << "Error compiling shader:\n" << buffer;
+  }
 
-  char buffer[256];
-  int infoLogLength;
+  GLuint compileProgram(const std::string &vertexShader, const std::string &fragmentShader) {
+    GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+    GLuint fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
-  glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &infoLogLength);
-  glGetProgramInfoLog(programID, 256, &infoLogLength, buffer);
-  if (buffer[0]) LOG(FATAL) << buffer;
+    compileShader(vertexShaderID, vertexShader);
+    compileShader(fragmentShaderID, fragmentShader);
 
-  glDeleteShader(vertexShaderID);
-  glDeleteShader(fragmentShaderID);
+    LOG(INFO) << "Linking program";
+    GLuint programID = glCreateProgram();
+    glAttachShader(programID, vertexShaderID);
+    glAttachShader(programID, fragmentShaderID);
+    glLinkProgram(programID);
 
-  return programID;
-}
+    char buffer[256];
+    int infoLogLength;
 
-namespace GLUtils {
+    glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &infoLogLength);
+    glGetProgramInfoLog(programID, 256, &infoLogLength, buffer);
+    if (buffer[0]) LOG(FATAL) << buffer;
+
+    GLint status;
+    glGetProgramiv(programID, GL_LINK_STATUS, &status);
+    if (status != GL_TRUE) {
+      return 0;
+    }
+
+    glDeleteShader(vertexShaderID);
+    glDeleteShader(fragmentShaderID);
+
+    return programID;
+  }
 
   GLuint bufferData(GLsizeiptr size, const GLfloat *data) {
     LOG(INFO) << "Allocating buffer of size: " << size;
@@ -91,7 +97,7 @@ namespace GLUtils {
     return id;
   }
 
-  GLuint loadCubeMapTexture(const Scene::SkyBox &skyBox) {
+  GLuint loadCubeMapTexture(const CubeMap &skyBox) {
     GLuint textureID;
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
