@@ -100,19 +100,31 @@ int main(int argc, char **argv) {
       "images/space/pink_planet_neg_y.tga",
       "images/space/pink_planet_pos_z.tga",
       "images/space/pink_planet_neg_z.tga"
-  });
-  
+      });
+
   ObjMesh ship("models/SimpleShip/Spaceship.obj");
+  glm::mat4 trans = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 4));
   glm::mat4 rot1 = glm::rotate(glm::mat4(1.0f), 2.3f, glm::vec3(0, 1, 0)); 
   glm::mat4 rot2 = glm::rotate(glm::mat4(1.0f), 0.3f, glm::vec3(1, 0, 0)); 
-  ship.setModel(rot2 * rot1);
+  ship.setModel(rot2 * rot1 * trans);
 
+  float cameraAngle = 0;
   renderer.setView(glm::lookAt(glm::vec3(-2,0,15), glm::vec3(-2,0,0), glm::vec3(0, 1, 0)));
   renderer.addObject(&skyBox);
   renderer.addObject(&ship);
 
+  glm::mat4 projection = glm::perspective(44.8f, 4.0f / 3.0f, 0.1f, 100.f);
+  renderer.setProjection(projection);
+
+  int ticks = 0, delta;
   // Main loop
   while (handleEvents()) {
+    ticks = SDL_GetTicks();
+    renderer.setView(glm::lookAt(glm::vec3(15 * cos(cameraAngle), 0, 15 * sin(cameraAngle)), glm::vec3(0,0,0), glm::vec3(0, 1, 0)));
     renderer.render();
+
+    delta = SDL_GetTicks() - ticks;
+    cameraAngle += delta * 0.001;
+    while (cameraAngle > 2 * M_PI) cameraAngle -= 2 * M_PI;
   }
 }

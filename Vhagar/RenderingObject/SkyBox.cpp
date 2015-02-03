@@ -11,6 +11,7 @@ void SkyBox::beforeRender() {
     return;
   }
 
+  // FIXME online box mesh
   ObjMesh skyMesh("models/skybox.obj");
 
   skyTexture = loadCubeMapTexture(cubeMap);
