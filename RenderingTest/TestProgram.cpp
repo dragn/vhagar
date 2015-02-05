@@ -41,7 +41,7 @@ handleEvents() {
 
       case SDL_WINDOWEVENT:
         switch (event.window.event) {
-          case SDL_WINDOWEVENT_CLOSE:  
+          case SDL_WINDOWEVENT_CLOSE:
             event.type = SDL_QUIT;
             SDL_PushEvent(&event);
             break;
@@ -92,6 +92,10 @@ int main(int argc, char **argv) {
   // Init renderer
   SDLRenderer renderer;
 
+  if (!renderer.init()) {
+    std::exit(EXIT_FAILURE);
+  }
+
   // Add some objects
   SkyBox skyBox({
       "images/space/pink_planet_neg_x.tga",
@@ -104,8 +108,8 @@ int main(int argc, char **argv) {
 
   ObjMesh ship("models/SimpleShip/Spaceship.obj");
   glm::mat4 trans = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 4));
-  glm::mat4 rot1 = glm::rotate(glm::mat4(1.0f), 2.3f, glm::vec3(0, 1, 0)); 
-  glm::mat4 rot2 = glm::rotate(glm::mat4(1.0f), 0.3f, glm::vec3(1, 0, 0)); 
+  glm::mat4 rot1 = glm::rotate(glm::mat4(1.0f), 2.3f, glm::vec3(0, 1, 0));
+  glm::mat4 rot2 = glm::rotate(glm::mat4(1.0f), 0.3f, glm::vec3(1, 0, 0));
   ship.setModel(rot2 * rot1 * trans);
 
   float cameraAngle = 0;

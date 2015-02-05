@@ -15,13 +15,20 @@ bool multisample = false;
 
 ObjMesh skyMesh("models/skybox.obj");
 
-Renderer::Renderer() {
+bool Renderer::init() {
 
   LOG(INFO) << "Initializing OpenGL renderer";
   LOG(INFO) << "OpenGL Version: " << glGetString(GL_VERSION);
   LOG(INFO) << "GLSL Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION);
 
   projection = glm::perspective(45.f, 4.0f / 3.0f, 0.1f, 100.f);
+
+  if (!GLEW_VERSION_3_0) {
+    LOG(ERROR) << "Only OpenGL versions 3.0+ supported. Sorry.";
+
+    isReady = false;
+    return isReady;
+  }
 
   // Enable backface culling
   glEnable(GL_CULL_FACE);
@@ -57,22 +64,31 @@ Renderer::Renderer() {
     glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, tex, 0 );
     glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D_MULTISAMPLE, depth_tex, 0 );
   }
+
+  isReady = true;
+  return isReady;
 }
 
 void
 Renderer::addObject(RenderingObject *object) {
+  if (!checkState()) return;
+
   objects.push_front(object);
   object->beforeRender();
 }
 
 void
 Renderer::removeObject(RenderingObject *object) {
+  if (!checkState()) return;
+
   object->afterRender();
   objects.remove(object);
 }
 
 void
 Renderer::render() {
+  if (!isReady) return;
+
   beforeRender();
 
   if (multisample) {
@@ -94,4 +110,11 @@ Renderer::render() {
   }
 
   afterRender();
+}
+
+bool Renderer::checkState() {
+  if (!isReady) {
+    LOG(ERROR) << "Attempt to use uninitialized Renderer ignored!";
+  }
+  return isReady;
 }

@@ -12,7 +12,11 @@ namespace Vhagar {
   class Renderer {
 
     public:
-      Renderer();
+
+      /**
+       * Initialize the renderer. Should be called first before any other calls.
+       */
+      bool init();
 
       /**
        * Add the object to the rendered world.
@@ -44,6 +48,9 @@ namespace Vhagar {
      
       glm::mat4 projection;
       glm::mat4 view;
+
+      bool isReady;
+      bool checkState();
 
       /**
        * Override to provide custom actions before Rendering phase
