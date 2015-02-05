@@ -7,7 +7,7 @@ if (CMAKE_COMPILER_IS_GNUCXX)
   set(VHAGAR_COMPILE_FLAGS "${VHAGAR_COMPILE_FLAGS} -Wall")
 endif()
 
-set_target_properties (Vhagar PROPERTIES COMPILE_FLAGS ${VHAGAR_COMPILE_FLAGS})
+set_target_properties (Vhagar PROPERTIES COMPILE_FLAGS "${VHAGAR_COMPILE_FLAGS}")
 
 # Bundle shaders
 

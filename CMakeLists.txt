@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.1)
+cmake_minimum_required (VERSION 3.0)
 project (GameEngine)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -45,7 +45,13 @@ if (GL_FOUND)
   list(APPEND DEP_LIBRARIES "${GL_gl_LIBRARY}")
 endif()
 
-set(CMAKE_CXX_STANDARD 11)
+if (APPLE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DAPPLE")
+endif()
+
+if (CMAKE_COMPILER_IS_GNUCXX OR APPLE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
+endif()
 
 add_subdirectory (Vhagar)
 add_subdirectory (RenderingTest)

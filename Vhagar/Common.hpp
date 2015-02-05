@@ -14,7 +14,12 @@
 #endif
 
 #include <GL/glew.h>
+
+#ifdef APPLE
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
 
 typedef glm::vec4 V4;
 typedef glm::vec3 V3;
