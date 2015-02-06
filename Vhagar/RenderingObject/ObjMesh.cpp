@@ -62,7 +62,9 @@ Vhagar::ObjMesh::ObjMesh(const char *objFilename) {
     LOG(ERROR) << "Invalid objFilename (should end with .obj): " << objFilename;
     return;
   }
+
   FILE *objFile = fopen(objFilename, "r");
+
   if (objFile == NULL) {
     LOG(ERROR) << "Can't open objFile: " << objFilename;
     return;
@@ -76,6 +78,7 @@ Vhagar::ObjMesh::ObjMesh(const char *objFilename) {
   getMtlFilename(mtlFilename, objFilename);
 
   FILE *mtlFile = fopen(mtlFilename, "r");
+
   if (mtlFile != NULL) {
     LOG(INFO) << "Found material library file: " << mtlFilename;
   } else {

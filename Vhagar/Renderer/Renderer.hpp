@@ -7,11 +7,22 @@
 namespace Vhagar {
 
   /**
+   * Renderer options
+   */
+  struct RendererOptions {
+    const char *resourceRoot = ".";
+    size_t screenWidth = 1024;
+    size_t screenHeight = 768;
+  };
+
+  /**
    * The Renderer
    **/
   class Renderer {
 
     public:
+
+      Renderer(RendererOptions opts) : opts(opts) {}
 
       /**
        * Initialize the renderer. Should be called first before any other calls.
@@ -44,6 +55,9 @@ namespace Vhagar {
       void setView(glm::mat4 _view) { view = _view; };
 
     private:
+      
+      RendererOptions opts;
+
       std::forward_list<RenderingObject*> objects;
      
       glm::mat4 projection;

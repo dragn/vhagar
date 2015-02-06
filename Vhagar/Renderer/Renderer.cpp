@@ -8,8 +8,6 @@
 using namespace Vhagar;
 
 GLuint fbo;
-GLuint width = 1024;
-GLuint height = 768;
 
 bool multisample = false;
 
@@ -53,11 +51,11 @@ bool Renderer::init() {
     GLuint num_samples = maxSamples >= 8 ? 8 : 1;
     glGenTextures( 1, &tex );
     glBindTexture( GL_TEXTURE_2D_MULTISAMPLE, tex );
-    glTexImage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE, num_samples, GL_RGBA8, width, height, false );
+    glTexImage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE, num_samples, GL_RGBA8, opts.screenWidth, opts.screenHeight, false );
 
     glGenTextures( 1, &depth_tex );
     glBindTexture( GL_TEXTURE_2D_MULTISAMPLE, depth_tex );
-    glTexImage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE, num_samples, GL_DEPTH_COMPONENT, width, height, false );
+    glTexImage2DMultisample( GL_TEXTURE_2D_MULTISAMPLE, num_samples, GL_DEPTH_COMPONENT, opts.screenWidth, opts.screenHeight, false );
 
     glGenFramebuffers( 1, &fbo );
     glBindFramebuffer( GL_FRAMEBUFFER, fbo );
@@ -106,7 +104,7 @@ Renderer::render() {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);   // Make sure no FBO is set as the draw framebuffer
     glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo); // Make sure your multisampled FBO is the read framebuffer
     glDrawBuffer(GL_BACK);                       // Set the back buffer as the draw buffer
-    glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    glBlitFramebuffer(0, 0, opts.screenWidth, opts.screenHeight, 0, 0, opts.screenWidth, opts.screenHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
   }
 
   afterRender();

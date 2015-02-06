@@ -17,7 +17,7 @@
 #include <glog/logging.h>
 #else
 #include <iostream>
-#define LOG(X) std::cout << std::endl; std::cout
+#define LOG(X) std::cout << std::endl << #X << ": "
 #endif
 
 #include <GL/glew.h>

@@ -28,6 +28,8 @@ void reportGLError(int error) {
 
 class SDLRenderer : public Renderer {
   public:
+    SDLRenderer(RendererOptions opts) : Renderer(opts) {}
+
     virtual void afterRender() {
       SDL_GL_SwapWindow(window);
     }
@@ -90,7 +92,11 @@ int main(int argc, char **argv) {
   }
 
   // Init renderer
-  SDLRenderer renderer;
+  RendererOptions opts;
+  opts.resourceRoot = "../";
+  opts.screenWidth = 1024;
+  opts.screenHeight = 768;
+  SDLRenderer renderer(opts);
 
   if (!renderer.init()) {
     std::exit(EXIT_FAILURE);

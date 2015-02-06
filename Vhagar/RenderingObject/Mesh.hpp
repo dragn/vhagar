@@ -40,8 +40,8 @@ namespace Vhagar {
 
       glm::mat4 model;
 
-      GLsizei _attribSize;
-      GLsizei _indexSize;
+      GLsizei _attribSize = 0;
+      GLsizei _indexSize = 0;
 
       uptr<GLfloat[]> _vertexData;
       uptr<GLfloat[]> _normalData;
