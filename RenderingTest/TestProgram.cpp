@@ -97,14 +97,16 @@ int main(int argc, char **argv) {
   }
 
   // Add some objects
-  SkyBox skyBox({
-      "images/space/pink_planet_neg_x.tga",
-      "images/space/pink_planet_pos_x.tga",
-      "images/space/pink_planet_pos_y.tga",
-      "images/space/pink_planet_neg_y.tga",
-      "images/space/pink_planet_pos_z.tga",
-      "images/space/pink_planet_neg_z.tga"
-      });
+  CubeMap map = {
+    "images/space/pink_planet_neg_x.tga",
+    "images/space/pink_planet_pos_x.tga",
+    "images/space/pink_planet_pos_y.tga",
+    "images/space/pink_planet_neg_y.tga",
+    "images/space/pink_planet_pos_z.tga",
+    "images/space/pink_planet_neg_z.tga"
+  };
+
+  SkyBox skyBox(map);
 
   ObjMesh ship("models/SimpleShip/Spaceship.obj");
   glm::mat4 trans = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 4));
@@ -113,7 +115,7 @@ int main(int argc, char **argv) {
   ship.setModel(rot2 * rot1 * trans);
 
   float cameraAngle = 0;
-  renderer.setView(glm::lookAt(glm::vec3(-2,0,15), glm::vec3(-2,0,0), glm::vec3(0, 1, 0)));
+  renderer.setView(glm::lookAt(glm::vec3(-2, 0, 15), glm::vec3(-2, 0, 0), glm::vec3(0, 1, 0)));
   renderer.addObject(&skyBox);
   renderer.addObject(&ship);
 
@@ -124,7 +126,7 @@ int main(int argc, char **argv) {
   // Main loop
   while (handleEvents()) {
     ticks = SDL_GetTicks();
-    renderer.setView(glm::lookAt(glm::vec3(15 * cos(cameraAngle), 0, 15 * sin(cameraAngle)), glm::vec3(0,0,0), glm::vec3(0, 1, 0)));
+    renderer.setView(glm::lookAt(glm::vec3(15 * cos(cameraAngle), 0, 15 * sin(cameraAngle)), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
     renderer.render();
 
     delta = SDL_GetTicks() - ticks;

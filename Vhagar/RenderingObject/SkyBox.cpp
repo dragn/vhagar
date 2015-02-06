@@ -11,8 +11,12 @@ void SkyBox::beforeRender() {
     return;
   }
 
-  // FIXME online box mesh
+  // FIXME inline box mesh
   ObjMesh skyMesh("models/skybox.obj");
+  if (!skyMesh._attribSize) {
+    LOG(WARNING) << "Could not load sky mesh!";
+    return;
+  }
 
   skyTexture = loadCubeMapTexture(cubeMap);
   skyProgram = getShaderProgram("SkyDome");
@@ -33,6 +37,9 @@ void SkyBox::afterRender() {
 }
 
 void SkyBox::render(glm::mat4 projection, glm::mat4 view) {
+
+  if (!isReadyToRender) return;
+
   glDisable(GL_CULL_FACE);
   glDepthMask(GL_FALSE);
   glUseProgram(skyProgram);

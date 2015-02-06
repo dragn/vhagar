@@ -9,15 +9,20 @@ Mesh::beforeRender() {
     LOG(WARNING) << "Attempt to prepare already prepared object!";
     return;
   }
-  
+
+  if (_indexSize == 0) {
+    LOG(WARNING) << "Object has no data!";
+    return;
+  }
+
   programID = getShaderProgram("SimpleShader");
-  
+
   if (programID == 0) {
     LOG(ERROR) << "Object won't be rendered, because shader program invalid";
     // there was an error linking the program, do not proceed!
     return;
   }
-  
+
   // specify sizes
   glInfo.attribBufferSize = _attribSize;
   glInfo.indexBufferSize = _indexSize;
@@ -54,8 +59,11 @@ Mesh::afterRender() {
 
 void
 Mesh::render(glm::mat4 projection, glm::mat4 view) {
+
+  if (!isReadyToRender) return;
+
   glm::mat4 MVP = projection * view * model;
-  
+
   glUseProgram(programID);
 
   V3 lightPos = V3(0, 30, 0);
