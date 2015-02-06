@@ -2,6 +2,13 @@
 
 #define GLM_FORCE_RADIANS
 
+#ifdef _MSC_VER
+// glm data alignment issue https://github.com/g-truc/glm/issues/283
+#define GLM_FORCE_PURE
+// disable secure function warnins
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include <memory>
 #include "SDL.h"
 #include <glm/glm.hpp>

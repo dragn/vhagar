@@ -53,6 +53,11 @@ if (CMAKE_COMPILER_IS_GNUCXX OR APPLE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
 endif()
 
+if (MSVC)
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:msvcrt")
+  list(APPEND DEP_LIBRARIES "opengl32")
+endif()
+
 add_subdirectory (Vhagar)
 add_subdirectory (RenderingTest)
 #add_subdirectory (test-game)
