@@ -10,6 +10,9 @@ namespace Vhagar {
     friend class SkyBox;
 
     public:
+
+      virtual ~Mesh();
+
       /**
        * Sets Model matrix for this object
        */
@@ -20,16 +23,12 @@ namespace Vhagar {
 
       glm::mat4 model;
 
-      GLsizei _attribSize = 0;
-      GLsizei _indexSize = 0;
+      GLuint attribSize = 0;
+      GLuint attribCount = 0;
+      GLfloat *attribData;
 
-      uptr<GLfloat[]> _vertexData;
-      uptr<GLfloat[]> _normalData;
-      uptr<GLfloat[]> _aColorData;
-      uptr<GLfloat[]> _dColorData;
-      uptr<GLfloat[]> _sColorData;
-
-      uptr<GLuint[]> _indexData;
+      GLuint indexSize = 0;
+      GLuint *indexData;
 
       GLuint programID;
       GLBufferInfo glInfo;

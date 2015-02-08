@@ -39,17 +39,17 @@ void readMaterials(FILE *mtlFile,
     sscanf(line, "newmtl %s", material);
     if (sscanf(line, "Ka %f %f %f", &vec3.x, &vec3.y, &vec3.z)) {
       aColorMap.insert(std::pair<std::string, V3>(std::string(material), vec3));
-      LOG(INFO) << material << ": " << glm::to_string(vec3); 
+      LOG(INFO) << material << ": " << glm::to_string(vec3);
     }
     if (sscanf(line, "Kd %f %f %f", &vec3.x, &vec3.y, &vec3.z)) {
       dColorMap.insert(std::pair<std::string, V3>(std::string(material), vec3));
-      LOG(INFO) << material << ": " << glm::to_string(vec3); 
+      LOG(INFO) << material << ": " << glm::to_string(vec3);
     }
     if (sscanf(line, "Ks %f %f %f", &vec3.x, &vec3.y, &vec3.z)) {
       sColorMap.insert(std::pair<std::string, V3>(std::string(material), vec3));
-      LOG(INFO) << material << ": " << glm::to_string(vec3); 
+      LOG(INFO) << material << ": " << glm::to_string(vec3);
     }
-  } 
+  }
 }
 
 /**
@@ -175,18 +175,17 @@ Vhagar::ObjMesh::ObjMesh(const char *objFilename) {
 
   LOG(INFO) << "data size: " << size;
 
-  _attribSize = size;
-  _vertexData.reset(new GLfloat[size]);
-  _normalData.reset(new GLfloat[size]);
-  _aColorData.reset(new GLfloat[size]);
-  _dColorData.reset(new GLfloat[size]);
-  _sColorData.reset(new GLfloat[size]);
+  attribCount = aColor.size() > 0 ? 5 : 2;
+  attribSize = size;
 
-  _indexSize = indices.size();
-  _indexData.reset(new GLuint[indices.size()]);
+  attribData = new GLfloat[attribSize * attribCount];
+
+  indexSize = indices.size();
+  indexData = new GLuint[indexSize];
 
   unsigned int v, vt, vn;
   std::string str;
+  GLfloat *base;
 
   // Fill vertex data and normal data
   for (size_t i = 0; i < values.size(); i++) {
@@ -196,39 +195,50 @@ Vhagar::ObjMesh::ObjMesh(const char *objFilename) {
     } else {
       sscanf(str.c_str(), "%d/%d/%d", &v, &vt, &vn);
     }
+
+    // Vertices
+    base = attribData + 3 * i;
     if (v > 0 && v <= vertices.size()) {
-      _vertexData[3*i]   = vertices[v - 1].x;
-      _vertexData[3*i+1] = vertices[v - 1].y;
-      _vertexData[3*i+2] = vertices[v - 1].z;
+      base[0] = vertices[v - 1].x;
+      base[1] = vertices[v - 1].y;
+      base[2] = vertices[v - 1].z;
     }
 
+    // Normals
+    base += attribSize;
     if (vn > 0 && vn <= normals.size()) {
-      _normalData[3*i]   = normals[vn - 1].x;
-      _normalData[3*i+1] = normals[vn - 1].y;
-      _normalData[3*i+2] = normals[vn - 1].z;
+      base[0] = normals[vn - 1].x;
+      base[1] = normals[vn - 1].y;
+      base[2] = normals[vn - 1].z;
     }
 
+    // Ambient colors
+    base += attribSize;
     if (i < aColor.size()) {
-      _aColorData[3*i]     = aColor[i].x;
-      _aColorData[3*i + 1] = aColor[i].y;
-      _aColorData[3*i + 2] = aColor[i].z;
+      base[0] = aColor[i].x;
+      base[1] = aColor[i].y;
+      base[2] = aColor[i].z;
     }
 
+    // Diffuse colors
+    base += attribSize;
     if (i < dColor.size()) {
-      _dColorData[3*i]     = dColor[i].x;
-      _dColorData[3*i + 1] = dColor[i].y;
-      _dColorData[3*i + 2] = dColor[i].z;
+      base[0] = dColor[i].x;
+      base[1] = dColor[i].y;
+      base[2] = dColor[i].z;
     }
 
+    // Specular colors
+    base += attribSize;
     if (i < sColor.size()) {
-      _sColorData[3*i]     = sColor[i].x;
-      _sColorData[3*i + 1] = sColor[i].y;
-      _sColorData[3*i + 2] = sColor[i].z;
+      base[0] = sColor[i].x;
+      base[1] = sColor[i].y;
+      base[2] = sColor[i].z;
     }
   }
 
   for (size_t i = 0; i < indices.size(); i++) {
-    _indexData[i] = indices[i];
+    indexData[i] = indices[i];
   }
 
   LOG(INFO) << "v: " << vertices.size();

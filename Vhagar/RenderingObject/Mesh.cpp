@@ -3,6 +3,12 @@
 
 using namespace Vhagar;
 
+Mesh::~Mesh() {
+  LOG(INFO) << "Mesh destructor";
+  delete [] indexData;
+  delete [] attribData;
+}
+
 void
 Mesh::beforeRender() {
   if (isReadyToRender) {
@@ -10,7 +16,7 @@ Mesh::beforeRender() {
     return;
   }
 
-  if (_indexSize == 0) {
+  if (indexSize == 0) {
     LOG(WARNING) << "Object has no data!";
     return;
   }
@@ -24,26 +30,22 @@ Mesh::beforeRender() {
   }
 
   // specify sizes
-  glInfo.attribBufferSize = _attribSize;
-  glInfo.indexBufferSize = _indexSize;
+  glInfo.attribBufferSize = attribSize;
+  glInfo.indexBufferSize = indexSize;
 
   // buffer index data
-  glInfo.indexBuffer = bufferElementArray(glInfo.indexBufferSize, _indexData.get());
+  glInfo.indexBuffer = bufferElementArray(glInfo.indexBufferSize, indexData);
 
   // buffer attribute data
   glGenBuffers(1, &glInfo.attribBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, glInfo.attribBuffer);
 
   GLuint bytes = glInfo.attribBufferSize * sizeof(GLfloat);
-  glBufferData(GL_ARRAY_BUFFER, 5 * bytes, NULL, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, attribCount * bytes, NULL, GL_STATIC_DRAW);
 
-  glBufferSubData(GL_ARRAY_BUFFER, 0 * bytes, bytes, _vertexData.get());
-  glBufferSubData(GL_ARRAY_BUFFER, 1 * bytes, bytes, _normalData.get());
-  glBufferSubData(GL_ARRAY_BUFFER, 2 * bytes, bytes, _aColorData.get());
-  glBufferSubData(GL_ARRAY_BUFFER, 3 * bytes, bytes, _dColorData.get());
-  glBufferSubData(GL_ARRAY_BUFFER, 4 * bytes, bytes, _sColorData.get());
-
-  programID = getShaderProgram("SimpleShader");
+  for (size_t i = 0; i < attribCount; i++) {
+    glBufferSubData(GL_ARRAY_BUFFER, i * bytes, bytes, attribData + i * attribSize);
+  }
 
   isReadyToRender = true;
 }
@@ -66,35 +68,28 @@ Mesh::render(glm::mat4 projection, glm::mat4 view) {
 
   glUseProgram(programID);
 
-  V3 lightPos = V3(0, 30, 0);
+  V3 lightPos = V3(0, 1, 0);
   putUniformVec3(programID, "LightPosition_worldspace", lightPos);
 
   putUniformMat4(programID, "MVP", MVP);
   putUniformMat4(programID, "M", model);
   putUniformMat4(programID, "V", view);
 
-  glEnableVertexAttribArray(0);
-  glEnableVertexAttribArray(1);
-  glEnableVertexAttribArray(2);
-  glEnableVertexAttribArray(3);
-  glEnableVertexAttribArray(4);
+  for (size_t i = 0; i < attribCount; i++) {
+    glEnableVertexAttribArray(i);
+  }
 
   glBindBuffer(GL_ARRAY_BUFFER, glInfo.attribBuffer);
 
   GLfloat *offset = 0;
-  GLuint size = glInfo.attribBufferSize;
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, offset);
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, offset + size);
-  glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, offset + 2 * size);
-  glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, offset + 3 * size);
-  glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, offset + 4 * size);
+  for (size_t i = 0; i < attribCount; i++) {
+    glVertexAttribPointer(i, 3, GL_FLOAT, GL_FALSE, 0, offset + i * glInfo.attribBufferSize);
+  }
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glInfo.indexBuffer);
   glDrawElements(GL_TRIANGLES, glInfo.indexBufferSize, GL_UNSIGNED_INT, (void*)0);
 
-  glDisableVertexAttribArray(0);
-  glDisableVertexAttribArray(1);
-  glDisableVertexAttribArray(2);
-  glDisableVertexAttribArray(3);
-  glDisableVertexAttribArray(4);
+  for (size_t i = 0; i < attribCount; i++) {
+    glDisableVertexAttribArray(i);
+  }
 }
