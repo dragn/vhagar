@@ -5,25 +5,6 @@
 
 namespace Vhagar {
 
-  struct GLBufferInfo {
-    /**
-     * The number of vertex attribute arrays  
-     */
-    GLuint attribCount = 0;
-
-    /**
-     * Vertex attributes buffer id and size
-     */
-    GLuint attribBuffer = 0;
-    GLsizei attribBufferSize = 0;
-
-    /**
-     * Index array buffer id and size
-     */
-    GLuint indexBuffer = 0;
-    GLsizei indexBufferSize = 0;
-  };
-
   class Mesh : public RenderingObject {
 
     friend class SkyBox;
@@ -33,7 +14,6 @@ namespace Vhagar {
        * Sets Model matrix for this object
        */
       void setModel(glm::mat4 _model) { model = _model; }
-
 
     protected:
       // FIXME fix inconsistent private member naming

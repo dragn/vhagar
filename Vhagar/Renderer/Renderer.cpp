@@ -11,8 +11,6 @@ GLuint fbo;
 
 bool multisample = false;
 
-ObjMesh skyMesh("models/skybox.obj");
-
 bool Renderer::init() {
 
   LOG(INFO) << "Initializing OpenGL renderer";

@@ -4,15 +4,34 @@
 
 namespace Vhagar {
 
+  struct GLBufferInfo {
+    /**
+     * The number of vertex attribute arrays
+     */
+    GLuint attribCount = 0;
+
+    /**
+     * Vertex attributes buffer id and size
+     */
+    GLuint attribBuffer = 0;
+    GLsizei attribBufferSize = 0;
+
+    /**
+     * Index array buffer id and size
+     */
+    GLuint indexBuffer = 0;
+    GLsizei indexBufferSize = 0;
+  };
+
   class RenderingObject {
 
     friend class Renderer;
 
-    protected: 
+    protected:
     /**
      * Is this object ready to render?
      * Should be set to true by beforeRender() on successful completion.
-     */ 
+     */
     bool isReadyToRender = false;
 
     private:

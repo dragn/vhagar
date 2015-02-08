@@ -14,11 +14,9 @@ namespace Vhagar {
 
       CubeMap cubeMap;
 
+      GLBufferInfo glInfo;
       GLuint skyTexture;
-      GLuint skyMeshSize;
-      GLuint skyMeshBuf;
-      GLuint skyMeshIdxBuf;
-      GLuint skyProgram = 0;
+      GLuint programID;
 
       /**
        * Called by Renderer when this object is added to the rendered world.
