@@ -142,12 +142,21 @@ int main(int argc, char **argv) {
   box.setModel(rot2 * rot1);
 
   float cameraAngle = 0;
-  renderer.setView(glm::lookAt(glm::vec3(-2, 0, 15), glm::vec3(-2, 0, 0), glm::vec3(0, 1, 0)));
+  renderer.setView(glm::lookAt(glm::vec3(5, 2, 0), glm::vec3(0, 2, 0), glm::vec3(0, 1, 0)));
   renderer.addObject(skyBox);
   renderer.addObject(ship);
 
+  //ObjMesh room("models/room/roomBS.obj");
+  //renderer.addObject(room);
+
   glm::mat4 projection = glm::perspective(44.8f, 4.0f / 3.0f, 0.1f, 100.f);
   renderer.setProjection(projection);
+
+  std::vector<LightSource> lights;
+  lights.push_back({ V3(0, 2, 4), 0.5 });
+  lights.push_back({ V3(0, 3, -2), 0.3 });
+  lights.push_back({ V3(0, 1, -5), 0.3 });
+  renderer.setLightSources(lights);
 
   int ticks = 0, delta;
   // Main loop

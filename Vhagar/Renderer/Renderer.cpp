@@ -4,6 +4,7 @@
 
 #include "GLUtils.hpp"
 #include "../RenderingObject/Mesh.hpp"
+#include "../LightSource/LightSource.hpp"
 
 using namespace Vhagar;
 
@@ -31,9 +32,7 @@ bool Renderer::init() {
   // Enable depth test
   glEnable(GL_DEPTH_TEST);
   // Accept fragment if it closer to the camera than the former one
-  glDepthFunc(GL_LESS);
-  //glEnable(GL_BLEND);
-  //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glDepthFunc(GL_LEQUAL);
   glEnable(GL_TEXTURE_CUBE_MAP);
 
   int maxSamples;
@@ -94,8 +93,23 @@ Renderer::render() {
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  glDisable(GL_BLEND);
   for (RenderingObject *obj : objects) {
     obj->render(projection, view);
+  }
+  if (lightSources.size()) {
+    for (RenderingObject *obj : objects) {
+      obj->render(projection, view, lightSources[0]);
+    }
+  }
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_ONE, GL_ONE);
+  for (size_t i = 1; i < lightSources.size(); i++) {
+    LightSource light = lightSources[i];
+    for (RenderingObject *obj : objects) {
+      obj->render(projection, view, light);
+    }
   }
 
   if (multisample) {

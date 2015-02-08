@@ -40,6 +40,11 @@ namespace Vhagar {
       void removeObject(RenderingObject &object);
 
       /**
+       * Set up light sources
+       */
+      void setLightSources(std::vector<LightSource> _lightSources) { lightSources = _lightSources; };
+
+      /**
        * Renders all object using specified View matrix. (call from main loop)
        */
       void render();
@@ -55,11 +60,13 @@ namespace Vhagar {
       void setView(glm::mat4 _view) { view = _view; };
 
     private:
-      
+
       RendererOptions opts;
 
+      std::vector<LightSource> lightSources;
+
       std::forward_list<RenderingObject*> objects;
-     
+
       glm::mat4 projection;
       glm::mat4 view;
 

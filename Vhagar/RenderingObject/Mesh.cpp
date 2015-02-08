@@ -60,7 +60,7 @@ Mesh::afterRender() {
 }
 
 void
-Mesh::render(glm::mat4 projection, glm::mat4 view) {
+Mesh::render(glm::mat4 projection, glm::mat4 view, LightSource lightSource) {
 
   if (!isReadyToRender) return;
 
@@ -68,9 +68,8 @@ Mesh::render(glm::mat4 projection, glm::mat4 view) {
 
   glUseProgram(programID);
 
-  V3 lightPos = V3(0, 1, 0);
-  putUniformVec3(programID, "uLightPosition", lightPos);
-  putUniformFloat(programID, "uLightIntensity", 1.0f);
+  putUniformVec3(programID, "uLightPosition", lightSource.position);
+  putUniformFloat(programID, "uLightIntensity", lightSource.intensity);
 
   putUniformMat4(programID, "uMVP", MVP);
   putUniformMat4(programID, "uM", model);

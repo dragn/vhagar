@@ -49,7 +49,9 @@ namespace Vhagar {
       /**
        * Handles actual rendering of this object (called from Renderer::render())
        */
-      virtual void render(glm::mat4 projection, glm::mat4 view);
+      virtual void render(glm::mat4 projection, glm::mat4 view, LightSource lightSource);
+
+      virtual void render(glm::mat4 projection, glm::mat4 view) {}; // Empty - render nothing without light (yet)
   };
 
   class ObjMesh : public Mesh {

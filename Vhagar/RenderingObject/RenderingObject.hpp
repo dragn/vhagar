@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Common.hpp"
+#include "../LightSource/LightSource.hpp"
 
 namespace Vhagar {
 
@@ -49,10 +50,16 @@ namespace Vhagar {
 
     /**
      * Handles actual rendering of this object (called from Renderer::render())
+     * This variant does not accept light source and should only be used for object's, that do not use lights (like sky box).
      *
      * FIXME passing View and Projection here means every object will have the same view. but ok for now...
      */
     virtual void render(glm::mat4 projection, glm::mat4 view) = 0;
+
+    /**
+     * Render with light source.
+     */
+    virtual void render(glm::mat4 projection, glm::mat4 view, LightSource lightSource) = 0;
   };
 
 }
