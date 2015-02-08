@@ -69,11 +69,12 @@ Mesh::render(glm::mat4 projection, glm::mat4 view) {
   glUseProgram(programID);
 
   V3 lightPos = V3(0, 1, 0);
-  putUniformVec3(programID, "LightPosition_worldspace", lightPos);
+  putUniformVec3(programID, "uLightPosition", lightPos);
+  putUniformFloat(programID, "uLightIntensity", 1.0f);
 
-  putUniformMat4(programID, "MVP", MVP);
-  putUniformMat4(programID, "M", model);
-  putUniformMat4(programID, "V", view);
+  putUniformMat4(programID, "uMVP", MVP);
+  putUniformMat4(programID, "uM", model);
+  putUniformMat4(programID, "uV", view);
 
   for (size_t i = 0; i < attribCount; i++) {
     glEnableVertexAttribArray(i);

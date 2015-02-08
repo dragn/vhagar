@@ -1,42 +1,48 @@
 // Supported in 3.30 and 3.00 ES
 
-layout(location = 0) in vec3 vertexPos_modelspace;
-layout(location = 1) in vec3 vertexNormal_modelspace;
+layout(location = 0) in vec3 iVertexPos;
+layout(location = 1) in vec3 iVertexNormal;
 
-layout(location = 2) in vec3 vertexAColor;
-layout(location = 3) in vec3 vertexDColor;
-layout(location = 4) in vec3 vertexSColor;
+layout(location = 2) in vec3 iAmbientColor;
+layout(location = 3) in vec3 iDiffuseColor;
+layout(location = 4) in vec3 iSpecularColor;
 
-out vec3 fragmentAColor;
-out vec3 fragmentDColor;
-out vec3 fragmentSColor;
+out vec3 fAmbientColor;
+out vec3 fDiffuseColor;
+out vec3 fSpecularColor;
 
-out vec3 Normal_cameraspace;
-out vec3 LightDirection_cameraspace;
-out vec3 EyeDirection_cameraspace;
-out float LightDistance;
+out vec3 fNormal_cameraspace;
+out vec3 fLightDirection_cameraspace;
+out vec3 fEyeDirection_cameraspace;
 
-uniform mat4 MVP;
-uniform mat4 M;
-uniform mat4 V;
-uniform vec3 LightPosition_worldspace;
+out float fLightDistance;
+out float fLightIntensity;
+
+uniform mat4 uMVP;
+uniform mat4 uM;
+uniform mat4 uV;
+
+uniform vec3 uLightPosition;
+uniform float uLightIntensity;
 
 void main() {
-  gl_Position = MVP * vec4(vertexPos_modelspace, 1);
+  gl_Position = uMVP * vec4(iVertexPos, 1);
 
-  vec3 Position_worldspace = (M * vec4(vertexPos_modelspace, 1)).xyz;
+  vec3 position_worldspace = (uM * vec4(iVertexPos, 1)).xyz;
 
-  LightDistance = distance(Position_worldspace, LightPosition_worldspace);
+  fLightDistance = distance(position_worldspace, uLightPosition);
 
-  vec3 vertexPos_cameraspace = (V * M * vec4(vertexPos_modelspace, 1)).xyz;
-  EyeDirection_cameraspace = vec3(0) - vertexPos_cameraspace;
+  vec3 iVertexPos_cameraspace = (uV * uM * vec4(iVertexPos, 1)).xyz;
+  fEyeDirection_cameraspace = vec3(0) - iVertexPos_cameraspace;
 
-  vec3 LightPosition_cameraspace = (V * vec4(LightPosition_worldspace, 1)).xyz;
-  LightDirection_cameraspace = LightPosition_cameraspace + EyeDirection_cameraspace;
+  vec3 lightPosition_cameraspace = (uV * vec4(uLightPosition, 1)).xyz;
+  fLightDirection_cameraspace = lightPosition_cameraspace + fEyeDirection_cameraspace;
 
-  Normal_cameraspace = (V * M * vec4(vertexNormal_modelspace, 0)).xyz;
+  fNormal_cameraspace = (uV * uM * vec4(iVertexNormal, 0)).xyz;
 
-  fragmentAColor = vertexAColor;
-  fragmentDColor = vertexDColor;
-  fragmentSColor = vertexSColor;
+  fAmbientColor = iAmbientColor;
+  fDiffuseColor = iDiffuseColor;
+  fSpecularColor = iSpecularColor;
+
+  fLightIntensity = uLightIntensity;
 }
