@@ -29,9 +29,7 @@ void main() {
 
   lowp vec3 temp;
 
-  if (fLightDistance > 0.0) {
-    color = fAmbientColor * 0.1 +
-      fDiffuseColor * cosTheta * fLightIntensity +
-      fSpecularColor * pow(cosAlpha, 5) * fLightIntensity;
-  }
+  color = fAmbientColor * 0.1 +
+    fDiffuseColor * cosTheta * fLightIntensity +
+    fSpecularColor * pow(cosAlpha, 5) * fLightIntensity;
 }

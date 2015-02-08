@@ -15,7 +15,6 @@ out vec3 fNormal_cameraspace;
 out vec3 fLightDirection_cameraspace;
 out vec3 fEyeDirection_cameraspace;
 
-out float fLightDistance;
 out float fLightIntensity;
 
 uniform mat4 uMVP;
@@ -29,8 +28,6 @@ void main() {
   gl_Position = uMVP * vec4(iVertexPos, 1);
 
   vec3 position_worldspace = (uM * vec4(iVertexPos, 1)).xyz;
-
-  fLightDistance = distance(position_worldspace, uLightPosition);
 
   vec3 iVertexPos_cameraspace = (uV * uM * vec4(iVertexPos, 1)).xyz;
   fEyeDirection_cameraspace = vec3(0) - iVertexPos_cameraspace;
