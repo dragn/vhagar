@@ -66,19 +66,19 @@ bool Renderer::init() {
 }
 
 void
-Renderer::addObject(RenderingObject *object) {
+Renderer::addObject(RenderingObject &object) {
   if (!checkState()) return;
 
-  objects.push_front(object);
-  object->beforeRender();
+  objects.push_front(&object);
+  object.beforeRender();
 }
 
 void
-Renderer::removeObject(RenderingObject *object) {
+Renderer::removeObject(RenderingObject &object) {
   if (!checkState()) return;
 
-  object->afterRender();
-  objects.remove(object);
+  object.afterRender();
+  objects.remove(&object);
 }
 
 void

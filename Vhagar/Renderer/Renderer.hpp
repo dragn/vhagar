@@ -32,12 +32,12 @@ namespace Vhagar {
       /**
        * Add the object to the rendered world.
        */
-      void addObject(RenderingObject *object);
+      void addObject(RenderingObject &object);
 
       /**
        * Remove the object from rendering
        */
-      void removeObject(RenderingObject *object);
+      void removeObject(RenderingObject &object);
 
       /**
        * Renders all object using specified View matrix. (call from main loop)
