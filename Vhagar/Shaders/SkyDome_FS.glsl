@@ -1,11 +1,11 @@
 // Supported in 3.30 and 3.00 ES
 
-in lowp vec3 texCoord;
+in lowp vec3 fTexCoord;
 
 out lowp vec3 color;
 
-uniform samplerCube skySampler;
+uniform samplerCube uSkySampler;
 
 void main() {
-  color = texture(skySampler, texCoord).rgb;
+  color = texture(uSkySampler, fTexCoord).rgb;
 }

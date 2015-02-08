@@ -46,7 +46,7 @@ void SkyBox::render(glm::mat4 projection, glm::mat4 view) {
   glUseProgram(programID);
 
   glm::mat4 MVP = projection * view * glm::scale(M4(1.0f), V3(50.f, 50.f, 50.f));
-  putUniformMat4(programID, "MVP", MVP);
+  putUniformMat4(programID, "uMVP", MVP);
 
   glBindBuffer(GL_ARRAY_BUFFER, glInfo.attribBuffer);
   glEnableVertexAttribArray(0);
