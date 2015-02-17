@@ -1,4 +1,4 @@
-file(GLOB Vhagar_SRC "Renderer/*.cpp" "RenderingObject/*.cpp")
+file(GLOB Vhagar_SRC "Renderer/*.cpp" "RenderingObject/*.cpp" "UI/*.cpp")
 
 add_library (Vhagar ${Vhagar_SRC})
 target_link_libraries (Vhagar ${GLEW_LIBRARIES})

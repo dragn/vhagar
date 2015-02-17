@@ -97,10 +97,61 @@ namespace Vhagar {
     return id;
   }
 
+  GLuint bufferTexture2D(SDL_Surface *surf) {
+    if (surf == NULL) return -1;
+
+    SDL_PixelFormat *format = surf->format;
+
+    GLenum layout = format->Amask ? GL_RGBA : GL_RGB;
+    LOG(INFO) << "Buffering texture of size " << surf->w << "x" << surf->h;
+    LOG(INFO) << "Layout is " << (layout == GL_RGBA ? "GL_RGBA" : "GL_RGB");
+    LOG(INFO) << "Bits per pixel: " << (int) (format->BitsPerPixel);
+
+    Uint8 *data = (Uint8*) surf->pixels;
+    bool allocated = false;
+
+    if (format->palette) {
+      // convert to rgb mode
+      size_t size = surf->w * surf->h;
+      Uint8 *pixels = (Uint8*) surf->pixels;
+      data = new Uint8[size * 3];
+      allocated = true;
+      layout = GL_RGB;
+      SDL_Color *colors = format->palette->colors;
+
+      for (size_t i = 0; i < size; i++) {
+        Uint8 index = pixels[i];
+        if (index >= 0 && index < format->palette->ncolors) {
+          SDL_Color color = colors[index];
+          Uint8 *p = &data[i * 3];
+          *(p) = color.r;
+          *(p + 1) = color.g;
+          *(p + 2) = color.b;
+        }
+      }
+    }
+
+    GLuint texId;
+
+    glGenTextures(1, &texId);
+    glBindTexture(GL_TEXTURE_2D, texId);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surf->w, surf->h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+    if (allocated) {
+      delete [] data;
+    }
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    return texId;
+  }
+
   GLuint loadCubeMapTexture(const CubeMap &skyBox) {
-    GLuint textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+    GLuint texId;
+    glGenTextures(1, &texId);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, texId);
 
     GLuint modes[] = {
       GL_TEXTURE_CUBE_MAP_POSITIVE_X,
@@ -127,12 +178,12 @@ namespace Vhagar {
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-    return textureID;
+    return texId;
   }
 
   GLuint loadTexture(const std::string &filename) {
-    GLuint textureID;
     SDL_Surface *tex = SDL_LoadBMP(filename.c_str());
+
     if (tex == NULL) {
       LOG(ERROR) << "Could not load texture " << filename;
       return -1;
@@ -140,16 +191,10 @@ namespace Vhagar {
       LOG(INFO) << "Loaded texture " << filename << " (" << tex->w << ", " << tex->h << ")";
     }
 
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex->w, tex->h, 0, GL_RGB, GL_UNSIGNED_BYTE, tex->pixels);
+    GLuint texId = bufferTexture2D(tex);
     SDL_FreeSurface(tex);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-    return textureID;
+    return texId;
   }
 
   void putUniformMat4(GLuint programID, const std::string &name, M4 &data) {

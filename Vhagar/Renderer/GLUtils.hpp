@@ -16,6 +16,8 @@ namespace Vhagar {
 
   GLuint bufferData(GLsizeiptr size, const GLfloat *data);
   GLuint bufferElementArray(GLsizeiptr size, const GLuint *data);
+  GLuint bufferTexture2D(SDL_Surface*);
+  SDL_Surface *loadImage(const std::string &filename);
   GLuint loadTexture(const std::string &filename);
   GLuint loadCubeMapTexture(const CubeMap &skyBox);
 

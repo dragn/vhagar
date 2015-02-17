@@ -34,13 +34,17 @@ typedef glm::vec3 V3;
 typedef glm::mat4 M4;
 typedef glm::mat3 M3;
 
-class Rot {
-  public:
-    Rot() : yaw(0), pitch(0), roll(0) {};
-    Rot(float yaw, float pitch, float roll): yaw(yaw), pitch(pitch), roll(roll) {};
-    float yaw;
-    float pitch;
-    float roll;
+struct Rot {
+  float yaw;
+  float pitch;
+  float roll;
+};
+
+struct Rect {
+  float x;
+  float y;
+  float width;
+  float height;
 };
 
 template <typename T>
