@@ -207,6 +207,11 @@ namespace Vhagar {
     glUniform3fv(id, 1, &data[0]);
   }
 
+  void putUniformVec4(GLuint programID, const std::string &name, V4 &data) {
+    GLuint id = glGetUniformLocation(programID, name.c_str());
+    glUniform4fv(id, 1, &data[0]);
+  }
+
   void putUniformFloat(GLuint programID, const std::string &name, float data) {
     GLuint id = glGetUniformLocation(programID, name.c_str());
     glUniform1f(id, data);

@@ -23,6 +23,7 @@ namespace Vhagar {
 
   void putUniformMat4(GLuint programID, const std::string &name, M4 &data);
   void putUniformVec3(GLuint programID, const std::string &name, V3 &data);
+  void putUniformVec4(GLuint programID, const std::string &name, V4 &data);
   void putUniformFloat(GLuint programID, const std::string &name, float data);
 
   // Get shader program specified by key (compiles on first access)

@@ -10,7 +10,6 @@ namespace Vhagar {
     public:
 
       void setBounds(Rect rect);
-      Rect getBounds() { return bounds; };
 
       void setTexture(SDL_Surface *surf);
 
@@ -27,7 +26,7 @@ namespace Vhagar {
       GLuint programID;
 
       GLfloat vertices[18];
-      Rect bounds;
+      V4 bounds;
       SDL_Surface *surf = NULL;
       GLuint texId = -1;
   };

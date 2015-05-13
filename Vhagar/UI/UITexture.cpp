@@ -52,6 +52,7 @@ void UITexture::setBounds(Rect rect) {
     -1.0f + rect.x,                1.0f - rect.y
   };
   std::copy(v, v + 12, vertices);
+  bounds = V4(rect.x, rect.y, rect.width, rect.height);
 
   if (isReadyToRender) {
     if (vertexBuffer >= 0) glDeleteBuffers(1, &vertexBuffer);
@@ -64,6 +65,8 @@ void UITexture::render(glm::mat4 projection, glm::mat4 view) {
 
   glDisable(GL_CULL_FACE);
   glUseProgram(programID);
+
+  putUniformVec4(programID, "uBounds", bounds);
 
   glBindTexture(GL_TEXTURE_2D, texId);
   glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
