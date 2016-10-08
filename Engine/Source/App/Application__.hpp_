@@ -1,0 +1,53 @@
+#pragma once
+
+#include "Common.hpp"
+#include "Component.hpp"
+
+namespace vh {
+
+enum eApplicationState {
+    eApplicationState_Init,
+    eApplicationState_Running,
+    eApplicationState_Close,
+    eApplicationState_Closed
+};
+
+class Application {
+
+public:
+    Application() :
+        mState(eApplicationState_Init),
+        mWindow(nullptr),
+        mWindowID(0),
+        mRenderer(nullptr)
+    {};
+
+    static const uint32_t SCREEN_WIDTH = 1024;
+    static const uint32_t SCREEN_HEIGHT = 768;
+
+    void Run();
+
+    virtual void OnStart() {};
+
+private:
+    std::vector<Component*> mComponents;
+
+    eApplicationState mState;
+    SDL_GLContext mGLContext;
+    SDL_Window *mWindow;
+    uint32_t mWindowID;
+    Renderer *mRenderer;
+    World mWorld;
+    PlayerController mPlayerController;
+
+    void DoInit();
+    void DoRun();
+    void DoClose();
+
+    void HandleEvents();
+    void HandleEvent(SDL_Event *event);
+
+    UNCOPYABLE(Application);
+};
+
+} // namespace vh

@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.0)
-project (Meraxes)
+project (Vhagar)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
@@ -49,6 +49,7 @@ endif()
 
 if (CMAKE_COMPILER_IS_GNUCXX OR APPLE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -pg -Wall -Werror")
 endif()
 
 if (MSVC)
@@ -56,9 +57,6 @@ if (MSVC)
   list(APPEND DEP_LIBRARIES "opengl32")
 endif()
 
-if (CMAKE_COMPILER_IS_GNUCXX)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-endif()
-
-add_subdirectory (Engine)
-add_subdirectory (Game)
+add_subdirectory (Source)
+#add_subdirectory (RenderingTest)
+#add_subdirectory (test-game)
