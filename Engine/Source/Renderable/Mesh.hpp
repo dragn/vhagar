@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Renderer/LightSource.hpp"
+#include "Renderer/Light.hpp"
 #include "Renderable.hpp"
 
 namespace vh {
@@ -65,7 +65,7 @@ private:
     /**
      * Handles actual rendering of this object (called from Renderer::render())
      */
-    virtual void render(glm::mat4 projection, glm::mat4 view, LightSource lightSource);
+    virtual void render(glm::mat4 projection, glm::mat4 view, Light lightSource);
 
     virtual void render(glm::mat4 projection, glm::mat4 view) {}; // Empty - render nothing without light (yet)
 };

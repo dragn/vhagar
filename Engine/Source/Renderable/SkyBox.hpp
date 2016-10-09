@@ -34,7 +34,7 @@ private:
      */
     virtual void render(glm::mat4 projection, glm::mat4 view);
 
-    virtual void render(glm::mat4 projection, glm::mat4 view, LightSource lightSource) {} // nothing to do here
+    virtual void render(glm::mat4 projection, glm::mat4 view, Light lightSource) {} // nothing to do here
 };
 
 } // namespace vh

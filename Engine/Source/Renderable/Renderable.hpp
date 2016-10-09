@@ -2,7 +2,7 @@
 
 #include "Common.hpp"
 
-#include "../Renderer/LightSource.hpp"
+#include "../Renderer/Light.hpp"
 
 namespace vh {
 
@@ -33,7 +33,7 @@ struct GLBufferInfo {
 class Renderable {
 
 public:
-    friend class SDLRenderer;
+    friend class Renderer;
     virtual ~Renderable() {};
 
 protected:
@@ -69,7 +69,7 @@ private:
     /**
      * Render with light source.
      */
-    virtual void render(glm::mat4 projection, glm::mat4 view, LightSource lightSource) = 0;
+    virtual void render(glm::mat4 projection, glm::mat4 view, Light lightSource) = 0;
 };
 
 }

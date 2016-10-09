@@ -2,7 +2,7 @@
 
 namespace vh {
 
-struct LightSource {
+struct Light {
     V3 position;
     float intensity;
 };

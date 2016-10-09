@@ -1,19 +1,17 @@
 #pragma once
 
+#include <string>
 #include "Actor.hpp"
-
-#include "Renderer/Light.hpp"
 
 namespace vh
 {
 
-class PointLight : public Actor
+class StaticMeshActor : public Actor
 {
 public:
-    PointLight(V3 pos, float intensity) :
-        Actor(pos),
-        mIntensity(intensity)
-    {}
+    StaticMeshActor(const char* filename);
+
+    virtual ~StaticMeshActor();
 
     // Called when actor is created
     virtual void OnCreate();
@@ -21,11 +19,11 @@ public:
     // Called when actor is destroyed
     virtual void OnDestroy();
 
+protected:
+    virtual void _UpdateTransform();
+
 private:
-    float mIntensity;
-
-    size_t mLightId;
-
+    Mesh* mMesh;
 };
 
 } // namespace vh

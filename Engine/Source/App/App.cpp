@@ -4,6 +4,23 @@
 
 namespace vh {
 
+static App* sApp;
+
+void SetApp(App* app)
+{
+    if (sApp != nullptr)
+    {
+        LOG(FATAL) << "Second App is not allowed";
+        return;
+    }
+    sApp = app;
+}
+
+App* GetApp()
+{
+    return sApp;
+}
+
 void Signal(int signal)
 {
     SDL_Event event;
@@ -28,20 +45,21 @@ void App::DoRun() {
 
     if (mState == eAppState::CLOSE)
     {
-        // -- Request all running components to close
-        for (Component* comp : mComponents)
-        {
-            if (comp->IsRunning()) comp->Close();
-        }
+        // -- Close components one-by-one from the end
         if (mComponents.empty())
         {
             LOG(INFO) << "All components closed. Stopping application";
             mState = eAppState::CLOSED;
         }
+        else
+        {
+            Component* comp = mComponents.back();
+            if (comp->IsRunning()) comp->Close();
+        }
     }
 
     // -- Tick all components
-    std::vector<Component*>::iterator iter = mComponents.begin();
+    std::list<Component*>::iterator iter = mComponents.begin();
     while (iter != mComponents.end())
     {
         Component* comp = *iter;
@@ -81,17 +99,6 @@ void App::HandleEvent(SDL_Event *event) {
             LOG(INFO) << "Closing application";
             mState = eAppState::CLOSE;
             break;
-    }
-}
-
-void App::DestroyComponent(const std::string& name)
-{
-    for (Component* comp : mComponents)
-    {
-        if (comp->GetName() == name)
-        {
-            comp->Close();
-        }
     }
 }
 

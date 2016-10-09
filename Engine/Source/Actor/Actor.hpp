@@ -15,12 +15,40 @@ public:
     Actor() :
         mPos(V3(0, 0, 0)),
         mScale(V3(1, 1, 1)),
-        mRot(M4(1)),
         mYaw(0.0f),
         mPitch(0.0f)
     {
-        _RecalcModel();
-    };
+        _UpdateTransform();
+    }
+
+    Actor(V3 pos) :
+        mPos(pos),
+        mScale(V3(1, 1, 1)),
+        mYaw(0.0f),
+        mPitch(0.0f)
+    {
+        _UpdateTransform();
+    }
+
+    Actor(V3 pos, Rot rot) :
+        mPos(pos),
+        mScale(V3(1, 1, 1)),
+        mYaw(rot.yaw),
+        mPitch(rot.pitch)
+    {
+        _UpdateTransform();
+    }
+
+    virtual ~Actor() {};
+
+    // Called when actor is created
+    virtual void OnCreate() {}
+
+    // Called when actor is destroyed
+    virtual void OnDestroy() {}
+
+    // Actor ticks are called from World
+    virtual void Tick(uint32_t delta) {}
 
     // -- pos
     const V3& GetPos() const;
@@ -43,12 +71,6 @@ public:
     // -- get Actor's up vector
     V3 GetUp() const;
 
-    // -- get Actor's transform as a matric
-    const M4& GetTransform() const;
-
-    // -- check if Actor has a mesh
-    const vh::Renderable* GetRenderable() const;
-
     // -- yaw
     float GetYaw() const;
     void SetYaw(float yaw);
@@ -59,21 +81,17 @@ public:
     void SetPitch(float pitch);
     void AddPitch(float deltaPitch);
 
+protected:
+    virtual void _UpdateTransform();
+
+    M4 mTransform;
+
 private:
     V3 mPos;
     V3 mScale;
 
-    M4 mRot;
-
     float mYaw = 0;
     float mPitch = 0;
-
-    M4 mTransform;
-
-    void _RecalcModel();
-
-protected:
-    vh::Renderable *mRenderable;
 };
 
 } // namespace vh

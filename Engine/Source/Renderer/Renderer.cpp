@@ -1,4 +1,4 @@
-#include "SDLRenderer.hpp"
+#include "Renderer.hpp"
 
 #include "Common.hpp"
 
@@ -6,6 +6,8 @@
 
 namespace vh
 {
+
+const char* Renderer::COMPONENT_NAME = "RENDER";
 
 namespace {
 void reportGLError(int error) {
@@ -24,7 +26,7 @@ void reportGLError(int error) {
 }
 }
 
-void SDLRenderer::TickInit(uint32_t delta) {
+void Renderer::TickInit(uint32_t delta) {
     LOG(INFO) << "SDL Initialization";
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         LOG(FATAL) << SDL_GetError();
@@ -104,7 +106,7 @@ void SDLRenderer::TickInit(uint32_t delta) {
     FinishInit();
 }
 
-void SDLRenderer::TickClose(uint32_t delta) {
+void Renderer::TickClose(uint32_t delta) {
     glDeleteFramebuffers(1, &fbo);
     glDeleteTextures(1, &tex);
     glDeleteTextures(1, &depth_tex);
@@ -122,7 +124,7 @@ void SDLRenderer::TickClose(uint32_t delta) {
     FinishClose();
 }
 
-void SDLRenderer::AddObject(Renderable *object) {
+void Renderer::AddObject(Renderable *object) {
     CHECK(IsRunning()) << "Invalid state";
     CHECK(object);
 
@@ -130,16 +132,15 @@ void SDLRenderer::AddObject(Renderable *object) {
     object->beforeRender();
 }
 
-void SDLRenderer::RemoveObject(Renderable *object) {
+void Renderer::RemoveObject(Renderable *object) {
     CHECK(IsRunning()) << "Invalid state";
     CHECK(object);
 
     object->afterRender();
     mObjects.remove(object);
-    delete object;
 }
 
-void SDLRenderer::TickRun(uint32_t delta) {
+void Renderer::TickRun(uint32_t delta) {
     BeforeRender();
 
     if (mMultisample) {
@@ -153,16 +154,16 @@ void SDLRenderer::TickRun(uint32_t delta) {
     for (Renderable *obj : mObjects) {
         obj->render(mProjection, mView);
     }
-    if (mLightSources.size()) {
+    if (mLights.size()) {
         for (Renderable *obj : mObjects) {
-            obj->render(mProjection, mView, mLightSources[0]);
+            obj->render(mProjection, mView, mLights[0]);
         }
     }
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE);
-    for (size_t i = 1; i < mLightSources.size(); i++) {
-        LightSource light = mLightSources[i];
+    for (size_t i = 1; i < mLights.size(); i++) {
+        Light light = mLights[i];
         for (Renderable *obj : mObjects) {
             obj->render(mProjection, mView, light);
         }

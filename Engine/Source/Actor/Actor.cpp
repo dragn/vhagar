@@ -6,12 +6,12 @@ namespace vh {
 
 void Actor::SetPos(const V3& pos) {
     mPos = pos;
-    _RecalcModel();
+    _UpdateTransform();
 }
 
 void Actor::AddPos(const V3& pos) {
     mPos += pos;
-    _RecalcModel();
+    _UpdateTransform();
 }
 
 const V3& Actor::GetPos() const
@@ -21,12 +21,12 @@ const V3& Actor::GetPos() const
 
 void Actor::SetScale(const V3& scale) {
     mScale = scale;
-    _RecalcModel();
+    _UpdateTransform();
 }
 
 void Actor::AddScale(const V3& scale) {
     mScale += scale;
-    _RecalcModel();
+    _UpdateTransform();
 }
 
 const V3& Actor::GetScale() const
@@ -41,13 +41,13 @@ float Actor::GetPitch() const
 
 void Actor::SetPitch(float pitch) {
     mPitch = Math::ClampAngle(pitch);
-    _RecalcModel();
+    _UpdateTransform();
 }
 
 void Actor::AddPitch(float pitch) {
     mPitch += pitch;
     mPitch = Math::ClampAngle(mPitch);
-    _RecalcModel();
+    _UpdateTransform();
 }
 
 float Actor::GetYaw() const
@@ -57,39 +57,31 @@ float Actor::GetYaw() const
 
 void Actor::SetYaw(float yaw) {
     mYaw = Math::ClampAngle(yaw);
-    _RecalcModel();
+    _UpdateTransform();
 }
 
 void Actor::AddYaw(float yaw) {
     mYaw += yaw;
     mYaw = Math::ClampAngle(mYaw);
-    _RecalcModel();
-}
-
-const M4& Actor::GetTransform() const
-{
-    return mTransform;
-}
-
-const vh::Renderable* Actor::GetRenderable() const
-{
-    return mRenderable;
+    _UpdateTransform();
 }
 
 V3 Actor::GetForward() const
 {
-    return V3(mRot * glm::vec4(0, 0, -1, 0));
+    M4 rot = glm::rotate(glm::rotate(M4(1.f), - mYaw, V3(0, 1, 0)), mPitch, V3(1, 0, 0));
+    return V3(rot * glm::vec4(0, 0, -1, 0));
 }
 
 V3 Actor::GetUp() const
 {
-    return V3(mRot * glm::vec4(0, 1, 0, 0));
+    M4 rot = glm::rotate(glm::rotate(M4(1.f), - mYaw, V3(0, 1, 0)), mPitch, V3(1, 0, 0));
+    return V3(rot * glm::vec4(0, 1, 0, 0));
 }
 
 void Actor::SetRot(Rot rot) {
     mYaw = rot.yaw;
     mPitch = rot.pitch;
-    _RecalcModel();
+    _UpdateTransform();
 }
 
 Rot Actor::GetRot() const {
@@ -99,12 +91,12 @@ Rot Actor::GetRot() const {
 void Actor::AddRot(Rot rot) {
     mYaw += rot.yaw;
     mPitch += rot.pitch;
-    _RecalcModel();
+    _UpdateTransform();
 }
 
-void Actor::_RecalcModel() {
-    mRot = glm::rotate(glm::rotate(M4(1.f), - mYaw, V3(0, 1, 0)), mPitch, V3(1, 0, 0));
-    mTransform = glm::translate(M4(1.f), mPos) * mRot * glm::scale(M4(1.f), mScale);
+void Actor::_UpdateTransform() {
+    M4 rot = glm::rotate(glm::rotate(M4(1.f), - mYaw, V3(0, 1, 0)), mPitch, V3(1, 0, 0));
+    mTransform = glm::translate(M4(1.f), mPos) * rot * glm::scale(M4(1.f), mScale);
     //  modelMatrix = glm::translate(glm::scale(mRot, mScale), mPos);
 }
 

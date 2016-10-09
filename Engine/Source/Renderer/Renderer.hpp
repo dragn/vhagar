@@ -2,28 +2,30 @@
 
 #include <forward_list>
 #include "Renderable/Renderable.hpp"
-#include "LightSource.hpp"
+#include "Light.hpp"
 #include "App/Component.hpp"
 
 namespace vh {
 
 /**
- * SDLRenderer options
+ * Renderer options
  */
-struct SDLRendererOptions {
+struct RendererOptions {
     const char *resourceRoot = ".";
     size_t screenWidth = 1024;
     size_t screenHeight = 768;
 };
 
 /**
- * The SDLRenderer
+ * The Renderer
  **/
-class SDLRenderer : public vh::Component {
+class Renderer : public vh::Component {
 
 public:
-    SDLRenderer(const std::string& name) : Component(name, 16) {}
-    virtual ~SDLRenderer() {}
+    static const char* COMPONENT_NAME;
+
+    Renderer() : Component(COMPONENT_NAME, 16) {}
+    virtual ~Renderer() {}
 
     virtual void TickInit(uint32_t delta);
     virtual void TickRun(uint32_t delta);
@@ -42,9 +44,15 @@ public:
     /**
      * Set up light sources
      */
-    void SetLightSources(std::vector<LightSource> lightSources)
+    size_t AddLight(const Light& light)
     {
-        mLightSources = lightSources;
+        mLights.push_back(light);
+        return mLights.size() - 1;
+    }
+
+    void RemoveLight(size_t lightId)
+    {
+        mLights.erase(mLights.begin() + lightId);
     }
 
     /**
@@ -63,13 +71,13 @@ public:
     void SetView(glm::mat4 view) { mView = view; };
 
 private:
-    SDLRendererOptions mOptions;
+    RendererOptions mOptions;
 
     SDL_GLContext mGLContext;
     SDL_Window *mWindow;
     uint32_t mWindowID;
 
-    std::vector<LightSource> mLightSources;
+    std::vector<Light> mLights;
 
     std::forward_list<Renderable*> mObjects;
 
