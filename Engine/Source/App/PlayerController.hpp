@@ -1,7 +1,9 @@
 #pragma once
 
-#include "../Actor/Actor.hpp"
+#include "Actor/Actor.hpp"
 #include "Arm.hpp"
+#include "Component.hpp"
+#include "Actor/Controllable.hpp"
 
 namespace vh {
 
@@ -9,37 +11,33 @@ namespace vh {
  * PlayerController handles input events from human.
  * PlayerController has a camera, that specifies what the human sees.
  */
-class PlayerController {
+class PlayerController : public Component {
 
 public:
-    PlayerController()
-        : mActor(nullptr)
-        , mCameraTurnSpeed(0.001f)
-    {}
+    static const char* COMPONENT_NAME;
+
+    PlayerController();
 
     // Take possession of the object
-    void Control(Actor *actor);
+    void Control(Controllable *actor);
 
     // Release previously possessed object
     void Release();
 
-    void HandleEvent(SDL_Event *event);
-    void Tick(uint32_t delta);
+    virtual void HandleEvent(SDL_Event *event);
 
-    const Actor& GetCamera()
-    {
-        return mCamera;
-    }
+    virtual void TickInit(uint32_t delta);
+    virtual void TickRun(uint32_t delta);
+    virtual void TickClose(uint32_t delta);
 
 private:
-    Actor *mActor;
+    Controllable* mActor;
 
-    Actor mCamera;
-    Arm mCameraBoom;
+    Actor* mCamera;
+    //Arm* mCameraBoom;
 
     float mCameraTurnSpeed;
 
-    void _UpdateCameraPos();
     void _HandleKey(uint32_t type, SDL_KeyboardEvent *event);
     void _HandleMouse(int32_t xrel, int32_t yrel);
 

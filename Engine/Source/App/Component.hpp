@@ -66,6 +66,8 @@ public:
         return mName;
     }
 
+    virtual void HandleEvent(SDL_Event* event) {};
+
 protected:
     virtual void TickInit(uint32_t delta);
     virtual void TickRun(uint32_t delta) {};

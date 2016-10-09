@@ -19,8 +19,8 @@ public:
             {
                 mMesh = world->SpawnActor<StaticMeshActor>("Game/Assets/shadow_scene/shadow_scene.obj");
 
-                M4 view = glm::lookAt(V3(0,2,5), V3(0, 0, 0), V3(0, 1, 0));
-                render->SetView(view);
+                Controllable* free = world->SpawnActor<FreeFloating>();
+                GetComponent<PlayerController>()->Control(free);
 
                 LOG(INFO) << "Spawned!";
                 mSpawned = true;
@@ -47,14 +47,6 @@ private:
                     world->DestroyActor(mLight);
                 }
             }
-            if (event->key.keysym.sym == 'a')
-            {
-                mMesh->AddPos(V3(0, 1, 0));
-            }
-            if (event->key.keysym.sym == 'd')
-            {
-                mMesh->AddPos(V3(0, -1, 0));
-            }
         }
     }
 
@@ -74,6 +66,7 @@ int main(int argc, char ** argv) {
 
     app.AddComponent<Renderer>();
     app.AddComponent<World>();
+    app.AddComponent<PlayerController>();
 
     app.Run();
 }

@@ -1,34 +1,39 @@
 #pragma once
 
-namespace vh {
+#include "Controllable.hpp"
 
-/**
- * Something that can be controlled by player or AI.
- */
-class Controllable : public Actor {
+namespace vh
+{
 
+class FreeFloating : public Controllable
+{
 public:
+    FreeFloating() : mMoveSpeed(5), mTurnSpeed(0.001) {}
 
-    Controllable() : mMoveSpeed(5), mTurnSpeed(0.003) {}
-
-    void MoveForward(float value) {
+    virtual void MoveForward(float value)
+    {
         AddPos(value * mMoveSpeed * GetForward());
     }
-    void MoveRight(float value) {
+
+    virtual void MoveRight(float value)
+    {
         V3 rightVector = glm::cross(GetForward(), V3(0, 1, 0));
         AddPos(value * mMoveSpeed * rightVector);
     }
-    void TurnRight(float value) {
+
+    void TurnRight(float value)
+    {
         AddYaw(mTurnSpeed * value);
     }
-    void TurnUp(float value) {
+
+    void TurnUp(float value)
+    {
         AddPitch(mTurnSpeed * value);
     }
 
 private:
     float mMoveSpeed;
     float mTurnSpeed;
-
 };
 
-}
+} // namespace vh

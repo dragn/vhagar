@@ -100,6 +100,11 @@ void App::HandleEvent(SDL_Event *event) {
             mState = eAppState::CLOSE;
             break;
     }
+
+    for (Component* comp : mComponents)
+    {
+        comp->HandleEvent(event);
+    }
 }
 
 } // namespace vh
