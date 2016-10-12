@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Actor.hpp"
+
 namespace vh {
 
 /**
