@@ -1,5 +1,7 @@
 # game-engine
-Simple C++ game engine
+Minimalist cross-platform 3D game engine.
+
+This project is on super early stage, doesn't ready yet for any use.
 
 # deps
 - SDL2
