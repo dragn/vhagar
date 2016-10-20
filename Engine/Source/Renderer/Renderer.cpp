@@ -1,6 +1,7 @@
 #include "Renderer.hpp"
 
 #include "Common.hpp"
+#include "App/App.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -56,6 +57,7 @@ void Renderer::TickInit(uint32_t delta) {
     if (err != GLEW_OK) {
         LOG(FATAL) << "Glew Error: " << glewGetErrorString(err);
         Close();
+        GetApp()->Close();
         return;
     }
 
@@ -64,6 +66,7 @@ void Renderer::TickInit(uint32_t delta) {
     if (!GLEW_VERSION_3_0) {
         LOG(ERROR) << "Only OpenGL versions 3.0+ supported. Sorry.";
         Close();
+        GetApp()->Close();
         return;
     }
 

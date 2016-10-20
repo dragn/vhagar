@@ -78,6 +78,11 @@ void App::DoRun() {
     }
 }
 
+void App::Close()
+{
+    mState = eAppState::CLOSE;
+}
+
 void App::HandleEvents() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {

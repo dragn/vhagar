@@ -53,6 +53,8 @@ public:
 
     virtual void OnTick() {};
 
+    virtual void Close();
+
 protected:
     virtual void HandleEvent(SDL_Event *event);
 
