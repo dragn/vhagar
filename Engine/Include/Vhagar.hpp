@@ -18,3 +18,4 @@
 #include "../Source/App/PlayerController.hpp"
 #include "../Source/App/World.hpp"
 #include "../Source/App/App.hpp"
+#include "../Source/Console/Console.hpp"

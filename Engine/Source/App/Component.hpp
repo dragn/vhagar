@@ -20,7 +20,7 @@ enum Type
 class Component
 {
 public:
-    Component(const std::string& name, uint32_t tickStep = 0) :
+    Component(const std::string& name, uint32_t tickStep = 20) :
         mState(eCompState::INIT),
         mName(name),
         mTickStep(tickStep),

@@ -31,6 +31,15 @@ private:
     virtual void HandleEvent(SDL_Event *event)
     {
         vh::App::HandleEvent(event);
+
+        if (event->type == SDL_KEYUP)
+        {
+            SDL_Keycode k = event->key.keysym.sym;
+            if (k == 'p')
+            {
+                GetComponent<Console>()->Exec("print hello");
+            }
+        }
     }
 
     bool mSpawned;
@@ -46,8 +55,10 @@ int main(int argc, char ** argv) {
     MyApp app;
 
     app.AddComponent<Renderer>();
+    app.AddComponent<Physics>();
     app.AddComponent<World>();
     app.AddComponent<PlayerController>();
+    app.AddComponent<Console>();
 
     app.Run();
 }

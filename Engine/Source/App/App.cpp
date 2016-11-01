@@ -1,6 +1,7 @@
 #include "App.hpp"
 #include "Common.hpp"
 #include <csignal>
+#include "Utils/CritSection.hpp"
 
 namespace vh {
 
@@ -35,6 +36,9 @@ void App::Run() {
     LOG(INFO) << "Starting application";
     while (mState != eAppState::CLOSED) {
         DoRun();
+
+        // TODO switch to event-based main thread?
+        cs::Sleep(5);
     }
 }
 
