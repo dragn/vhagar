@@ -10,7 +10,7 @@ namespace vh {
 const char* PlayerController::COMPONENT_NAME = "PlayerController";
 
 PlayerController::PlayerController() :
-    Component(COMPONENT_NAME),
+    Component(COMPONENT_NAME, 16),
     mActor(nullptr),
     mCamera(nullptr),
     mCameraTurnSpeed(0.001f)

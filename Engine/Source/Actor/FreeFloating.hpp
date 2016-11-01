@@ -28,7 +28,8 @@ public:
 
     void TurnUp(float value)
     {
-        AddPitch(mTurnSpeed * value);
+        float pitch = Math::Clamp(GetPitch() + mTurnSpeed * value, - (float) M_PI_2, (float) M_PI_2);
+        SetPitch(pitch);
     }
 
 private:

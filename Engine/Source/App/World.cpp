@@ -7,7 +7,7 @@ namespace vh {
 
 const char* World::COMPONENT_NAME = "WORLD";
 
-World::World() : Component(COMPONENT_NAME)
+World::World() : Component(COMPONENT_NAME, 16)
 {
     if (App::GetComponent<Renderer>() == nullptr)
     {

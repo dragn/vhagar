@@ -40,13 +40,13 @@ float Actor::GetPitch() const
 }
 
 void Actor::SetPitch(float pitch) {
-    mPitch = Math::ClampAngle(pitch);
+    mPitch = Math::WrapAngle(pitch);
     _UpdateTransform();
 }
 
 void Actor::AddPitch(float pitch) {
     mPitch += pitch;
-    mPitch = Math::ClampAngle(mPitch);
+    mPitch = Math::WrapAngle(mPitch);
     _UpdateTransform();
 }
 
@@ -56,13 +56,13 @@ float Actor::GetYaw() const
 }
 
 void Actor::SetYaw(float yaw) {
-    mYaw = Math::ClampAngle(yaw);
+    mYaw = Math::WrapAngle(yaw);
     _UpdateTransform();
 }
 
 void Actor::AddYaw(float yaw) {
     mYaw += yaw;
-    mYaw = Math::ClampAngle(mYaw);
+    mYaw = Math::WrapAngle(mYaw);
     _UpdateTransform();
 }
 

@@ -24,7 +24,7 @@ M4 Math::RotToM4(const Rot &rot) {
     return yaw * pitch * roll;
 }
 
-float Math::ClampAngle(float a, float min /* = - M_PI */, float max /* = M_PI */) {
+float Math::WrapAngle(float a, float min /* = - M_PI */, float max /* = M_PI */) {
     float wrap = max - min;
     while (a > max) a -= wrap;
     while (a < min) a += wrap;

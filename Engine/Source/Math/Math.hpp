@@ -39,7 +39,15 @@ namespace Math {
 M3 RotToM3(const Rot &rot);
 M4 RotToM4(const Rot &rot);
 
-float ClampAngle(float a, float min = - M_PI, float max = M_PI);
+float WrapAngle(float a, float min = - M_PI, float max = M_PI);
+
+template<typename T>
+T Clamp(T val, T min, T max)
+{
+    if (val < min) return min;
+    else if (val > max) return max;
+    else return val;
+}
 
 } // namespace Math
 } // namespace vh
