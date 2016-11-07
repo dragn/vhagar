@@ -30,6 +30,11 @@ void Signal(int signal)
 }
 
 void App::Run() {
+#ifdef WITH_GLOG
+    google::InitGoogleLogging("Vhagar");
+    google::InstallFailureSignalHandler();
+#endif
+
     std::signal(SIGINT, Signal);
     std::signal(SIGQUIT, Signal);
 

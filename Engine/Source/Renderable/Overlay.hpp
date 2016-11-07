@@ -17,7 +17,11 @@ public:
     virtual void render(glm::mat4 projection, glm::mat4 view, Light lightSource) {}; // empty
     /* end of Object methods */
 
-private:
+protected:
+    virtual const char* GetShader()
+    {
+        return "OSD";
+    }
 
     GLuint vertexBuffer = 0;
     GLuint programID = 0;

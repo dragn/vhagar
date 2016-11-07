@@ -12,8 +12,8 @@ namespace vh {
  */
 struct RendererOptions {
     const char *resourceRoot = ".";
-    size_t screenWidth = 1024;
-    size_t screenHeight = 768;
+    size_t screenWidth = 1920;
+    size_t screenHeight = 1080;
 };
 
 /**
