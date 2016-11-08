@@ -31,10 +31,18 @@ public:
 
     void Run();
 
-    template<typename T>
-    T* AddComponent()
+    template<typename COMP_TYPE>
+    COMP_TYPE* AddComponent()
     {
-        T* comp = new T();
+        COMP_TYPE* comp = new COMP_TYPE();
+        mComponents.push_back(comp);
+        return comp;
+    }
+
+    template<typename COMP_TYPE, typename PARAM_TYPE>
+    COMP_TYPE* AddComponent(const PARAM_TYPE& param)
+    {
+        COMP_TYPE* comp = new COMP_TYPE(param);
         mComponents.push_back(comp);
         return comp;
     }

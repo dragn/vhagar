@@ -35,11 +35,18 @@ void Renderer::TickInit(uint32_t delta) {
         return;
     }
 
+    int flags = SDL_WINDOW_OPENGL;
+
+    if (mOptions.borderless) flags |= SDL_WINDOW_BORDERLESS;
+
     // Window mode MUST include SDL_WINDOW_OPENGL for use with OpenGL.
     mWindow = SDL_CreateWindow(
-            "GameEngine Demo", 0, 0,
-            mOptions.screenWidth, mOptions.screenHeight,
-            SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE);
+            "GameEngine Demo",
+            SDL_WINDOWPOS_CENTERED,
+            SDL_WINDOWPOS_CENTERED,
+            mOptions.screenWidth,
+            mOptions.screenHeight,
+            flags);
 
     mWindowID = SDL_GetWindowID(mWindow);
 
@@ -61,7 +68,9 @@ void Renderer::TickInit(uint32_t delta) {
         return;
     }
 
-    mProjection = glm::perspective(45.f, 4.0f / 3.0f, 0.1f, 100.f);
+    float aspect = static_cast<float>(mOptions.screenWidth) / static_cast<float>(mOptions.screenHeight);
+
+    mProjection = glm::perspective(45.f, aspect, 0.1f, 100.f);
 
     if (!GLEW_VERSION_3_0) {
         LOG(ERROR) << "Only OpenGL versions 3.0+ supported. Sorry.";

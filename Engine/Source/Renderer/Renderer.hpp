@@ -15,6 +15,7 @@ struct RendererOptions {
     const char *resourceRoot = ".";
     size_t screenWidth = 1024;
     size_t screenHeight = 768;
+    bool borderless = true;
 };
 
 /**
@@ -26,6 +27,7 @@ public:
     static const char* COMPONENT_NAME;
 
     Renderer() : Component(COMPONENT_NAME, 16) {}
+    Renderer(const RendererOptions& opts) : Component(COMPONENT_NAME, 16), mOptions(opts) {}
     virtual ~Renderer() {}
 
     virtual void TickInit(uint32_t delta);

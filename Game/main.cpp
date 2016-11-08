@@ -48,7 +48,12 @@ private:
 int main(int argc, char ** argv) {
     MyApp app;
 
-    app.AddComponent<Renderer>();
+    RendererOptions ro;
+    ro.screenHeight = 1080;
+    ro.screenWidth = 1920;
+
+    app.AddComponent<Renderer>(ro);
+
     app.AddComponent<World>();
     app.AddComponent<PlayerController>();
     app.AddComponent<Console>();

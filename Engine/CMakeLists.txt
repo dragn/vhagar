@@ -58,9 +58,9 @@ if (MSVC)
   list(APPEND DEP_LIBRARIES opengl32 msvcrt)
 endif()
 
-file(GLOB Vhagar_SRC Source/**/*.cpp Source/**/*.hpp Source/*.hpp Source/*.cpp Include/*.hpp)
+file(GLOB Vhagar_SRC Source/*/*.cpp Source/*/*.glsl Source/*/*.hpp Include/*/*.hpp Source/*.hpp Source/*.cpp)
 
-source_groups("Source Files" Source *.cpp *.hpp)
+source_groups("Source Files" Source *.cpp *.hpp *.glsl)
 source_groups("Header Files" Include Vhagar.hpp)
 
 include_directories("Source")
