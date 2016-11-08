@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Math/Math.hpp"
 #include "Controllable.hpp"
 
 namespace vh
@@ -8,7 +9,7 @@ namespace vh
 class FreeFloating : public Controllable
 {
 public:
-    FreeFloating() : mMoveSpeed(5), mTurnSpeed(0.001) {}
+    FreeFloating() : mMoveSpeed(5), mTurnSpeed(0.001f) {}
 
     virtual void MoveForward(float value)
     {

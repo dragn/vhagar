@@ -9,7 +9,7 @@ include(Utils)
 # Find dependencies
 find_package(SDL2 REQUIRED)
 find_package(SDL2_Image REQUIRED)
-find_package(Glog)
+find_package(glog 0.3.4 REQUIRED)
 find_package(GLM REQUIRED)
 find_package(GL)
 find_package(GLEW REQUIRED)
@@ -20,11 +20,10 @@ if (SDL2_FOUND)
   LIST(APPEND DEP_LIBRARIES ${SDL2_LIBRARY})
 endif (SDL2_FOUND)
 
-if (GLOG_FOUND)
+if (glog_FOUND)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWITH_GLOG")
-  include_directories(${GLOG_INCLUDE_DIR})
-  list(APPEND DEP_LIBRARIES "${GLOG_LIBRARY}")
-endif (GLOG_FOUND)
+  list(APPEND DEP_LIBRARIES glog::glog)
+endif (glog_FOUND)
 
 if (GLM_FOUND)
   include_directories(${GLM_INCLUDE_DIR})
@@ -56,8 +55,27 @@ endif()
 
 if (MSVC)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:msvcrt")
-  list(APPEND DEP_LIBRARIES "opengl32")
+  list(APPEND DEP_LIBRARIES opengl32 msvcrt)
 endif()
+
+file(GLOB Vhagar_SRC Source/**/*.cpp Source/**/*.hpp Source/*.hpp Source/*.cpp Include/*.hpp)
+
+source_groups("Source Files" Source *.cpp *.hpp)
+source_groups("Header Files" Include Vhagar.hpp)
+
+include_directories("Source")
+include_directories("Include")
+
+add_library(${PROJECT_NAME} ${Vhagar_SRC})
+target_link_libraries(${PROJECT_NAME} ${DEP_LIBRARIES})
+
+if (CMAKE_COMPILER_IS_GNUCXX)
+  set(VHAGAR_COMPILE_FLAGS "${VHAGAR_COMPILE_FLAGS} -Wall")
+endif()
+
+set_target_properties (Vhagar PROPERTIES COMPILE_FLAGS "${VHAGAR_COMPILE_FLAGS}")
+
+setup_pch(Vhagar_SRC Common.hpp Source/Common.cpp Source/Common.hpp)
 
 add_subdirectory (Source)
 #add_subdirectory (RenderingTest)

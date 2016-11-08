@@ -1,5 +1,6 @@
-#include "ConsoleCommands.hpp"
+#include "Common.hpp"
 
+#include "ConsoleCommands.hpp"
 #include "Console.hpp"
 
 namespace vh

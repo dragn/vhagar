@@ -1,5 +1,6 @@
-#include "PointLight.hpp"
+#include "Common.hpp"
 
+#include "PointLight.hpp"
 #include "App/App.hpp"
 #include "Renderer/Renderer.hpp"
 

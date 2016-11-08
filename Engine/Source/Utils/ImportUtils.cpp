@@ -1,4 +1,6 @@
-#include "Vhagar.hpp"
+#include "Common.hpp"
+
+#include "ImportUtils.hpp"
 
 #include <cstdio>
 #include <iostream>
@@ -29,7 +31,7 @@ bool checkFilename(const char *objFilename) {
 void getMtlFilename(char *mtlFilename, const char *objFilename) {
     size_t len = strlen(objFilename);
     strncpy(mtlFilename, objFilename, MAX_LEN);
-    strcpy(mtlFilename + (len - 4), ".mtl");
+    strncpy(mtlFilename + (len - 4), ".mtl", MAX_LEN);
 }
 
 void readMaterials(FILE *mtlFile,

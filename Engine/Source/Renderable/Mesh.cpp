@@ -1,4 +1,7 @@
-#include "Vhagar.hpp"
+#include "Common.hpp"
+
+#include "Utils/GLUtils.hpp"
+#include "Mesh.hpp"
 
 using namespace vh;
 

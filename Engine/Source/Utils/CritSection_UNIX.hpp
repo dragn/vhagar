@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef CMAKE_PLATFORM_UNIX
+
 namespace cs
 {
 
@@ -92,3 +94,4 @@ static_assert(sizeof(SemaphoreImpl) == CSEMAPHIRE_IMPL_SIZE, "");
 
 } // namespace cs
 
+#endif // CMAKE_PLATFORM_UNIX

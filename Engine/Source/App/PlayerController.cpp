@@ -1,5 +1,6 @@
-#include "PlayerController.hpp"
 #include "Common.hpp"
+
+#include "PlayerController.hpp"
 #include "App.hpp"
 #include "Renderer/Renderer.hpp"
 #include "World.hpp"
@@ -104,8 +105,8 @@ void PlayerController::_HandleKey(uint32_t type, SDL_KeyboardEvent *event) {
 void PlayerController::_HandleMouse(int32_t xrel, int32_t yrel) {
     if (mActor == nullptr) return;
 
-    mActor->TurnRight(xrel);
-    mActor->TurnUp(-yrel);
+    mActor->TurnRight(static_cast<float>(xrel));
+    mActor->TurnUp(static_cast<float>(-yrel));
 }
 
 } // namespace vh

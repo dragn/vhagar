@@ -1,3 +1,5 @@
+#include "Common.hpp"
+
 #include "Math.hpp"
 
 namespace vh {

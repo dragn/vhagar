@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "Common.hpp"
+#include <cstdint>
 
 namespace vh
 {

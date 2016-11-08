@@ -1,17 +1,3 @@
-file(GLOB Vhagar_SRC */*.cpp)
-
-include_directories(".")
-include_directories("../Include")
-
-add_library (Vhagar ${Vhagar_SRC})
-target_link_libraries (Vhagar ${GLEW_LIBRARIES})
-
-if (CMAKE_COMPILER_IS_GNUCXX)
-  set(VHAGAR_COMPILE_FLAGS "${VHAGAR_COMPILE_FLAGS} -Wall")
-endif()
-
-set_target_properties (Vhagar PROPERTIES COMPILE_FLAGS "${VHAGAR_COMPILE_FLAGS}")
-
 # Bundle shaders
 
 set(shaders_src "Shaders/Shaders.hpp")

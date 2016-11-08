@@ -1,5 +1,6 @@
-#include "World.hpp"
 #include "Common.hpp"
+
+#include "World.hpp"
 #include "App.hpp"
 #include "Renderer/Renderer.hpp"
 

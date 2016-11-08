@@ -1,3 +1,5 @@
+#include "Common.hpp"
+
 #include "GLUtils.hpp"
 
 #include "Shaders/Shaders.hpp"

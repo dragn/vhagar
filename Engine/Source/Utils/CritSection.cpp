@@ -2,6 +2,7 @@
 
 #if defined(CMAKE_PLATFORM_WINDOWS)
 #include <windows.h>
+#include "CritSection_WINDOWS.hpp"
 #elif defined(CMAKE_PLATFORM_UNIX)
 #include <pthread.h>
 #include <unistd.h>

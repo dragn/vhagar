@@ -1,3 +1,5 @@
+#include "Common.hpp"
+
 #include "Console.hpp"
 #include <sstream>
 #include <iterator>

@@ -9,6 +9,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 #include <glm/glm.hpp>
 #include "Math/Rot.hpp"
 

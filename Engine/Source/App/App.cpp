@@ -1,5 +1,6 @@
-#include "App.hpp"
 #include "Common.hpp"
+
+#include "App.hpp"
 #include <csignal>
 #include "Utils/CritSection.hpp"
 
@@ -30,8 +31,15 @@ void Signal(int signal)
 }
 
 void App::Run() {
+#ifdef WITH_GLOG
+    google::InitGoogleLogging("Vhagar");
+    //google::InstallFailureSignalHandler();
+#endif
+
     std::signal(SIGINT, Signal);
+#ifdef SIGQUIT
     std::signal(SIGQUIT, Signal);
+#endif
 
     LOG(INFO) << "Starting application";
     while (mState != eAppState::CLOSED) {

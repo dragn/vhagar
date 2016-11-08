@@ -1,5 +1,6 @@
-#include "Actor.hpp"
 #include "Common.hpp"
+
+#include "Actor.hpp"
 #include <glm/gtx/rotate_vector.hpp>
 
 namespace vh {
