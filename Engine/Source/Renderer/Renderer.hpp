@@ -16,6 +16,13 @@ struct RendererOptions {
     size_t screenWidth = 1024;
     size_t screenHeight = 768;
     bool borderless = true;
+
+    enum
+    {
+        AA_OFF = 0, // Antialiasing turned off
+        AA_2X,      // MSAAx2
+        AA_4X       // MSAAx4
+    } antialias = AA_OFF;
 };
 
 /**
@@ -81,11 +88,6 @@ private:
 
     glm::mat4 mProjection;
     glm::mat4 mView;
-
-    // Multisampling-related framebuffer and textures
-    GLuint fbo, tex, depth_tex;
-
-    bool mMultisample = false;
 
     /**
      * Override to provide custom actions before Rendering phase

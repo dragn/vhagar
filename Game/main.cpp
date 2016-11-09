@@ -53,6 +53,7 @@ int main(int argc, char ** argv) {
     RendererOptions ro;
     ro.screenWidth = 1600;
     ro.screenHeight = 900;
+    ro.antialias = RendererOptions::AA_4X;
 
     app.AddComponent<Renderer>(ro);
 

@@ -67,7 +67,7 @@ endif()
 if (MSVC)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:msvcrt")
   list(APPEND DEP_LIBRARIES "opengl32")
-  list(APPEND DEP_LIBRARIES ${SDL2MAIN_LIBRARY} msvcrt)
+  list(APPEND DEP_LIBRARIES ${SDL2MAIN_LIBRARY} $<$<CONFIG:Debug>:msvcrtd> $<$<CONFIG:Release>:msvcrt>)
 endif()
 
 if (CMAKE_COMPILER_IS_GNUCXX)

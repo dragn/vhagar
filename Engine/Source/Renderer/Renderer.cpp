@@ -35,9 +35,21 @@ void Renderer::TickInit(uint32_t delta) {
         return;
     }
 
-    int flags = SDL_WINDOW_OPENGL;
+    Uint32 flags = SDL_WINDOW_OPENGL;
 
     if (mOptions.borderless) flags |= SDL_WINDOW_BORDERLESS;
+
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 4);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 4);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 4);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+    if (mOptions.antialias != RendererOptions::AA_OFF)
+    {
+        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, int(mOptions.antialias) << 2);
+    }
 
     // Window mode MUST include SDL_WINDOW_OPENGL for use with OpenGL.
     mWindow = SDL_CreateWindow(
@@ -48,6 +60,11 @@ void Renderer::TickInit(uint32_t delta) {
             mOptions.screenHeight,
             flags);
 
+    if (mWindow == nullptr)
+    {
+        LOG(FATAL) << "SDL create windows error: " << SDL_GetError();
+    }
+
     mWindowID = SDL_GetWindowID(mWindow);
 
     // Set relative mouse mode
@@ -55,6 +72,11 @@ void Renderer::TickInit(uint32_t delta) {
 
     // Create an OpenGL context associated with the mWindow.
     mGLContext = SDL_GL_CreateContext(mWindow);
+
+    if (mGLContext == nullptr)
+    {
+        LOG(FATAL) << "GL context create error: " << SDL_GetError();
+    }
 
     LOG(INFO) << "Initializing OpenGL renderer";
     LOG(INFO) << "OpenGL Version: " << glGetString(GL_VERSION);
@@ -85,44 +107,23 @@ void Renderer::TickInit(uint32_t delta) {
 
     // Enable backface culling
     glEnable(GL_CULL_FACE);
+    
     // Enable depth test
     glEnable(GL_DEPTH_TEST);
+
     // Accept fragment if it closer to the camera than the former one
     glDepthFunc(GL_LEQUAL);
+
+    // Enable cube map textures
     glEnable(GL_TEXTURE_CUBE_MAP);
 
-    int maxSamples;
-
-    glGetIntegerv(GL_MAX_INTEGER_SAMPLES, &maxSamples);
-    mMultisample = (maxSamples > 1);
-    LOG(INFO) << "Multi-sampling is: " << (mMultisample ? "enabled" : "disabled");
-
-    if (mMultisample) {
-        glEnable(GL_MULTISAMPLE);
-        // setting up multisampling
-        GLuint num_samples = maxSamples >= 8 ? 8 : 1;
-        glGenTextures(1, &tex);
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, tex);
-        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, num_samples, GL_RGBA8, mOptions.screenWidth, mOptions.screenHeight, false);
-
-        glGenTextures(1, &depth_tex);
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, depth_tex);
-        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, num_samples, GL_DEPTH_COMPONENT, mOptions.screenWidth, mOptions.screenHeight, false);
-
-        glGenFramebuffers(1, &fbo);
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, tex, 0);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D_MULTISAMPLE, depth_tex, 0);
-    }
+    // Enable multisampling
+    if (mOptions.antialias != RendererOptions::AA_OFF) glEnable(GL_MULTISAMPLE);
 
     FinishInit();
 }
 
 void Renderer::TickClose(uint32_t delta) {
-    glDeleteFramebuffers(1, &fbo);
-    glDeleteTextures(1, &tex);
-    glDeleteTextures(1, &depth_tex);
-
     for (Renderable *obj : mObjects) {
         obj->AfterRender();
         delete obj;
@@ -155,10 +156,6 @@ void Renderer::RemoveObject(Renderable *object) {
 void Renderer::TickRun(uint32_t delta) {
     BeforeRender();
 
-    if (mMultisample) {
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-    }
-
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -179,14 +176,6 @@ void Renderer::TickRun(uint32_t delta) {
         for (Renderable *obj : mObjects) {
             obj->Render(mProjection, mView, light);
         }
-    }
-
-    if (mMultisample) {
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);   // Make sure no FBO is set as the draw framebuffer
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo); // Make sure your multisampled FBO is the read framebuffer
-        glDrawBuffer(GL_BACK);                       // Set the back buffer as the draw buffer
-        glBlitFramebuffer(0, 0, mOptions.screenWidth, mOptions.screenHeight,
-                0, 0, mOptions.screenWidth, mOptions.screenHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
     }
 
     int error = glGetError();
