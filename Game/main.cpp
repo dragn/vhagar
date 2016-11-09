@@ -24,23 +24,6 @@ public:
 
                 GetComponent<PlayerController>()->Control(world->SpawnActor<FreeFloating>());
 
-                Overlay* overlay = new Overlay();
-                render->AddObject(overlay);
-
-                TTF_Font* font = TTF_OpenFont("Assets/Fonts/Roboto-Regular.ttf", 16);
-                if (!font)
-                {
-                    LOG(ERROR) << "Could not open font";
-                }
-                else
-                {
-                    SDL_Surface* surf = TTF_RenderText_Solid(font, "Hello, World!", SDL_Color{ 255, 128, 128, 255 });
-                    overlay->setBounds(Rect{ 0.1f, 0.1f, surf->w / 800.0f, surf->h / 450.0f});
-                    overlay->setTexture(surf);
-
-                    TTF_CloseFont(font);
-                }
-
                 mSpawned = true;
             }
         }

@@ -9,15 +9,15 @@ class Overlay : public Renderable {
 public:
     Overlay();
 
-    void setBounds(Rect rect);
+    void SetBounds(Rect rect);
 
-    void setTexture(SDL_Surface *surf);
+    void SetTexture(SDL_Surface *surf);
 
     /* Object methods */
-    virtual void beforeRender();
-    virtual void afterRender();
-    virtual void render(glm::mat4 projection, glm::mat4 view);
-    virtual void render(glm::mat4 projection, glm::mat4 view, Light lightSource) {}; // empty
+    virtual void BeforeRender();
+    virtual void AfterRender();
+    virtual void Render(glm::mat4 projection, glm::mat4 view);
+    virtual void Render(glm::mat4 projection, glm::mat4 view, Light lightSource) {}; // empty
     /* end of Object methods */
 
 private:

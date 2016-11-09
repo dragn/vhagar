@@ -17,19 +17,19 @@ struct CubeMap {
     std::string neg_z;
 };
 
-GLuint bufferData(GLsizeiptr size, const GLfloat *data);
-GLuint bufferElementArray(GLsizeiptr size, const GLuint *data);
-GLuint bufferTexture2D(SDL_Surface*);
-SDL_Surface *loadImage(const std::string &filename);
-GLuint loadCubeMapTexture(const CubeMap &skyBox);
+GLuint BufferData(GLsizeiptr size, const GLfloat *data);
+GLuint BufferElementArray(GLsizeiptr size, const GLuint *data);
+GLuint BufferTexture2D(SDL_Surface*);
+SDL_Surface *LoadImage(const std::string &filename);
+GLuint LoadCubeMapTexture(const CubeMap &skyBox);
 
-void putUniformMat4(GLuint programID, const std::string &name, M4 &data);
-void putUniformVec3(GLuint programID, const std::string &name, V3 &data);
-void putUniformVec4(GLuint programID, const std::string &name, V4 &data);
-void putUniformFloat(GLuint programID, const std::string &name, float data);
+void PutUniformMat4(GLuint programID, const std::string &name, M4 &data);
+void PutUniformVec3(GLuint programID, const std::string &name, V3 &data);
+void PutUniformVec4(GLuint programID, const std::string &name, V4 &data);
+void PutUniformFloat(GLuint programID, const std::string &name, float data);
 
 // Get shader program specified by key (compiles on first access)
-GLuint getShaderProgram(const std::string &key);
+GLuint GetShaderProgram(const std::string &key);
 
 } // namespace Utils
 

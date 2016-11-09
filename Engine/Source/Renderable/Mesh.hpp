@@ -54,20 +54,20 @@ private:
      * Called by Renderer when this object is added to the rendered world.
      * Should alocate OpenGL buffers and textures.
      */
-    virtual void beforeRender();
+    virtual void BeforeRender();
 
     /**
      * Called by Renderer when this object is removed from rendered world.
      * Should deallocate any OpenGL buffers and textures.
      */
-    virtual void afterRender();
+    virtual void AfterRender();
 
     /**
      * Handles actual rendering of this object (called from Renderer::render())
      */
-    virtual void render(glm::mat4 projection, glm::mat4 view, Light lightSource);
+    virtual void Render(glm::mat4 projection, glm::mat4 view, Light lightSource);
 
-    virtual void render(glm::mat4 projection, glm::mat4 view) {}; // Empty - render nothing without light (yet)
+    virtual void Render(glm::mat4 projection, glm::mat4 view) {}; // Empty - render nothing without light (yet)
 };
 
 }

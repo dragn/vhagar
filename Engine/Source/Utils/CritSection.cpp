@@ -14,49 +14,31 @@
 
 #include <new>
 
-/*
-    Êîíñòðóêòîð êðèòè÷ñêîé ñåêöèè
-*/
 cs::CritSection::CritSection()
 {
     new ((void*)impl) CritSectionImpl;
 }
 
-/*
-    Äåñòðóêòîð êðèòè÷ñêîé ñåêöèè
-*/
 cs::CritSection::~CritSection()
 {
     ((CritSectionImpl*)impl)->~CritSectionImpl();
 }
 
-/*
-    Âõîä â êðèòè÷ñêóþ ñåêöèþ
-*/
 void cs::CritSection::Enter()
 {
     ((CritSectionImpl*)impl)->Enter();
 }
 
-/*
-    Âûõîä èç êðèòè÷ñêîé ñåêöèè
-*/
 void cs::CritSection::Leave()
 {
     ((CritSectionImpl*)impl)->Leave();
 }
 
-/*
-    Ïîïûòêà âõîäà â êðèòè÷åñêóþ ñåêöèþ
-*/
 bool cs::CritSection::TryEnter()
 {
     return ((CritSectionImpl*)impl)->TryEnter();
 }
 
-/*
-    Êîíñòðóêòîð ñåìàôîðà
-*/
 cs::Semaphore::Semaphore(uint32_t iniCount, uint32_t maxCount)
 {
     new ((void*)impl) SemaphoreImpl(iniCount, maxCount);

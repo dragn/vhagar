@@ -124,7 +124,7 @@ void Renderer::TickClose(uint32_t delta) {
     glDeleteTextures(1, &depth_tex);
 
     for (Renderable *obj : mObjects) {
-        obj->afterRender();
+        obj->AfterRender();
         delete obj;
     }
     mObjects.clear();
@@ -141,14 +141,14 @@ void Renderer::AddObject(Renderable *object) {
     CHECK(object);
 
     mObjects.push_front(object);
-    object->beforeRender();
+    object->BeforeRender();
 }
 
 void Renderer::RemoveObject(Renderable *object) {
     CHECK(IsRunning()) << "Invalid state";
     CHECK(object);
 
-    object->afterRender();
+    object->AfterRender();
     mObjects.remove(object);
 }
 
@@ -164,11 +164,11 @@ void Renderer::TickRun(uint32_t delta) {
 
     glDisable(GL_BLEND);
     for (Renderable *obj : mObjects) {
-        obj->render(mProjection, mView);
+        obj->Render(mProjection, mView);
     }
     if (mLights.size()) {
         for (Renderable *obj : mObjects) {
-            obj->render(mProjection, mView, mLights[0]);
+            obj->Render(mProjection, mView, mLights[0]);
         }
     }
 
@@ -177,7 +177,7 @@ void Renderer::TickRun(uint32_t delta) {
     for (size_t i = 1; i < mLights.size(); i++) {
         Light light = mLights[i];
         for (Renderable *obj : mObjects) {
-            obj->render(mProjection, mView, light);
+            obj->Render(mProjection, mView, light);
         }
     }
 

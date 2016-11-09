@@ -92,7 +92,7 @@ void Console::_Redraw()
 {
     SDL_Surface* surf = SDL_CreateRGBSurface(0, 800, 400, 32, 0xf000, 0x0f00, 0x00f0, 0x000f);
 
-    mOverlay.setTexture(surf);
+    mOverlay.SetTexture(surf);
 
     SDL_FreeSurface(surf);
 }

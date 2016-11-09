@@ -9,26 +9,26 @@ const GLuint vertexDataSize = 72;
 const GLuint indexData[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 0, 2, 19, 3, 5, 20, 6, 8, 21, 9, 11, 22, 12, 14, 23, 15, 17};
 const GLuint indexDataSize = 36;
 
-void SkyBox::beforeRender() {
+void SkyBox::BeforeRender() {
     if (isReadyToRender) {
         LOG(WARNING) << "Attempt to prepare already prepared object!";
         return;
     }
 
-    skyTexture = Utils::loadCubeMapTexture(cubeMap);
-    programID = Utils::getShaderProgram("SkyDome");
+    skyTexture = Utils::LoadCubeMapTexture(cubeMap);
+    programID = Utils::GetShaderProgram("SkyDome");
 
     glInfo.attribCount = 1;
     glInfo.attribBufferSize = vertexDataSize;
-    glInfo.attribBuffer = Utils::bufferData(vertexDataSize, vertexData);
+    glInfo.attribBuffer = Utils::BufferData(vertexDataSize, vertexData);
 
     glInfo.indexBufferSize = indexDataSize;
-    glInfo.indexBuffer = Utils::bufferElementArray(indexDataSize, indexData);
+    glInfo.indexBuffer = Utils::BufferElementArray(indexDataSize, indexData);
 
     isReadyToRender = true;
 }
 
-void SkyBox::afterRender() {
+void SkyBox::AfterRender() {
     if (isReadyToRender) {
         GLuint ids[] = { glInfo.indexBuffer, glInfo.attribBuffer };
         glDeleteBuffers(2, ids);
@@ -36,7 +36,7 @@ void SkyBox::afterRender() {
     }
 }
 
-void SkyBox::render(glm::mat4 projection, glm::mat4 view) {
+void SkyBox::Render(glm::mat4 projection, glm::mat4 view) {
 
     if (!isReadyToRender) return;
 
@@ -45,7 +45,7 @@ void SkyBox::render(glm::mat4 projection, glm::mat4 view) {
     glUseProgram(programID);
 
     MVP = projection * view * glm::scale(M4(1.0f), V3(50.f, 50.f, 50.f));
-    Utils::putUniformMat4(programID, "uMVP", MVP);
+    Utils::PutUniformMat4(programID, "uMVP", MVP);
 
     glBindBuffer(GL_ARRAY_BUFFER, glInfo.attribBuffer);
     glEnableVertexAttribArray(0);

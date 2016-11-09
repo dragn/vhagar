@@ -59,11 +59,6 @@ public:
     }
 
     /**
-     * Renders all object using specified View matrix. (call from main loop)
-     */
-    void Render();
-
-    /**
      * Sets up a projection matrix
      */
     void SetProjection(glm::mat4 projection) { mProjection = projection; };

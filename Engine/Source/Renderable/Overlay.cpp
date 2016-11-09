@@ -2,20 +2,20 @@
 
 using namespace vh;
 
-void Overlay::setTexture(SDL_Surface *s) {
+void Overlay::SetTexture(SDL_Surface *s) {
     if (isReadyToRender) {
         if (texId > 0) {
             glDeleteTextures(1, &texId);
             texId = 0;
         }
-        texId = Utils::bufferTexture2D(s);
+        texId = Utils::BufferTexture2D(s);
     }
 }
 
-void Overlay::beforeRender() {
-    vertexBuffer = Utils::bufferData(12, vertices);
+void Overlay::BeforeRender() {
+    vertexBuffer = Utils::BufferData(12, vertices);
 
-    programID = Utils::getShaderProgram("OSD");
+    programID = Utils::GetShaderProgram("OSD");
     if (programID < 0) {
         LOG(INFO) << "Unable to load program OSD";
         return;
@@ -24,7 +24,7 @@ void Overlay::beforeRender() {
     isReadyToRender = true;
 }
 
-void Overlay::afterRender() {
+void Overlay::AfterRender() {
     if (texId > 0) {
         glDeleteTextures(1, &texId);
         texId = 0;
@@ -33,7 +33,7 @@ void Overlay::afterRender() {
     vertexBuffer = 0;
 }
 
-void Overlay::setBounds(Rect rect) {
+void Overlay::SetBounds(Rect rect) {
     GLfloat v[] = {
         -1.0f + rect.x,                1.0f - rect.y,
         -1.0f + rect.x + rect.width,   1.0f - rect.y,
@@ -47,17 +47,17 @@ void Overlay::setBounds(Rect rect) {
 
     if (isReadyToRender) {
         glDeleteBuffers(1, &vertexBuffer);
-        vertexBuffer = Utils::bufferData(12, vertices);
+        vertexBuffer = Utils::BufferData(12, vertices);
     }
 }
 
-void Overlay::render(glm::mat4 projection, glm::mat4 view) {
+void Overlay::Render(glm::mat4 projection, glm::mat4 view) {
     if (!isReadyToRender) return;
 
     glDisable(GL_CULL_FACE);
     glUseProgram(programID);
 
-    Utils::putUniformVec4(programID, "uBounds", bounds);
+    Utils::PutUniformVec4(programID, "uBounds", bounds);
 
     if (texId > 0) glBindTexture(GL_TEXTURE_2D, texId);
 
@@ -72,5 +72,5 @@ void Overlay::render(glm::mat4 projection, glm::mat4 view) {
 
 vh::Overlay::Overlay()
 {
-    setBounds(Rect{0, 0, 100, 100});
+    SetBounds(Rect{0, 0, 100, 100});
 }

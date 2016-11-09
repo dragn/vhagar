@@ -13,7 +13,7 @@ namespace Utils {
 
 std::map<std::string, GLuint> shaderPrograms;
 
-SDL_Surface *loadImage(const std::string &filename) {
+SDL_Surface *LoadImage(const std::string &filename) {
     SDL_Surface *tex = IMG_Load(filename.c_str());
     if (tex == NULL) {
         LOG(ERROR) << "Could not load texture " << filename;
@@ -84,7 +84,7 @@ GLuint compileProgram(const std::string &vertexShader, const std::string &fragme
     return programID;
 }
 
-GLuint bufferData(GLsizeiptr size, const GLfloat *data) {
+GLuint BufferData(GLsizeiptr size, const GLfloat *data) {
     LOG(INFO) << "Allocating buffer of size: " << size;
     GLuint id;
     glGenBuffers(1, &id);
@@ -93,7 +93,7 @@ GLuint bufferData(GLsizeiptr size, const GLfloat *data) {
     return id;
 }
 
-GLuint bufferElementArray(GLsizeiptr size, const GLuint *data) {
+GLuint BufferElementArray(GLsizeiptr size, const GLuint *data) {
     LOG(INFO) << "Allocating buffer of size: " << size;
     GLuint id;
     glGenBuffers(1, &id);
@@ -102,7 +102,7 @@ GLuint bufferElementArray(GLsizeiptr size, const GLuint *data) {
     return id;
 }
 
-GLuint bufferTexture2D(SDL_Surface *surf) {
+GLuint BufferTexture2D(SDL_Surface *surf) {
     SDL_PixelFormat *format = surf->format;
 
     LOG(INFO) << "Buffering texture of size " << surf->w << "x" << surf->h;
@@ -154,7 +154,7 @@ GLuint bufferTexture2D(SDL_Surface *surf) {
     return texId;
 }
 
-GLuint loadCubeMapTexture(const CubeMap &skyBox) {
+GLuint LoadCubeMapTexture(const CubeMap &skyBox) {
     GLuint texId;
     glGenTextures(1, &texId);
     glBindTexture(GL_TEXTURE_CUBE_MAP, texId);
@@ -170,7 +170,7 @@ GLuint loadCubeMapTexture(const CubeMap &skyBox) {
     const std::string files[] = { skyBox.pos_x, skyBox.neg_x, skyBox.pos_y, skyBox.neg_y, skyBox.pos_z, skyBox.neg_z };
 
     for (size_t i = 0; i < 6; i++) {
-        SDL_Surface *tex = loadImage(files[i]);
+        SDL_Surface *tex = LoadImage(files[i]);
         if (tex != NULL) {
             glTexImage2D(modes[i], 0, GL_RGB, tex->h, tex->h, 0, GL_RGB, GL_UNSIGNED_BYTE, tex->pixels);
             SDL_FreeSurface(tex);
@@ -187,27 +187,27 @@ GLuint loadCubeMapTexture(const CubeMap &skyBox) {
     return texId;
 }
 
-void putUniformMat4(GLuint programID, const std::string &name, M4 &data) {
+void PutUniformMat4(GLuint programID, const std::string &name, M4 &data) {
     GLuint id = glGetUniformLocation(programID, name.c_str());
     glUniformMatrix4fv(id, 1, GL_FALSE, &data[0][0]);
 }
 
-void putUniformVec3(GLuint programID, const std::string &name, V3 &data) {
+void PutUniformVec3(GLuint programID, const std::string &name, V3 &data) {
     GLuint id = glGetUniformLocation(programID, name.c_str());
     glUniform3fv(id, 1, &data[0]);
 }
 
-void putUniformVec4(GLuint programID, const std::string &name, V4 &data) {
+void PutUniformVec4(GLuint programID, const std::string &name, V4 &data) {
     GLuint id = glGetUniformLocation(programID, name.c_str());
     glUniform4fv(id, 1, &data[0]);
 }
 
-void putUniformFloat(GLuint programID, const std::string &name, float data) {
+void PutUniformFloat(GLuint programID, const std::string &name, float data) {
     GLuint id = glGetUniformLocation(programID, name.c_str());
     glUniform1f(id, data);
 }
 
-GLuint getShaderProgram(const std::string &key) {
+GLuint GetShaderProgram(const std::string &key) {
     GLuint programID;
 
     if (shaderPrograms.count(key)) {

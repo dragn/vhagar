@@ -13,7 +13,7 @@ Mesh::~Mesh() {
 }
 
 void
-Mesh::beforeRender() {
+Mesh::BeforeRender() {
     if (isReadyToRender) {
         LOG(WARNING) << "Attempt to prepare already prepared object!";
         return;
@@ -24,7 +24,7 @@ Mesh::beforeRender() {
         return;
     }
 
-    programID = Utils::getShaderProgram("SimpleShader");
+    programID = Utils::GetShaderProgram("SimpleShader");
 
     if (programID == 0) {
         LOG(ERROR) << "Object won't be rendered, because shader program invalid";
@@ -37,7 +37,7 @@ Mesh::beforeRender() {
     glInfo.indexBufferSize = indexSize;
 
     // buffer index data
-    glInfo.indexBuffer = Utils::bufferElementArray(glInfo.indexBufferSize, indexData);
+    glInfo.indexBuffer = Utils::BufferElementArray(glInfo.indexBufferSize, indexData);
 
     // buffer attribute data
     glGenBuffers(1, &glInfo.attribBuffer);
@@ -52,7 +52,7 @@ Mesh::beforeRender() {
 
     // load texture
     if (texture != NULL) {
-        glInfo.texture = Utils::bufferTexture2D(texture);
+        glInfo.texture = Utils::BufferTexture2D(texture);
         LOG(INFO) << "Texture loaded with ID: " << glInfo.texture;
     }
 
@@ -60,7 +60,7 @@ Mesh::beforeRender() {
 }
 
 void
-Mesh::afterRender() {
+Mesh::AfterRender() {
     if (isReadyToRender) {
         GLuint ids[] = { glInfo.indexBuffer, glInfo.attribBuffer };
         glDeleteBuffers(2, ids);
@@ -73,7 +73,7 @@ Mesh::afterRender() {
 }
 
 void
-Mesh::render(glm::mat4 projection, glm::mat4 view, Light lightSource) {
+Mesh::Render(glm::mat4 projection, glm::mat4 view, Light lightSource) {
 
     if (!isReadyToRender) return;
 
@@ -81,12 +81,12 @@ Mesh::render(glm::mat4 projection, glm::mat4 view, Light lightSource) {
 
     glUseProgram(programID);
 
-    Utils::putUniformVec3(programID, "uLightPosition", lightSource.position);
-    Utils::putUniformFloat(programID, "uLightIntensity", lightSource.intensity);
+    Utils::PutUniformVec3(programID, "uLightPosition", lightSource.position);
+    Utils::PutUniformFloat(programID, "uLightIntensity", lightSource.intensity);
 
-    Utils::putUniformMat4(programID, "uMVP", MVP);
-    Utils::putUniformMat4(programID, "uM", model);
-    Utils::putUniformMat4(programID, "uV", view);
+    Utils::PutUniformMat4(programID, "uMVP", MVP);
+    Utils::PutUniformMat4(programID, "uM", model);
+    Utils::PutUniformMat4(programID, "uV", view);
 
     if (glInfo.texture) {
         glBindTexture(GL_TEXTURE_2D, glInfo.texture);
@@ -123,5 +123,5 @@ void Mesh::setTexture(const std::string &filename) {
     }
 
     LOG(INFO) << "Setting up texture " << filename;
-    texture = Utils::loadImage(filename);
+    texture = Utils::LoadImage(filename);
 }

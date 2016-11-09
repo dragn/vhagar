@@ -50,13 +50,13 @@ private:
      * Called by Renderer when this object is added to the rendered world.
      * Should alocate OpenGL buffers.
      */
-    virtual void beforeRender() = 0;
+    virtual void BeforeRender() = 0;
 
     /**
      * Called by Renderer when this object is removed from rendered world.
      * Should deallocate any OpenGL buffers.
      */
-    virtual void afterRender() = 0;
+    virtual void AfterRender() = 0;
 
     /**
      * Handles actual rendering of this object (called from Renderer::render())
@@ -64,12 +64,12 @@ private:
      *
      * FIXME passing View and Projection here means every object will have the same view. but ok for now...
      */
-    virtual void render(glm::mat4 projection, glm::mat4 view) = 0;
+    virtual void Render(glm::mat4 projection, glm::mat4 view) = 0;
 
     /**
      * Render with light source.
      */
-    virtual void render(glm::mat4 projection, glm::mat4 view, Light lightSource) = 0;
+    virtual void Render(glm::mat4 projection, glm::mat4 view, Light lightSource) = 0;
 };
 
 }
