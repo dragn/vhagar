@@ -108,10 +108,6 @@ GLuint bufferTexture2D(SDL_Surface *surf) {
     LOG(INFO) << "Buffering texture of size " << surf->w << "x" << surf->h;
     LOG(INFO) << "Bits per pixel: " << (int) (format->BitsPerPixel);
 
-    if (format->BitsPerPixel != 32) {
-        throw new std::runtime_error("Can deal with 32 bit pixels only");
-    }
-
     size_t size = surf->w * surf->h;
     Uint8 *data = new Uint8[size * 4];
 
@@ -132,6 +128,9 @@ GLuint bufferTexture2D(SDL_Surface *surf) {
             }
         }
     } else {
+        if (format->BitsPerPixel != 32) {
+            LOG(FATAL) << "Can deal with 32 bit pixels only";
+        }
         LOG(INFO) << "Translating pixels to RGBA";
         Uint32 *pixels = (Uint32*) surf->pixels;
         for (size_t i = 0; i < size; i++) {

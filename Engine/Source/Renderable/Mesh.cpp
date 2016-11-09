@@ -91,6 +91,10 @@ Mesh::render(glm::mat4 projection, glm::mat4 view, Light lightSource) {
     if (glInfo.texture) {
         glBindTexture(GL_TEXTURE_2D, glInfo.texture);
     }
+    else
+    {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
 
     for (size_t i = 0; i < attribCount; i++) {
         glEnableVertexAttribArray(i);

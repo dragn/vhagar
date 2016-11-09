@@ -1,10 +1,13 @@
 #pragma once
 
+#include "Renderable.hpp"
+
 namespace vh {
 
 class Overlay : public Renderable {
 
 public:
+    Overlay();
 
     void setBounds(Rect rect);
 
@@ -24,7 +27,6 @@ private:
 
     GLfloat vertices[18];
     V4 bounds;
-    SDL_Surface *surf = NULL;
     GLuint texId = 0;
 };
 

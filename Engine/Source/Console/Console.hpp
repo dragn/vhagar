@@ -2,10 +2,12 @@
 
 #include <map>
 #include <queue>
+#include <list>
 
 #include "App/Component.hpp"
 #include "ConsoleCommands.hpp"
 #include "Utils/CritSection.hpp"
+#include "Renderable/Overlay.hpp"
 
 namespace vh
 {
@@ -30,8 +32,9 @@ public:
 
     void Exec(const std::string& cmd);
 
-private:
+    void PrintMessage(const std::string& msg);
 
+private:
     typedef std::map<std::string, CmdHandler> CmdMap;
 
     CmdMap mCommands;
@@ -39,7 +42,14 @@ private:
     cs::CritSection mCmdQueueCS;
     std::queue<std::string> mCmdQueue;
 
+    cs::CritSection mMsgCS;
+    std::list<std::string> mMessages;
+
+    Overlay mOverlay;
+
     void _Exec(const std::string& cmd);
+
+    void _Redraw();
 };
 
 } // namespace vh

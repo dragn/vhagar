@@ -1,4 +1,6 @@
 #include "Vhagar.hpp"
+
+#include "SDL_ttf.h"
 #include <glm/gtx/transform.hpp>
 
 using namespace vh;
@@ -21,6 +23,23 @@ public:
                 world->SpawnActor<PointLight>(V3(0, 2, 4), 0.4);
 
                 GetComponent<PlayerController>()->Control(world->SpawnActor<FreeFloating>());
+
+                Overlay* overlay = new Overlay();
+                render->AddObject(overlay);
+
+                TTF_Font* font = TTF_OpenFont("Assets/Fonts/Roboto-Regular.ttf", 16);
+                if (!font)
+                {
+                    LOG(ERROR) << "Could not open font";
+                }
+                else
+                {
+                    SDL_Surface* surf = TTF_RenderText_Solid(font, "Hello, World!", SDL_Color{ 255, 128, 128, 255 });
+                    overlay->setBounds(Rect{ 0.1f, 0.1f, surf->w / 800.0f, surf->h / 450.0f});
+                    overlay->setTexture(surf);
+
+                    TTF_CloseFont(font);
+                }
 
                 mSpawned = true;
             }
@@ -49,8 +68,8 @@ int main(int argc, char ** argv) {
     MyApp app;
 
     RendererOptions ro;
-    ro.screenHeight = 1080;
-    ro.screenWidth = 1920;
+    ro.screenWidth = 1600;
+    ro.screenHeight = 900;
 
     app.AddComponent<Renderer>(ro);
 

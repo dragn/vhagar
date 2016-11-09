@@ -34,12 +34,15 @@ void App::Run() {
 #ifdef WITH_GLOG
     google::InitGoogleLogging("Vhagar");
     //google::InstallFailureSignalHandler();
+    google::LogToStderr();
 #endif
 
     std::signal(SIGINT, Signal);
 #ifdef SIGQUIT
     std::signal(SIGQUIT, Signal);
 #endif
+
+    TTF_Init();
 
     LOG(INFO) << "Starting application";
     while (mState != eAppState::CLOSED) {
@@ -93,6 +96,8 @@ void App::DoRun() {
 void App::Close()
 {
     mState = eAppState::CLOSE;
+
+    if (TTF_WasInit()) TTF_Quit();
 }
 
 void App::HandleEvents() {

@@ -31,7 +31,7 @@ bool checkFilename(const char *objFilename) {
 void getMtlFilename(char *mtlFilename, const char *objFilename) {
     size_t len = strlen(objFilename);
     strncpy(mtlFilename, objFilename, MAX_LEN);
-    strncpy(mtlFilename + (len - 4), ".mtl", MAX_LEN);
+    strncpy(mtlFilename + (len - 4), ".mtl", 4);
 }
 
 void readMaterials(FILE *mtlFile,
