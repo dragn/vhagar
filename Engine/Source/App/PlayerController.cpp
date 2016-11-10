@@ -16,14 +16,8 @@ PlayerController::PlayerController() :
     mCamera(nullptr),
     mCameraTurnSpeed(0.001f)
 {
-    if (App::GetComponent<Renderer>() == nullptr)
-    {
-        LOG(FATAL) << "Missing required component: " << Renderer::COMPONENT_NAME;
-    }
-    if (App::GetComponent<World>() == nullptr)
-    {
-        LOG(FATAL) << "Missing required component: " << World::COMPONENT_NAME;
-    }
+    App::CheckRequired<Renderer>();
+    App::CheckRequired<World>();
 }
 
 void PlayerController::TickInit(uint32_t delta)

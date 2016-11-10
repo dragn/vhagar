@@ -10,17 +10,17 @@ namespace eCompState
 {
 enum Type
 {
-    INIT,
-    RUN,
-    CLOSE,
-    CLOSED
+    INIT,       // component is initaliazing
+    RUN,        // running
+    CLOSE,      // Close() called, component is in process of releasing resources
+    CLOSED      // component released all resources and can be destroyed
 };
 }
 
 class Component
 {
 public:
-    Component(const std::string& name, uint32_t tickStep = 20) :
+    Component(const std::string& name, int32_t tickStep = -1) :
         mState(eCompState::INIT),
         mName(name),
         mTickStep(tickStep),
@@ -39,7 +39,7 @@ public:
 
     void Tick(uint32_t time);
 
-    uint32_t GetTickStep()
+    int32_t GetTickStep()
     {
         return mTickStep;
     }
@@ -69,8 +69,16 @@ public:
     virtual void HandleEvent(SDL_Event* event) {};
 
 protected:
+    // this function called when component is in state INIT
+    // call FinishInit inside this function to move to state RUN
     virtual void TickInit(uint32_t delta);
+
+    // this tick function called when component is in state RUN
     virtual void TickRun(uint32_t delta) {};
+
+    // this tick function called when component in in state CLOSE
+    // call FinishClose to move to CLOSED state (and mark this component
+    // ready to be destroyed)
     virtual void TickClose(uint32_t delta);
 
     void FinishInit();
@@ -79,7 +87,7 @@ protected:
 private:
     eCompState::Type mState;
     std::string mName;
-    uint32_t mTickStep;
+    int32_t mTickStep;
     uint32_t mLastTick;
 };
 

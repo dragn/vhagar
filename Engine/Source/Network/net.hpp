@@ -196,6 +196,19 @@ public:
         , mError(nullptr)
     {}
 
+    /*
+        Move constructor
+    */
+    ClientStreamSocket(ClientStreamSocket&& other)
+        : mState(other.mState)
+        , mSocket(other.mSocket)
+        , mError(nullptr)
+    {
+        // avoid socket close on destruction
+        other.mState = eClientStreamSocketState::Closed;
+        other.mSocket = -1;
+    }
+
     ~ClientStreamSocket();
 
     /*
@@ -239,6 +252,7 @@ public:
         dataSize: the size of the buffer; the function is guaranteed not to overwrite the buffer
 
         Returns the number of bytes received or negative number when error occurred.
+        May return 0 when recv led to connection being closed or operation would block (check the state).
         Use GetError() to get error description.
     */
     int Recv(char* outData, size_t dataSize);
@@ -260,6 +274,14 @@ public:
     }
 
     /*
+        Check for closed state
+    */
+    bool IsClosed() const
+    {
+        return mState == eClientStreamSocketState::Closed;
+    }
+
+    /*
         Get the description of the last error
     */
     const char* GetError() const
@@ -278,8 +300,8 @@ class ServerStreamSocket
 {
 public:
     ServerStreamSocket()
-        : mSocket(-1)
-        , mState(eServerStreamSocketState::New)
+        : mState(eServerStreamSocketState::New)
+        , mSocket(-1)
         , mError(nullptr)
     {}
 

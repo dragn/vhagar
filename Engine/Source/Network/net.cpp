@@ -602,7 +602,15 @@ int ClientStreamSocket::Recv(char* outData, size_t dataSize)
     }
 
     int result = recv(mSocket, outData, dataSize, 0);
-    if (result < 0)
+    if (result == 0)
+    {
+        // for a TCP socket recv returns 0 when remote end closed the connection
+        // close the socket and update state
+        Close();
+
+        return 0;
+    }
+    else if (result < 0)
     {
 #if CMAKE_PLATFORM_WINDOWS
         if (LAST_ERROR == WSAEWOULDBLOCK) return 0;
@@ -654,6 +662,12 @@ bool ServerStreamSocket::Listen(const InAddr& addr)
         return false;
     }
 
+    if (!SetSocketBlockingEnabled(mSocket, false))
+    {
+        mError = "Unable to set non-blocking mode";
+        return false;
+    }
+
     mState = eServerStreamSocketState::Listening;
     mError = "";
     mAddr = addr;
@@ -696,6 +710,12 @@ bool ServerStreamSocket::Accept(int& sock, InAddr& addr)
     if (sock == -1)
     {
         mError = GetStringForError(LAST_ERROR);
+        return false;
+    }
+
+    if (!SetSocketBlockingEnabled(sock, false))
+    {
+        mError = "Unable to set non-blocking mode";
         return false;
     }
 

@@ -59,6 +59,15 @@ public:
         return nullptr;
     }
 
+    template<typename COMPONENT_TYPE>
+    static void CheckRequired()
+    {
+        if (App::GetComponent<COMPONENT_TYPE>() == nullptr)
+        {
+            LOG(FATAL) << "Missing required component: " << COMPONENT_TYPE::COMPONENT_NAME;
+        }
+    }
+
     virtual void OnTick() {};
 
     virtual void Close();

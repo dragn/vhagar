@@ -19,3 +19,5 @@
 #include "../Source/App/World.hpp"
 #include "../Source/App/App.hpp"
 #include "../Source/Console/Console.hpp"
+#include "../Source/Console/RemoteConsoleServer.hpp"
+#include "../Source/Network/Network.hpp"

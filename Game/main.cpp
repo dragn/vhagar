@@ -60,6 +60,8 @@ int main(int argc, char ** argv) {
     app.AddComponent<World>();
     app.AddComponent<PlayerController>();
     app.AddComponent<Console>();
+    app.AddComponent<Network>();
+    app.AddComponent<RemoteConsoleServer>();
 
     app.Run();
 

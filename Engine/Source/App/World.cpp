@@ -10,10 +10,7 @@ const char* World::COMPONENT_NAME = "WORLD";
 
 World::World() : Component(COMPONENT_NAME, 16)
 {
-    if (App::GetComponent<Renderer>() == nullptr)
-    {
-        LOG(FATAL) << "Missing required component: " << Renderer::COMPONENT_NAME;
-    }
+    App::CheckRequired<Renderer>();
 }
 
 void World::TickInit(uint32_t delta)

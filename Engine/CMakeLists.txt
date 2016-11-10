@@ -22,6 +22,10 @@ set_target_properties (Vhagar PROPERTIES COMPILE_FLAGS "${VHAGAR_COMPILE_FLAGS}"
 
 setup_pch(Vhagar_SRC Common.hpp Source/Common.cpp Source/Common.hpp)
 
+if(MSVC)
+  target_link_libraries(Vhagar Ws2_32)
+endif(MSVC)
+
 add_subdirectory (Source)
 #add_subdirectory (RenderingTest)
 #add_subdirectory (test-game)

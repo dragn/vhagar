@@ -9,6 +9,8 @@ void Component::Tick(uint32_t time)
 {
     uint32_t delta = time - mLastTick;
 
+    if (mTickStep < 0 && mState == eCompState::RUN) return;
+
     if (mTickStep > 0 && delta < mTickStep) return;
 
     mLastTick = time;
