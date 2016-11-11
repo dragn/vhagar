@@ -21,12 +21,6 @@ if (SDL2_FOUND)
   LIST(APPEND DEP_LIBRARIES ${SDL2_LIBRARY})
 endif (SDL2_FOUND)
 
-if (GLOG_FOUND)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWITH_GLOG")
-  include_directories(${GLOG_INCLUDE_DIR})
-  list(APPEND DEP_LIBRARIES "${GLOG_LIBRARY}")
-endif (GLOG_FOUND)
-
 if (GLM_FOUND)
   include_directories(${GLM_INCLUDE_DIR})
 endif (GLM_FOUND)
@@ -53,7 +47,7 @@ endif()
 
 if (glog_FOUND)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWITH_GLOG")
-  list(APPEND DEP_LIBRARIES glog::glog)
+  list(APPEND DEP_LIBRARIES glog)
 endif (glog_FOUND)
 
 if (APPLE)

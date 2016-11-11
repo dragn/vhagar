@@ -356,8 +356,8 @@ public:
 
 private:
     InAddr mAddr;
-    int mSocket;
     eServerStreamSocketState::Type mState;
+    int mSocket;
     const char* mError;
 }; // class ServerStreamSocket
 
