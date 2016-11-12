@@ -42,13 +42,29 @@ public:
         }
     }
 
+    const std::list<Actor*>& GetActors()
+    {
+        return mActors;
+    }
+
 private:
     std::list<Actor*> mActors;
 
     template<typename T>
     T* AddActor(T* actor)
     {
+        std::string name = typeid(T).name();
+        name = name.substr(name.find("vh::") + 4);
+        name.append("_");
+        name.append(std::to_string(mActors.size()));
+        return AddActor(actor, name);
+    }
+
+    template<typename T>
+    T* AddActor(T* actor, const std::string& name)
+    {
         mActors.push_back(actor);
+        actor->SetName(name);
         actor->OnCreate();
         return actor;
     }

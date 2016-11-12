@@ -81,6 +81,21 @@ public:
     void SetPitch(float pitch);
     void AddPitch(float deltaPitch);
 
+    void SetName(const std::string& name)
+    {
+        mName = name;
+    }
+
+    void SetName(const char* name)
+    {
+        mName = name;
+    }
+
+    const std::string& GetName() const
+    {
+        return mName;
+    }
+
 protected:
     virtual void _UpdateTransform();
 
@@ -92,6 +107,8 @@ private:
 
     float mYaw = 0;
     float mPitch = 0;
+
+    std::string mName;
 };
 
 } // namespace vh

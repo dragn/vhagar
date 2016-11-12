@@ -33,3 +33,14 @@ using sptr = std::shared_ptr<T>;
 #define UNCOPYABLE(Class) \
   Class(const Class&) = delete; \
   Class& operator=(const Class&) = delete;
+
+namespace vh
+{
+
+template<typename T, typename F>
+void for_each(T t, F f)
+{
+    std::for_each(t.begin(), t.end(), f);
+}
+
+} // namespace vh
