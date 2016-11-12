@@ -54,8 +54,8 @@ void Renderer::TickInit(uint32_t delta) {
     // Window mode MUST include SDL_WINDOW_OPENGL for use with OpenGL.
     mWindow = SDL_CreateWindow(
             "GameEngine Demo",
-            SDL_WINDOWPOS_CENTERED,
-            SDL_WINDOWPOS_CENTERED,
+            SDL_WINDOWPOS_CENTERED_DISPLAY(mOptions.monitor),
+            SDL_WINDOWPOS_CENTERED_DISPLAY(mOptions.monitor),
             mOptions.screenWidth,
             mOptions.screenHeight,
             flags);

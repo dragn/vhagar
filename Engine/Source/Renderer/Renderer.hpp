@@ -23,6 +23,12 @@ struct RendererOptions {
         AA_2X,      // MSAAx2
         AA_4X       // MSAAx4
     } antialias = AA_OFF;
+
+    enum
+    {
+        MON_FIRST = 0,
+        MON_SECOND
+    } monitor = MON_FIRST;
 };
 
 /**

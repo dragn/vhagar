@@ -1,19 +1,9 @@
 #pragma once
 
-#include "net.hpp"
+#include "Socket.hpp"
 
 #include <list>
-
-#ifdef CMAKE_PLATFORM_WINDOWS
-#include <WinSock2.h>
-#define poll WSAPoll
-#define pollfd WSAPOLLFD
-typedef ULONG nfds_t;
-#endif // CMAKE_PLATFORM_WINDOWS
-
-#ifdef CMAKE_PLATFORM_UNIX
-#include <poll.h>
-#endif // CMAKE_PLATFORM_UNIX
+#include "Poll.hpp"
 
 static const size_t MAX_FDS = 16;
 static const size_t BUFFER_SIZE = 512;
@@ -39,6 +29,23 @@ public:
     const InAddr& GetAddr() const
     {
         return mAddr;
+    }
+
+    void SendString(const std::string& str)
+    {
+        SendData(str.c_str(), str.size());
+    }
+
+    void SendData(const char* data, size_t dataSize)
+    {
+        if (mSocket.GetState() == net::eClientStreamSocketState::Connected)
+        {
+            int rt = mSocket.Send(data, dataSize);
+            if (rt < 0)
+            {
+                LOG(ERROR) << "Socket error: " << mSocket.GetError();
+            }
+        }
     }
 
 private:
@@ -73,9 +80,9 @@ public:
     class EventListener
     {
     public:
-        virtual void OnConnect(const TcpClient&) {};
-        virtual void OnDisconnect(const TcpClient&) {};
-        virtual void OnData(const TcpClient& client, char* data, size_t dataSz) {};
+        virtual void OnConnect(TcpClient*) {};
+        virtual void OnDisconnect(TcpClient*) {};
+        virtual void OnData(TcpClient* client, char* data, size_t dataSz) {};
     };
 
     void SetListener(EventListener* listener)

@@ -47,7 +47,7 @@ endif()
 
 if (glog_FOUND)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWITH_GLOG")
-  list(APPEND DEP_LIBRARIES glog)
+  list(APPEND DEP_LIBRARIES glog::glog)
 endif (glog_FOUND)
 
 if (APPLE)
@@ -70,3 +70,4 @@ endif()
 
 add_subdirectory (Engine)
 add_subdirectory (Game)
+add_subdirectory (ConsoleClient)

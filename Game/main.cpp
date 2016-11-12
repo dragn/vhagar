@@ -54,9 +54,9 @@ int main(int argc, char ** argv) {
     ro.screenWidth = 1600;
     ro.screenHeight = 900;
     ro.antialias = RendererOptions::AA_4X;
+    ro.monitor = RendererOptions::MON_SECOND;
 
     app.AddComponent<Renderer>(ro);
-
     app.AddComponent<World>();
     app.AddComponent<PlayerController>();
     app.AddComponent<Console>();

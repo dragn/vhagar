@@ -36,7 +36,7 @@ void net::TcpServer::Poll()
                 else
                 {
                     mClients.push_back(TcpClient(cltFd, cltAddr));
-                    if (mListener) mListener->OnConnect(mClients.back());
+                    if (mListener) mListener->OnConnect(&mClients.back());
                     needUpdate = true;
                 }
             }
@@ -61,7 +61,7 @@ void net::TcpServer::Poll()
                 }
                 else if (sz > 0)
                 {
-                    if (mListener) mListener->OnData(*client, mRecvBuf, sz);
+                    if (mListener) mListener->OnData(&*client, mRecvBuf, sz);
                 }
             }
             if (pfd.revents & (POLLHUP | POLLERR))
@@ -70,7 +70,7 @@ void net::TcpServer::Poll()
             }
             if (mSocket.IsClosed())
             {
-                if (mListener) mListener->OnDisconnect(*client);
+                if (mListener) mListener->OnDisconnect(&*client);
                 client = mClients.erase(client);
                 needUpdate = true;
             }

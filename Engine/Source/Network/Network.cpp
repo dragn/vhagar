@@ -1,6 +1,6 @@
 #include "Common.hpp"
 
-#include "net.hpp"
+#include "Socket.hpp"
 #include "Network.hpp"
 
 const char* vh::Network::COMPONENT_NAME = "Network";
