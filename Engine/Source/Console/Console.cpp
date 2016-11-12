@@ -34,6 +34,14 @@ void Console::TickInit(uint32_t delta)
 {
     ConsoleCommands::RegisterAll(this);
 
+    mOverlay = new Overlay();
+
+    mFont = TTF_OpenFont("Assets/Fonts/Roboto-regular.ttf", 20);
+    if (!mFont)
+    {
+        LOG(ERROR) << "Could not open font";
+    }
+
     FinishInit();
 }
 
@@ -54,6 +62,13 @@ void Console::TickRun(uint32_t delta)
 
 void Console::TickClose(uint32_t delta)
 {
+    if (mLogSink != nullptr)
+    {
+        google::RemoveLogSink(mLogSink);
+        delete mLogSink;
+        mLogSink = nullptr;
+    }
+
     FinishClose();
 }
 
@@ -90,11 +105,15 @@ void Console::_Exec(const std::string& cmd)
 
 void Console::_Redraw()
 {
-    SDL_Surface* surf = SDL_CreateRGBSurface(0, 800, 400, 32, 0xf000, 0x0f00, 0x00f0, 0x000f);
+    if (mFont)
+    {
+        SDL_Color fg = { 255, 255, 255, 255 };
 
-    mOverlay.SetTexture(surf);
-
-    SDL_FreeSurface(surf);
+        mOverlay->SetPos(20, 20);
+        SDL_Surface* text = TTF_RenderText_Solid(mFont, mMessages.back().c_str(), fg);
+        mOverlay->SetTexture(text);
+        SDL_FreeSurface(text);
+    }
 }
 
 void Console::Exec(const std::string& cmd)
@@ -114,6 +133,36 @@ void Console::PrintMessage(const std::string& msg)
     _Redraw();
 
     mMsgCS.Leave();
+}
+
+void Console::ToggleConsole()
+{
+    if (mLogSink != nullptr)
+    {
+        google::RemoveLogSink(mLogSink);
+        delete mLogSink;
+        mLogSink = nullptr;
+
+        App::GetComponent<Renderer>()->RemoveObject(mOverlay);
+    }
+    else
+    {
+        mLogSink = new ConsoleLogSink(this);
+        google::AddLogSink(mLogSink);
+
+        App::GetComponent<Renderer>()->AddObject(mOverlay);
+    }
+}
+
+void Console::HandleEvent(SDL_Event* event)
+{
+    if (event->type == SDL_KEYDOWN)
+    {
+        if (event->key.keysym.scancode == SDL_SCANCODE_GRAVE)
+        {
+            ToggleConsole();
+        }
+    }
 }
 
 } // namespace vh

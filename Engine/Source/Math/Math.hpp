@@ -29,13 +29,6 @@ typedef glm::mat3 M3;
 
 } // namespace vh
 
-struct Rect {
-    float x;
-    float y;
-    float width;
-    float height;
-};
-
 namespace vh {
 namespace Math {
 

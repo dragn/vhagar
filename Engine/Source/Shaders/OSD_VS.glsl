@@ -12,7 +12,7 @@ void main() {
   gl_Position.w = 1.0;
   fTexCoord = vec2(
     (iVertexPos.x - uBounds.x) / uBounds.z,
-    1 - (iVertexPos.y - 1 + uBounds.y) / uBounds.w
+    (- iVertexPos.y + uBounds.y) / uBounds.w
   );
   //fTexCoord = iVertexPos;
 }

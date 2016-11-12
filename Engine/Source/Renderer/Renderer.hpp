@@ -81,6 +81,11 @@ public:
      */
     void SetView(glm::mat4 view) { mView = view; };
 
+    const RendererOptions& GetOptions() const
+    {
+        return mOptions;
+    }
+
 private:
     RendererOptions mOptions;
 

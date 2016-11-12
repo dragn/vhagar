@@ -85,7 +85,6 @@ GLuint compileProgram(const std::string &vertexShader, const std::string &fragme
 }
 
 GLuint BufferData(GLsizeiptr size, const GLfloat *data) {
-    LOG(INFO) << "Allocating buffer of size: " << size;
     GLuint id;
     glGenBuffers(1, &id);
     glBindBuffer(GL_ARRAY_BUFFER, id);
@@ -94,7 +93,6 @@ GLuint BufferData(GLsizeiptr size, const GLfloat *data) {
 }
 
 GLuint BufferElementArray(GLsizeiptr size, const GLuint *data) {
-    LOG(INFO) << "Allocating buffer of size: " << size;
     GLuint id;
     glGenBuffers(1, &id);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
@@ -105,14 +103,10 @@ GLuint BufferElementArray(GLsizeiptr size, const GLuint *data) {
 GLuint BufferTexture2D(SDL_Surface *surf) {
     SDL_PixelFormat *format = surf->format;
 
-    LOG(INFO) << "Buffering texture of size " << surf->w << "x" << surf->h;
-    LOG(INFO) << "Bits per pixel: " << (int) (format->BitsPerPixel);
-
     size_t size = surf->w * surf->h;
     Uint8 *data = new Uint8[size * 4];
 
     if (format->palette) {
-        LOG(INFO) << "Translating palette to RGBA";
         SDL_Color *colors = format->palette->colors;
         Uint8 *pixels = (Uint8*) surf->pixels;
 
@@ -131,7 +125,6 @@ GLuint BufferTexture2D(SDL_Surface *surf) {
         if (format->BitsPerPixel != 32) {
             LOG(FATAL) << "Can deal with 32 bit pixels only";
         }
-        LOG(INFO) << "Translating pixels to RGBA";
         Uint32 *pixels = (Uint32*) surf->pixels;
         for (size_t i = 0; i < size; i++) {
             Uint8 *ptr = &data[i * 4];

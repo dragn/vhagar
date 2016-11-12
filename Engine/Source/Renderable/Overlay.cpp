@@ -2,21 +2,28 @@
 
 using namespace vh;
 
-void Overlay::SetTexture(SDL_Surface *s) {
-    if (isReadyToRender) {
-        if (texId > 0) {
+void Overlay::SetTexture(SDL_Surface *s)
+{
+    if (isReadyToRender)
+    {
+        if (texId > 0)
+        {
             glDeleteTextures(1, &texId);
             texId = 0;
         }
         texId = Utils::BufferTexture2D(s);
     }
+
+    _UpdateVertices(s->w, s->h);
 }
 
-void Overlay::BeforeRender() {
+void Overlay::BeforeRender()
+{
     vertexBuffer = Utils::BufferData(12, vertices);
 
     programID = Utils::GetShaderProgram("OSD");
-    if (programID < 0) {
+    if (programID < 0)
+    {
         LOG(INFO) << "Unable to load program OSD";
         return;
     }
@@ -24,8 +31,10 @@ void Overlay::BeforeRender() {
     isReadyToRender = true;
 }
 
-void Overlay::AfterRender() {
-    if (texId > 0) {
+void Overlay::AfterRender()
+{
+    if (texId > 0)
+    {
         glDeleteTextures(1, &texId);
         texId = 0;
     }
@@ -33,31 +42,44 @@ void Overlay::AfterRender() {
     vertexBuffer = 0;
 }
 
-void Overlay::SetBounds(Rect rect) {
+void Overlay::_UpdateVertices(uint32_t w, uint32_t h)
+{
+    Renderer* render = App::GetComponent<Renderer>();
+
+    CHECK(render);
+
+    float width = 0.5f * static_cast<float>(render->GetOptions().screenWidth);
+    float height = 0.5f * static_cast<float>(render->GetOptions().screenHeight);
+
+    float glX = -1.0f + mPosX / width;
+    float glY = 1.0f - mPosY / height;
+
     GLfloat v[] = {
-        -1.0f + rect.x,                1.0f - rect.y,
-        -1.0f + rect.x + rect.width,   1.0f - rect.y,
-        -1.0f + rect.x + rect.width,   1.0f - rect.y - rect.height,
-        -1.0f + rect.x + rect.width,   1.0f - rect.y - rect.height,
-        -1.0f + rect.x,                1.0f - rect.y - rect.height,
-        -1.0f + rect.x,                1.0f - rect.y
+        glX,                glY,
+        glX + w / width,    glY,
+        glX + w / width,    glY - h / height,
+        glX + w / width,    glY - h / height,
+        glX,                glY - h / height,
+        glX,                glY
     };
     std::copy(v, v + 12, vertices);
-    bounds = V4(-1.0f + rect.x, 1.0f - rect.y - rect.height, rect.width, rect.height);
+    mBounds = V4(glX, glY, w / width, h / height);
 
-    if (isReadyToRender) {
+    if (isReadyToRender)
+    {
         glDeleteBuffers(1, &vertexBuffer);
         vertexBuffer = Utils::BufferData(12, vertices);
     }
 }
 
-void Overlay::Render(glm::mat4 projection, glm::mat4 view) {
+void Overlay::Render(glm::mat4 projection, glm::mat4 view)
+{
     if (!isReadyToRender) return;
 
     glDisable(GL_CULL_FACE);
     glUseProgram(programID);
 
-    Utils::PutUniformVec4(programID, "uBounds", bounds);
+    Utils::PutUniformVec4(programID, "uBounds", mBounds);
 
     if (texId > 0) glBindTexture(GL_TEXTURE_2D, texId);
 
@@ -71,6 +93,14 @@ void Overlay::Render(glm::mat4 projection, glm::mat4 view) {
 }
 
 vh::Overlay::Overlay()
+    : mPosX(0)
+    , mPosY(0)
 {
-    SetBounds(Rect{0, 0, 100, 100});
+    _UpdateVertices(0, 0);
+}
+
+void vh::Overlay::SetPos(uint32_t x, uint32_t y)
+{
+    mPosX = x;
+    mPosY = y;
 }
