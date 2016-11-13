@@ -15,9 +15,17 @@
 namespace vh
 {
 
+// number of lines in console output
 const size_t NUM_LINES = 15;
+
+// font size for console output
 const size_t FONT_SIZE = 12;
+
+// spacing between console output
 const size_t LINE_SPACE = 6;
+
+// number of history records
+const size_t NUM_HISTORY = 3;
 
 typedef void (*CmdHandler)(const std::vector<std::string>&);
 
@@ -36,6 +44,9 @@ public:
         , mSurf(nullptr)
         , mMsgIdx(0)
         , mMessages(NUM_LINES)
+        , mHistory(NUM_HISTORY)
+        , mHistoryIdx(0)
+        , mCurrHistoryIdx(0)
     {
         App::CheckRequired<Renderer>();
     }
@@ -72,6 +83,10 @@ private:
     cs::CritSection mMsgCS;
     std::vector<std::string> mMessages;
     size_t mMsgIdx;
+
+    std::vector<std::string> mHistory;
+    size_t mHistoryIdx;
+    size_t mCurrHistoryIdx;
 
     SDL_Surface* mSurf;
     Overlay* mOverlay;

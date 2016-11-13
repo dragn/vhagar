@@ -98,6 +98,8 @@ void Console::Register(const std::string& name, CmdHandler handler)
 
 void Console::_Exec(const std::string& cmd)
 {
+    LOG(INFO) << "> " << cmd;
+
     std::stringstream ss(cmd);
 
     std::istream_iterator<std::string> ss_iter(ss);
@@ -222,20 +224,57 @@ void Console::HandleEvent(SDL_Event* event)
         IF_KEYDOWN_SYM(event, SDLK_BACKSPACE)
         {
             if (mInput.size()) mInput.pop_back();
+            mCurrHistoryIdx = 0;
             _Redraw();
         }
         IF_KEYDOWN_SYM(event, SDLK_RETURN)
         {
-            Exec(mInput);
-            mInput.clear();
-            _Redraw();
+            if (!mInput.empty())
+            {
+                if (mHistory[(NUM_HISTORY + mHistoryIdx - 1) % NUM_HISTORY] != mInput)
+                {
+                    mHistory[mHistoryIdx] = mInput;
+                    mHistoryIdx = (mHistoryIdx + 1) % NUM_HISTORY;
+                }
+                mCurrHistoryIdx = 0;
+
+                Exec(mInput);
+                mInput.clear();
+                _Redraw();
+            }
         }
         if (event->type == SDL_TEXTINPUT)
         {
             if (event->text.text[0] != '`') mInput.append(event->text.text);
+            mCurrHistoryIdx = 0;
             _Redraw();
         }
-        
+        IF_KEYDOWN_SYM(event, SDLK_UP)
+        {
+            if (mCurrHistoryIdx < NUM_HISTORY)
+            {
+                size_t idx = (NUM_HISTORY + mHistoryIdx - mCurrHistoryIdx - 1) % NUM_HISTORY;
+                if (!mHistory[idx].empty())
+                {
+                    mCurrHistoryIdx++;
+                    mInput = mHistory[idx];
+                    _Redraw();
+                }
+            }
+        }
+        IF_KEYDOWN_SYM(event, SDLK_DOWN)
+        {
+            if (mCurrHistoryIdx > 1)
+            {
+                size_t idx = (NUM_HISTORY + mHistoryIdx - mCurrHistoryIdx + 1) % NUM_HISTORY;
+                if (!mHistory[idx].empty())
+                {
+                    mCurrHistoryIdx--;
+                    mInput = mHistory[idx];
+                    _Redraw();
+                }
+            }
+        }
     }
 }
 
