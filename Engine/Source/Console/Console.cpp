@@ -199,6 +199,16 @@ void Console::ToggleConsole()
     }
 }
 
+
+void Console::PrintHelp()
+{
+    LOG(INFO) << "Commands list:";
+    for (const std::pair<std::string, CmdHandler>& cmd : mCommands)
+    {
+        LOG(INFO) << "  " << cmd.first;
+    }
+}
+
 void Console::HandleEvent(SDL_Event* event)
 {
     IF_KEYDOWN(event, SDL_SCANCODE_GRAVE)

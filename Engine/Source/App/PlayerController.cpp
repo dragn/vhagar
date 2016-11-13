@@ -4,7 +4,6 @@
 #include "App.hpp"
 #include "Renderer/Renderer.hpp"
 #include "World.hpp"
-#include <glm/gtx/transform.hpp>
 
 namespace vh {
 
@@ -22,7 +21,7 @@ PlayerController::PlayerController() :
 
 void PlayerController::TickInit(uint32_t delta)
 {
-    mCamera = App::Get<World>()->SpawnActor<Actor>();
+    mCamera = App::Get<World>()->SpawnActor<CameraActor>();
 
     FinishInit();
 }
@@ -38,11 +37,13 @@ void PlayerController::TickRun(uint32_t delta)
     if (mPressed['d']) mActor->MoveRight(sec);
 
     // Update camera position
-    mCamera->SetPos(mActor->GetPos());
-    mCamera->SetRot(mActor->GetRot());
+    if (mCamera)
+    {
+        mCamera->SetPos(mActor->GetPos());
+        mCamera->SetRot(mActor->GetRot());
 
-    M4 view = glm::lookAt(mCamera->GetPos(), mCamera->GetPos() + mCamera->GetForward(), mCamera->GetUp());
-    App::Get<Renderer>()->SetView(view);
+        App::Get<Renderer>()->SetView(mCamera->GetView());
+    }
 }
 
 void PlayerController::TickClose(uint32_t delta)

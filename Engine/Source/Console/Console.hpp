@@ -54,6 +54,8 @@ public:
     void PrintMessage(const std::string& msg);
     void ToggleConsole();
 
+    void PrintHelp();
+
 private:
     bool mShowConsole;
     ConsoleLogSink* mLogSink;

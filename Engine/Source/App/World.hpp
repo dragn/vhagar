@@ -47,6 +47,19 @@ public:
         return mActors;
     }
 
+    template<typename T>
+    T* GetActorByName(const std::string& name)
+    {
+        for (Actor* actor : mActors)
+        {
+            if (actor->GetName() == name)
+            {
+                return actor;
+            }
+        }
+        return nullptr;
+    }
+
 private:
     std::list<Actor*> mActors;
 

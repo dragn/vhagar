@@ -10,7 +10,6 @@ namespace vh
 {
 
 #define REGISTER_COMMAND(name) console->Register(#name, ConsoleCommand_ ## name);
-#define DEFINE_COMMAND(name) void ConsoleCommand_ ## name (const std::vector<std::string>& params)
 
 namespace ConsoleCommands
 {
@@ -22,6 +21,7 @@ void RegisterAll(Console* console)
     REGISTER_COMMAND(print);
     REGISTER_COMMAND(list_actors);
     REGISTER_COMMAND(quit);
+    REGISTER_COMMAND(help);
 }
 
 DEFINE_COMMAND(print)
@@ -52,6 +52,11 @@ DEFINE_COMMAND(list_actors)
 DEFINE_COMMAND(quit)
 {
     GetApp()->Close();
+}
+
+DEFINE_COMMAND(help)
+{
+    App::Get<Console>()->PrintHelp();
 }
 
 } // namespace ConsoleCommands

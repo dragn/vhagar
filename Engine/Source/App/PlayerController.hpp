@@ -4,6 +4,7 @@
 #include "Arm.hpp"
 #include "Component.hpp"
 #include "Actor/Controllable.hpp"
+#include "Actor/CameraActor.hpp"
 
 namespace vh {
 
@@ -33,7 +34,7 @@ public:
 private:
     Controllable* mActor;
 
-    Actor* mCamera;
+    CameraActor* mCamera;
     //Arm* mCameraBoom;
 
     float mCameraTurnSpeed;
