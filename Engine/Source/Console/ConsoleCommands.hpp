@@ -15,6 +15,7 @@ namespace ConsoleCommands
 
 DECLARE_COMMAND(print);
 DECLARE_COMMAND(list_actors);
+DECLARE_COMMAND(quit);
 
 void RegisterAll(Console* console);
 

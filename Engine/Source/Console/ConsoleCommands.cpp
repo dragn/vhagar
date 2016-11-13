@@ -21,11 +21,15 @@ void RegisterAll(Console* console)
 
     REGISTER_COMMAND(print);
     REGISTER_COMMAND(list_actors);
+    REGISTER_COMMAND(quit);
 }
 
 DEFINE_COMMAND(print)
 {
-    LOG(INFO) << "Console: " << params[0];
+    std::string str;
+    for (size_t idx = 1; idx < params.size(); ++idx) str.append(params[idx]);
+
+    LOG(INFO) << str;
 }
 
 DEFINE_COMMAND(list_actors)
@@ -43,6 +47,11 @@ DEFINE_COMMAND(list_actors)
     {
         LOG(INFO) << "Component World is not loaded";
     }
+}
+
+DEFINE_COMMAND(quit)
+{
+    GetApp()->Close();
 }
 
 } // namespace ConsoleCommands

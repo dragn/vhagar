@@ -63,6 +63,7 @@ private:
 
     CmdMap mCommands;
 
+    std::string mInput;
     cs::CritSection mCmdQueueCS;
     std::queue<std::string> mCmdQueue;
 

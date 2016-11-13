@@ -30,20 +30,6 @@ public:
     }
 
 private:
-    virtual void HandleEvent(SDL_Event *event)
-    {
-        vh::App::HandleEvent(event);
-
-        if (event->type == SDL_KEYUP)
-        {
-            SDL_Keycode k = event->key.keysym.sym;
-            if (k == 'p')
-            {
-                Get<Console>()->Exec("print hello");
-            }
-        }
-    }
-
     bool mSpawned;
 };
 

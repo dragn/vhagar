@@ -49,7 +49,7 @@ void Console::TickInit(uint32_t delta)
     Uint32 amask = 0xff000000;
 
     mSurf = SDL_CreateRGBSurface(0, App::Get<Renderer>()->GetOptions().screenWidth - 40,
-        NUM_LINES * (FONT_SIZE + LINE_SPACE), 32, rmask, gmask, bmask, amask);
+        (NUM_LINES + 1) * (FONT_SIZE + LINE_SPACE), 32, rmask, gmask, bmask, amask);
 
     if (!mSurf)
     {
@@ -132,18 +132,29 @@ void Console::_Redraw()
     {
         SDL_Color fg = { 255, 255, 255, 255 };
 
+        SDL_Surface* text;
+        SDL_Rect dstrect;
+        dstrect.x = 10;
+
         for (size_t idx = 0; idx < NUM_LINES; ++idx)
         {
-            SDL_Surface* text = TTF_RenderText_Blended(mFont, mMessages[(mMsgIdx + idx) % NUM_LINES].c_str(), fg);
+            text = TTF_RenderText_Blended(mFont, mMessages[(mMsgIdx + idx) % NUM_LINES].c_str(), fg);
 
-            SDL_Rect dstrect;
-            dstrect.x = 10;
             dstrect.y = idx * (FONT_SIZE + LINE_SPACE);
 
             SDL_BlitSurface(text, NULL, mSurf, &dstrect);
 
             SDL_FreeSurface(text);
         }
+
+        std::string mPrompt = "> ";
+        mPrompt.append(mInput);
+        mPrompt.append("|");
+
+        text = TTF_RenderText_Blended(mFont, mPrompt.c_str(), fg);
+        dstrect.y = NUM_LINES * (FONT_SIZE + LINE_SPACE);
+        SDL_BlitSurface(text, NULL, mSurf, &dstrect);
+        SDL_FreeSurface(text);
     }
 
     mOverlay->SetTexture(mSurf);
@@ -177,23 +188,44 @@ void Console::ToggleConsole()
     {
         App::Get<Renderer>()->RemoveObject(mOverlay);
         mShowConsole = false;
+        SDL_StopTextInput();
     }
     else
     {
         App::Get<Renderer>()->AddObject(mOverlay);
         mShowConsole = true;
+        SDL_StartTextInput();
         _Redraw();
     }
 }
 
 void Console::HandleEvent(SDL_Event* event)
 {
-    if (event->type == SDL_KEYDOWN)
+    IF_KEYDOWN(event, SDL_SCANCODE_GRAVE)
     {
-        if (event->key.keysym.scancode == SDL_SCANCODE_GRAVE)
+        ToggleConsole();
+        return;
+    }
+
+    if (mShowConsole)
+    {
+        IF_KEYDOWN_SYM(event, SDLK_BACKSPACE)
         {
-            ToggleConsole();
+            if (mInput.size()) mInput.pop_back();
+            _Redraw();
         }
+        IF_KEYDOWN_SYM(event, SDLK_RETURN)
+        {
+            Exec(mInput);
+            mInput.clear();
+            _Redraw();
+        }
+        if (event->type == SDL_TEXTINPUT)
+        {
+            if (event->text.text[0] != '`') mInput.append(event->text.text);
+            _Redraw();
+        }
+        
     }
 }
 

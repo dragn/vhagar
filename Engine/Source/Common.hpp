@@ -34,6 +34,9 @@ using sptr = std::shared_ptr<T>;
   Class(const Class&) = delete; \
   Class& operator=(const Class&) = delete;
 
+#define IF_KEYDOWN(event, code) if (event->type == SDL_KEYDOWN && event->key.keysym.scancode == code)
+#define IF_KEYDOWN_SYM(event, code) if (event->type == SDL_KEYDOWN && event->key.keysym.sym == code)
+
 namespace vh
 {
 
