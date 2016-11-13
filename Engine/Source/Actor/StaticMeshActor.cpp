@@ -24,7 +24,7 @@ StaticMeshActor::~StaticMeshActor()
 
 void StaticMeshActor::OnCreate()
 {
-    Renderer* render = App::GetComponent<Renderer>();
+    Renderer* render = App::Get<Renderer>();
     if (render)
     {
         mMesh->setModel(mTransform);
@@ -34,7 +34,7 @@ void StaticMeshActor::OnCreate()
 
 void StaticMeshActor::OnDestroy()
 {
-    Renderer* render = App::GetComponent<Renderer>();
+    Renderer* render = App::Get<Renderer>();
     if (render)
     {
         render->RemoveObject(mMesh);

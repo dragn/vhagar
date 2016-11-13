@@ -9,7 +9,7 @@ namespace vh
 
 void PointLight::OnCreate()
 {
-    Renderer* render = App::GetComponent<Renderer>();
+    Renderer* render = App::Get<Renderer>();
     if (render)
     {
         Light light;
@@ -22,7 +22,7 @@ void PointLight::OnCreate()
 
 void PointLight::OnDestroy()
 {
-    Renderer* render = App::GetComponent<Renderer>();
+    Renderer* render = App::Get<Renderer>();
     if (render)
     {
         render->RemoveLight(mLightId);

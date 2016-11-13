@@ -54,7 +54,7 @@ void vh::RemoteConsoleServer::OnData(net::TcpClient* clt, char* data, size_t dat
 {
     std::string str(data, dataSz);
     LOG(INFO) << "Command received from " << clt->GetAddr() << ": " << str;
-    Console* console = App::GetComponent<Console>();
+    Console* console = App::Get<Console>();
     console->Exec(str);
 }
 

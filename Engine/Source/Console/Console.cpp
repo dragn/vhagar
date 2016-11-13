@@ -23,7 +23,8 @@ public:
         const struct ::tm* tm_time,
         const char* message, size_t message_len)
     {
-        mConsole->PrintMessage(ToString(severity, base_filename, line, tm_time, message, message_len));
+        std::string str(message, message_len);
+        mConsole->PrintMessage(str);
     }
 
 private:
@@ -36,11 +37,27 @@ void Console::TickInit(uint32_t delta)
 
     mOverlay = new Overlay();
 
-    mFont = TTF_OpenFont("Assets/Fonts/Roboto-regular.ttf", 20);
+    mFont = TTF_OpenFont("Assets/Fonts/Roboto-regular.ttf", FONT_SIZE);
     if (!mFont)
     {
         LOG(ERROR) << "Could not open font";
     }
+    
+    Uint32 rmask = 0x000000ff;
+    Uint32 gmask = 0x0000ff00;
+    Uint32 bmask = 0x00ff0000;
+    Uint32 amask = 0xff000000;
+
+    mSurf = SDL_CreateRGBSurface(0, App::Get<Renderer>()->GetOptions().screenWidth - 40,
+        NUM_LINES * (FONT_SIZE + LINE_SPACE), 32, rmask, gmask, bmask, amask);
+
+    if (!mSurf)
+    {
+        LOG(ERROR) << SDL_GetError();
+    }
+
+    mLogSink = new ConsoleLogSink(this);
+    google::AddLogSink(mLogSink);
 
     FinishInit();
 }
@@ -68,6 +85,8 @@ void Console::TickClose(uint32_t delta)
         delete mLogSink;
         mLogSink = nullptr;
     }
+
+    if (mSurf) SDL_FreeSurface(mSurf);
 
     FinishClose();
 }
@@ -105,15 +124,29 @@ void Console::_Exec(const std::string& cmd)
 
 void Console::_Redraw()
 {
+    mOverlay->SetPos(20, 20);
+
+    SDL_FillRect(mSurf, NULL, SDL_MapRGB(mSurf->format, 0, 0, 0));
+
     if (mFont)
     {
         SDL_Color fg = { 255, 255, 255, 255 };
 
-        mOverlay->SetPos(20, 20);
-        SDL_Surface* text = TTF_RenderText_Solid(mFont, mMessages.back().c_str(), fg);
-        mOverlay->SetTexture(text);
-        SDL_FreeSurface(text);
+        for (size_t idx = 0; idx < NUM_LINES; ++idx)
+        {
+            SDL_Surface* text = TTF_RenderText_Blended(mFont, mMessages[(mMsgIdx + idx) % NUM_LINES].c_str(), fg);
+
+            SDL_Rect dstrect;
+            dstrect.x = 10;
+            dstrect.y = idx * (FONT_SIZE + LINE_SPACE);
+
+            SDL_BlitSurface(text, NULL, mSurf, &dstrect);
+
+            SDL_FreeSurface(text);
+        }
     }
+
+    mOverlay->SetTexture(mSurf);
 }
 
 void Console::Exec(const std::string& cmd)
@@ -123,34 +156,33 @@ void Console::Exec(const std::string& cmd)
     mCmdQueue.push(cmd);
 }
 
-
 void Console::PrintMessage(const std::string& msg)
 {
     mMsgCS.Enter();
 
-    mMessages.push_back(msg);
+    mMessages[mMsgIdx] = msg;
 
-    _Redraw();
+    mMsgIdx++;
+
+    if (mMsgIdx >= NUM_LINES) mMsgIdx = 0;
+
+    if (mShowConsole) _Redraw();
 
     mMsgCS.Leave();
 }
 
 void Console::ToggleConsole()
 {
-    if (mLogSink != nullptr)
+    if (mShowConsole)
     {
-        google::RemoveLogSink(mLogSink);
-        delete mLogSink;
-        mLogSink = nullptr;
-
-        App::GetComponent<Renderer>()->RemoveObject(mOverlay);
+        App::Get<Renderer>()->RemoveObject(mOverlay);
+        mShowConsole = false;
     }
     else
     {
-        mLogSink = new ConsoleLogSink(this);
-        google::AddLogSink(mLogSink);
-
-        App::GetComponent<Renderer>()->AddObject(mOverlay);
+        App::Get<Renderer>()->AddObject(mOverlay);
+        mShowConsole = true;
+        _Redraw();
     }
 }
 

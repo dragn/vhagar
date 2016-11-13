@@ -30,7 +30,7 @@ DEFINE_COMMAND(print)
 
 DEFINE_COMMAND(list_actors)
 {
-    World* world = App::GetComponent<World>();
+    World* world = App::Get<World>();
     if (world)
     {
         LOG(INFO) << "Actor list:";

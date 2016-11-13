@@ -44,7 +44,7 @@ void Overlay::AfterRender()
 
 void Overlay::_UpdateVertices(uint32_t w, uint32_t h)
 {
-    Renderer* render = App::GetComponent<Renderer>();
+    Renderer* render = App::Get<Renderer>();
 
     CHECK(render);
 

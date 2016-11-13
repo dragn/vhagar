@@ -15,6 +15,10 @@
 namespace vh
 {
 
+const size_t NUM_LINES = 15;
+const size_t FONT_SIZE = 12;
+const size_t LINE_SPACE = 6;
+
 typedef void (*CmdHandler)(const std::vector<std::string>&);
 
 class ConsoleLogSink;
@@ -29,6 +33,9 @@ public:
         , mShowConsole(false)
         , mLogSink(nullptr)
         , mOverlay(nullptr)
+        , mSurf(nullptr)
+        , mMsgIdx(0)
+        , mMessages(NUM_LINES)
     {
         App::CheckRequired<Renderer>();
     }
@@ -61,7 +68,9 @@ private:
 
     cs::CritSection mMsgCS;
     std::vector<std::string> mMessages;
+    size_t mMsgIdx;
 
+    SDL_Surface* mSurf;
     Overlay* mOverlay;
 
     void _Exec(const std::string& cmd);

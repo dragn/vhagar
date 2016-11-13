@@ -48,7 +48,7 @@ public:
     }
 
     template<typename T>
-    static T* GetComponent()
+    static T* Get()
     {
         if (GetApp() == nullptr) return nullptr;
 
@@ -62,7 +62,7 @@ public:
     template<typename COMPONENT_TYPE>
     static void CheckRequired()
     {
-        if (App::GetComponent<COMPONENT_TYPE>() == nullptr)
+        if (App::Get<COMPONENT_TYPE>() == nullptr)
         {
             LOG(FATAL) << "Missing required component: " << COMPONENT_TYPE::COMPONENT_NAME;
         }

@@ -22,7 +22,7 @@ PlayerController::PlayerController() :
 
 void PlayerController::TickInit(uint32_t delta)
 {
-    mCamera = App::GetComponent<World>()->SpawnActor<Actor>();
+    mCamera = App::Get<World>()->SpawnActor<Actor>();
 
     FinishInit();
 }
@@ -42,12 +42,12 @@ void PlayerController::TickRun(uint32_t delta)
     mCamera->SetRot(mActor->GetRot());
 
     M4 view = glm::lookAt(mCamera->GetPos(), mCamera->GetPos() + mCamera->GetForward(), mCamera->GetUp());
-    App::GetComponent<Renderer>()->SetView(view);
+    App::Get<Renderer>()->SetView(view);
 }
 
 void PlayerController::TickClose(uint32_t delta)
 {
-    App::GetComponent<World>()->DestroyActor(mCamera);
+    App::Get<World>()->DestroyActor(mCamera);
 
     FinishClose();
 }
