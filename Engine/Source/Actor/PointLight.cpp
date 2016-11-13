@@ -9,24 +9,12 @@ namespace vh
 
 void PointLight::OnCreate()
 {
-    Renderer* render = App::Get<Renderer>();
-    if (render)
-    {
-        Light light;
-        light.position = GetPos();
-        light.intensity = mIntensity;
-        LOG(INFO) << "Add light " << light.position << " " << light.intensity;
-        mLightId = render->AddLight(light);
-    }
+    App::Get<Renderer>()->AddLight(this);
 }
 
 void PointLight::OnDestroy()
 {
-    Renderer* render = App::Get<Renderer>();
-    if (render)
-    {
-        render->RemoveLight(mLightId);
-    }
+    App::Get<Renderer>()->RemoveLight(this);
 }
 
 } // namespace vh

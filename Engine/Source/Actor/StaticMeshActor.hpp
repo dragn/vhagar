@@ -9,6 +9,7 @@ namespace vh
 class StaticMeshActor : public Actor
 {
 public:
+    StaticMeshActor();
     StaticMeshActor(const char* filename);
 
     virtual ~StaticMeshActor();

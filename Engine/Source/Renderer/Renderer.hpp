@@ -60,15 +60,19 @@ public:
     /**
      * Set up light sources
      */
-    size_t AddLight(const Light& light)
+    size_t AddLight(Light* light)
     {
         mLights.push_back(light);
         return mLights.size() - 1;
     }
 
-    void RemoveLight(size_t lightId)
+    void RemoveLight(const Light* light)
     {
-        mLights.erase(mLights.begin() + lightId);
+        for (auto l = mLights.begin(); l != mLights.end();)
+        { 
+            if (*l == light) l = mLights.erase(l);
+            else ++l;
+        }
     }
 
     /**
@@ -93,7 +97,7 @@ private:
     SDL_Window *mWindow;
     uint32_t mWindowID;
 
-    std::vector<Light> mLights;
+    std::vector<Light*> mLights;
 
     std::forward_list<Renderable*> mObjects;
 

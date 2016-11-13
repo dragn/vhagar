@@ -7,12 +7,16 @@
 namespace vh
 {
 
-class PointLight : public Actor
+class PointLight : public Actor, public Light
 {
 public:
-    PointLight(V3 pos, float intensity) :
-        Actor(pos),
-        mIntensity(intensity)
+    PointLight()
+        : mIntensity(1.0f)
+    {}
+
+    PointLight(V3 pos, float intensity)
+        : Actor(pos)
+        , mIntensity(intensity)
     {}
 
     // Called when actor is created
@@ -21,11 +25,18 @@ public:
     // Called when actor is destroyed
     virtual void OnDestroy();
 
+    virtual float GetIntensity() const
+    {
+        return mIntensity;
+    }
+
+    virtual V3 GetPos() const
+    {
+        return Actor::GetPos();
+    }
+
 private:
     float mIntensity;
-
-    size_t mLightId;
-
 };
 
 } // namespace vh

@@ -2,9 +2,11 @@
 
 namespace vh {
 
-struct Light {
-    V3 position;
-    float intensity;
+class Light
+{
+public:
+    virtual V3 GetPos() const = 0;
+    virtual float GetIntensity() const = 0;
 };
 
 } // namespace vh

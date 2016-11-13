@@ -69,7 +69,7 @@ private:
     /**
      * Render with light source.
      */
-    virtual void Render(glm::mat4 projection, glm::mat4 view, Light lightSource) = 0;
+    virtual void Render(glm::mat4 projection, glm::mat4 view, const Light* lightSource) = 0;
 };
 
 }

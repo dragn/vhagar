@@ -14,6 +14,12 @@ StaticMeshActor::StaticMeshActor(const char* filename)
     Utils::ImportWavefront(mMesh, filename);
 }
 
+
+StaticMeshActor::StaticMeshActor()
+    : mMesh(nullptr)
+{
+}
+
 StaticMeshActor::~StaticMeshActor()
 {
     if (mMesh)
@@ -24,29 +30,27 @@ StaticMeshActor::~StaticMeshActor()
 
 void StaticMeshActor::OnCreate()
 {
-    Renderer* render = App::Get<Renderer>();
-    if (render)
+    if (mMesh != nullptr)
     {
         mMesh->setModel(mTransform);
-        render->AddObject(mMesh);
+        App::Get<Renderer>()->AddObject(mMesh);
     }
 }
 
 void StaticMeshActor::OnDestroy()
 {
-    Renderer* render = App::Get<Renderer>();
-    if (render)
+    if (mMesh != nullptr)
     {
-        render->RemoveObject(mMesh);
+        App::Get<Renderer>()->RemoveObject(mMesh);
+        delete mMesh;
+        mMesh = nullptr;
     }
-    delete mMesh;
-    mMesh = nullptr;
 }
 
 void StaticMeshActor::_UpdateTransform()
 {
     Actor::_UpdateTransform();
-    mMesh->setModel(mTransform);
+    if (mMesh != nullptr) mMesh->setModel(mTransform);
 }
 
 } // namespace vh

@@ -27,6 +27,17 @@ DEFINE_COMMAND(destroy_actor)
     LOG(INFO) << "Actor " << name << " destroyed";
 }
 
+DEFINE_COMMAND(spawn_actor)
+{
+    if (params.size() <= 1)
+    {
+        LOG(INFO) << "Usage: " << params[0] << " <actor class name>";
+        return;
+    }
+
+    App::Get<World>()->SpawnActorByClassName(params[1]);
+}
+
 const char* World::COMPONENT_NAME = "WORLD";
 
 World::World() : Component(COMPONENT_NAME, 16)
@@ -37,6 +48,7 @@ World::World() : Component(COMPONENT_NAME, 16)
 void World::TickInit(uint32_t delta)
 {
     REGISTER_COMMAND(destroy_actor);
+    REGISTER_COMMAND(spawn_actor);
 
     FinishInit();
 }

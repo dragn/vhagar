@@ -172,7 +172,7 @@ void Renderer::TickRun(uint32_t delta) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE);
     for (size_t i = 1; i < mLights.size(); i++) {
-        Light light = mLights[i];
+        const Light* light = mLights[i];
         for (Renderable *obj : mObjects) {
             obj->Render(mProjection, mView, light);
         }

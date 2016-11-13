@@ -5,6 +5,7 @@
 #include "Component.hpp"
 #include "Renderer/Light.hpp"
 #include <list>
+#include "Actor/ActorFactory.hpp"
 
 namespace vh {
 
@@ -60,8 +61,15 @@ public:
         return nullptr;
     }
 
+    void SpawnActorByClassName(const std::string& name)
+    {
+        Actor* a = mActorFactory.Create(name);
+        AddActor(a);
+    }
+
 private:
     std::list<Actor*> mActors;
+    ActorFactory mActorFactory;
 
     template<typename T>
     T* AddActor(T* actor)
