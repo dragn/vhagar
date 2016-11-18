@@ -4,6 +4,9 @@
 #include "App.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Console/ConsoleCommands.hpp"
+#include "Resource/ResourceSystem.hpp"
+#include "Actor/StaticMeshActor.hpp"
+#include "Utils/ImportUtils.hpp"
 
 namespace vh {
 
@@ -84,6 +87,30 @@ DEFINE_COMMAND(move_actor)
     actor->AddPos(V3(x, y, z));
 }
 
+DEFINE_COMMAND(spawn_mesh_actor)
+{
+    ResourceSystem* rs = App::Get<ResourceSystem>();
+    World* world = App::Get<World>();
+
+    CHECK(world);
+    CHECK(rs);
+
+    if (params.size() < 2)
+    {
+        LOG(INFO) << "Usage: " << params[0] << " <file name>";
+        return;
+    }
+
+    Mesh* mesh = new Mesh;
+    if (rs->Load<Mesh>(params[1].c_str(), mesh))
+    {
+        LOG(INFO) << "Mesh loaded successfully";
+
+        StaticMeshActor* actor = world->SpawnActor<StaticMeshActor>();
+        actor->SetMesh(mesh);
+    }
+}
+
 const char* World::COMPONENT_NAME = "WORLD";
 
 World::World() : Component(COMPONENT_NAME, 16)
@@ -97,6 +124,7 @@ void World::TickInit(uint32_t delta)
     REGISTER_COMMAND(spawn_actor);
     REGISTER_COMMAND(pos_actor);
     REGISTER_COMMAND(move_actor);
+    REGISTER_COMMAND(spawn_mesh_actor);
 
     FinishInit();
 }

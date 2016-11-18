@@ -20,6 +20,11 @@ public:
     // Called when actor is destroyed
     virtual void OnDestroy();
 
+    void SetMesh(Mesh* mesh);
+    const Mesh* GetMesh() const { return mMesh; }
+
+    void LoadMesh(const char* path);
+
 protected:
     virtual void _UpdateTransform();
 

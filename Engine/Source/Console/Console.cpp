@@ -128,7 +128,7 @@ void Console::_Redraw()
 {
     mOverlay->SetPos(20, 20);
 
-    SDL_FillRect(mSurf, NULL, SDL_MapRGB(mSurf->format, 0, 0, 0));
+    SDL_FillRect(mSurf, NULL, SDL_MapRGB(mSurf->format, 16, 16, 16));
 
     if (mFont)
     {

@@ -32,7 +32,7 @@ void StaticMeshActor::OnCreate()
 {
     if (mMesh != nullptr)
     {
-        mMesh->setModel(mTransform);
+        mMesh->SetModel(mTransform);
         App::Get<Renderer>()->AddObject(mMesh);
     }
 }
@@ -47,10 +47,25 @@ void StaticMeshActor::OnDestroy()
     }
 }
 
+
+void StaticMeshActor::SetMesh(Mesh* mesh)
+{
+    if (mMesh != nullptr)
+    {
+        App::Get<Renderer>()->RemoveObject(mMesh);
+        delete mMesh;
+        mMesh = nullptr;
+    }
+
+    mMesh = mesh;
+    mMesh->SetModel(mTransform);
+    App::Get<Renderer>()->AddObject(mMesh);
+}
+
 void StaticMeshActor::_UpdateTransform()
 {
     Actor::_UpdateTransform();
-    if (mMesh != nullptr) mMesh->setModel(mTransform);
+    if (mMesh != nullptr) mMesh->SetModel(mTransform);
 }
 
 } // namespace vh

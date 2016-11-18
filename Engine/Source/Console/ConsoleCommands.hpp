@@ -21,6 +21,8 @@ DECLARE_COMMAND(print);
 DECLARE_COMMAND(list_actors);
 DECLARE_COMMAND(quit);
 DECLARE_COMMAND(help);
+DECLARE_COMMAND(save_mesh);
+DECLARE_COMMAND(load_mesh);
 
 void RegisterAll(Console* console);
 

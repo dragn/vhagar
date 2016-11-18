@@ -22,6 +22,7 @@ PlayerController::PlayerController() :
 void PlayerController::TickInit(uint32_t delta)
 {
     mCamera = App::Get<World>()->SpawnActor<CameraActor>();
+    mConsole = App::Get<Console>();
 
     FinishInit();
 }
@@ -29,6 +30,9 @@ void PlayerController::TickInit(uint32_t delta)
 void PlayerController::TickRun(uint32_t delta)
 {
     if (mActor == nullptr) return;
+
+    // do nothing if console is open
+    if (mConsole->IsShown()) return;
 
     float sec = delta / 1000.0f;
     if (mPressed['w']) mActor->MoveForward(sec);

@@ -25,7 +25,7 @@ const size_t FONT_SIZE = 12;
 const size_t LINE_SPACE = 6;
 
 // number of history records
-const size_t NUM_HISTORY = 3;
+const size_t NUM_HISTORY = 10;
 
 typedef void (*CmdHandler)(const std::vector<std::string>&);
 
@@ -66,6 +66,11 @@ public:
     void ToggleConsole();
 
     void PrintHelp();
+
+    bool IsShown() const
+    {
+        return mShowConsole;
+    }
 
 private:
     bool mShowConsole;

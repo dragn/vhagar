@@ -192,11 +192,11 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
     if (uvs.size() > 0) attribCount += 1;
 
     GLuint attribSize = size;
-    GLfloat* attribData = (GLfloat*) malloc(sizeof(GLfloat) * attribSize * attribCount);
+    GLfloat* attribData = new GLfloat[attribSize * attribCount];
 
     // Allocate index data
     GLuint indexSize = indices.size();
-    GLuint* indexData = (GLuint*) malloc(sizeof(GLuint) * indexSize);
+    GLuint* indexData = new GLuint[indexSize];
 
     Uint32 v = 0, vt = 0, vn = 0;
     std::string str;
@@ -265,8 +265,8 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
     }
 
     // Set attrib and index data to mesh
-    mesh->setAttribData(attribSize, attribCount, attribData);
-    mesh->setIndexData(indexSize, indexData);
+    mesh->SetAttribData(attribSize, attribCount, attribData);
+    mesh->SetIndexData(indexSize, indexData);
 
     LOG(INFO) << "v: " << vertices.size();
     LOG(INFO) << "vn: " << normals.size();

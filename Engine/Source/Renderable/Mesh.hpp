@@ -10,49 +10,68 @@ class Mesh : public Renderable {
     friend class SkyBox;
 
 public:
-    Mesh() : texture(nullptr) {};
+    Mesh() : mTexture(nullptr) {};
 
     virtual ~Mesh();
 
     /**
      * Sets Model matrix for this object
      */
-    void setModel(glm::mat4 _model) { model = _model; }
+    void SetModel(glm::mat4 _model) { mModel = _model; }
 
-    void setAttribData(GLuint size, GLuint count, GLfloat* data) {
-        attribSize = size;
-        attribCount = count;
-        attribData = data;
+    void SetAttribData(GLuint size, GLuint count, GLfloat* data) {
+        mAttribSize = size;
+        mAttribCount = count;
+        mAttribData = data;
     }
 
-    void setIndexData(GLuint size, GLuint* data) {
-        indexSize = size;
-        indexData = data;
+    void SetIndexData(GLuint size, GLuint* data) {
+        mIndexSize = size;
+        mIndexData = data;
     }
 
-    void setTexture(const std::string &filename);
+    void GetAttribData(GLuint& size, GLuint& count, GLfloat*& data) const
+    {
+        size = mAttribSize;
+        count = mAttribCount;
+        data = mAttribData;
+    }
+
+    void GetIndexData(GLuint& size, GLuint*& data) const
+    {
+        size = mIndexSize;
+        data = mIndexData;
+    }
+
+    void SetTexture(const std::string &filename);
+    void SetTexture(const SDL_Surface*);
+
+    const SDL_Surface* GetTexture() const
+    {
+        return mTexture;
+    }
 
 protected:
     // FIXME fix inconsistent private member naming
 
-    glm::mat4 model;
+    glm::mat4 mModel;
 
-    GLuint attribSize = 0;
-    GLuint attribCount = 0;
-    GLfloat *attribData;
+    GLuint mAttribSize = 0;
+    GLuint mAttribCount = 0;
+    GLfloat *mAttribData;
 
-    GLuint indexSize = 0;
-    GLuint *indexData;
+    GLuint mIndexSize = 0;
+    GLuint *mIndexData;
 
-    GLuint programID;
-    GLBufferInfo glInfo;
+    GLuint mProgramID;
+    GLBufferInfo mGLInfo;
 
-    SDL_Surface *texture;
+    SDL_Surface *mTexture;
 
 private:
     /**
      * Called by Renderer when this object is added to the rendered world.
-     * Should alocate OpenGL buffers and textures.
+     * Should allocate OpenGL buffers and textures.
      */
     virtual void BeforeRender();
 

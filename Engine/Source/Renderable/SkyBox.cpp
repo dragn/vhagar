@@ -4,13 +4,15 @@
 
 using namespace vh;
 
-const GLfloat vertexData[] = {-1, -1, -1, -1, -1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1, -1, -1, 1, -1, 1, 1, 1, 1, 1, -1, 1, -1, -1, 1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, 1, 1, -1, 1, -1, -1, -1, -1, 1, -1, -1, 1, -1, -1, -1, 1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1};
+const GLfloat vertexData[] = { -1, -1, -1, -1, -1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1, -1, -1, 1, -1, 1, 1, 1, 1, 1, -1, 1, -1, -1, 1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, 1, 1, -1, 1, -1, -1, -1, -1, 1, -1, -1, 1, -1, -1, -1, 1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1 };
 const GLuint vertexDataSize = 72;
-const GLuint indexData[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 0, 2, 19, 3, 5, 20, 6, 8, 21, 9, 11, 22, 12, 14, 23, 15, 17};
+const GLuint indexData[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 0, 2, 19, 3, 5, 20, 6, 8, 21, 9, 11, 22, 12, 14, 23, 15, 17 };
 const GLuint indexDataSize = 36;
 
-void SkyBox::BeforeRender() {
-    if (isReadyToRender) {
+void SkyBox::BeforeRender()
+{
+    if (isReadyToRender)
+    {
         LOG(WARNING) << "Attempt to prepare already prepared object!";
         return;
     }
@@ -28,16 +30,18 @@ void SkyBox::BeforeRender() {
     isReadyToRender = true;
 }
 
-void SkyBox::AfterRender() {
-    if (isReadyToRender) {
+void SkyBox::AfterRender()
+{
+    if (isReadyToRender)
+    {
         GLuint ids[] = { glInfo.indexBuffer, glInfo.attribBuffer };
         glDeleteBuffers(2, ids);
         isReadyToRender = false;
     }
 }
 
-void SkyBox::Render(glm::mat4 projection, glm::mat4 view) {
-
+void SkyBox::Render(glm::mat4 projection, glm::mat4 view)
+{
     if (!isReadyToRender) return;
 
     glDisable(GL_CULL_FACE);

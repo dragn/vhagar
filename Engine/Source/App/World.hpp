@@ -55,7 +55,7 @@ public:
         {
             if (actor->GetName() == name)
             {
-                return actor;
+                return reinterpret_cast<T*>(actor);
             }
         }
         return nullptr;

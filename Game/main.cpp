@@ -44,8 +44,9 @@ int main(int argc, char ** argv) {
 
     app.AddComponent<Renderer>(ro);
     app.AddComponent<World>();
-    app.AddComponent<PlayerController>();
     app.AddComponent<Console>();
+    app.AddComponent<PlayerController>();
+    app.AddComponent<ResourceSystem>();
 
     app.Run();
 

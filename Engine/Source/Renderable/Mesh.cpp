@@ -7,9 +7,9 @@ using namespace vh;
 
 Mesh::~Mesh() {
     LOG(INFO) << "Mesh destructor";
-    if (indexSize > 0) free(indexData);
-    if (attribSize > 0) free(attribData);
-    if (texture != NULL) SDL_FreeSurface(texture);
+    if (mIndexSize > 0) delete[] mIndexData;
+    if (mAttribSize > 0) delete[] mAttribData;
+    if (mTexture != NULL) SDL_FreeSurface(mTexture);
 }
 
 void
@@ -19,41 +19,41 @@ Mesh::BeforeRender() {
         return;
     }
 
-    if (indexSize == 0) {
+    if (mIndexSize == 0) {
         LOG(WARNING) << "Object has no data!";
         return;
     }
 
-    programID = Utils::GetShaderProgram("SimpleShader");
+    mProgramID = Utils::GetShaderProgram("SimpleShader");
 
-    if (programID == 0) {
+    if (mProgramID == 0) {
         LOG(ERROR) << "Object won't be rendered, because shader program invalid";
         // there was an error linking the program, do not proceed!
         return;
     }
 
     // specify sizes
-    glInfo.attribBufferSize = attribSize;
-    glInfo.indexBufferSize = indexSize;
+    mGLInfo.attribBufferSize = mAttribSize;
+    mGLInfo.indexBufferSize = mIndexSize;
 
     // buffer index data
-    glInfo.indexBuffer = Utils::BufferElementArray(glInfo.indexBufferSize, indexData);
+    mGLInfo.indexBuffer = Utils::BufferElementArray(mGLInfo.indexBufferSize, mIndexData);
 
     // buffer attribute data
-    glGenBuffers(1, &glInfo.attribBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, glInfo.attribBuffer);
+    glGenBuffers(1, &mGLInfo.attribBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, mGLInfo.attribBuffer);
 
-    GLuint bytes = glInfo.attribBufferSize * sizeof(GLfloat);
-    glBufferData(GL_ARRAY_BUFFER, attribCount * bytes, NULL, GL_STATIC_DRAW);
+    GLuint bytes = mGLInfo.attribBufferSize * sizeof(GLfloat);
+    glBufferData(GL_ARRAY_BUFFER, mAttribCount * bytes, NULL, GL_STATIC_DRAW);
 
-    for (size_t i = 0; i < attribCount; i++) {
-        glBufferSubData(GL_ARRAY_BUFFER, i * bytes, bytes, attribData + i * attribSize);
+    for (size_t i = 0; i < mAttribCount; i++) {
+        glBufferSubData(GL_ARRAY_BUFFER, i * bytes, bytes, mAttribData + i * mAttribSize);
     }
 
     // load texture
-    if (texture != NULL) {
-        glInfo.texture = Utils::BufferTexture2D(texture);
-        LOG(INFO) << "Texture loaded with ID: " << glInfo.texture;
+    if (mTexture != NULL) {
+        mGLInfo.texture = Utils::BufferTexture2D(mTexture);
+        LOG(INFO) << "Texture loaded with ID: " << mGLInfo.texture;
     }
 
     isReadyToRender = true;
@@ -62,13 +62,13 @@ Mesh::BeforeRender() {
 void
 Mesh::AfterRender() {
     if (isReadyToRender) {
-        GLuint ids[] = { glInfo.indexBuffer, glInfo.attribBuffer };
+        GLuint ids[] = { mGLInfo.indexBuffer, mGLInfo.attribBuffer };
         glDeleteBuffers(2, ids);
         isReadyToRender = false;
     }
-    if (glInfo.texture > 0) {
-        LOG(INFO) << "Deleting previous texture: " << glInfo.texture;
-        glDeleteTextures(1, &glInfo.texture);
+    if (mGLInfo.texture > 0) {
+        LOG(INFO) << "Deleting previous texture: " << mGLInfo.texture;
+        glDeleteTextures(1, &mGLInfo.texture);
     }
 }
 
@@ -77,51 +77,67 @@ Mesh::Render(glm::mat4 projection, glm::mat4 view, const Light* lightSource) {
 
     if (!isReadyToRender) return;
 
-    MVP = projection * view * model;
+    MVP = projection * view * mModel;
 
-    glUseProgram(programID);
+    glUseProgram(mProgramID);
 
-    Utils::PutUniformVec3(programID, "uLightPosition", lightSource->GetPos());
-    Utils::PutUniformFloat(programID, "uLightIntensity", lightSource->GetIntensity());
+    Utils::PutUniformVec3(mProgramID, "uLightPosition", lightSource->GetPos());
+    Utils::PutUniformFloat(mProgramID, "uLightIntensity", lightSource->GetIntensity());
 
-    Utils::PutUniformMat4(programID, "uMVP", MVP);
-    Utils::PutUniformMat4(programID, "uM", model);
-    Utils::PutUniformMat4(programID, "uV", view);
+    Utils::PutUniformMat4(mProgramID, "uMVP", MVP);
+    Utils::PutUniformMat4(mProgramID, "uM", mModel);
+    Utils::PutUniformMat4(mProgramID, "uV", view);
 
-    if (glInfo.texture) {
-        glBindTexture(GL_TEXTURE_2D, glInfo.texture);
+    if (mGLInfo.texture) {
+        glBindTexture(GL_TEXTURE_2D, mGLInfo.texture);
     }
     else
     {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    for (size_t i = 0; i < attribCount; i++) {
+    for (GLuint i = 0; i < mAttribCount; i++) {
         glEnableVertexAttribArray(i);
     }
 
-    glBindBuffer(GL_ARRAY_BUFFER, glInfo.attribBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, mGLInfo.attribBuffer);
 
     GLfloat *offset = 0;
-    for (size_t i = 0; i < attribCount; i++) {
-        glVertexAttribPointer(i, 3, GL_FLOAT, GL_FALSE, 0, offset + i * glInfo.attribBufferSize);
+    for (GLuint i = 0; i < mAttribCount; i++) {
+        glVertexAttribPointer(i, 3, GL_FLOAT, GL_FALSE, 0, offset + i * mGLInfo.attribBufferSize);
     }
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glInfo.indexBuffer);
-    glDrawElements(GL_TRIANGLES, glInfo.indexBufferSize, GL_UNSIGNED_INT, (void*)0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mGLInfo.indexBuffer);
+    glDrawElements(GL_TRIANGLES, mGLInfo.indexBufferSize, GL_UNSIGNED_INT, (void*)0);
 
-    for (size_t i = 0; i < attribCount; i++) {
+    for (GLuint i = 0; i < mAttribCount; i++) {
         glDisableVertexAttribArray(i);
     }
 }
 
-void Mesh::setTexture(const std::string &filename) {
-    if (glInfo.texture > 0) {
-        LOG(INFO) << "Deleting previous texture: " << glInfo.texture;
-        glDeleteTextures(1, &glInfo.texture);
-        SDL_FreeSurface(texture);
+void Mesh::SetTexture(const std::string &filename) {
+    if (mGLInfo.texture > 0) {
+        LOG(INFO) << "Deleting previous texture: " << mGLInfo.texture;
+        glDeleteTextures(1, &mGLInfo.texture);
+        SDL_FreeSurface(mTexture);
     }
 
     LOG(INFO) << "Setting up texture " << filename;
-    texture = Utils::LoadImage(filename);
+    mTexture = Utils::LoadImage(filename);
+}
+
+void vh::Mesh::SetTexture(const SDL_Surface* texture)
+{
+    if (mGLInfo.texture > 0) {
+        LOG(INFO) << "Deleting previous texture: " << mGLInfo.texture;
+        glDeleteTextures(1, &mGLInfo.texture);
+    }
+
+    if (mTexture != nullptr)
+    {
+        SDL_FreeSurface(mTexture);
+        mTexture = nullptr;
+    }
+
+    if (texture != nullptr) mTexture = new SDL_Surface(*texture);
 }

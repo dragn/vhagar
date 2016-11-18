@@ -5,6 +5,7 @@
 #include "Component.hpp"
 #include "Actor/Controllable.hpp"
 #include "Actor/CameraActor.hpp"
+#include "Console/Console.hpp"
 
 namespace vh {
 
@@ -32,6 +33,7 @@ public:
     virtual void TickClose(uint32_t delta);
 
 private:
+    Console* mConsole;
     Controllable* mActor;
 
     CameraActor* mCamera;

@@ -21,3 +21,4 @@
 #include "../Source/Console/Console.hpp"
 #include "../Source/Console/RemoteConsoleServer.hpp"
 #include "../Source/Network/Network.hpp"
+#include "../Source/Resource/ResourceSystem.hpp"

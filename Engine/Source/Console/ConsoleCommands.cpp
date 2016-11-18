@@ -6,6 +6,9 @@
 #include "ConsoleCommands.hpp"
 #include "Console.hpp"
 
+#include "Resource/ResourceSystem.hpp"
+#include "Actor/StaticMeshActor.hpp"
+
 namespace vh
 {
 
@@ -22,6 +25,7 @@ void RegisterAll(Console* console)
     REGISTER_COMMAND(list_actors);
     REGISTER_COMMAND(quit);
     REGISTER_COMMAND(help);
+    REGISTER_COMMAND(save_mesh);
 }
 
 DEFINE_COMMAND(print)
@@ -57,6 +61,33 @@ DEFINE_COMMAND(quit)
 DEFINE_COMMAND(help)
 {
     App::Get<Console>()->PrintHelp();
+}
+
+DEFINE_COMMAND(save_mesh)
+{
+    ResourceSystem* rs = App::Get<ResourceSystem>();
+    World* world = App::Get<World>();
+
+    CHECK(world);
+    CHECK(rs);
+
+    if (params.size() < 3)
+    {
+        LOG(INFO) << "Usage: " << params[0] << " <actor name> <file name>";
+        return;
+    }
+
+    StaticMeshActor* actor = world->GetActorByName<StaticMeshActor>(params[1]);
+    if (actor == nullptr)
+    {
+        LOG(INFO) << "Could not find actor " << params[1];
+        return;
+    }
+
+    if (rs->Save<Mesh>(params[2].c_str(), actor->GetMesh()))
+    {
+        LOG(INFO) << "Saved mesh successfully";
+    }
 }
 
 } // namespace ConsoleCommands
