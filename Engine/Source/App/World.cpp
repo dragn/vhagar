@@ -87,6 +87,28 @@ DEFINE_COMMAND(move_actor)
     actor->AddPos(V3(x, y, z));
 }
 
+DEFINE_COMMAND(rotate_actor)
+{
+    if (params.size() < 5)
+    {
+        LOG(INFO) << "Rotate actor";
+        LOG(INFO) << "Usage: " << params[0] << " <name> <yaw> <pitch> <roll>";
+    }
+
+    Actor* actor = App::Get<World>()->GetActorByName<Actor>(params[1]);
+    if (actor == nullptr)
+    {
+        LOG(INFO) << "Actor " << params[1] << " not found";
+        return;
+    }
+
+    float x = std::stof(params[2]);
+    float y = std::stof(params[3]);
+    float z = std::stof(params[4]);
+
+    actor->AddRot(vh::Rot(x, y, z));
+}
+
 DEFINE_COMMAND(spawn_mesh_actor)
 {
     ResourceSystem* rs = App::Get<ResourceSystem>();
@@ -125,6 +147,7 @@ void World::TickInit(uint32_t delta)
     REGISTER_COMMAND(pos_actor);
     REGISTER_COMMAND(move_actor);
     REGISTER_COMMAND(spawn_mesh_actor);
+    REGISTER_COMMAND(rotate_actor);
 
     FinishInit();
 }

@@ -19,7 +19,6 @@ public:
 
             if (world && world->IsRunning() && render && render->IsRunning())
             {
-                world->SpawnActor<StaticMeshActor>("Assets/shadow_scene/shadow_scene.obj");
                 world->SpawnActor<PointLight>(V3(0, 2, 4), 0.4);
 
                 Get<PlayerController>()->Control(world->SpawnActor<FreeFloating>());
