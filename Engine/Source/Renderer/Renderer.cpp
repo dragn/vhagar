@@ -2,6 +2,7 @@
 
 #include "Common.hpp"
 #include "App/App.hpp"
+#include "Console/ConsoleCommands.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -25,6 +26,14 @@ void reportGLError(int error) {
             LOG(ERROR) << "GL ERROR: " << error;
     }
 }
+}
+
+DEFINE_COMMAND(toggle_wireframe)
+{
+    Renderer* renderer = App::Get<Renderer>();
+    CHECK(renderer);
+
+    renderer->Toggle(RenderFlags::DRAW_WIREFRAMES);
 }
 
 void Renderer::TickInit(uint32_t delta) {
@@ -119,6 +128,8 @@ void Renderer::TickInit(uint32_t delta) {
 
     // Enable multisampling
     if (mOptions.antialias != RendererOptions::AA_OFF) glEnable(GL_MULTISAMPLE);
+
+    REGISTER_COMMAND(toggle_wireframe);
 
     FinishInit();
 }

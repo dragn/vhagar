@@ -52,8 +52,6 @@ public:
     }
 
 protected:
-    // FIXME fix inconsistent private member naming
-
     glm::mat4 mModel;
 
     GLuint mAttribSize = 0;
@@ -64,9 +62,12 @@ protected:
     GLuint *mIndexData;
 
     GLuint mProgramID;
+    GLuint mWireProgramID;
     GLBufferInfo mGLInfo;
 
     SDL_Surface *mTexture;
+
+    Renderer* mRenderer;
 
 private:
     /**
@@ -86,7 +87,7 @@ private:
      */
     virtual void Render(glm::mat4 projection, glm::mat4 view, const Light* lightSource);
 
-    virtual void Render(glm::mat4 projection, glm::mat4 view) {}; // Empty - render nothing without light (yet)
+    virtual void Render(glm::mat4 projection, glm::mat4 view);
 };
 
 }

@@ -4,3 +4,4 @@ Vhagar/Shaders/Shaders.hpp
 *.lib
 *.a
 tags
+.consolehist

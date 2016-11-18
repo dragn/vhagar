@@ -3,6 +3,7 @@
 #include "Console.hpp"
 #include <sstream>
 #include <iterator>
+#include <fstream>
 
 namespace vh
 {
@@ -59,6 +60,18 @@ void Console::TickInit(uint32_t delta)
     mLogSink = new ConsoleLogSink(this);
     google::AddLogSink(mLogSink);
 
+    std::ifstream hist(".consolehist");
+    if (hist.is_open())
+    {
+        std::string line;
+        while (std::getline(hist, line))
+        {
+            mHistory[mHistoryIdx] = line;
+            mHistoryIdx = (mHistoryIdx + 1) % NUM_HISTORY;
+        }
+        hist.close();
+    }
+
     FinishInit();
 }
 
@@ -87,6 +100,20 @@ void Console::TickClose(uint32_t delta)
     }
 
     if (mSurf) SDL_FreeSurface(mSurf);
+
+    std::ofstream hist(".consolehist");
+    if (hist.is_open())
+    {
+        for (size_t i = 1; i <= NUM_HISTORY; ++i)
+        {
+            std::string& h = mHistory[(mHistoryIdx + i) % NUM_HISTORY];
+            if (!h.empty())
+            {
+                hist << h << std::endl;
+            }
+        }
+        hist.close();
+    }
 
     FinishClose();
 }
@@ -231,7 +258,8 @@ void Console::HandleEvent(SDL_Event* event)
         {
             if (!mInput.empty())
             {
-                if (mHistory[(NUM_HISTORY + mHistoryIdx - 1) % NUM_HISTORY] != mInput)
+                if (mHistory[(NUM_HISTORY + mHistoryIdx - 1) % NUM_HISTORY] != mInput 
+                    && mInput != "quit")
                 {
                     mHistory[mHistoryIdx] = mInput;
                     mHistoryIdx = (mHistoryIdx + 1) % NUM_HISTORY;

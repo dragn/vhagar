@@ -31,6 +31,15 @@ struct RendererOptions {
     } monitor = MON_FIRST;
 };
 
+namespace RenderFlags
+{
+enum Type
+{
+    DRAW_WIREFRAMES = 1,
+    DRAW_LABELS = 1 << 1,
+};
+}
+
 /**
  * The Renderer
  **/
@@ -90,8 +99,25 @@ public:
         return mOptions;
     }
 
+    uint8_t GetFlags() const
+    {
+        return mFlags;
+    }
+
+    bool IsOn(RenderFlags::Type flag) const
+    {
+        return mFlags && flag;
+    }
+
+    void Toggle(RenderFlags::Type flag)
+    {
+        mFlags ^= flag;
+    }
+
 private:
     RendererOptions mOptions;
+
+    uint8_t mFlags = 0;
 
     SDL_GLContext mGLContext;
     SDL_Window *mWindow;
