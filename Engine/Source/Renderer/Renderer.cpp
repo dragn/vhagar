@@ -11,19 +11,22 @@ namespace vh
 
 const char* Renderer::COMPONENT_NAME = "RENDER";
 
-namespace {
-void reportGLError(int error) {
-    switch (error) {
-        case GL_NO_ERROR:
-            return;
-        case GL_INVALID_OPERATION:
-            LOG(ERROR) << "GL ERROR: INVALID_OPERATION";
-            return;
-        case GL_INVALID_VALUE:
-            LOG(ERROR) << "GL ERROR: INVALID_VALUE";
-            return;
-        default:
-            LOG(ERROR) << "GL ERROR: " << error;
+namespace
+{
+void reportGLError(int error)
+{
+    switch (error)
+    {
+    case GL_NO_ERROR:
+        return;
+    case GL_INVALID_OPERATION:
+        LOG(ERROR) << "GL ERROR: INVALID_OPERATION";
+        return;
+    case GL_INVALID_VALUE:
+        LOG(ERROR) << "GL ERROR: INVALID_VALUE";
+        return;
+    default:
+        LOG(ERROR) << "GL ERROR: " << error;
     }
 }
 }
@@ -36,9 +39,11 @@ DEFINE_COMMAND(toggle_wireframe)
     renderer->Toggle(RenderFlags::DRAW_WIREFRAMES);
 }
 
-void Renderer::TickInit(uint32_t delta) {
+void Renderer::TickInit(uint32_t delta)
+{
     LOG(INFO) << "SDL Initialization";
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    {
         LOG(FATAL) << SDL_GetError();
         Close();
         return;
@@ -62,12 +67,12 @@ void Renderer::TickInit(uint32_t delta) {
 
     // Window mode MUST include SDL_WINDOW_OPENGL for use with OpenGL.
     mWindow = SDL_CreateWindow(
-            "GameEngine Demo",
-            SDL_WINDOWPOS_CENTERED_DISPLAY(mOptions.monitor),
-            SDL_WINDOWPOS_CENTERED_DISPLAY(mOptions.monitor),
-            mOptions.screenWidth,
-            mOptions.screenHeight,
-            flags);
+        "GameEngine Demo",
+        SDL_WINDOWPOS_CENTERED_DISPLAY(mOptions.monitor),
+        SDL_WINDOWPOS_CENTERED_DISPLAY(mOptions.monitor),
+        mOptions.screenWidth,
+        mOptions.screenHeight,
+        flags);
 
     if (mWindow == nullptr)
     {
@@ -92,7 +97,8 @@ void Renderer::TickInit(uint32_t delta) {
     LOG(INFO) << "GLSL Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION);
 
     GLenum err = glewInit();
-    if (err != GLEW_OK) {
+    if (err != GLEW_OK)
+    {
         LOG(FATAL) << "Glew Error: " << glewGetErrorString(err);
         Close();
         GetApp()->Close();
@@ -103,20 +109,22 @@ void Renderer::TickInit(uint32_t delta) {
 
     mProjection = glm::perspective(45.f, aspect, 0.1f, 100.f);
 
-    if (!GLEW_VERSION_3_0) {
+    if (!GLEW_VERSION_3_0)
+    {
         LOG(ERROR) << "Only OpenGL versions 3.0+ supported. Sorry.";
         Close();
         GetApp()->Close();
         return;
     }
 
-    if (SDL_GL_SetSwapInterval(1) != 0) {
+    if (SDL_GL_SetSwapInterval(1) != 0)
+    {
         LOG(WARNING) << "Can't set swap interval: " << SDL_GetError();
     }
 
     // Enable backface culling
     glEnable(GL_CULL_FACE);
-    
+
     // Enable depth test
     glEnable(GL_DEPTH_TEST);
 
@@ -134,8 +142,10 @@ void Renderer::TickInit(uint32_t delta) {
     FinishInit();
 }
 
-void Renderer::TickClose(uint32_t delta) {
-    for (Renderable *obj : mObjects) {
+void Renderer::TickClose(uint32_t delta)
+{
+    for (Renderable *obj : mObjects)
+    {
         obj->AfterRender();
         delete obj;
     }
@@ -148,7 +158,8 @@ void Renderer::TickClose(uint32_t delta) {
     FinishClose();
 }
 
-void Renderer::AddObject(Renderable *object) {
+void Renderer::AddObject(Renderable *object)
+{
     CHECK(IsRunning()) << "Invalid state";
     CHECK(object);
 
@@ -156,7 +167,8 @@ void Renderer::AddObject(Renderable *object) {
     object->BeforeRender();
 }
 
-void Renderer::RemoveObject(Renderable *object) {
+void Renderer::RemoveObject(Renderable *object)
+{
     CHECK(IsRunning()) << "Invalid state";
     CHECK(object);
 
@@ -164,29 +176,16 @@ void Renderer::RemoveObject(Renderable *object) {
     mObjects.remove(object);
 }
 
-void Renderer::TickRun(uint32_t delta) {
+void Renderer::TickRun(uint32_t delta)
+{
     BeforeRender();
 
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glDisable(GL_BLEND);
-    for (Renderable *obj : mObjects) {
-        obj->Render(mProjection, mView);
-    }
-    if (mLights.size()) {
-        for (Renderable *obj : mObjects) {
-            obj->Render(mProjection, mView, mLights[0]);
-        }
-    }
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE);
-    for (size_t i = 1; i < mLights.size(); i++) {
-        const Light* light = mLights[i];
-        for (Renderable *obj : mObjects) {
-            obj->Render(mProjection, mView, light);
-        }
+    for (Renderable *obj : mObjects)
+    {
+        obj->Render(mProjection, mView, this);
     }
 
     int error = glGetError();
@@ -195,6 +194,30 @@ void Renderer::TickRun(uint32_t delta) {
     SDL_GL_SwapWindow(mWindow);
 
     AfterRender();
+}
+
+void Renderer::AddLight(const PointLight* light)
+{
+    if (mLights.size() >= MAX_POINT_LIGHTS)
+    {
+        LOG(WARNING) << "Point lights limit reached";
+        return;
+    }
+    mLights.push_back(light);
+}
+
+void Renderer::RemoveLight(const PointLight* light)
+{
+    for (auto l = mLights.begin(); l != mLights.end();)
+    {
+        if (*l == light) l = mLights.erase(l);
+        else ++l;
+    }
+}
+
+const std::vector<const PointLight*> Renderer::GetPointLights() const
+{
+    return mLights;
 }
 
 } // namespace vh

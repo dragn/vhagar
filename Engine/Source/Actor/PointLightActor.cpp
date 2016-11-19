@@ -1,18 +1,18 @@
 #include "Common.hpp"
 
-#include "PointLight.hpp"
+#include "PointLightActor.hpp"
 #include "App/App.hpp"
 #include "Renderer/Renderer.hpp"
 
 namespace vh
 {
 
-void PointLight::OnCreate()
+void PointLightActor::OnCreate()
 {
     App::Get<Renderer>()->AddLight(this);
 }
 
-void PointLight::OnDestroy()
+void PointLightActor::OnDestroy()
 {
     App::Get<Renderer>()->RemoveLight(this);
 }

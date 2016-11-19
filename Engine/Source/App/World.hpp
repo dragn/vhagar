@@ -3,7 +3,7 @@
 #include "Common.hpp"
 #include "Actor/Actor.hpp"
 #include "Component.hpp"
-#include "Renderer/Light.hpp"
+#include "Renderer/PointLight.hpp"
 #include <list>
 #include "Actor/ActorFactory.hpp"
 

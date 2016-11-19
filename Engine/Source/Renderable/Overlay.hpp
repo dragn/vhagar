@@ -16,8 +16,7 @@ public:
     /* Object methods */
     virtual void BeforeRender();
     virtual void AfterRender();
-    virtual void Render(glm::mat4 projection, glm::mat4 view);
-    virtual void Render(glm::mat4 projection, glm::mat4 view, const Light* lightSource) {}; // empty
+    virtual void Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer);
     /* end of Object methods */
 
 private:

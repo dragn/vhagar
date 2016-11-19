@@ -2,7 +2,7 @@
 
 namespace vh {
 
-class Light
+class PointLight
 {
 public:
     virtual V3 GetPos() const = 0;

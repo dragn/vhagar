@@ -32,9 +32,7 @@ private:
     /**
      * Handles actual rendering of this object (called from Renderer::render())
      */
-    virtual void Render(glm::mat4 projection, glm::mat4 view);
-
-    virtual void Render(glm::mat4 projection, glm::mat4 view, const Light* lightSource) {} // nothing to do here
+    virtual void Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer);
 };
 
 } // namespace vh

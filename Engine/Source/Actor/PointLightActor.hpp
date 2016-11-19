@@ -2,19 +2,19 @@
 
 #include "Actor.hpp"
 
-#include "Renderer/Light.hpp"
+#include "Renderer/PointLight.hpp"
 
 namespace vh
 {
 
-class PointLight : public Actor, public Light
+class PointLightActor : public Actor, public PointLight
 {
 public:
-    PointLight()
+    PointLightActor()
         : mIntensity(1.0f)
     {}
 
-    PointLight(V3 pos, float intensity)
+    PointLightActor(V3 pos, float intensity)
         : Actor(pos)
         , mIntensity(intensity)
     {}

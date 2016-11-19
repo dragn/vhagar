@@ -90,7 +90,7 @@ Mesh::AfterRender()
 }
 
 void
-Mesh::Render(glm::mat4 projection, glm::mat4 view, const Light* lightSource)
+Mesh::Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer)
 {
     if (!isReadyToRender) return;
 
@@ -99,8 +99,8 @@ Mesh::Render(glm::mat4 projection, glm::mat4 view, const Light* lightSource)
     glUseProgram(mProgramID);
     Utils::PutUniformVec3(mProgramID, "uColor", V3(0, 0.4f, 0));
 
-    Utils::PutUniformVec3(mProgramID, "uLightPosition", lightSource->GetPos());
-    Utils::PutUniformFloat(mProgramID, "uLightIntensity", lightSource->GetIntensity());
+    Utils::PutUniformVec3(mProgramID, "uLightPosition", renderer->GetPointLights()[0]->GetPos());
+    Utils::PutUniformFloat(mProgramID, "uLightIntensity", renderer->GetPointLights()[0]->GetIntensity());
 
     Utils::PutUniformMat4(mProgramID, "uMVP", MVP);
     Utils::PutUniformMat4(mProgramID, "uM", mModel);
@@ -135,6 +135,22 @@ Mesh::Render(glm::mat4 projection, glm::mat4 view, const Light* lightSource)
     {
         glDisableVertexAttribArray(i);
     }
+
+    if (mRenderer->IsOn(RenderFlags::DRAW_WIREFRAMES))
+    {
+        MVP = projection * view * mModel;
+
+        glUseProgram(mWireProgramID);
+        Utils::PutUniformVec3(mWireProgramID, "uColor", V3(0, 0.4f, 0));
+        Utils::PutUniformMat4(mWireProgramID, "uMVP", MVP);
+
+        glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, mGLInfo.attribBuffer);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mGLInfo.indexBuffer);
+        glDrawElements(GL_LINE_STRIP, mGLInfo.indexBufferSize, GL_UNSIGNED_INT, (void*) 0);
+        glDisableVertexAttribArray(0);
+    }
 }
 
 void Mesh::SetTexture(const std::string &filename)
@@ -165,25 +181,4 @@ void vh::Mesh::SetTexture(const SDL_Surface* texture)
     }
 
     if (texture != nullptr) mTexture = new SDL_Surface(*texture);
-}
-
-void vh::Mesh::Render(glm::mat4 projection, glm::mat4 view)
-{
-    if (!isReadyToRender) return;
-
-    if (mRenderer->IsOn(RenderFlags::DRAW_WIREFRAMES))
-    {
-        MVP = projection * view * mModel;
-
-        glUseProgram(mWireProgramID);
-        Utils::PutUniformVec3(mWireProgramID, "uColor", V3(0, 0.4f, 0));
-        Utils::PutUniformMat4(mWireProgramID, "uMVP", MVP);
-
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, mGLInfo.attribBuffer);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mGLInfo.indexBuffer);
-        glDrawElements(GL_LINE_STRIP, mGLInfo.indexBufferSize, GL_UNSIGNED_INT, (void*) 0);
-        glDisableVertexAttribArray(0);
-    }
 }

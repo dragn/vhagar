@@ -3,10 +3,14 @@
 #include <vector>
 #include <forward_list>
 #include "Renderable/Renderable.hpp"
-#include "Light.hpp"
+#include "PointLight.hpp"
 #include "App/Component.hpp"
 
 namespace vh {
+
+const static size_t MAX_POINT_LIGHTS = 10;
+const static size_t MAX_AMBIENT_LIGHTS = 10;
+const static size_t MAX_DIRECTION_LIGHTS = 10;
 
 /**
  * Renderer options
@@ -69,21 +73,10 @@ public:
     /**
      * Set up light sources
      */
-    size_t AddLight(Light* light)
-    {
-        mLights.push_back(light);
-        return mLights.size() - 1;
-    }
-
-    void RemoveLight(const Light* light)
-    {
-        for (auto l = mLights.begin(); l != mLights.end();)
-        { 
-            if (*l == light) l = mLights.erase(l);
-            else ++l;
-        }
-    }
-
+    void AddLight(const PointLight* light);
+    void RemoveLight(const PointLight* light);
+    const std::vector<const PointLight*> GetPointLights() const;
+;
     /**
      * Sets up a projection matrix
      */
@@ -123,7 +116,7 @@ private:
     SDL_Window *mWindow;
     uint32_t mWindowID;
 
-    std::vector<Light*> mLights;
+    std::vector<const PointLight*> mLights;
 
     std::forward_list<Renderable*> mObjects;
 

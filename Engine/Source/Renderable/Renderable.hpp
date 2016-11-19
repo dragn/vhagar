@@ -2,7 +2,7 @@
 
 #include "Common.hpp"
 
-#include "../Renderer/Light.hpp"
+#include "../Renderer/PointLight.hpp"
 
 namespace vh {
 
@@ -64,12 +64,7 @@ private:
      *
      * FIXME passing View and Projection here means every object will have the same view. but ok for now...
      */
-    virtual void Render(glm::mat4 projection, glm::mat4 view) = 0;
-
-    /**
-     * Render with light source.
-     */
-    virtual void Render(glm::mat4 projection, glm::mat4 view, const Light* lightSource) = 0;
+    virtual void Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer) = 0;
 };
 
 }

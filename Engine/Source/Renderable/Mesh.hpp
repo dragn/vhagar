@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Renderer/Light.hpp"
+#include "Renderer/PointLight.hpp"
 #include "Renderable.hpp"
 
 namespace vh {
@@ -85,9 +85,7 @@ private:
     /**
      * Handles actual rendering of this object (called from Renderer::render())
      */
-    virtual void Render(glm::mat4 projection, glm::mat4 view, const Light* lightSource);
-
-    virtual void Render(glm::mat4 projection, glm::mat4 view);
+    virtual void Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer);
 };
 
 }

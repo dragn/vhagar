@@ -40,7 +40,7 @@ void SkyBox::AfterRender()
     }
 }
 
-void SkyBox::Render(glm::mat4 projection, glm::mat4 view)
+void SkyBox::Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer)
 {
     if (!isReadyToRender) return;
 

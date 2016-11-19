@@ -72,7 +72,7 @@ void Overlay::_UpdateVertices(uint32_t w, uint32_t h)
     }
 }
 
-void Overlay::Render(glm::mat4 projection, glm::mat4 view)
+void Overlay::Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer)
 {
     if (!isReadyToRender) return;
 
