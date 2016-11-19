@@ -3,7 +3,7 @@
 #include <vector>
 #include <forward_list>
 #include "Renderable/Renderable.hpp"
-#include "PointLight.hpp"
+#include "Lights.hpp"
 #include "App/Component.hpp"
 
 namespace vh {

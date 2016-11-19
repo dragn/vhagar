@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Renderer/PointLight.hpp"
+#include "Renderer/Lights.hpp"
 #include "Renderable.hpp"
 
 namespace vh {

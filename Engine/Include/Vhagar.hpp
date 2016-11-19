@@ -12,7 +12,6 @@
 #include "../Source/Renderable/Overlay.hpp"
 #include "../Source/Utils/ImportUtils.hpp"
 #include "../Source/Renderer/Renderer.hpp"
-#include "../Source/Renderer/PointLight.hpp"
 
 #include "../Source/App/Arm.hpp"
 #include "../Source/App/PlayerController.hpp"

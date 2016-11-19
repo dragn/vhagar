@@ -2,7 +2,7 @@
 
 #include "Actor.hpp"
 
-#include "Renderer/PointLight.hpp"
+#include "Renderer/Lights.hpp"
 
 namespace vh
 {
