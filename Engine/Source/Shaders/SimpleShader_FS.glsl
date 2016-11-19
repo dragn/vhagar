@@ -23,13 +23,19 @@ void main() {
 
   lowp vec3 E = normalize(fEyeDirection_cameraspace);
   lowp vec3 R = reflect(- l, n);
-  lowp float cosAlpha = clamp(dot(E, R), 0, 1);
 
+  lowp float cosAlpha = clamp(dot(E, R), 0, 1);
   lowp float cosTheta = clamp(dot(n, l), 0, 1);
 
-  lowp vec3 temp;
+  // TODO replace 0.1 with ambient color amount
+  vec3 ambient = fAmbientColor * 0.1; 
 
-  color = fAmbientColor * 0.1 +
-    (fDiffuseColor + texture(textureSampler, fUV).rgb) * cosTheta * fLightIntensity +
-    fSpecularColor * pow(cosAlpha, 5) * fLightIntensity;
+  // TODO apply multiple light sources
+  vec3 diffuse = (fDiffuseColor + texture(textureSampler, fUV).rgb) * cosTheta * fLightIntensity;
+
+  // TODO apply multiple lights, take shininess from material properties
+  vec3 specular = fSpecularColor * pow(cosAlpha, 5) * fLightIntensity;
+
+  // TODO apply gamma correction
+  color = ambient + diffuse + specular;
 }
