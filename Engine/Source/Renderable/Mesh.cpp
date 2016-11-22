@@ -42,6 +42,14 @@ Mesh::BeforeRender()
         return;
     }
 
+    // get uniform locations
+    uidMVP = glGetUniformLocation(mProgramID, "uMVP");
+    uidM = glGetUniformLocation(mProgramID, "uM");
+    uidV = glGetUniformLocation(mProgramID, "uV");
+    uidPLightNum = glGetUniformLocation(mProgramID, "uPLightNum");
+    uidPLightPos = glGetUniformLocation(mProgramID, "uPLightPos");
+    uidPLightInt = glGetUniformLocation(mProgramID, "uPLightInt");
+
     // specify sizes
     mGLInfo.attribBufferSize = mAttribSize;
     mGLInfo.indexBufferSize = mIndexSize;
@@ -100,9 +108,8 @@ Mesh::Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer)
     MVP = projection * view * mModel;
 
     glUseProgram(mProgramID);
-    Utils::PutUniformVec3(mProgramID, "uColor", V3(0, 0.4f, 0));
 
-    glUniform1i(glGetUniformLocation(mProgramID, "uPLightNum"), renderer->GetPointLights().size());
+    glUniform1i(uidPLightNum, renderer->GetPointLights().size());
 
     V3 lightPos[MAX_POINT_LIGHTS];
     float lightInt[MAX_POINT_LIGHTS];
@@ -111,15 +118,12 @@ Mesh::Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer)
         lightPos[i] = renderer->GetPointLights()[i]->GetPos();
         lightInt[i] = renderer->GetPointLights()[i]->GetIntensity();
     }
-    glUniform3fv(glGetUniformLocation(mProgramID, "uPLightPos"), renderer->GetPointLights().size(), reinterpret_cast<GLfloat*>(lightPos));
-    glUniform1fv(glGetUniformLocation(mProgramID, "uPLightInt"), renderer->GetPointLights().size(), reinterpret_cast<GLfloat*>(lightInt));
+    glUniform3fv(uidPLightPos, renderer->GetPointLights().size(), reinterpret_cast<GLfloat*>(lightPos));
+    glUniform1fv(uidPLightInt, renderer->GetPointLights().size(), reinterpret_cast<GLfloat*>(lightInt));
 
-    Utils::PutUniformVec3(mProgramID, "uLightPosition", renderer->GetPointLights()[0]->GetPos());
-    Utils::PutUniformFloat(mProgramID, "uLightIntensity", renderer->GetPointLights()[0]->GetIntensity());
-
-    Utils::PutUniformMat4(mProgramID, "uMVP", MVP);
-    Utils::PutUniformMat4(mProgramID, "uM", mModel);
-    Utils::PutUniformMat4(mProgramID, "uV", view);
+    glUniformMatrix4fv(uidMVP, 1, GL_FALSE, reinterpret_cast<float*>(&MVP[0][0]));
+    glUniformMatrix4fv(uidM, 1, GL_FALSE, reinterpret_cast<float*>(&mModel[0][0]));
+    glUniformMatrix4fv(uidV, 1, GL_FALSE, reinterpret_cast<float*>(&view[0][0]));
 
     if (mGLInfo.texture)
     {

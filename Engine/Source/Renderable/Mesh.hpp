@@ -86,6 +86,14 @@ private:
      * Handles actual rendering of this object (called from Renderer::render())
      */
     virtual void Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer);
+
+    // uniform locations
+    GLint uidMVP;
+    GLint uidM;
+    GLint uidV;
+    GLint uidPLightPos;
+    GLint uidPLightInt;
+    GLint uidPLightNum;
 };
 
 }
