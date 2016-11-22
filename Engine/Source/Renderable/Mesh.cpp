@@ -89,6 +89,9 @@ Mesh::AfterRender()
     }
 }
 
+/*
+    TODO optimize: get uniform location in BeforeRender, optimize lights array cache
+*/
 void
 Mesh::Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer)
 {
@@ -98,6 +101,18 @@ Mesh::Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer)
 
     glUseProgram(mProgramID);
     Utils::PutUniformVec3(mProgramID, "uColor", V3(0, 0.4f, 0));
+
+    glUniform1i(glGetUniformLocation(mProgramID, "uPLightNum"), renderer->GetPointLights().size());
+
+    V3 lightPos[MAX_POINT_LIGHTS];
+    float lightInt[MAX_POINT_LIGHTS];
+    for (size_t i = 0; i < renderer->GetPointLights().size(); ++i)
+    {
+        lightPos[i] = renderer->GetPointLights()[i]->GetPos();
+        lightInt[i] = renderer->GetPointLights()[i]->GetIntensity();
+    }
+    glUniform3fv(glGetUniformLocation(mProgramID, "uPLightPos"), renderer->GetPointLights().size(), reinterpret_cast<GLfloat*>(lightPos));
+    glUniform1fv(glGetUniformLocation(mProgramID, "uPLightInt"), renderer->GetPointLights().size(), reinterpret_cast<GLfloat*>(lightInt));
 
     Utils::PutUniformVec3(mProgramID, "uLightPosition", renderer->GetPointLights()[0]->GetPos());
     Utils::PutUniformFloat(mProgramID, "uLightIntensity", renderer->GetPointLights()[0]->GetIntensity());

@@ -9,7 +9,7 @@
 namespace vh {
 
 const static size_t MAX_POINT_LIGHTS = 10;
-const static size_t MAX_AMBIENT_LIGHTS = 10;
+const static size_t MAX_AMBIENT_LIGHTS = 1;
 const static size_t MAX_DIRECTION_LIGHTS = 10;
 
 /**

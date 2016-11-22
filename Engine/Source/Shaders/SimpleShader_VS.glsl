@@ -1,5 +1,7 @@
 // Supported in 3.30 and 3.00 ES
 
+const int MAX_PLIGHTS = 10;
+
 layout(location = 0) in vec3 iVertexPos;
 layout(location = 1) in vec3 iVertexNormal;
 
@@ -14,10 +16,9 @@ out vec3 fDiffuseColor;
 out vec3 fSpecularColor;
 
 out vec3 fNormal_cameraspace;
-out vec3 fLightDirection_cameraspace;
-out vec3 fEyeDirection_cameraspace;
+out vec3 fPLightDir_cameraspace[MAX_PLIGHTS];
 
-out float fLightIntensity;
+out vec3 fEyeDirection_cameraspace;
 
 out vec2 fUV;
 
@@ -25,8 +26,9 @@ uniform mat4 uMVP;
 uniform mat4 uM;
 uniform mat4 uV;
 
-uniform vec3 uLightPosition;
-uniform float uLightIntensity;
+uniform int uPLightNum;                 // number of point lights
+uniform vec3 uPLightPos[MAX_PLIGHTS];   // point lights positions
+uniform float uPLightInt[MAX_PLIGHTS];  // point lights intencities
 
 void main() {
   gl_Position = uMVP * vec4(iVertexPos, 1);
@@ -36,16 +38,16 @@ void main() {
   vec3 iVertexPos_cameraspace = (uV * uM * vec4(iVertexPos, 1)).xyz;
   fEyeDirection_cameraspace = vec3(0) - iVertexPos_cameraspace;
 
-  vec3 lightPosition_cameraspace = (uV * vec4(uLightPosition, 1)).xyz;
-  fLightDirection_cameraspace = lightPosition_cameraspace + fEyeDirection_cameraspace;
-
   fNormal_cameraspace = (uV * uM * vec4(iVertexNormal, 0)).xyz;
 
   fAmbientColor = iAmbientColor;
   fDiffuseColor = iDiffuseColor;
   fSpecularColor = iSpecularColor;
 
-  fLightIntensity = uLightIntensity;
+  for (int i = 0; i < uPLightNum; i++)
+  {
+    fPLightDir_cameraspace[i] = (uV * vec4(uPLightPos[i], 1)).xyz + fEyeDirection_cameraspace;
+  }
 
   fUV = iUV;
 }

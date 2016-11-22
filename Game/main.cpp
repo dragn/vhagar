@@ -20,6 +20,7 @@ public:
             if (world && world->IsRunning() && render && render->IsRunning())
             {
                 world->SpawnActor<PointLightActor>(V3(0, 2, 4), 0.4);
+                world->SpawnActor<PointLightActor>(V3(5, 0, 0), 0.4);
 
                 Get<PlayerController>()->Control(world->SpawnActor<FreeFloating>());
 
