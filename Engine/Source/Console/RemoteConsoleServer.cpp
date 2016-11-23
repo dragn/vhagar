@@ -1,8 +1,6 @@
 #include "Common.hpp"
 #include "RemoteConsoleServer.hpp"
 
-const char* vh::RemoteConsoleServer::COMPONENT_NAME = "RemoteConsoleServer";
-
 void vh::RemoteConsoleServer::TickInit(uint32_t delta)
 {
     mServer.SetListener(this);

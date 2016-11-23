@@ -43,8 +43,6 @@ protected:
      */
     bool isReadyToRender = false;
 
-    glm::mat4 MVP;
-
 private:
     /**
      * Called by Renderer when this object is added to the rendered world.

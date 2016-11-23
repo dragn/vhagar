@@ -54,7 +54,7 @@ public:
 
         for (Component* comp : GetApp()->mComponents)
         {
-            if (comp->GetName() == T::COMPONENT_NAME) return reinterpret_cast<T*>(comp);
+            if (comp->GetName() == T::GetNameStatic()) return reinterpret_cast<T*>(comp);
         }
         return nullptr;
     }
@@ -64,7 +64,7 @@ public:
     {
         if (App::Get<COMPONENT_TYPE>() == nullptr)
         {
-            LOG(FATAL) << "Missing required component: " << COMPONENT_TYPE::COMPONENT_NAME;
+            LOG(FATAL) << "Missing required component: " << COMPONENT_TYPE::GetNameStatic();
         }
     }
 

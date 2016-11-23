@@ -17,25 +17,37 @@ enum Type
 };
 }
 
+namespace eTickFrequency
+{
+enum Type : int32_t
+{
+    NEVER = -1,     // Tick disabled while running
+    EACH = 0,       // Tick as fast as possible
+    NORMAL = 16,    // Normal tick ~60 fps
+    RARE = 50       // Rare tick
+};
+}
+
+#define COMPONENT_NAME(name) \
+public: \
+    static char* GetNameStatic() { return #name; } \
+    virtual char* GetName() { return #name; }
+
 class Component
 {
 public:
-    Component(const std::string& name, int32_t tickStep = -1) :
+    Component(int32_t tickStep = eTickFrequency::NEVER) :
         mState(eCompState::INIT),
-        mName(name),
         mTickStep(tickStep),
         mLastTick(0)
-    {
-        LOG(INFO) << "Component " << mName << ": created";
-    }
+    {}
 
     virtual ~Component()
     {
-        if (mState != eCompState::CLOSED)
-        {
-            LOG(ERROR) << "Component " << mName << " was not closed before destruction!";
-        }
+        CHECK(mState == eCompState::CLOSED);
     }
+
+    virtual char* GetName() = 0;
 
     void Tick(uint32_t time);
 
@@ -61,11 +73,6 @@ public:
 
     void Close();
 
-    const std::string& GetName()
-    {
-        return mName;
-    }
-
     virtual void HandleEvent(SDL_Event* event) {};
 
 protected:
@@ -86,7 +93,6 @@ protected:
 
 private:
     eCompState::Type mState;
-    std::string mName;
     int32_t mTickStep;
     uint32_t mLastTick;
 };

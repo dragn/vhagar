@@ -15,8 +15,6 @@
 
 static std::string currDir;
 
-const char* vh::ResourceSystem::COMPONENT_NAME = "ResourceSystem";
-
 template<typename T>
 bool OpenFile(T& stream, const std::string& filename, std::ios_base::openmode mode)
 {

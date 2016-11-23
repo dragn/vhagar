@@ -8,8 +8,6 @@
 namespace vh
 {
 
-const char* Console::COMPONENT_NAME = "Console";
-
 class ConsoleLogSink : public google::LogSink
 {
 public:

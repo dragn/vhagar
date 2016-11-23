@@ -14,10 +14,9 @@ namespace vh {
  * PlayerController has a camera, that specifies what the human sees.
  */
 class PlayerController : public Component {
+    COMPONENT_NAME(PlayerController);
 
 public:
-    static const char* COMPONENT_NAME;
-
     PlayerController();
 
     // Take possession of the object

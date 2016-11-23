@@ -48,7 +48,7 @@ void SkyBox::Render(glm::mat4 projection, glm::mat4 view, const Renderer* render
     glDepthMask(GL_FALSE);
     glUseProgram(programID);
 
-    MVP = projection * view * glm::scale(M4(1.0f), V3(50.f, 50.f, 50.f));
+    M4 MVP = projection * view * glm::scale(M4(1.0f), V3(50.f, 50.f, 50.f));
     Utils::PutUniformMat4(programID, "uMVP", MVP);
 
     glBindBuffer(GL_ARRAY_BUFFER, glInfo.attribBuffer);

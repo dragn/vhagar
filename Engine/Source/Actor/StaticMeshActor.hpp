@@ -2,6 +2,7 @@
 
 #include <string>
 #include "Actor.hpp"
+#include "Renderable/Mesh.hpp"
 
 namespace vh
 {

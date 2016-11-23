@@ -105,7 +105,7 @@ Mesh::Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer)
 {
     if (!isReadyToRender) return;
 
-    MVP = projection * view * mModel;
+    M4 MVP = projection * view * mModel;
 
     glUseProgram(mProgramID);
 
@@ -154,7 +154,7 @@ Mesh::Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer)
     {
         glDisableVertexAttribArray(i);
     }
-
+    /*
     if (mRenderer->IsOn(RenderFlags::DRAW_WIREFRAMES))
     {
         MVP = projection * view * mModel;
@@ -170,6 +170,7 @@ Mesh::Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer)
         glDrawElements(GL_LINE_STRIP, mGLInfo.indexBufferSize, GL_UNSIGNED_INT, (void*) 0);
         glDisableVertexAttribArray(0);
     }
+    */
 }
 
 void Mesh::SetTexture(const std::string &filename)

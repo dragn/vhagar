@@ -7,10 +7,8 @@
 
 namespace vh {
 
-const char* PlayerController::COMPONENT_NAME = "PlayerController";
-
 PlayerController::PlayerController() :
-    Component(COMPONENT_NAME, 16),
+    Component(eTickFrequency::NORMAL),
     mActor(nullptr),
     mCamera(nullptr),
     mCameraTurnSpeed(0.001f)

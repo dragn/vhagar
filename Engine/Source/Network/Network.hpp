@@ -10,13 +10,9 @@ namespace vh
 */
 class Network : public Component
 {
+    COMPONENT_NAME(Network);
+
 public:
-    static const char* COMPONENT_NAME;
-
-    Network()
-        : Component(COMPONENT_NAME, -1)
-    {}
-
     virtual void TickInit(uint32_t delta);
     virtual void TickClose(uint32_t delta);
 };

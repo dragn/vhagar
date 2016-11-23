@@ -9,10 +9,10 @@ namespace vh
 
 class ResourceSystem : public Component
 {
-public:
-    static const char* COMPONENT_NAME;
+    COMPONENT_NAME(ResourceSystem);
 
-    ResourceSystem() : Component(COMPONENT_NAME) {}
+public:
+    ResourceSystem() : Component() {}
 
     template<typename T>
     bool Load(const char* path, T* res);

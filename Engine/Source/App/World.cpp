@@ -133,9 +133,7 @@ DEFINE_COMMAND(spawn_mesh_actor)
     }
 }
 
-const char* World::COMPONENT_NAME = "WORLD";
-
-World::World() : Component(COMPONENT_NAME, 16)
+World::World() : Component(eTickFrequency::NORMAL)
 {
     App::CheckRequired<Renderer>();
 }

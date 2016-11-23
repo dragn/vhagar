@@ -11,7 +11,6 @@ using namespace vh;
 const char* vh::Geometry::COMPONENT_NAME = "Geometry";
 
 vh::Geometry::Geometry()
-    : Component(COMPONENT_NAME)
 {
     App::CheckRequired<World>();
     App::CheckRequired<Renderer>();

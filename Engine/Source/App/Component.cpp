@@ -43,13 +43,13 @@ void Component::TickClose(uint32_t delta)
 
 void Component::FinishInit()
 {
-    LOG(INFO) << "Component " << mName << ": init finished";
+    LOG(INFO) << "Component " << GetName() << ": init finished";
     mState = eCompState::RUN;
 }
 
 void Component::FinishClose()
 {
-    LOG(INFO) << "Component " << mName << ": close finished";
+    LOG(INFO) << "Component " << GetName() << ": close finished";
     mState = eCompState::CLOSED;
 }
 
@@ -57,7 +57,7 @@ void Component::Close()
 {
     if (mState != eCompState::CLOSED && mState != eCompState::CLOSE)
     {
-        LOG(INFO) << "Component " << mName << ": close";
+        LOG(INFO) << "Component " << GetName() << ": close";
         mState = eCompState::CLOSE;
     }
 }

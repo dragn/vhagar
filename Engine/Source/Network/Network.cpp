@@ -3,8 +3,6 @@
 #include "Socket.hpp"
 #include "Network.hpp"
 
-const char* vh::Network::COMPONENT_NAME = "Network";
-
 void vh::Network::TickInit(uint32_t delta)
 {
     net::Init();

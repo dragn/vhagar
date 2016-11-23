@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Common.hpp"
-#include "../Renderable/Mesh.hpp"
 
 namespace vh {
 
@@ -42,10 +41,10 @@ public:
     virtual ~Actor() {};
 
     // Called when actor is created
-    virtual void OnCreate() {}
+    virtual void OnCreate() {};
 
     // Called when actor is destroyed
-    virtual void OnDestroy() {}
+    virtual void OnDestroy() {};
 
     // Actor ticks are called from World
     virtual void Tick(uint32_t delta) {}

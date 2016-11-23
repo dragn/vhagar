@@ -33,11 +33,11 @@ class ConsoleLogSink;
 
 class Console : public Component
 {
-public:
-    static const char* COMPONENT_NAME;
+    COMPONENT_NAME(Console);
 
+public:
     Console()
-        : Component(COMPONENT_NAME, 20)
+        : Component(eTickFrequency::RARE)
         , mShowConsole(false)
         , mLogSink(nullptr)
         , mOverlay(nullptr)

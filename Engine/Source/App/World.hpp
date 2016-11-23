@@ -11,9 +11,9 @@ namespace vh {
 
 class World : public Component
 {
-public:
-    static const char* COMPONENT_NAME;
+    COMPONENT_NAME(World);
 
+public:
     World();
 
     template<typename T> T* SpawnActor() { return AddActor(new T); }

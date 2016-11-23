@@ -25,10 +25,10 @@ public:
 
 class RemoteConsoleServer : public Component, public net::TcpServer::EventListener
 {
-public:
-    static const char* COMPONENT_NAME;
+    COMPONENT_NAME(RemoteConsoleServer);
 
-    RemoteConsoleServer() : Component(COMPONENT_NAME, 16)
+public:
+    RemoteConsoleServer() : Component(eTickFrequency::NORMAL)
     {
         App::CheckRequired<Console>();
         App::CheckRequired<Network>();

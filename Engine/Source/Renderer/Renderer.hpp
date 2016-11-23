@@ -48,12 +48,12 @@ enum Type
  * The Renderer
  **/
 class Renderer : public vh::Component {
+    COMPONENT_NAME(Renderer);
 
 public:
-    static const char* COMPONENT_NAME;
 
-    Renderer() : Component(COMPONENT_NAME, 16) {}
-    Renderer(const RendererOptions& opts) : Component(COMPONENT_NAME, 16), mOptions(opts) {}
+    Renderer() : Component(eTickFrequency::NORMAL) {}
+    Renderer(const RendererOptions& opts) : Component(eTickFrequency::NORMAL), mOptions(opts) {}
     virtual ~Renderer() {}
 
     virtual void TickInit(uint32_t delta);
