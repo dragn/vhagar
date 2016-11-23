@@ -37,14 +37,6 @@ DEFINE_COMMAND(toggle_wireframe)
     renderer->Toggle(RenderFlags::DRAW_WIREFRAMES);
 }
 
-DEFINE_COMMAND(toggle_labels)
-{
-    Renderer* renderer = App::Get<Renderer>();
-    CHECK(renderer);
-
-    renderer->Toggle(RenderFlags::DRAW_LABELS);
-}
-
 void Renderer::TickInit(uint32_t delta)
 {
     LOG(INFO) << "SDL Initialization";
@@ -144,7 +136,6 @@ void Renderer::TickInit(uint32_t delta)
     if (mOptions.antialias != RendererOptions::AA_OFF) glEnable(GL_MULTISAMPLE);
 
     REGISTER_COMMAND(toggle_wireframe);
-    REGISTER_COMMAND(toggle_labels);
 
     FinishInit();
 }

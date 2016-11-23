@@ -6,10 +6,7 @@ uniform vec3 uColor;
 
 uniform mat4 uMVP;
 
-out vec3 fColor;
-
 void main() {
   gl_Position = uMVP * vec4(iVertexPos, 1);
   gl_Position.z = 1.0;
-  fColor = uColor;
 }

@@ -47,6 +47,7 @@ int main(int argc, char ** argv) {
     app.AddComponent<Console>();
     app.AddComponent<PlayerController>();
     app.AddComponent<ResourceSystem>();
+    app.AddComponent<Debug>();
 
     app.Run();
 

@@ -12,7 +12,6 @@
 #include "../Source/Renderable/Overlay.hpp"
 #include "../Source/Utils/ImportUtils.hpp"
 #include "../Source/Renderer/Renderer.hpp"
-
 #include "../Source/App/Arm.hpp"
 #include "../Source/App/PlayerController.hpp"
 #include "../Source/App/World.hpp"
@@ -21,3 +20,4 @@
 #include "../Source/Console/RemoteConsoleServer.hpp"
 #include "../Source/Network/Network.hpp"
 #include "../Source/Resource/ResourceSystem.hpp"
+#include "../Source/Debug/Debug.hpp"

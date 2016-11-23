@@ -1,9 +1,9 @@
 // Supported in 3.30 and 3.00 ES
 
-in lowp vec3 fColor;
+uniform vec3 uColor;
 
 out lowp vec4 color;
 
 void main() {
-  color = vec4(fColor, 1.0);
+  color = vec4(uColor, 1.0);
 }
