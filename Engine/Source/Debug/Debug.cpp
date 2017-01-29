@@ -28,6 +28,9 @@ void vh::Debug::TickInit(uint32_t delta)
 
     mWorld = App::Get<World>();
 
+    mFont = TTF_OpenFont("Assets/Fonts/Roboto-regular.ttf", 16);
+    CHECK(mFont) << "Could not open font";
+
     REGISTER_COMMAND(toggle_labels);
 
     FinishInit();
@@ -35,10 +38,10 @@ void vh::Debug::TickInit(uint32_t delta)
 
 void vh::Debug::TickRun(uint32_t delta)
 {
-    mDebugVisual.GetPos().clear();
+    mDebugVisual.GetLabels().clear();
     for (const Actor* actor : mWorld->GetActors())
     {
-        mDebugVisual.GetPos().push_back(actor->GetPos());
+        mDebugVisual.GetLabels().push_back(DebugLabel{ actor->GetPos(), "XXX" });
     }
 }
 

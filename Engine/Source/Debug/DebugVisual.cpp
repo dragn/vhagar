@@ -45,9 +45,9 @@ void vh::DebugVisual::Render(glm::mat4 projection, glm::mat4 view, const Rendere
     glBindBuffer(GL_ARRAY_BUFFER, mGLBuf);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
-    for (const V3 pos : mPos)
+    for (const DebugLabel& label : mLabels)
     {
-        M4 MVP = projection * view * glm::translate(M4(1.0f), pos);
+        M4 MVP = projection * view * glm::translate(M4(1.0f), label.pos);
         glUniformMatrix4fv(uidMVP, 1, GL_FALSE, &MVP[0][0]);
         glDrawArrays(GL_LINES, 0, 6);
     }

@@ -82,6 +82,7 @@ void App::DoRun() {
         if (comp->GetState() == eCompState::CLOSED)
         {
             LOG(INFO) << "Destroying component " << comp->GetName();
+            mComponentsMap.erase(mComponentsMap.find(comp->GetName()));
             delete comp;
             iter = mComponents.erase(iter);
         }

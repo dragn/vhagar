@@ -2,6 +2,7 @@
 
 #include "Component.hpp"
 #include <list>
+#include <unordered_map>
 
 namespace vh {
 
@@ -36,6 +37,7 @@ public:
     {
         COMP_TYPE* comp = new COMP_TYPE();
         mComponents.push_back(comp);
+        mComponentsMap[comp->GetName()] = comp;
         return comp;
     }
 
@@ -44,19 +46,17 @@ public:
     {
         COMP_TYPE* comp = new COMP_TYPE(param);
         mComponents.push_back(comp);
+        mComponentsMap[comp->GetName()] = comp;
         return comp;
     }
 
     template<typename T>
     static T* Get()
     {
-        if (GetApp() == nullptr) return nullptr;
+        App* app = GetApp();
+        if (app == nullptr) return nullptr;
 
-        for (Component* comp : GetApp()->mComponents)
-        {
-            if (comp->GetName() == T::GetNameStatic()) return reinterpret_cast<T*>(comp);
-        }
-        return nullptr;
+        return reinterpret_cast<T*>(app->mComponentsMap.at(T::GetNameStatic()));
     }
 
     template<typename COMPONENT_TYPE>
@@ -79,6 +79,7 @@ private:
     eAppState::Type mState;
 
     std::list<Component*> mComponents;
+    std::unordered_map<std::string, Component*> mComponentsMap;
 
     void DoRun();
     void Quit();

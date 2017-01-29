@@ -3,6 +3,7 @@
 #include "App/App.hpp"
 #include "app/World.hpp"
 #include "DebugVisual.hpp"
+#include <SDL_ttf.h>
 
 namespace vh
 {
@@ -22,6 +23,7 @@ public:
 private:
     DebugVisual mDebugVisual;
     World* mWorld;
+    TTF_Font* mFont;
 };
 
 } // namespace vh

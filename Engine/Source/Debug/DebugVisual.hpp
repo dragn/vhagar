@@ -5,15 +5,21 @@
 namespace vh
 {
 
+struct DebugLabel
+{
+    V3 pos;
+    const char* text;
+};
+
 class DebugVisual : public Renderable
 {
 public:
     DebugVisual() : mGLBuf(0) {}
 
-    std::vector<V3>& GetPos() { return mPos; };
+    std::vector<DebugLabel>& GetLabels() { return mLabels; };
 
 private:
-    std::vector<V3> mPos;
+    std::vector<DebugLabel> mLabels;
 
     GLuint mProgramId;
     GLuint mGLBuf;
