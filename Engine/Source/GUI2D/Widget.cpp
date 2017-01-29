@@ -33,16 +33,7 @@ void gui::Widget::SetSize(int32_t width, int32_t height)
 
 void gui::Widget::Draw(int32_t x, int32_t y)
 {
-    if (!mDirty) return;
-
-    for (Widget* child : mChildren)
-    {
-        int32_t childX = 0, childY = 0;
-        CalcChildPos(childX, childY, child);
-        child->Draw(childX, childY);
-    }
-
-    mDirty = false;
+    // supposed to be implemented in child classes
 }
 
 void gui::Widget::AddChild(Widget* widget)
@@ -50,61 +41,105 @@ void gui::Widget::AddChild(Widget* widget)
     mChildren.push_back(widget);
 }
 
-void gui::Widget::CalcChildPos(int32_t& x, int32_t& y, Widget* child)
+bool gui::Widget::IsPointInside(int32_t x, int32_t y)
 {
-    int32_t width, height;
-    child->GetSize(width, height);
+    return x >= mAbsPosX && x <= mAbsPosX + mWidth &&
+        y >= mAbsPosY && y <= mAbsPosY + mHeight;
+}
 
-    int32_t posX = mPosX;
-    int32_t posY = mPosY;
+void gui::Widget::OnClick(int32_t x, int32_t y)
+{
+    // default behavior: propagate event to children
+    for (Widget* child : mChildren)
+    {
+        if (child->IsPointInside(x, y))
+        {
+            child->OnClick(x, y);
+        }
+    }
+}
 
-    if (child->mPosX == ePos::Center) posX = mPosX + mWidth / 2;
-    else if (child->mPosX == ePos::Right) posX = mPosX + mWidth;
+void gui::Widget::Draw(Widget* parent)
+{
+    if (mDirty)
+    {
+        /* calculate screen-relative coordinates */
+        CalcAbsPos(parent);
 
-    if (child->mPosY == ePos::Center) posY = mPosY + mHeight / 2;
-    else if (child->mPosY == ePos::Bottom) posY = mPosY + mHeight;
+        /* draw this widget */
+        Draw(mAbsPosX, mAbsPosY);
 
-    switch (child->mAnchor)
+        /* draw all children */
+        for (Widget* child : mChildren)
+        {
+            child->Draw(this);
+        }
+
+        /* reset dirty flag */
+        mDirty = false;
+    }
+}
+
+void gui::Widget::CalcAbsPos(Widget* parent)
+{
+    /* base point */
+    int32_t posX = 0;
+    int32_t posY = 0;
+
+    if (parent)
+    {
+        /* get base point from parent */
+        if (mPosX == ePos::Center) posX = parent->mAbsPosX + parent->mWidth / 2;
+        else if (mPosX == ePos::Right) posX = parent->mAbsPosX + parent->mWidth;
+        else posX = parent->mAbsPosX;
+
+        if (mPosY == ePos::Center) posY = parent->mAbsPosY + parent->mHeight / 2;
+        else if (mPosY == ePos::Bottom) posY = parent->mAbsPosY + parent->mHeight;
+        else posY = parent->mAbsPosY;
+    }
+
+    /* calc screen-relative coordinates based on anchor position */
+    switch (mAnchor)
     {
     case gui::eAnchor::TopLeft:
-        x = posX + child->mPosX;
-        y = posY + child->mPosY;
+        mAbsPosX = posX + mPosX;
+        mAbsPosY = posY + mPosY;
         break;
     case gui::eAnchor::TopCenter:
-        x = posX + child->mPosX - width / 2;
-        y = posY + child->mPosY;
+        mAbsPosX = posX + mPosX - mWidth / 2;
+        mAbsPosY = posY + mPosY;
         break;
     case gui::eAnchor::TopRight:
-        x = posX + child->mPosX - width;
-        y = posY + child->mPosY;
+        mAbsPosX = posX + mPosX - mWidth;
+        mAbsPosY = posY + mPosY;
         break;
     case gui::eAnchor::CenterLeft:
-        x = posX + child->mPosX;
-        y = posY + child->mPosY - height / 2;
+        mAbsPosX = posX + mPosX;
+        mAbsPosY = posY + mPosY - mHeight / 2;
         break;
     case gui::eAnchor::CenterCenter:
-        x = posX + child->mPosX - width / 2;
-        y = posY + child->mPosY - height / 2;
+        mAbsPosX = posX + mPosX - mWidth / 2;
+        mAbsPosY = posY + mPosY - mHeight / 2;
         break;
     case gui::eAnchor::CenterRight:
-        x = posX + child->mPosX - width;
-        y = posY + child->mPosY - height / 2;
+        mAbsPosX = posX + mPosX - mWidth;
+        mAbsPosY = posY + mPosY - mHeight / 2;
         break;
     case gui::eAnchor::BottomLeft:
-        x = posX + child->mPosX;
-        y = posY + child->mPosY - height;
+        mAbsPosX = posX + mPosX;
+        mAbsPosY = posY + mPosY - mHeight;
         break;
     case gui::eAnchor::BottomCenter:
-        x = posX + child->mPosX - width / 2;
-        y = posY + child->mPosY - height;
+        mAbsPosX = posX + mPosX - mWidth / 2;
+        mAbsPosY = posY + mPosY - mHeight;
         break;
     case gui::eAnchor::BottomRight:
-        x = posX + child->mPosX - width;
-        y = posY + child->mPosY - height;
+        mAbsPosX = posX + mPosX - mWidth;
+        mAbsPosY = posY + mPosY - mHeight;
         break;
     default:
-        x = posX + child->mPosX;
-        y = posY + child->mPosY;
+        mAbsPosX = posX + mPosX;
+        mAbsPosY = posY + mPosY;
         break;
     }
 }

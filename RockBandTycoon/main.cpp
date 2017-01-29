@@ -8,12 +8,21 @@
 
 using namespace vh;
 
+class MyButton : public gui::ButtonWidget
+{
+public:
+    virtual void OnClick(int32_t x, int32_t y) override
+    {
+        LOG(INFO) << "Button clicked!";
+    }
+};
+
 class MenuView : public gui::View
 {
 public:
     MenuView()
     {
-        gui::ButtonWidget* b = new gui::ButtonWidget();
+        MyButton* b = new MyButton();
         b->SetSize(80, 40);
         b->SetPos(gui::ePos::Center, gui::ePos::Center, gui::eAnchor::CenterCenter);
         AddWidget(b);

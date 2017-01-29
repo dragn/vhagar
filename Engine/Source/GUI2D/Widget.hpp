@@ -57,15 +57,26 @@ public:
     virtual void Draw(int32_t x, int32_t y);
     void AddChild(Widget* widget);
 
-private:
+    bool IsPointInside(int32_t x, int32_t y);
 
-    void CalcChildPos(int32_t& x, int32_t& y, Widget* child);
+    virtual void OnClick(int32_t x, int32_t y);
+
+private:
+    void Draw(Widget* parent);
+
+    void CalcAbsPos(Widget* parent);
 
     eAnchor::Type mAnchor;
+
+    /* parent-relative position */
     int32_t mPosX;
     int32_t mPosY;
     int32_t mWidth;
     int32_t mHeight;
+
+    /* screen-relative position */
+    int32_t mAbsPosX;
+    int32_t mAbsPosY;
 
     bool mDirty;
 

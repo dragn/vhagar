@@ -17,7 +17,7 @@ void gui::View::AddWidget(Widget* widget)
 void gui::View::Render(GUI2D* gui)
 {
     mGUI = gui;
-    mRootWidget.Draw(0, 0);
+    mRootWidget.Draw(nullptr);
 }
 
 }

@@ -22,8 +22,11 @@ public:
 
     void SetView(View* view);
 
+    virtual void HandleEvent(SDL_Event* event);
+
 private:
     View* mActiveView;
+    uint32_t mScale;
 };
 
 }
