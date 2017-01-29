@@ -42,8 +42,6 @@ void App::Run() {
     std::signal(SIGQUIT, Signal);
 #endif
 
-    TTF_Init();
-
     LOG(INFO) << "Starting application";
     while (mState != eAppState::CLOSED) {
         DoRun();
@@ -97,8 +95,6 @@ void App::DoRun() {
 void App::Close()
 {
     mState = eAppState::CLOSE;
-
-    if (TTF_WasInit()) TTF_Quit();
 }
 
 void App::HandleEvents() {

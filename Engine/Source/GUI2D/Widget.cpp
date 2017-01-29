@@ -1,6 +1,11 @@
 #include "Common.hpp"
 
 #include "Widget.hpp"
+#include "App/App.hpp"
+#include "Renderer2D/Renderer2D.hpp"
+
+using vh::App;
+using vh::Renderer2D;
 
 gui::Widget::~Widget()
 {
@@ -38,6 +43,7 @@ void gui::Widget::Draw(int32_t x, int32_t y)
 
 void gui::Widget::AddChild(Widget* widget)
 {
+    widget->mParent = this;
     mChildren.push_back(widget);
 }
 
@@ -57,6 +63,12 @@ void gui::Widget::OnClick(int32_t x, int32_t y)
             child->OnClick(x, y);
         }
     }
+}
+
+void gui::Widget::SetDirty()
+{
+    mDirty = true;
+    if (mParent) mParent->SetDirty();
 }
 
 void gui::Widget::Draw(Widget* parent)
@@ -82,6 +94,8 @@ void gui::Widget::Draw(Widget* parent)
 
 void gui::Widget::CalcAbsPos(Widget* parent)
 {
+    UpdateSize();
+
     /* base point */
     int32_t posX = 0;
     int32_t posY = 0;

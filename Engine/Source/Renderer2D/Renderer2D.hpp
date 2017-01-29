@@ -66,6 +66,9 @@ public:
     uint32_t GetScale() const { return mScale; }
 
     void DrawRect(int32_t x, int32_t y, int32_t width, int32_t height, Color color);
+    void FillRect(int32_t x, int32_t y, int32_t width, int32_t height, Color color);
+
+    void DrawText(TTF_Font* font, const char* text, int32_t x, int32_t y);
 
 private:
     uint32_t mScale;

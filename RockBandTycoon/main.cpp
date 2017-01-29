@@ -7,17 +7,25 @@
 #include "GUI2D/ButtonWidget.hpp"
 
 using namespace vh;
+using namespace gui;
 
 class MenuView : public gui::View
 {
 public:
     MenuView()
     {
-        gui::ButtonWidget* b = new gui::ButtonWidget();
-        b->SetSize(80, 40);
-        b->SetPos(gui::ePos::Center, gui::ePos::Center, gui::eAnchor::CenterCenter);
-        b->SetOnClickHandler([]() { LOG(INFO) << "Button clicked"; });
-        AddWidget(b);
+        gui::ButtonWidget* startGameButton = new gui::ButtonWidget("Start Game");
+        startGameButton->SetSize(80, 40);
+        startGameButton->SetPos(ePos::Center, 78, eAnchor::CenterCenter);
+        AddWidget(startGameButton);
+
+        gui::ButtonWidget* exitButton = new gui::ButtonWidget("Exit");
+        exitButton->SetSize(80, 40);
+        exitButton->SetPos(ePos::Center, 120, gui::eAnchor::CenterCenter);
+        exitButton->SetOnClickHandler([]() {
+            vh::GetApp()->Close();
+        });
+        AddWidget(exitButton);
     }
 };
 

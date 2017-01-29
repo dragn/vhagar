@@ -89,3 +89,36 @@ void vh::Renderer2D::DrawRect(int32_t x, int32_t y, int32_t width, int32_t heigh
     SDL_SetRenderDrawColor(mRenderer, color.r, color.g, color.b, color.a);
     SDL_RenderDrawRect(mRenderer, &rect);
 }
+
+void vh::Renderer2D::FillRect(int32_t x, int32_t y, int32_t width, int32_t height, Color color)
+{
+    SDL_Rect rect;
+    rect.x = x;
+    rect.y = y;
+    rect.w = width;
+    rect.h = height;
+
+    SDL_SetRenderDrawColor(mRenderer, color.r, color.g, color.b, color.a);
+    SDL_RenderFillRect(mRenderer, &rect);
+}
+
+void vh::Renderer2D::DrawText(TTF_Font* font, const char* text, int32_t x, int32_t y)
+{
+    CHECK(font);
+    CHECK(text);
+
+    SDL_Color white{ 0xff, 0xff, 0xff, 0xff };
+    SDL_Surface* surf = TTF_RenderText_Blended(font, text, white);
+    CHECK(surf) << "Text render error";
+
+    SDL_Texture* tex = SDL_CreateTextureFromSurface(mRenderer, surf);
+    SDL_Rect rect;
+    rect.x = x;
+    rect.y = y;
+    rect.w = surf->w;
+    rect.h = surf->h;
+    SDL_RenderCopy(mRenderer, tex, NULL, &rect);
+
+    SDL_DestroyTexture(tex);
+    SDL_FreeSurface(surf);
+}

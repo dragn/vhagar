@@ -45,6 +45,7 @@ public:
         , mWidth(0)
         , mHeight(0)
         , mDirty(true)
+        , mParent(nullptr)
     {
     }
 
@@ -61,9 +62,15 @@ public:
 
     virtual void OnClick(int32_t x, int32_t y);
 
+    void SetDirty();
+
+protected:
+    virtual void UpdateSize() {};
+
 private:
     void Draw(Widget* parent);
 
+    /* calculate screen-relative position of the widget */
     void CalcAbsPos(Widget* parent);
 
     eAnchor::Type mAnchor;
@@ -81,6 +88,7 @@ private:
     bool mDirty;
 
     std::list<Widget*> mChildren;
+    Widget* mParent;
 };
 
 }
