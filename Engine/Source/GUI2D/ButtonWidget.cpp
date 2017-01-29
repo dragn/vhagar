@@ -15,3 +15,8 @@ void gui::ButtonWidget::Draw(int32_t x, int32_t y)
 
     render->DrawRect(x, y, width, height, borderColor);
 }
+
+void gui::ButtonWidget::OnClick(int32_t x, int32_t y)
+{
+    mHandler();
+}
