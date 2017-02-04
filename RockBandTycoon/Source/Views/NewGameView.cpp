@@ -1,6 +1,7 @@
 #include "PCH.hpp"
 
 #include "NewGameView.hpp"
+#include "MenuView.hpp"
 
 using namespace gui;
 
@@ -12,13 +13,23 @@ NewGameView::NewGameView(int slot)
     enterTxt->SetPos(ePos::Center, 80, eAnchor::BottomCenter);
     AddWidget(enterTxt);
 
+    TextFieldWidget* nameFld = new TextFieldWidget();
+    nameFld->SetPos(ePos::Center, 82, eAnchor::TopCenter);
+    nameFld->SetSize(120, 20);
+    AddWidget(nameFld);
+
     ButtonWidget* backBtn = new ButtonWidget("Back");
     backBtn->SetSize(40, 20);
-    backBtn->SetPos(ePos::Center, 100, eAnchor::TopRight);
+    backBtn->SetPos(239, 124, eAnchor::TopRight);
+    backBtn->SetOnClickHandler([] ()
+    {
+        GUI2D* gui = vh::App::Get<GUI2D>();
+        gui->SetView(new MenuView());
+    });
     AddWidget(backBtn);
 
     ButtonWidget* startBtn = new ButtonWidget("Start");
     startBtn->SetSize(40, 20);
-    startBtn->SetPos(ePos::Center, 100, eAnchor::TopLeft);
+    startBtn->SetPos(241, 124, eAnchor::TopLeft);
     AddWidget(startBtn);
 }

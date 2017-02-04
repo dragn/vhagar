@@ -116,7 +116,10 @@ void vh::Renderer2D::DrawText(TTF_Font* font, const char* text, int32_t x, int32
 
     SDL_Color white{ 0xff, 0xff, 0xff, 0xff };
     SDL_Surface* surf = TTF_RenderText_Solid(font, text, white);
-    CHECK(surf) << "Text render error";
+    if (surf == nullptr)
+    {
+        return;
+    }
 
     SDL_Texture* tex = SDL_CreateTextureFromSurface(mRenderer, surf);
     SDL_Rect rect;

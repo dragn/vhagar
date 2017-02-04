@@ -32,6 +32,9 @@ void GUI2D::TickRun(uint32_t delta)
 
     if (mNextView != nullptr)
     {
+        /* clear focus */
+        SetFocus(nullptr);
+
         // switch to new view
         if (mActiveView) delete mActiveView;
         mActiveView = mNextView;
@@ -88,7 +91,12 @@ void GUI2D::CalcTextSize(const char* text, int32_t& outWidth, int32_t& outHeight
     SDL_Color any = { 0,0,0,0 };
 
     SDL_Surface* surf = TTF_RenderText_Solid(mFont, text, any);
-    CHECK(surf) << "Render text error";
+    if (surf == nullptr)
+    {
+        outWidth = 0;
+        outHeight = 0;
+        return;
+    }
 
     outWidth = surf->w;
     outHeight = surf->h;
@@ -102,6 +110,15 @@ void GUI2D::DrawText(const char* text, int32_t x, int32_t y)
     CHECK(renderer);
 
     renderer->DrawText(mFont, text, x, y);
+}
+
+void GUI2D::SetFocus(Widget* widget)
+{
+    if (mFocused != nullptr) mFocused->OnBlur();
+
+    mFocused = widget;
+
+    if (mFocused != nullptr) mFocused->OnFocus();
 }
 
 }

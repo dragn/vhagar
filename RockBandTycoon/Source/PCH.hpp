@@ -6,3 +6,4 @@
 #include "GUI2D/ButtonWidget.hpp"
 #include "GUI2D/TextWidget.hpp"
 #include "GUI2D/ImageWidget.hpp"
+#include "GUI2D/TextFieldWidget.hpp"

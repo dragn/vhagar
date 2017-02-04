@@ -46,6 +46,7 @@ public:
         , mWidth(0)
         , mHeight(0)
         , mDirty(true)
+        , mChildDirty(true)
         , mParent(nullptr)
         , mBgColor()
         , mBgImage(nullptr)
@@ -70,10 +71,15 @@ public:
     void SetBackground(const vh::Color& color);
     void SetBackground(const char* imagePath);
 
+    virtual void OnFocus() {};
+    virtual void OnBlur() {};
+
 protected:
     virtual void UpdateSize() {};
 
 private:
+    void SetChildDirty();
+
     void Draw(Widget* parent);
 
     /* calculate screen-relative position of the widget */
@@ -92,6 +98,7 @@ private:
     int32_t mAbsPosY;
 
     bool mDirty;
+    bool mChildDirty;
 
     std::list<Widget*> mChildren;
     Widget* mParent;

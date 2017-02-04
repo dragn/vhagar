@@ -22,8 +22,10 @@ public:
         : vh::Component(vh::eTickFrequency::NORMAL)
         , mActiveView(nullptr)
         , mNextView(nullptr)
+        , mScale(1)
         , mFont(nullptr)
         , mOptions(opts)
+        , mFocused(nullptr)
     {}
 
     virtual void TickInit(uint32_t delta);
@@ -40,6 +42,8 @@ public:
     void CalcTextSize(const char* text, int32_t& outWidth, int32_t& outHeight);
     void DrawText(const char* text, int32_t x, int32_t y);
 
+    void SetFocus(Widget* widget);
+
 private:
     View* mActiveView;
     View* mNextView;
@@ -47,6 +51,8 @@ private:
 
     TTF_Font* mFont;
     GUI2DOptions mOptions;
+
+    Widget* mFocused;
 };
 
 }

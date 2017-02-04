@@ -42,6 +42,12 @@ void gui::Widget::SetSize(int32_t width, int32_t height)
     mDirty = true;
 }
 
+void gui::Widget::SetChildDirty()
+{
+    mChildDirty = true;
+    if (mParent != nullptr) mParent->SetChildDirty();
+}
+
 void gui::Widget::Draw(int32_t x, int32_t y)
 {
     // supposed to be implemented in child classes
@@ -74,7 +80,7 @@ void gui::Widget::OnClick(int32_t x, int32_t y)
 void gui::Widget::SetDirty()
 {
     mDirty = true;
-    if (mParent) mParent->SetDirty();
+    SetChildDirty();
 }
 
 void gui::Widget::SetBackground(const vh::Color& color)
@@ -121,14 +127,22 @@ void gui::Widget::Draw(Widget* parent)
         /* draw this widget */
         Draw(mAbsPosX, mAbsPosY);
 
-        /* draw all children */
+        /* set to also redraw all children */
+        mChildDirty = true;
+
+        /* reset dirty flag */
+        mDirty = false;
+    }
+
+    /* draw all children */
+    if (mChildDirty)
+    {
         for (Widget* child : mChildren)
         {
             child->Draw(this);
         }
 
-        /* reset dirty flag */
-        mDirty = false;
+        mChildDirty = false;
     }
 }
 
