@@ -112,48 +112,51 @@ void gui::Widget::CalcAbsPos(Widget* parent)
         else posY = parent->mAbsPosY;
     }
 
+    int32_t relPosX = mPosX < 0 ? 0 : mPosX;
+    int32_t relPosY = mPosY < 0 ? 0 : mPosY;
+
     /* calc screen-relative coordinates based on anchor position */
     switch (mAnchor)
     {
     case gui::eAnchor::TopLeft:
-        mAbsPosX = posX + mPosX;
-        mAbsPosY = posY + mPosY;
+        mAbsPosX = posX + relPosX;
+        mAbsPosY = posY + relPosY;
         break;
     case gui::eAnchor::TopCenter:
-        mAbsPosX = posX + mPosX - mWidth / 2;
-        mAbsPosY = posY + mPosY;
+        mAbsPosX = posX + relPosX - mWidth / 2;
+        mAbsPosY = posY + relPosY;
         break;
     case gui::eAnchor::TopRight:
-        mAbsPosX = posX + mPosX - mWidth;
-        mAbsPosY = posY + mPosY;
+        mAbsPosX = posX + relPosX - mWidth;
+        mAbsPosY = posY + relPosY;
         break;
     case gui::eAnchor::CenterLeft:
-        mAbsPosX = posX + mPosX;
-        mAbsPosY = posY + mPosY - mHeight / 2;
+        mAbsPosX = posX + relPosX;
+        mAbsPosY = posY + relPosY - mHeight / 2;
         break;
     case gui::eAnchor::CenterCenter:
-        mAbsPosX = posX + mPosX - mWidth / 2;
-        mAbsPosY = posY + mPosY - mHeight / 2;
+        mAbsPosX = posX + relPosX - mWidth / 2;
+        mAbsPosY = posY + relPosY - mHeight / 2;
         break;
     case gui::eAnchor::CenterRight:
-        mAbsPosX = posX + mPosX - mWidth;
-        mAbsPosY = posY + mPosY - mHeight / 2;
+        mAbsPosX = posX + relPosX - mWidth;
+        mAbsPosY = posY + relPosY - mHeight / 2;
         break;
     case gui::eAnchor::BottomLeft:
-        mAbsPosX = posX + mPosX;
-        mAbsPosY = posY + mPosY - mHeight;
+        mAbsPosX = posX + relPosX;
+        mAbsPosY = posY + relPosY - mHeight;
         break;
     case gui::eAnchor::BottomCenter:
-        mAbsPosX = posX + mPosX - mWidth / 2;
-        mAbsPosY = posY + mPosY - mHeight;
+        mAbsPosX = posX + relPosX - mWidth / 2;
+        mAbsPosY = posY + relPosY - mHeight;
         break;
     case gui::eAnchor::BottomRight:
-        mAbsPosX = posX + mPosX - mWidth;
-        mAbsPosY = posY + mPosY - mHeight;
+        mAbsPosX = posX + relPosX - mWidth;
+        mAbsPosY = posY + relPosY - mHeight;
         break;
     default:
-        mAbsPosX = posX + mPosX;
-        mAbsPosY = posY + mPosY;
+        mAbsPosX = posX + relPosX;
+        mAbsPosY = posY + relPosY;
         break;
     }
 }

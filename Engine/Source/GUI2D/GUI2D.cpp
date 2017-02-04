@@ -13,8 +13,8 @@ void GUI2D::TickInit(uint32_t delta)
     TTF_Init();
     CHECK(TTF_WasInit()) << "Error initialising SDL_ttf";
 
-    mFont = TTF_OpenFont("Assets/Fonts/Roboto-regular.ttf", FONT_SIZE);
-    CHECK(mFont) << "Could not open font";
+    mFont = TTF_OpenFont(mOptions.fontPath, mOptions.fontSize);
+    CHECK(mFont) << "Could not open font: " << mOptions.fontPath;
 
     FinishInit();
 }

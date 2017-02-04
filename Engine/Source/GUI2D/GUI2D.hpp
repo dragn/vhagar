@@ -7,17 +7,22 @@
 namespace gui
 {
 
+struct GUI2DOptions
+{
+    const char* fontPath = "<font path is not set>";
+    int fontSize = 12;
+};
+
 class GUI2D : public vh::Component
 {
     COMPONENT_NAME(GUI2D);
 
-    const int FONT_SIZE = 14;
-
 public:
-    GUI2D()
+    GUI2D(const GUI2DOptions& opts)
         : vh::Component(vh::eTickFrequency::NORMAL)
         , mActiveView(nullptr)
         , mFont(nullptr)
+        , mOptions(opts)
     {}
 
     virtual void TickInit(uint32_t delta);
@@ -39,6 +44,7 @@ private:
     uint32_t mScale;
 
     TTF_Font* mFont;
+    GUI2DOptions mOptions;
 };
 
 }
