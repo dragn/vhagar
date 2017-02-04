@@ -14,7 +14,6 @@ public:
     ButtonWidget();
     ButtonWidget(const char* text);
 
-    virtual void Draw(int32_t x, int32_t y) override;
     virtual void OnClick(int32_t x, int32_t y) override;
 
     void SetOnClickHandler(OnClickHandler handler)

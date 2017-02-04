@@ -6,6 +6,8 @@ using namespace gui;
 
 NewGameView::NewGameView(int slot)
 {
+    SetBackground("Assets/Images/menu_background.png");
+
     TextWidget* enterTxt = new TextWidget("Enter band name");
     enterTxt->SetPos(ePos::Center, 80, eAnchor::BottomCenter);
     AddWidget(enterTxt);

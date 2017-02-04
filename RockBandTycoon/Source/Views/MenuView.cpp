@@ -15,7 +15,6 @@ void NewGame(const int slot)
 
 MenuView::MenuView()
 {
-    SetBackground(vh::Color(0xa0));
     SetBackground("Assets/Images/menu_background.png");
 
     ButtonWidget* newGameBtn1 = new ButtonWidget("*New Game*");

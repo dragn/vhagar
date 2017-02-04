@@ -63,6 +63,7 @@ void vh::Renderer2D::TickInit(uint32_t delta)
 
     SDL_RenderSetIntegerScale(mRenderer, SDL_TRUE);
     SDL_RenderSetScale(mRenderer, mOptions.scale, mOptions.scale);
+    SDL_SetRenderDrawBlendMode(mRenderer, SDL_BLENDMODE_BLEND);
 
     FinishInit();
 }
@@ -114,7 +115,7 @@ void vh::Renderer2D::DrawText(TTF_Font* font, const char* text, int32_t x, int32
     CHECK(text);
 
     SDL_Color white{ 0xff, 0xff, 0xff, 0xff };
-    SDL_Surface* surf = TTF_RenderText_Blended(font, text, white);
+    SDL_Surface* surf = TTF_RenderText_Solid(font, text, white);
     CHECK(surf) << "Text render error";
 
     SDL_Texture* tex = SDL_CreateTextureFromSurface(mRenderer, surf);
@@ -123,6 +124,7 @@ void vh::Renderer2D::DrawText(TTF_Font* font, const char* text, int32_t x, int32
     rect.y = y;
     rect.w = surf->w;
     rect.h = surf->h;
+
     SDL_RenderCopy(mRenderer, tex, NULL, &rect);
 
     SDL_DestroyTexture(tex);

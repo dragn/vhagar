@@ -14,6 +14,8 @@ gui::ButtonWidget::ButtonWidget()
     mText = new TextWidget();
     AddChild(mText);
     mText->SetPos(gui::ePos::Center, gui::ePos::Center, gui::eAnchor::CenterCenter);
+
+    SetBackground(vh::Color(0x10));
 }
 
 gui::ButtonWidget::ButtonWidget(const char* text)
@@ -22,19 +24,8 @@ gui::ButtonWidget::ButtonWidget(const char* text)
     mText = new TextWidget(text);
     AddChild(mText);
     mText->SetPos(gui::ePos::Center, gui::ePos::Center, gui::eAnchor::CenterCenter);
-}
 
-void gui::ButtonWidget::Draw(int32_t x, int32_t y)
-{
-    int32_t width, height;
-    GetSize(width, height);
-
-    vh::Renderer2D* render = vh::App::Get<vh::Renderer2D>();
-    CHECK(render);
-
-    vh::Color borderColor(0xb0, 0xb0, 0xb0, 0xff);
-
-    render->DrawRect(x, y, width, height, borderColor);
+    SetBackground(vh::Color(0x10));
 }
 
 void gui::ButtonWidget::OnClick(int32_t x, int32_t y)
