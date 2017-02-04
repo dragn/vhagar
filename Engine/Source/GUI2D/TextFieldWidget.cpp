@@ -6,6 +6,8 @@
 #include "GUI2D.hpp"
 
 gui::TextFieldWidget::TextFieldWidget()
+    : mFocus(false)
+    , mMaxSize(20)
 {
     SetBackground(vh::Color(0x00));
 }
@@ -31,19 +33,48 @@ void gui::TextFieldWidget::Draw(int32_t x, int32_t y)
 
     renderer->DrawRect(x, y, width, height, vh::Color(0xff));
 
+    if (mFocus) mContent.append(1, '|');
     int32_t textW, textH;
     gui->CalcTextSize(mContent.c_str(), textW, textH);
-    renderer->DrawText(gui->GetFont(), mContent.c_str(), x + 2, y + height / 2 - textH / 2);
+    renderer->DrawText(gui->GetFont(), mContent.c_str(), x + 4, y + height / 2 - textH / 2);
+    if (mFocus && mContent.back() == '|') mContent.pop_back();
 }
 
 void gui::TextFieldWidget::OnFocus()
 {
-    mContent.append(1, '|');
+    mFocus = true;
     SetDirty();
 }
 
 void gui::TextFieldWidget::OnBlur()
 {
-    if (!mContent.empty() && mContent.back() == '|') mContent.pop_back();
+    mFocus = false;
     SetDirty();
+}
+
+void gui::TextFieldWidget::HandleEvent(SDL_Event* event)
+{
+    IF_KEYDOWN_SYM(event, SDLK_BACKSPACE)
+    {
+        if (mContent.size()) mContent.pop_back();
+        SetDirty();
+    }
+    if (event->type == SDL_TEXTINPUT)
+    {
+        if (mContent.size() < mMaxSize)
+        {
+            mContent.append(event->text.text);
+            SetDirty();
+        }
+    }
+}
+
+void gui::TextFieldWidget::SetMaxSize(uint32_t size)
+{
+    mMaxSize = size;
+}
+
+uint32_t gui::TextFieldWidget::GetMaxSize() const
+{
+    return mMaxSize;
 }

@@ -14,8 +14,9 @@ NewGameView::NewGameView(int slot)
     AddWidget(enterTxt);
 
     TextFieldWidget* nameFld = new TextFieldWidget();
+    nameFld->SetMaxSize(28);
     nameFld->SetPos(ePos::Center, 82, eAnchor::TopCenter);
-    nameFld->SetSize(120, 20);
+    nameFld->SetSize(140, 20);
     AddWidget(nameFld);
 
     ButtonWidget* backBtn = new ButtonWidget("Back");

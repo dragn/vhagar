@@ -17,8 +17,15 @@ public:
     virtual void OnFocus() override;
     virtual void OnBlur() override;
 
+    virtual void HandleEvent(SDL_Event* event) override;
+
+    void SetMaxSize(uint32_t size);
+    uint32_t GetMaxSize() const;
+
 private:
     std::string mContent;
+    uint32_t mMaxSize;
+    bool mFocus;
 };
 
 } // namespace gui

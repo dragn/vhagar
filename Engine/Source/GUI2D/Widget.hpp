@@ -74,6 +74,9 @@ public:
     virtual void OnFocus() {};
     virtual void OnBlur() {};
 
+    /* handle event passed to focused widget */
+    virtual void HandleEvent(SDL_Event* event) {};
+
 protected:
     virtual void UpdateSize() {};
 

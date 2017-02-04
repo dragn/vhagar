@@ -81,6 +81,10 @@ void GUI2D::HandleEvent(SDL_Event* event)
             }
         }
     }
+    if (mFocused)
+    {
+        mFocused->HandleEvent(event);
+    }
 }
 
 void GUI2D::CalcTextSize(const char* text, int32_t& outWidth, int32_t& outHeight)
