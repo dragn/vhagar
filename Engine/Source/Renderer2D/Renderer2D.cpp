@@ -109,7 +109,7 @@ void vh::Renderer2D::FillRect(int32_t x, int32_t y, int32_t width, int32_t heigh
     SDL_RenderFillRect(mRenderer, &rect);
 }
 
-void vh::Renderer2D::DrawText(TTF_Font* font, const char* text, int32_t x, int32_t y)
+void vh::Renderer2D::DrawText(TTF_Font* font, const char* text, int32_t x, int32_t y, int32_t maxW /* = 0*/)
 {
     CHECK(font);
     CHECK(text);
@@ -122,13 +122,26 @@ void vh::Renderer2D::DrawText(TTF_Font* font, const char* text, int32_t x, int32
     }
 
     SDL_Texture* tex = SDL_CreateTextureFromSurface(mRenderer, surf);
-    SDL_Rect rect;
-    rect.x = x;
-    rect.y = y;
-    rect.w = surf->w;
-    rect.h = surf->h;
+    SDL_Rect dst;
+    dst.x = x;
+    dst.y = y;
+    dst.w = surf->w;
+    dst.h = surf->h;
 
-    SDL_RenderCopy(mRenderer, tex, NULL, &rect);
+    SDL_Rect src;
+    src.x = 0;
+    src.y = 0;
+    src.w = surf->w;
+    src.h = surf->h;
+
+    if (maxW && src.w > maxW)
+    {
+        src.w = maxW;
+        src.x = surf->w - maxW;
+        dst.w = maxW;
+    }
+
+    SDL_RenderCopy(mRenderer, tex, &src, &dst);
 
     SDL_DestroyTexture(tex);
     SDL_FreeSurface(surf);
