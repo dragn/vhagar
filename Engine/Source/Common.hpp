@@ -5,6 +5,7 @@
 #define HAVE_M_PI
 #include "SDL.h"
 #include "SDL_ttf.h"
+#include "SDL_image.h"
 
 #ifdef WITH_GLOG
 #include <glog/logging.h>

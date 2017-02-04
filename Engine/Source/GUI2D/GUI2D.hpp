@@ -21,6 +21,7 @@ public:
     GUI2D(const GUI2DOptions& opts)
         : vh::Component(vh::eTickFrequency::NORMAL)
         , mActiveView(nullptr)
+        , mNextView(nullptr)
         , mFont(nullptr)
         , mOptions(opts)
     {}
@@ -41,6 +42,7 @@ public:
 
 private:
     View* mActiveView;
+    View* mNextView;
     uint32_t mScale;
 
     TTF_Font* mFont;

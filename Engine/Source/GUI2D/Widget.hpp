@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include "Renderer2D/Color.hpp"
 
 namespace gui
 {
@@ -46,6 +47,8 @@ public:
         , mHeight(0)
         , mDirty(true)
         , mParent(nullptr)
+        , mBgColor()
+        , mBgImage(nullptr)
     {
     }
 
@@ -63,6 +66,9 @@ public:
     virtual void OnClick(int32_t x, int32_t y);
 
     void SetDirty();
+
+    void SetBackground(const vh::Color& color);
+    void SetBackground(const char* imagePath);
 
 protected:
     virtual void UpdateSize() {};
@@ -89,6 +95,9 @@ private:
 
     std::list<Widget*> mChildren;
     Widget* mParent;
+
+    vh::Color mBgColor;
+    SDL_Surface* mBgImage;
 };
 
 }

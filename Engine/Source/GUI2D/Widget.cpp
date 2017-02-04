@@ -13,6 +13,12 @@ gui::Widget::~Widget()
     {
         if (child) delete child;
     }
+
+    if (mBgImage != nullptr)
+    {
+        SDL_FreeSurface(mBgImage);
+        mBgImage = nullptr;
+    }
 }
 
 void gui::Widget::SetPos(int32_t x, int32_t y, eAnchor::Type anchor /*= eAnchor::TopLeft*/)
@@ -71,12 +77,46 @@ void gui::Widget::SetDirty()
     if (mParent) mParent->SetDirty();
 }
 
+void gui::Widget::SetBackground(const vh::Color& color)
+{
+    mBgColor = color;
+    SetDirty();
+}
+
+void gui::Widget::SetBackground(const char* imagePath)
+{
+    SDL_Surface* surf = IMG_Load(imagePath);
+    if (surf != nullptr)
+    {
+        if (mBgImage) SDL_FreeSurface(mBgImage);
+        mBgImage = surf;
+        SetDirty();
+    }
+    else
+    {
+        LOG(ERROR) << "Image load error: " << IMG_GetError();
+    }
+}
+
 void gui::Widget::Draw(Widget* parent)
 {
     if (mDirty)
     {
+        /* run some custom size update logic, if any */
+        UpdateSize();
+
         /* calculate screen-relative coordinates */
         CalcAbsPos(parent);
+
+        /* draw background */
+        Renderer2D* render = vh::App::Get<Renderer2D>();
+        CHECK(render);
+        render->FillRect(mAbsPosX, mAbsPosY, mWidth, mHeight, mBgColor);
+
+        if (mBgImage != nullptr)
+        {
+            render->DrawImage(mAbsPosX, mAbsPosY, mWidth, mHeight, mBgImage);
+        }
 
         /* draw this widget */
         Draw(mAbsPosX, mAbsPosY);
@@ -94,8 +134,6 @@ void gui::Widget::Draw(Widget* parent)
 
 void gui::Widget::CalcAbsPos(Widget* parent)
 {
-    UpdateSize();
-
     /* base point */
     int32_t posX = 0;
     int32_t posY = 0;

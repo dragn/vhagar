@@ -14,8 +14,9 @@ int main(int argc, char ** argv) {
     vh::App app;
 
     Renderer2DOptions ro;
-    ro.screenWidth = 1600;
-    ro.screenHeight = 900;
+    ro.screenWidth = 960;
+    ro.screenHeight = 540;
+    ro.scale = 2;
     ro.fullscreen = Renderer2DOptions::FS_Window;
     ro.monitor = Renderer2DOptions::MON_First;
 

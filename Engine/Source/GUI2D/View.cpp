@@ -20,4 +20,14 @@ void gui::View::Render(GUI2D* gui)
     mRootWidget.Draw(nullptr);
 }
 
+void View::SetBackground(const vh::Color& color)
+{
+    mRootWidget.SetBackground(color);
+}
+
+void View::SetBackground(const char* imagePath)
+{
+    mRootWidget.SetBackground(imagePath);
+}
+
 }

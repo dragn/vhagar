@@ -1,22 +1,10 @@
 #pragma once
 
 #include "App/Component.hpp"
+#include "Color.hpp"
 
 namespace vh
 {
-
-struct Color
-{
-    Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 0xff)
-        : r(r), g(g), b(b), a(a)
-    {
-    }
-
-    uint8_t r = 0;
-    uint8_t g = 0;
-    uint8_t b = 0;
-    uint8_t a = 0xff;
-};
 
 /**
  * Renderer options
@@ -25,6 +13,7 @@ struct Renderer2DOptions
 {
     uint32_t screenWidth = 1024;
     uint32_t screenHeight = 768;
+    uint8_t scale = 1;
 
     enum
     {
@@ -55,23 +44,24 @@ public:
 
     uint32_t GetWidth() const
     {
-        return mOptions.screenWidth / mScale;
+        return mOptions.screenWidth / mOptions.scale;
     }
 
     uint32_t GetHeight() const
     {
-        return mOptions.screenHeight / mScale;
+        return mOptions.screenHeight / mOptions.scale;
     }
 
-    uint32_t GetScale() const { return mScale; }
+    uint32_t GetScale() const { return mOptions.scale; }
 
     void DrawRect(int32_t x, int32_t y, int32_t width, int32_t height, Color color);
     void FillRect(int32_t x, int32_t y, int32_t width, int32_t height, Color color);
 
     void DrawText(TTF_Font* font, const char* text, int32_t x, int32_t y);
 
+    void DrawImage(int32_t x, int32_t y, int32_t width, int32_t height, SDL_Surface* surf);
+
 private:
-    uint32_t mScale;
     Renderer2DOptions mOptions;
     SDL_Window *mWindow;
     SDL_Renderer* mRenderer;

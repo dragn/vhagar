@@ -4,14 +4,12 @@
 
 vh::Renderer2D::Renderer2D()
     : Component(eTickFrequency::NORMAL)
-    , mScale(4)
     , mWindow(nullptr)
 {
 }
 
 vh::Renderer2D::Renderer2D(const Renderer2DOptions& options)
     : Component(eTickFrequency::NORMAL)
-    , mScale(4)
     , mOptions(options)
     , mWindow(nullptr)
 {
@@ -25,6 +23,13 @@ void vh::Renderer2D::TickInit(uint32_t delta)
         LOG(FATAL) << SDL_GetError();
         Close();
         return;
+    }
+
+    int imgInitFlags = IMG_INIT_PNG;
+    if ((IMG_Init(imgInitFlags) & imgInitFlags) != imgInitFlags)
+    {
+        LOG(FATAL) << "Failed to init SDL_Image: " << IMG_GetError();
+        Close();
     }
 
     Uint32 flags = 0;
@@ -57,7 +62,7 @@ void vh::Renderer2D::TickInit(uint32_t delta)
     }
 
     SDL_RenderSetIntegerScale(mRenderer, SDL_TRUE);
-    SDL_RenderSetScale(mRenderer, mScale, mScale);
+    SDL_RenderSetScale(mRenderer, mOptions.scale, mOptions.scale);
 
     FinishInit();
 }
@@ -73,6 +78,7 @@ void vh::Renderer2D::TickClose(uint32_t delta)
 {
     if (mRenderer) SDL_DestroyRenderer(mRenderer);
     if (mWindow) SDL_DestroyWindow(mWindow);
+    IMG_Quit();
     SDL_Quit();
 
     FinishClose();
@@ -121,4 +127,25 @@ void vh::Renderer2D::DrawText(TTF_Font* font, const char* text, int32_t x, int32
 
     SDL_DestroyTexture(tex);
     SDL_FreeSurface(surf);
+}
+
+void vh::Renderer2D::DrawImage(int32_t x, int32_t y, int32_t w, int32_t h, SDL_Surface* surf)
+{
+    CHECK(surf);
+
+    SDL_Texture* tex = SDL_CreateTextureFromSurface(mRenderer, surf);
+    if (!tex)
+    {
+        LOG(ERROR) << "Could not create texture: " << SDL_GetError();
+        return;
+    }
+
+    SDL_Rect dst;
+    dst.x = x;
+    dst.y = y;
+    dst.w = w;
+    dst.h = h;
+    SDL_RenderCopy(mRenderer, tex, NULL, &dst);
+
+    SDL_DestroyTexture(tex);
 }

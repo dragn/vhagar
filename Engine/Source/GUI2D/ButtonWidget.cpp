@@ -3,7 +3,13 @@
 #include "App/App.hpp"
 #include "Renderer2D/Renderer2D.hpp"
 
+void StubHandler()
+{
+    LOG(INFO) << "Button click handler not set!";
+}
+
 gui::ButtonWidget::ButtonWidget()
+    : mHandler(StubHandler)
 {
     mText = new TextWidget();
     AddChild(mText);
@@ -11,6 +17,7 @@ gui::ButtonWidget::ButtonWidget()
 }
 
 gui::ButtonWidget::ButtonWidget(const char* text)
+    : mHandler(StubHandler)
 {
     mText = new TextWidget(text);
     AddChild(mText);

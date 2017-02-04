@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Renderer2D/Color.hpp"
 #include "Widget.hpp"
 #include <list>
 
@@ -14,6 +15,9 @@ public:
     View();
 
     void AddWidget(Widget* widget);
+
+    void SetBackground(const vh::Color& color);
+    void SetBackground(const char* imagePath);
 
 private:
     virtual void Render(GUI2D* gui);
