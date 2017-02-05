@@ -3,6 +3,7 @@
 #include "MenuView.hpp"
 #include "NewGameView.hpp"
 #include "GameProfile.hpp"
+#include "GameView.hpp"
 
 using namespace gui;
 
@@ -65,6 +66,13 @@ void MenuView::AddSlotButton(int slot)
     if (GetProfile(name, slot))
     {
         slotBtn->SetText(name.c_str());
+        slotBtn->SetOnClickHandler([slot] ()
+        {
+            GUI2D* gui = vh::App::Get<GUI2D>();
+            CHECK(gui);
+
+            gui->SetView(new GameView(slot));
+        });
 
         ButtonWidget* dltBtn = new ButtonWidget("X");
         dltBtn->SetPos(292, 30 + 30 * slot, eAnchor::CenterLeft);

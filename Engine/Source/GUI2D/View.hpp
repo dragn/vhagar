@@ -13,6 +13,7 @@ class View
 
 public:
     View();
+    virtual ~View() {};
 
     void AddWidget(Widget* widget);
 
