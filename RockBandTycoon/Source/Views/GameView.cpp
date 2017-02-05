@@ -4,5 +4,5 @@
 
 GameView::GameView(int slot)
 {
-
+    SetBackground("Assets/Images/garage.png");
 }

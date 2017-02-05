@@ -19,7 +19,7 @@ protected:
     virtual void UpdateSize() override;
 
 private:
-    const char* mText;
+    std::string mText;
 };
 
 }

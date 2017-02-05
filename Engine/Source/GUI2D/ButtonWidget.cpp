@@ -25,3 +25,8 @@ void gui::ButtonWidget::OnClick(int32_t x, int32_t y)
 {
     mOnClickDelegate();
 }
+
+void gui::ButtonWidget::SetText(const char* text)
+{
+    mText->SetText(text);
+}

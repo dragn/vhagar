@@ -8,7 +8,6 @@ using vh::App;
 using vh::Renderer2D;
 
 gui::TextWidget::TextWidget()
-    : mText(nullptr)
 {
 }
 
@@ -20,12 +19,12 @@ void gui::TextWidget::SetText(const char* text)
 
 void gui::TextWidget::Draw(int32_t x, int32_t y)
 {
-    if (mText == nullptr) return;
+    if (mText.empty()) return;
 
     gui::GUI2D* gui = vh::App::Get<gui::GUI2D>();
     CHECK(gui);
 
-    gui->DrawText(mText, x, y);
+    gui->DrawText(mText.c_str(), x, y);
 }
 
 gui::TextWidget::TextWidget(const char* text)
@@ -35,7 +34,7 @@ gui::TextWidget::TextWidget(const char* text)
 
 void gui::TextWidget::UpdateSize()
 {
-    if (mText == nullptr)
+    if (mText.empty())
     {
         SetSize(0, 0);
         return;
@@ -45,7 +44,7 @@ void gui::TextWidget::UpdateSize()
     CHECK(gui);
 
     int32_t width, height;
-    gui->CalcTextSize(mText, width, height);
+    gui->CalcTextSize(mText.c_str(), width, height);
 
     SetSize(width, height);
 }

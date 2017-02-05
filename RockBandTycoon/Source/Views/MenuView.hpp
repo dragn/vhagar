@@ -6,4 +6,8 @@ class MenuView : public gui::View
 {
 public:
     MenuView();
+
+private:
+    void AddSlotButton(int slot);
+    bool GetProfile(std::string& outName, int slot);
 };

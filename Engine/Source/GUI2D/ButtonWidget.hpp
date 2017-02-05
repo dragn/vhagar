@@ -27,6 +27,8 @@ public:
         mOnClickDelegate.Set(t, handler);
     }
 
+    void SetText(const char* text);
+
 private:
     vh::Delegate mOnClickDelegate;
     TextWidget* mText;

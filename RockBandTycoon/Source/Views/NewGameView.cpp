@@ -3,6 +3,7 @@
 #include "NewGameView.hpp"
 #include "MenuView.hpp"
 #include "GameProfile.hpp"
+#include "GameView.hpp"
 
 using namespace gui;
 
@@ -15,12 +16,12 @@ NewGameView::NewGameView(int slot)
     enterTxt->SetPos(ePos::Center, 80, eAnchor::BottomCenter);
     AddWidget(enterTxt);
 
-    TextFieldWidget* nameFld = new TextFieldWidget();
-    nameFld->SetValue("Human Burrito Sauce");
-    nameFld->SetMaxSize(32);
-    nameFld->SetPos(ePos::Center, 82, eAnchor::TopCenter);
-    nameFld->SetSize(140, 20);
-    AddWidget(nameFld);
+    mNameFld = new TextFieldWidget();
+    mNameFld->SetValue("Human Burrito Sauce");
+    mNameFld->SetMaxSize(32);
+    mNameFld->SetPos(ePos::Center, 82, eAnchor::TopCenter);
+    mNameFld->SetSize(140, 20);
+    AddWidget(mNameFld);
 
     ButtonWidget* backBtn = new ButtonWidget("Back");
     backBtn->SetSize(40, 20);
@@ -41,5 +42,19 @@ NewGameView::NewGameView(int slot)
 
 void NewGameView::OnStart()
 {
+    CHECK(mNameFld);
 
+    GameProfile* profile = new GameProfile(mSlot, mNameFld->GetValue());
+    if (profile->Save())
+    {
+        GUI2D* gui = vh::App::Get<GUI2D>();
+        CHECK(gui);
+
+        gui->SetView(new GameView(mSlot));
+    }
+    else
+    {
+        // TODO handle error gracefully
+        LOG(FATAL) << "Error saving profile";
+    }
 }

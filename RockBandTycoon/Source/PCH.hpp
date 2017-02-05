@@ -7,3 +7,6 @@
 #include "GUI2D/TextWidget.hpp"
 #include "GUI2D/ImageWidget.hpp"
 #include "GUI2D/TextFieldWidget.hpp"
+
+static const char* ORG_NAME = "Human Burrito";
+static const char* APP_NAME = "Rock Band Tycoon";
