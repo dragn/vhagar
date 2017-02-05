@@ -16,6 +16,9 @@ void GUI2D::TickInit(uint32_t delta)
     mFont = TTF_OpenFont(mOptions.fontPath, mOptions.fontSize);
     CHECK(mFont) << "Could not open font: " << mOptions.fontPath;
 
+    mHdrFont = TTF_OpenFont(mOptions.hdrFontPath, mOptions.hdrFontSize);
+    CHECK(mHdrFont) << "Could not open font: " << mOptions.hdrFontPath;
+
     vh::Renderer2D* renderer = vh::App::Get<vh::Renderer2D>();
     CHECK(renderer);
     mScale = renderer->GetScale();
@@ -85,35 +88,6 @@ void GUI2D::HandleEvent(SDL_Event* event)
     {
         mFocused->HandleEvent(event);
     }
-}
-
-void GUI2D::CalcTextSize(const char* text, int32_t& outWidth, int32_t& outHeight)
-{
-    CHECK(mFont);
-    CHECK(text);
-
-    SDL_Color any = { 0,0,0,0 };
-
-    SDL_Surface* surf = TTF_RenderText_Solid(mFont, text, any);
-    if (surf == nullptr)
-    {
-        outWidth = 0;
-        outHeight = 0;
-        return;
-    }
-
-    outWidth = surf->w;
-    outHeight = surf->h;
-
-    SDL_FreeSurface(surf);
-}
-
-void GUI2D::DrawText(const char* text, int32_t x, int32_t y)
-{
-    vh::Renderer2D* renderer = vh::App::Get<vh::Renderer2D>();
-    CHECK(renderer);
-
-    renderer->DrawText(mFont, text, x, y);
 }
 
 void GUI2D::SetFocus(Widget* widget)

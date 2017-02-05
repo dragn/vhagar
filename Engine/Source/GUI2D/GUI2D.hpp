@@ -11,6 +11,8 @@ struct GUI2DOptions
 {
     const char* fontPath = "<font path is not set>";
     int fontSize = 12;
+    const char* hdrFontPath = "<font path is not set>";
+    int hdrFontSize = 20;
 };
 
 class GUI2D : public vh::Component
@@ -37,10 +39,10 @@ public:
     virtual void HandleEvent(SDL_Event* event);
 
     TTF_Font* GetFont() const { return mFont; }
+    TTF_Font* GetHdrFont() const { return mHdrFont; }
 
     /* Calculate text size rendered with default font */
     void CalcTextSize(const char* text, int32_t& outWidth, int32_t& outHeight);
-    void DrawText(const char* text, int32_t x, int32_t y);
 
     void SetFocus(Widget* widget);
 
@@ -50,6 +52,7 @@ private:
     uint32_t mScale;
 
     TTF_Font* mFont;
+    TTF_Font* mHdrFont;
     GUI2DOptions mOptions;
 
     Widget* mFocused;

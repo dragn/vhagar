@@ -6,9 +6,13 @@
 
 using vh::App;
 using vh::Renderer2D;
+using gui::GUI2D;
 
-gui::TextWidget::TextWidget()
+gui::TextWidget::TextWidget(const char* text /* = nullptr */)
+    : mColor(0xff)
+    , mFont(nullptr)
 {
+    if (text != nullptr) SetText(text);
 }
 
 void gui::TextWidget::SetText(const char* text)
@@ -17,34 +21,48 @@ void gui::TextWidget::SetText(const char* text)
     SetDirty();
 }
 
+void gui::TextWidget::SetFont(TTF_Font* font)
+{
+    CHECK(font);
+    mFont = font;
+    SetDirty();
+}
+
+void gui::TextWidget::SetColor(vh::Color color)
+{
+    mColor = color;
+}
+
 void gui::TextWidget::Draw(int32_t x, int32_t y)
 {
     if (mText.empty()) return;
 
-    gui::GUI2D* gui = vh::App::Get<gui::GUI2D>();
-    CHECK(gui);
+    vh::Renderer2D* renderer = vh::App::Get<vh::Renderer2D>();
+    CHECK(renderer);
 
-    gui->DrawText(mText.c_str(), x, y);
-}
-
-gui::TextWidget::TextWidget(const char* text)
-{
-    SetText(text);
+    renderer->DrawText(mFont, mText.c_str(), mColor, x, y);
 }
 
 void gui::TextWidget::UpdateSize()
 {
+    if (mFont == nullptr)
+    {
+        GUI2D* gui = App::Get<GUI2D>();
+        CHECK(gui);
+        mFont = gui->GetFont();
+    }
+
     if (mText.empty())
     {
         SetSize(0, 0);
         return;
     }
 
-    gui::GUI2D* gui = vh::App::Get<gui::GUI2D>();
-    CHECK(gui);
+    vh::Renderer2D* renderer = vh::App::Get<vh::Renderer2D>();
+    CHECK(renderer);
 
     int32_t width, height;
-    gui->CalcTextSize(mText.c_str(), width, height);
+    renderer->CalcTextSize(mFont, mText.c_str(), width, height);
 
     SetSize(width, height);
 }

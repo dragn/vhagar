@@ -109,12 +109,33 @@ void vh::Renderer2D::FillRect(int32_t x, int32_t y, int32_t width, int32_t heigh
     SDL_RenderFillRect(mRenderer, &rect);
 }
 
-void vh::Renderer2D::DrawText(TTF_Font* font, const char* text, int32_t x, int32_t y, int32_t maxW /* = 0*/)
+void vh::Renderer2D::CalcTextSize(TTF_Font* font, const char* text, int32_t& outWidth, int32_t& outHeight)
 {
     CHECK(font);
     CHECK(text);
 
-    SDL_Color white{ 0xff, 0xff, 0xff, 0xff };
+    SDL_Color any = { 0,0,0,0 };
+
+    SDL_Surface* surf = TTF_RenderText_Solid(font, text, any);
+    if (surf == nullptr)
+    {
+        outWidth = 0;
+        outHeight = 0;
+        return;
+    }
+
+    outWidth = surf->w;
+    outHeight = surf->h;
+
+    SDL_FreeSurface(surf);
+}
+
+void vh::Renderer2D::DrawText(TTF_Font* font, const char* text, Color clr, int32_t x, int32_t y, int32_t maxW /* = 0*/)
+{
+    CHECK(font);
+    CHECK(text);
+
+    SDL_Color white{ clr.r, clr.g, clr.b, clr.a };
     SDL_Surface* surf = TTF_RenderText_Solid(font, text, white);
     if (surf == nullptr)
     {

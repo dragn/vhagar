@@ -25,6 +25,8 @@ int main(int argc, char ** argv) {
     gui::GUI2DOptions guiOpts;
     guiOpts.fontPath = "Assets/Fonts/Munro.ttf";
     guiOpts.fontSize = 10;
+    guiOpts.hdrFontPath = "Assets/Fonts/Munro.ttf";
+    guiOpts.hdrFontSize = 20;
     app.AddComponent<gui::GUI2D>(guiOpts);
 
     gui::GUI2D* gui = App::Get<gui::GUI2D>();

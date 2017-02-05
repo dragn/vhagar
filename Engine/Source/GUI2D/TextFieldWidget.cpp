@@ -35,7 +35,7 @@ void gui::TextFieldWidget::Draw(int32_t x, int32_t y)
 
     if (mFocus) mContent.append(1, '|');
     int32_t textW, textH;
-    gui->CalcTextSize(mContent.c_str(), textW, textH);
+    renderer->CalcTextSize(gui->GetFont(), mContent.c_str(), textW, textH);
     renderer->DrawText(gui->GetFont(), mContent.c_str(), x + 4, y + height / 2 - textH / 2, width - 8);
     if (mFocus && mContent.back() == '|') mContent.pop_back();
 }

@@ -8,6 +8,8 @@ using namespace gui;
 
 GameView::GameView(int slot)
 {
+    GUI2D* gui = App::Get<GUI2D>();
+
     SetBackground("Assets/Images/garage.png");
 
     Widget* topBar = new Widget();
@@ -20,13 +22,23 @@ GameView::GameView(int slot)
     if (!mProfile->Load())
     {
         LOG(ERROR) << "Could not load profile " << slot;
-        GUI2D* gui = App::Get<GUI2D>();
         gui->SetView(new MenuView());
     }
 
     TextWidget* name = new TextWidget(mProfile->GetBandName());
     name->SetPos(ePos::Right, ePos::Top, eAnchor::TopRight);
+    name->SetFont(gui->GetHdrFont());
+    name->SetColor(0x00);
     topBar->AddChild(name);
+
+    ButtonWidget* exitBtn = new ButtonWidget("Exit");
+    exitBtn->SetPos(2, 2);
+    exitBtn->SetSize(24, 16);
+    exitBtn->SetOnClickHandler([gui] ()
+    {
+        gui->SetView(new MenuView());
+    });
+    topBar->AddChild(exitBtn);
 }
 
 GameView::~GameView()
