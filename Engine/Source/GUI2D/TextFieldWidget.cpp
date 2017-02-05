@@ -78,3 +78,13 @@ uint32_t gui::TextFieldWidget::GetMaxSize() const
 {
     return mMaxSize;
 }
+
+void gui::TextFieldWidget::SetValue(const char* value)
+{
+    mContent = value;
+}
+
+const char* gui::TextFieldWidget::GetValue() const
+{
+    return mContent.c_str();
+}

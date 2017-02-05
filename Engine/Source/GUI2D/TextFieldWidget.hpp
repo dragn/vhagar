@@ -22,6 +22,9 @@ public:
     void SetMaxSize(uint32_t size);
     uint32_t GetMaxSize() const;
 
+    void SetValue(const char* value);
+    const char* GetValue() const;
+
 private:
     std::string mContent;
     uint32_t mMaxSize;

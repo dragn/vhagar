@@ -1,12 +1,11 @@
 #pragma once
 
+#include "Utils/Delegate.hpp"
 #include "Widget.hpp"
 #include "TextWidget.hpp"
 
 namespace gui
 {
-
-typedef void (*OnClickHandler)();
 
 class ButtonWidget : public Widget
 {
@@ -16,13 +15,20 @@ public:
 
     virtual void OnClick(int32_t x, int32_t y) override;
 
-    void SetOnClickHandler(OnClickHandler handler)
+    template<typename M>
+    void SetOnClickHandler(M handler)
     {
-        mHandler = handler;
+        mOnClickDelegate.Set(handler);
+    }
+
+    template<typename T, typename M>
+    void SetOnClickHandler(T t, M handler)
+    {
+        mOnClickDelegate.Set(t, handler);
     }
 
 private:
-    OnClickHandler mHandler;
+    vh::Delegate mOnClickDelegate;
     TextWidget* mText;
 };
 
