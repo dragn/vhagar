@@ -42,7 +42,7 @@ bool GameProfile::GetProfilePath(std::string& outPath, int slot)
     return true;
 }
 
-BandMember* GameProfile::GetBandMember(eBandSlot::Type slot)
+BandMember* GameProfile::GetBandMember(eBandSlot::Type slot) const
 {
     return mBandMembers[slot];
 }
@@ -63,7 +63,7 @@ void ReadString(std::fstream& file, std::string& outStr)
     outStr.assign(buf, sz);
 }
 
-bool GameProfile::Save()
+bool GameProfile::Save() const
 {
     std::string fullPath;
     if (!GetProfilePath(fullPath, mSlot)) return false;
@@ -109,9 +109,4 @@ bool GameProfile::Load()
     file.close();
 
     return true;
-}
-
-const char* GameProfile::GetBandName()
-{
-    return mBandName.c_str();
 }

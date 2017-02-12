@@ -11,14 +11,25 @@ using gui::GUI2D;
 gui::TextWidget::TextWidget(const char* text /* = nullptr */)
     : mColor(0xff)
     , mFont(nullptr)
+    , mBoundDelegate(nullptr)
 {
     if (text != nullptr) SetText(text);
+}
+
+gui::TextWidget::~TextWidget()
+{
+    Unbind();
 }
 
 void gui::TextWidget::SetText(const char* text)
 {
     mText = text;
     SetDirty();
+}
+
+void gui::TextWidget::SetText(const std::string& text)
+{
+    SetText(text.c_str());
 }
 
 void gui::TextWidget::SetFont(TTF_Font* font)
@@ -41,6 +52,25 @@ void gui::TextWidget::Draw(int32_t x, int32_t y)
     CHECK(renderer);
 
     renderer->DrawText(mFont, mText.c_str(), mColor, x, y);
+}
+
+void gui::TextWidget::BindTo(vh::MultiDelegate<const std::string&>& del)
+{
+    if (mBoundDelegate != nullptr)
+    {
+        mBoundDelegate->Remove<TextWidget*, void (TextWidget::*)(const std::string&)>(this, &TextWidget::SetText);
+    }
+    del.Add<TextWidget*, void (TextWidget::*)(const std::string&)>(this, &TextWidget::SetText);
+    mBoundDelegate = &del;
+}
+
+void gui::TextWidget::Unbind()
+{
+    if (mBoundDelegate != nullptr)
+    {
+        mBoundDelegate->Remove<TextWidget*, void (TextWidget::*)(const std::string&)>(this, &TextWidget::SetText);
+        mBoundDelegate = nullptr;
+    }
 }
 
 void gui::TextWidget::UpdateSize()

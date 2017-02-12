@@ -25,11 +25,13 @@ GameView::GameView(int slot)
         gui->SetView(new MenuView());
     }
 
-    TextWidget* name = new TextWidget(mProfile->GetBandName());
-    name->SetPos(ePos::Right, ePos::Top, eAnchor::TopRight);
-    name->SetFont(gui->GetHdrFont());
-    name->SetColor(0x00);
-    topBar->AddChild(name);
+    mBandNameTxt = new TextWidget(mProfile->GetBandName().c_str());
+    mBandNameTxt->SetPos(ePos::Right, ePos::Top, eAnchor::TopRight);
+    mBandNameTxt->SetFont(gui->GetHdrFont());
+    mBandNameTxt->SetColor(0x00);
+    mBandNameTxt->BindTo(mProfile->BandName_OnChange);
+
+    topBar->AddChild(mBandNameTxt);
 
     ButtonWidget* exitBtn = new ButtonWidget("Exit");
     exitBtn->SetPos(2, 2);
@@ -39,13 +41,22 @@ GameView::GameView(int slot)
         gui->SetView(new MenuView());
     });
     topBar->AddChild(exitBtn);
+
 }
 
 GameView::~GameView()
 {
-    if (mProfile)
-    {
-        LOG(INFO) << "Autosave profile on GameView destruction";
-        mProfile->Save();
-    }
+    CHECK(mProfile != nullptr);
+    CHECK(mBandNameTxt != nullptr);
+
+    mBandNameTxt->Unbind();
+    LOG(INFO) << "Autosave profile on GameView destruction";
+    mProfile->Save();
+
+    delete mProfile;
+}
+
+void GameView::BandName_OnChange(const std::string& name)
+{
+    mBandNameTxt->SetText(name.c_str());
 }
