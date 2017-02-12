@@ -2,7 +2,7 @@
 
 #include "MenuView.hpp"
 #include "NewGameView.hpp"
-#include "GameProfile.hpp"
+#include "Gameplay/GameProfile.hpp"
 #include "GameView.hpp"
 
 using namespace gui;

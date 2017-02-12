@@ -6,7 +6,13 @@
 GameProfile::GameProfile(int slot, const char* name /* = "" */)
     : mSlot(slot)
     , mBandName(name)
+    , mMoney(0)
+    , mSkill(0)
+    , mPopularity(0)
+    , mReputation(0)
+    , mQuality(0)
 {
+    mBandMembers = { nullptr };
 }
 
 bool GameProfile::GetProfilePath(std::string& outPath, int slot)
@@ -34,6 +40,11 @@ bool GameProfile::GetProfilePath(std::string& outPath, int slot)
     outPath.append(filename);
 
     return true;
+}
+
+BandMember* GameProfile::GetBandMember(eBandSlot::Type slot)
+{
+    return mBandMembers[slot];
 }
 
 void WriteString(std::fstream& file, const std::string& str)

@@ -33,6 +33,11 @@ int main(int argc, char ** argv) {
     CHECK(gui);
     gui->SetView(new MenuView());
 
+    // FIXME for debug
+    app.AddComponent<ConsoleEngine>();
+    app.AddComponent<Network>();
+    app.AddComponent<RemoteConsoleServer>();
+
     app.Run();
 
     return 0;
