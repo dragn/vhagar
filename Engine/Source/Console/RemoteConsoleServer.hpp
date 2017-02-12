@@ -3,7 +3,7 @@
 #include "App/App.hpp"
 #include "Network/TcpServer.hpp"
 #include "Network/Network.hpp"
-#include "Console.hpp"
+#include "ConsoleEngine.hpp"
 
 namespace vh
 {
@@ -30,7 +30,7 @@ class RemoteConsoleServer : public Component, public net::TcpServer::EventListen
 public:
     RemoteConsoleServer() : Component(eTickFrequency::NORMAL)
     {
-        App::CheckRequired<Console>();
+        App::CheckRequired<ConsoleEngine>();
         App::CheckRequired<Network>();
     }
     

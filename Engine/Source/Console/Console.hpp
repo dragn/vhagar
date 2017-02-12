@@ -9,6 +9,7 @@
 #include "Utils/CritSection.hpp"
 #include "Renderable/Overlay.hpp"
 #include "Renderer/Renderer.hpp"
+#include "ConsoleEngine.hpp"
 
 #include "SDL_ttf.h"
 
@@ -37,7 +38,7 @@ class Console : public Component
 
 public:
     Console()
-        : Component(eTickFrequency::RARE)
+        : Component(eTickFrequency::NEVER)
         , mShowConsole(false)
         , mLogSink(nullptr)
         , mOverlay(nullptr)
@@ -48,24 +49,20 @@ public:
         , mHistoryIdx(0)
         , mCurrHistoryIdx(0)
     {
+        App::CheckRequired<ConsoleEngine>();
         App::CheckRequired<Renderer>();
     }
 
     /* Component interface */
     virtual void TickInit(uint32_t delta);
-    virtual void TickRun(uint32_t delta);
     virtual void TickClose(uint32_t delta);
 
     virtual void HandleEvent(SDL_Event* event);
 
     void Register(const std::string& name, CmdHandler handler);
 
-    void Exec(const std::string& cmd);
-
     void PrintMessage(const std::string& msg);
     void ToggleConsole();
-
-    void PrintHelp();
 
     bool IsShown() const
     {
@@ -77,13 +74,7 @@ private:
     ConsoleLogSink* mLogSink;
     TTF_Font* mFont;
 
-    typedef std::map<std::string, CmdHandler> CmdMap;
-
-    CmdMap mCommands;
-
     std::string mInput;
-    cs::CritSection mCmdQueueCS;
-    std::queue<std::string> mCmdQueue;
 
     cs::CritSection mMsgCS;
     std::vector<std::string> mMessages;
@@ -96,7 +87,7 @@ private:
     SDL_Surface* mSurf;
     Overlay* mOverlay;
 
-    void _Exec(const std::string& cmd);
+    ConsoleEngine* mEngine;
 
     void _Redraw();
 };

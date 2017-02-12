@@ -52,7 +52,7 @@ void vh::RemoteConsoleServer::OnData(net::TcpClient* clt, char* data, size_t dat
 {
     std::string str(data, dataSz);
     LOG(INFO) << "Command received from " << clt->GetAddr() << ": " << str;
-    Console* console = App::Get<Console>();
+    ConsoleEngine* console = App::Get<ConsoleEngine>();
     console->Exec(str);
 }
 
@@ -72,4 +72,5 @@ void vh::ClientLogSink::send(google::LogSeverity severity, const char* full_file
 {
     CHECK(mTcpClient);
     mTcpClient->SendString(ToString(severity, base_filename, line, tm_time, message, message_len));
+    mTcpClient->SendData("\n", 1);
 }

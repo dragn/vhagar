@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-#include "Console/Console.hpp"
+#include "Console/ConsoleEngine.hpp"
 
 namespace vh
 {
@@ -15,7 +15,7 @@ namespace ConsoleCommands
 
 #define DECLARE_COMMAND(name) void ConsoleCommand_ ## name(const std::vector<std::string>&);
 #define DEFINE_COMMAND(name) void ConsoleCommand_ ## name (const std::vector<std::string>& params)
-#define REGISTER_COMMAND(name) App::Get<Console>()->Register(#name, ConsoleCommand_ ## name);
+#define REGISTER_COMMAND(name) App::Get<ConsoleEngine>()->Register(#name, ConsoleCommand_ ## name);
 
 DECLARE_COMMAND(print);
 DECLARE_COMMAND(list_actors);
@@ -24,7 +24,7 @@ DECLARE_COMMAND(help);
 DECLARE_COMMAND(save_mesh);
 DECLARE_COMMAND(load_mesh);
 
-void RegisterAll(Console* console);
+void RegisterAll(ConsoleEngine* console);
 
 } // namespace ConsoleCommands
 

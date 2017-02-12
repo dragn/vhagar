@@ -16,7 +16,7 @@
 #include "../Source/App/PlayerController.hpp"
 #include "../Source/App/World.hpp"
 #include "../Source/App/App.hpp"
-#include "../Source/Console/Console.hpp"
+#include "../Source/Console/ConsoleEngine.hpp"
 #include "../Source/Console/RemoteConsoleServer.hpp"
 #include "../Source/Network/Network.hpp"
 #include "../Source/Resource/ResourceSystem.hpp"

@@ -32,7 +32,8 @@ private:
 
 void Console::TickInit(uint32_t delta)
 {
-    ConsoleCommands::RegisterAll(this);
+    mEngine = App::Get<ConsoleEngine>();
+    CHECK(mEngine);
 
     mOverlay = new Overlay();
 
@@ -73,21 +74,6 @@ void Console::TickInit(uint32_t delta)
     FinishInit();
 }
 
-void Console::TickRun(uint32_t delta)
-{
-    if (!mCmdQueue.empty())
-    {
-        cs::CritSectionLock lock(mCmdQueueCS);
-
-        while (!mCmdQueue.empty())
-        {
-            const std::string& cmd = mCmdQueue.front();
-            _Exec(cmd);
-            mCmdQueue.pop();
-        }
-    }
-}
-
 void Console::TickClose(uint32_t delta)
 {
     if (mLogSink != nullptr)
@@ -115,39 +101,6 @@ void Console::TickClose(uint32_t delta)
 
     FinishClose();
 }
-
-void Console::Register(const std::string& name, CmdHandler handler)
-{
-    mCommands[name] = handler;
-}
-
-void Console::_Exec(const std::string& cmd)
-{
-    LOG(INFO) << "> " << cmd;
-
-    std::stringstream ss(cmd);
-
-    std::istream_iterator<std::string> ss_iter(ss);
-    std::istream_iterator<std::string> end;
-
-    std::vector<std::string> params(ss_iter, end);
-
-    if (params.size() == 0)
-    {
-        LOG(WARNING) << "Invalid command: '" << cmd << "'";
-        return;
-    }
-
-    CmdMap::iterator entry = mCommands.find(params[0]);
-    if (entry == mCommands.end())
-    {
-        LOG(WARNING) << "Command handler not found: " << params[0];
-        return;
-    }
-
-    entry->second(params);
-}
-
 
 void Console::_Redraw()
 {
@@ -187,13 +140,6 @@ void Console::_Redraw()
     mOverlay->SetTexture(mSurf);
 }
 
-void Console::Exec(const std::string& cmd)
-{
-    cs::CritSectionLock lock(mCmdQueueCS);
-
-    mCmdQueue.push(cmd);
-}
-
 void Console::PrintMessage(const std::string& msg)
 {
     mMsgCS.Enter();
@@ -226,16 +172,6 @@ void Console::ToggleConsole()
     }
 }
 
-
-void Console::PrintHelp()
-{
-    LOG(INFO) << "Commands list:";
-    for (const std::pair<std::string, CmdHandler>& cmd : mCommands)
-    {
-        LOG(INFO) << "  " << cmd.first;
-    }
-}
-
 void Console::HandleEvent(SDL_Event* event)
 {
     IF_KEYDOWN(event, SDL_SCANCODE_GRAVE)
@@ -264,7 +200,7 @@ void Console::HandleEvent(SDL_Event* event)
                 }
                 mCurrHistoryIdx = 0;
 
-                Exec(mInput);
+                mEngine->Exec(mInput);
                 mInput.clear();
                 _Redraw();
             }

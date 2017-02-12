@@ -17,7 +17,7 @@ namespace vh
 namespace ConsoleCommands
 {
 
-void RegisterAll(Console* console)
+void RegisterAll(ConsoleEngine* console)
 {
     CHECK(console);
 
@@ -60,7 +60,7 @@ DEFINE_COMMAND(quit)
 
 DEFINE_COMMAND(help)
 {
-    App::Get<Console>()->PrintHelp();
+    App::Get<ConsoleEngine>()->PrintHelp();
 }
 
 DEFINE_COMMAND(save_mesh)

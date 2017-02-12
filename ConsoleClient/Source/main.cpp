@@ -37,7 +37,7 @@ static int SocketRead(void* param)
             else if (bytes > 0)
             {
                 buf[bytes] = '\0';
-                std::cout << buf << std::endl;
+                std::cout << buf;
                 std::cout << PROMPT;
             }
         }
