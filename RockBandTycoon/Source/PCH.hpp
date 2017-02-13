@@ -10,3 +10,6 @@
 
 static const char* ORG_NAME = "Human Burrito";
 static const char* APP_NAME = "Rock Band Tycoon";
+
+#include <string>
+#include <fstream>

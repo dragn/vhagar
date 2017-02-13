@@ -8,6 +8,8 @@
 #include "Views/MenuView.hpp"
 #include "Debug/DebugCommands.hpp"
 
+#include "Gameplay/Names.hpp"
+
 using namespace vh;
 using namespace gui;
 
@@ -39,6 +41,8 @@ int main(int argc, char ** argv) {
     app.AddComponent<Network>();
     app.AddComponent<RemoteConsoleServer>();
     app.AddComponent<DebugCommands>();
+
+    app.AddComponent<Names>();
 
     app.Run();
 
