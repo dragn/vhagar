@@ -4,6 +4,7 @@
 #include "MenuView.hpp"
 #include "Gameplay/GameProfile.hpp"
 #include "GameView.hpp"
+#include "Gameplay/Names.hpp"
 
 using namespace gui;
 
@@ -12,20 +13,32 @@ NewGameView::NewGameView(int slot)
 {
     SetBackground("Assets/Images/menu_background.png");
 
-    TextWidget* enterTxt = new TextWidget("Enter band name");
-    enterTxt->SetPos(ePos::Center, 80, eAnchor::BottomCenter);
-    AddWidget(enterTxt);
+    TextWidget* enterBandNameTxt = new TextWidget("Enter band name");
+    enterBandNameTxt->SetPos(ePos::Center, 80, eAnchor::BottomCenter);
+    AddWidget(enterBandNameTxt);
 
-    mNameFld = new TextFieldWidget();
-    mNameFld->SetValue("Human Burrito Sauce");
-    mNameFld->SetMaxSize(32);
-    mNameFld->SetPos(ePos::Center, 82, eAnchor::TopCenter);
-    mNameFld->SetSize(140, 20);
-    AddWidget(mNameFld);
+    mBandNameFld = new TextFieldWidget();
+    mBandNameFld->SetValue("Human Burrito Sauce");
+    mBandNameFld->SetMaxSize(32);
+    mBandNameFld->SetPos(ePos::Center, 82, eAnchor::TopCenter);
+    mBandNameFld->SetSize(140, 20);
+    AddWidget(mBandNameFld);
+
+    TextWidget* enterYourNameTxt = new TextWidget("Enter your name");
+    enterYourNameTxt->SetPos(ePos::Center, 110, eAnchor::TopCenter);
+    AddWidget(enterYourNameTxt);
+
+    mYourNameFld = new TextFieldWidget();
+    std::string name = GetRandomName();
+    mYourNameFld->SetValue(name.c_str());
+    mYourNameFld->SetMaxSize(32);
+    mYourNameFld->SetPos(ePos::Center, 125, eAnchor::TopCenter);
+    mYourNameFld->SetSize(140, 20);
+    AddWidget(mYourNameFld);
 
     ButtonWidget* backBtn = new ButtonWidget("Back");
     backBtn->SetSize(40, 20);
-    backBtn->SetPos(239, 124, eAnchor::TopRight);
+    backBtn->SetPos(239, 149, eAnchor::TopRight);
     backBtn->SetOnClickHandler([] ()
     {
         GUI2D* gui = vh::App::Get<GUI2D>();
@@ -35,16 +48,16 @@ NewGameView::NewGameView(int slot)
 
     ButtonWidget* startBtn = new ButtonWidget("Start");
     startBtn->SetSize(40, 20);
-    startBtn->SetPos(241, 124, eAnchor::TopLeft);
+    startBtn->SetPos(241, 149, eAnchor::TopLeft);
     startBtn->SetOnClickHandler(this, &NewGameView::OnStart);
     AddWidget(startBtn);
 }
 
 void NewGameView::OnStart()
 {
-    CHECK(mNameFld);
+    CHECK(mBandNameFld);
 
-    GameProfile* profile = new GameProfile(mSlot, mNameFld->GetValue());
+    GameProfile* profile = new GameProfile(mSlot, mBandNameFld->GetValue());
     if (profile->Save())
     {
         GUI2D* gui = vh::App::Get<GUI2D>();
@@ -57,4 +70,15 @@ void NewGameView::OnStart()
         // TODO handle error gracefully
         LOG(FATAL) << "Error saving profile";
     }
+}
+
+std::string NewGameView::GetRandomName()
+{
+    Names* names = vh::App::Get<Names>();
+    if (!names)
+    {
+        return "Gregg Wilson";
+    }
+
+    return names->GetRandomMaleName();
 }

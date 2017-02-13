@@ -5,6 +5,8 @@ void Names::TickInit(uint32_t delta)
 {
     LoadDictionary();
 
+    srand(clock());
+
     FinishInit();
 }
 
@@ -94,4 +96,21 @@ void Names::DestroyDictionary()
         mLastNamesCnt = 0;
     }
     mDictionaryLoaded = false;
+}
+
+std::string Names::GetRandomMaleName()
+{
+    std::string name = "";
+    if (mMaleNamesCnt > 0)
+    {
+        size_t idx = rand() % mMaleNamesCnt;
+        name.append(&mMaleNames[idx * MAX_WORD_SIZE]);
+    }
+    if (mLastNamesCnt > 0)
+    {
+        name.append(1, ' ');
+        size_t idx = rand() % mLastNamesCnt;
+        name.append(&mLastNames[idx * MAX_WORD_SIZE]);
+    }
+    return name;
 }

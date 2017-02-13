@@ -24,6 +24,8 @@ public:
     virtual void TickInit(uint32_t delta);
     virtual void TickClose(uint32_t delta);
 
+    std::string GetRandomMaleName();
+
 private:
     bool mDictionaryLoaded;
 

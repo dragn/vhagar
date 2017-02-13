@@ -11,7 +11,10 @@ public:
     void OnStart();
 
 private:
-    gui::TextFieldWidget* mNameFld;
+    gui::TextFieldWidget* mBandNameFld;
+    gui::TextFieldWidget* mYourNameFld;
+
+    std::string GetRandomName();
 
     int mSlot;
 };

@@ -13,3 +13,4 @@ static const char* APP_NAME = "Rock Band Tycoon";
 
 #include <string>
 #include <fstream>
+#include <random>
