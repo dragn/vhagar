@@ -7,6 +7,7 @@ using namespace vh;
 using namespace gui;
 
 GameView::GameView(int slot)
+    : View("GameView")
 {
     GUI2D* gui = App::Get<GUI2D>();
 
@@ -36,8 +37,9 @@ GameView::GameView(int slot)
     ButtonWidget* exitBtn = new ButtonWidget("Exit");
     exitBtn->SetPos(2, 2);
     exitBtn->SetSize(24, 16);
-    exitBtn->SetOnClickHandler([gui] ()
+    exitBtn->SetOnClickHandler([this, gui] ()
     {
+        mProfile->Save();
         gui->SetView(new MenuView());
     });
     topBar->AddChild(exitBtn);
@@ -46,10 +48,11 @@ GameView::GameView(int slot)
 
 GameView::~GameView()
 {
-    CHECK(mProfile != nullptr);
-    CHECK(mBandNameTxt != nullptr);
+    CHECK(mProfile);
+    CHECK(mBandNameTxt);
 
     mBandNameTxt->Unbind();
+
     LOG(INFO) << "Autosave profile on GameView destruction";
     mProfile->Save();
 

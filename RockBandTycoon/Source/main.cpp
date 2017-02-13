@@ -6,6 +6,7 @@
 #include "GUI2D/GUI2D.hpp"
 #include "GUI2D/ButtonWidget.hpp"
 #include "Views/MenuView.hpp"
+#include "Debug/DebugCommands.hpp"
 
 using namespace vh;
 using namespace gui;
@@ -37,6 +38,7 @@ int main(int argc, char ** argv) {
     app.AddComponent<ConsoleEngine>();
     app.AddComponent<Network>();
     app.AddComponent<RemoteConsoleServer>();
+    app.AddComponent<DebugCommands>();
 
     app.Run();
 

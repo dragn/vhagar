@@ -10,6 +10,8 @@ public:
     GameView(int slot);
     virtual ~GameView();
 
+    GameProfile* GetProfile() const { return mProfile; }
+
 private:
     GameProfile* mProfile;
 

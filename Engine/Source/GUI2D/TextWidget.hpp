@@ -24,6 +24,8 @@ public:
     void BindTo(vh::MultiDelegate<const std::string&>& del);
     void Unbind();
 
+    void SetDirty() override;
+
 protected:
     virtual void UpdateSize() override;
 

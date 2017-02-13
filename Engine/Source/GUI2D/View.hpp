@@ -12,7 +12,7 @@ class View
     friend class GUI2D;
 
 public:
-    View();
+    View(const char* name = "NonameView");
     virtual ~View() {};
 
     void AddWidget(Widget* widget);
@@ -20,12 +20,16 @@ public:
     void SetBackground(const vh::Color& color);
     void SetBackground(const char* imagePath);
 
+    const char* GetName() const { return mName.c_str(); }
+
 private:
     virtual void Render(GUI2D* gui);
 
     GUI2D* mGUI;
 
     Widget mRootWidget;
+
+    std::string mName;
 };
 
 }

@@ -104,9 +104,9 @@ void gui::Widget::SetBackground(const char* imagePath)
     }
 }
 
-void gui::Widget::Draw(Widget* parent)
+void gui::Widget::Draw(Widget* parent, bool force /* = false*/)
 {
-    if (mDirty)
+    if (mDirty || force)
     {
         /* run some custom size update logic, if any */
         UpdateSize();
@@ -124,11 +124,13 @@ void gui::Widget::Draw(Widget* parent)
             render->DrawImage(mAbsPosX, mAbsPosY, mWidth, mHeight, mBgImage);
         }
 
+        LOG(INFO) << "Draw: " << mAbsPosX << " " << mAbsPosY;
         /* draw this widget */
         Draw(mAbsPosX, mAbsPosY);
 
         /* set to also redraw all children */
         mChildDirty = true;
+        force = true;
 
         /* reset dirty flag */
         mDirty = false;
@@ -139,7 +141,7 @@ void gui::Widget::Draw(Widget* parent)
     {
         for (Widget* child : mChildren)
         {
-            child->Draw(this);
+            child->Draw(this, force);
         }
 
         mChildDirty = false;

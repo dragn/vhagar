@@ -66,7 +66,7 @@ public:
 
     virtual void OnClick(int32_t x, int32_t y);
 
-    void SetDirty();
+    virtual void SetDirty();
 
     void SetBackground(const vh::Color& color);
     void SetBackground(const char* imagePath);
@@ -80,10 +80,12 @@ public:
 protected:
     virtual void UpdateSize() {};
 
+    Widget* mParent;
+
 private:
     void SetChildDirty();
 
-    void Draw(Widget* parent);
+    void Draw(Widget* parent, bool force = false);
 
     /* calculate screen-relative position of the widget */
     void CalcAbsPos(Widget* parent);
@@ -104,7 +106,6 @@ private:
     bool mChildDirty;
 
     std::list<Widget*> mChildren;
-    Widget* mParent;
 
     vh::Color mBgColor;
     SDL_Surface* mBgImage;

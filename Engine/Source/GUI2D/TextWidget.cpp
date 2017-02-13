@@ -73,6 +73,15 @@ void gui::TextWidget::Unbind()
     }
 }
 
+void gui::TextWidget::SetDirty()
+{
+    Widget::SetDirty();
+
+    // for a text widget it makes sense to also redraw parent,
+    // as it is often translucent
+    if (mParent) mParent->SetDirty();
+}
+
 void gui::TextWidget::UpdateSize()
 {
     if (mFont == nullptr)

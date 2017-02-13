@@ -35,6 +35,7 @@ public:
     virtual void TickClose(uint32_t delta);
 
     void SetView(View* view);
+    View* GetView() const { return mActiveView; }
 
     virtual void HandleEvent(SDL_Event* event);
 

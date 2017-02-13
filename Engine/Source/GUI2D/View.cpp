@@ -5,10 +5,6 @@
 namespace gui
 {
 
-gui::View::View()
-{
-}
-
 void gui::View::AddWidget(Widget* widget)
 {
     mRootWidget.AddChild(widget);
@@ -18,6 +14,11 @@ void gui::View::Render(GUI2D* gui)
 {
     mGUI = gui;
     mRootWidget.Draw(nullptr);
+}
+
+View::View(const char* name /*= "NonameView"*/)
+    : mName(name)
+{
 }
 
 void View::SetBackground(const vh::Color& color)
