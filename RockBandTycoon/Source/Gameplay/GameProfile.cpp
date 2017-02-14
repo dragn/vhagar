@@ -7,6 +7,7 @@ GameProfile::GameProfile(int slot, const char* name /* = "" */)
     : mSlot(slot)
     , mBandName(name)
     , mMoney(0)
+    , mDay(0)
     , mSkill(0)
     , mPopularity(0)
     , mReputation(0)
@@ -78,6 +79,9 @@ bool GameProfile::Save() const
     // right out all profile
     file << VERSION_TAG;
     WriteString(file, mBandName);
+
+    file << mMoney;
+
     file.close();
 
     return true;
@@ -106,6 +110,9 @@ bool GameProfile::Load()
     }
 
     ReadString(file, mBandName);
+
+    file >> mMoney;
+
     file.close();
 
     return true;

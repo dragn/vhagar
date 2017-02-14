@@ -5,19 +5,22 @@
 namespace vh
 {
 
-template<typename ... Args>
+template<typename... Args>
 class IFunction
 {
 public:
-    virtual void Call(Args ... args) = 0;
+    virtual void Call(Args... args) = 0;
 };
 
-template<typename M>
-class Function : public IFunction<>
+template<typename M, typename... Args>
+class Function : public IFunction<Args...>
 {
+    template<typename... Args>
+    friend class MultiDelegate;
+
 public:
     Function(M method) : mMethod(method) {}
-    virtual void Call() override { mMethod(); }
+    virtual void Call(Args... args) override { mMethod(args...); }
 
 private:
     M mMethod;
@@ -72,13 +75,37 @@ class MultiDelegate
 {
 public:
     MultiDelegate() {};
-    ~MultiDelegate()
+    virtual ~MultiDelegate()
     {
         if (!mList.empty())
         {
             LOG(WARNING) << "Destroying non-empty delegate!";
         }
     };
+
+    template<typename M>
+    void Add(M m)
+    {
+        mList.push_back(new Function<M, Args...>(m));
+    }
+
+    template<typename M>
+    void Remove(M m)
+    {
+        auto func = mList.begin();
+        while (func != mList.end())
+        {
+            const Function<M, Args...>* f = reinterpret_cast<Function<M, Args...>*>(*func);
+            if (f->mMethod == m)
+            {
+                func = mList.erase(func);
+            }
+            else
+            {
+                ++func;
+            }
+        }
+    }
 
     template<typename T, typename M>
     void Add(T t, M m)

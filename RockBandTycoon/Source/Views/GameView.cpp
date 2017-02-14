@@ -13,12 +13,6 @@ GameView::GameView(int slot)
 
     SetBackground("Assets/Images/garage.png");
 
-    Widget* topBar = new Widget();
-    topBar->SetBackground("Assets/Images/bar.png");
-    topBar->SetSize(480, 20);
-    topBar->SetPos(0, 0);
-    AddWidget(topBar);
-
     mProfile = new GameProfile(slot);
     if (!mProfile->Load())
     {
@@ -26,24 +20,17 @@ GameView::GameView(int slot)
         gui->SetView(new MenuView());
     }
 
-    mBandNameTxt = new TextWidget(mProfile->GetBandName().c_str());
-    mBandNameTxt->SetPos(ePos::Right, ePos::Top, eAnchor::TopRight);
-    mBandNameTxt->SetFont(gui->GetHdrFont());
-    mBandNameTxt->SetColor(0x00);
-    mBandNameTxt->BindTo(mProfile->BandName_OnChange);
-
-    topBar->AddChild(mBandNameTxt);
+    CreateToolbar();
 
     ButtonWidget* exitBtn = new ButtonWidget("Exit");
-    exitBtn->SetPos(2, 2);
+    exitBtn->SetPos(2, 22);
     exitBtn->SetSize(24, 16);
     exitBtn->SetOnClickHandler([this, gui] ()
     {
         mProfile->Save();
         gui->SetView(new MenuView());
     });
-    topBar->AddChild(exitBtn);
-
+    AddWidget(exitBtn);
 }
 
 GameView::~GameView()
@@ -51,15 +38,58 @@ GameView::~GameView()
     CHECK(mProfile);
     CHECK(mBandNameTxt);
 
-    mBandNameTxt->Unbind();
-
     LOG(INFO) << "Autosave profile on GameView destruction";
     mProfile->Save();
 
+    /* Destroy view to clear out widget bindings before releasing GameProfile */
+    Destroy();
+
     delete mProfile;
+    mProfile = nullptr;
 }
 
-void GameView::BandName_OnChange(const std::string& name)
+void GameView::CreateToolbar()
 {
-    mBandNameTxt->SetText(name.c_str());
+    GUI2D* gui = App::Get<GUI2D>();
+
+    Widget* topBar = new Widget();
+    topBar->SetBackground("Assets/Images/bar.png");
+    topBar->SetSize(480, 20);
+    topBar->SetPos(0, 0);
+    AddWidget(topBar);
+
+    int32_t gridLeft = 0;
+    int32_t gridStep = 60;
+    int32_t gridIdx = 0;
+
+    ImageWidget* moneyIcon = new ImageWidget("Assets/Images/money.png");
+    moneyIcon->SetPos(gridLeft + gridStep * (gridIdx), 1);
+    topBar->AddChild(moneyIcon);
+
+    TextWidget* moneyTxt = new TextWidget();
+    moneyTxt->SetPos(gridLeft + gridStep * (gridIdx++) + 18, 4);
+    moneyTxt->SetColor(vh::Color(0x00));
+    moneyTxt->SetText(mProfile->GetMoney());
+    moneyTxt->Bind(mProfile->Money_OnChange);
+    topBar->AddChild(moneyTxt);
+
+    ImageWidget* skillIcon = new ImageWidget("Assets/Images/skill.png");
+    skillIcon->SetPos(gridLeft + gridStep * (gridIdx++), 1);
+    topBar->AddChild(skillIcon);
+
+    ImageWidget* popIcon = new ImageWidget("Assets/Images/pop.png");
+    popIcon->SetPos(gridLeft + gridStep * (gridIdx++), 1);
+    topBar->AddChild(popIcon);
+
+    ImageWidget* repIcon = new ImageWidget("Assets/Images/rep.png");
+    repIcon->SetPos(gridLeft + gridStep * (gridIdx++), 1);
+    topBar->AddChild(repIcon);
+
+    mBandNameTxt = new TextWidget(mProfile->GetBandName().c_str());
+    mBandNameTxt->SetPos(ePos::Right, ePos::Top, eAnchor::TopRight);
+    mBandNameTxt->SetFont(gui->GetHdrFont());
+    mBandNameTxt->SetColor(0x00);
+    mBandNameTxt->Bind(mProfile->BandName_OnChange);
+
+    topBar->AddChild(mBandNameTxt);
 }

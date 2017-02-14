@@ -17,5 +17,5 @@ private:
 
     gui::TextWidget* mBandNameTxt;
 
-    void BandName_OnChange(const std::string& name);
+    void CreateToolbar();
 };

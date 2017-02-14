@@ -8,6 +8,12 @@
 class GameProfile
 {
     VH_PROPERTY_RW(std::string, BandName);
+    VH_PROPERTY_RW(int32_t, Money);
+    VH_PROPERTY_RW(uint32_t, Day);
+    VH_PROPERTY_RW(float, Skill);
+    VH_PROPERTY_RW(float, Reputation);
+    VH_PROPERTY_RW(float, Popularity);
+    VH_PROPERTY_RW(float, Quality);
 
 public:
     GameProfile(int slot, const char* name = "");
@@ -22,28 +28,10 @@ public:
 
     BandMember* GetBandMember(eBandSlot::Type slot) const;
 
-    int32_t GetMoney() const { return mMoney; }
-    float GetSkill() const { return mSkill; }
-    float GetPopularity() const { return mPopularity; }
-    float GetReputation() const { return mReputation; }
-    float GetQuality() const { return mQuality; }
-
-    // Stat change delegates
-    vh::MultiDelegate<> Money_OnChange;
-
 private:
     static const uint32_t VERSION_TAG = 0x31b8a093;
 
     int mSlot;
 
     std::array<BandMember*, eBandSlot::MAX> mBandMembers;
-
-    // Resources
-    int32_t mMoney;
-
-    // Stats
-    float mSkill;
-    float mPopularity;
-    float mReputation;
-    float mQuality;
 };

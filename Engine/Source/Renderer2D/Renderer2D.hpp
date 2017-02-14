@@ -60,7 +60,7 @@ public:
     void CalcTextSize(TTF_Font* font, const char* text, int32_t& outWidth, int32_t& outHeight);
     void DrawText(TTF_Font* font, const char* text, Color color, int32_t x, int32_t y, int32_t maxW = 0);
 
-    void DrawImage(int32_t x, int32_t y, int32_t width, int32_t height, SDL_Surface* surf);
+    void DrawImage(SDL_Surface* surf, int32_t x, int32_t y, int32_t width, int32_t height);
 
 private:
     Renderer2DOptions mOptions;

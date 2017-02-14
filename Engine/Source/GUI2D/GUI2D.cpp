@@ -47,7 +47,10 @@ void GUI2D::TickRun(uint32_t delta)
         vh::Renderer2D* renderer = vh::App::Get<vh::Renderer2D>();
         CHECK(renderer);
 
-        mActiveView->mRootWidget.SetSize(renderer->GetWidth(), renderer->GetHeight());
+        if (mActiveView->mRootWidget)
+        {
+            mActiveView->mRootWidget->SetSize(renderer->GetWidth(), renderer->GetHeight());
+        }
     }
 }
 
@@ -78,9 +81,9 @@ void GUI2D::HandleEvent(SDL_Event* event)
             int32_t x = event->button.x / mScale;
             int32_t y = event->button.y / mScale;
 
-            if (mActiveView)
+            if (mActiveView && mActiveView->mRootWidget)
             {
-                mActiveView->mRootWidget.OnClick(x, y);
+                mActiveView->mRootWidget->OnClick(x, y);
             }
         }
     }

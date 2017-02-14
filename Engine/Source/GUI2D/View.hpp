@@ -13,7 +13,7 @@ class View
 
 public:
     View(const char* name = "NonameView");
-    virtual ~View() {};
+    virtual ~View();
 
     void AddWidget(Widget* widget);
 
@@ -22,12 +22,16 @@ public:
 
     const char* GetName() const { return mName.c_str(); }
 
+protected:
+    /* Destroy all widgets */
+    void Destroy();
+
 private:
     virtual void Render(GUI2D* gui);
 
     GUI2D* mGUI;
 
-    Widget mRootWidget;
+    Widget* mRootWidget;
 
     std::string mName;
 };

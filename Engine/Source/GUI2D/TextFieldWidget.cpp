@@ -36,7 +36,7 @@ void gui::TextFieldWidget::Draw(int32_t x, int32_t y)
     if (mFocus) mContent.append(1, '|');
     int32_t textW, textH;
     renderer->CalcTextSize(gui->GetFont(), mContent.c_str(), textW, textH);
-    renderer->DrawText(gui->GetFont(), mContent.c_str(), x + 4, y + height / 2 - textH / 2, width - 8);
+    renderer->DrawText(gui->GetFont(), mContent.c_str(), vh::Color(0xff), x + 4, y + height / 2 - textH / 2, width - 8);
     if (mFocus && mContent.back() == '|') mContent.pop_back();
 }
 
@@ -82,6 +82,7 @@ uint32_t gui::TextFieldWidget::GetMaxSize() const
 void gui::TextFieldWidget::SetValue(const char* value)
 {
     mContent = value;
+    SetDirty();
 }
 
 const char* gui::TextFieldWidget::GetValue() const

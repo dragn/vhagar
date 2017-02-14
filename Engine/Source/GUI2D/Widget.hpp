@@ -2,6 +2,7 @@
 
 #include <list>
 #include "Renderer2D/Color.hpp"
+#include "Utils/Delegate.hpp"
 
 namespace gui
 {
@@ -76,6 +77,8 @@ public:
 
     /* handle event passed to focused widget */
     virtual void HandleEvent(SDL_Event* event) {};
+
+    vh::MultiDelegate<Widget*> OnDestroy;
 
 protected:
     virtual void UpdateSize() {};

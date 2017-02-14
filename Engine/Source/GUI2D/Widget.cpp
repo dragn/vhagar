@@ -9,6 +9,8 @@ using vh::Renderer2D;
 
 gui::Widget::~Widget()
 {
+    OnDestroy(this);
+
     for (Widget* child : mChildren)
     {
         if (child) delete child;
@@ -26,7 +28,7 @@ void gui::Widget::SetPos(int32_t x, int32_t y, eAnchor::Type anchor /*= eAnchor:
     mPosX = x;
     mPosY = y;
     mAnchor = anchor;
-    mDirty = true;
+    SetDirty();
 }
 
 void gui::Widget::GetSize(int32_t& width, int32_t& height) const
@@ -37,9 +39,9 @@ void gui::Widget::GetSize(int32_t& width, int32_t& height) const
 
 void gui::Widget::SetSize(int32_t width, int32_t height)
 {
+    if (mWidth != width || mHeight != height) SetDirty();
     mWidth = width;
     mHeight = height;
-    mDirty = true;
 }
 
 void gui::Widget::SetChildDirty()
@@ -121,7 +123,7 @@ void gui::Widget::Draw(Widget* parent, bool force /* = false*/)
 
         if (mBgImage != nullptr)
         {
-            render->DrawImage(mAbsPosX, mAbsPosY, mWidth, mHeight, mBgImage);
+            render->DrawImage(mBgImage, mAbsPosX, mAbsPosY, mWidth, mHeight);
         }
 
         LOG(INFO) << "Draw: " << mAbsPosX << " " << mAbsPosY;
