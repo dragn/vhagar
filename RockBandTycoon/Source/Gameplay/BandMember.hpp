@@ -15,11 +15,14 @@ enum Type
 
 class BandMember
 {
+    friend class GameProfile;
+
 public:
     BandMember() {}
-    BandMember(const char* name, const char* hair, const char* face,
+    BandMember(eBandSlot::Type type, const char* name, const char* hair, const char* face,
         const char* body, const char* hands, const char* legs)
         : mName(name)
+        , mSlot(type)
         , mHair(hair)
         , mFace(face)
         , mBody(body)
@@ -29,6 +32,7 @@ public:
     }
 
     const std::string& GetName() const { return mName; }
+    const eBandSlot::Type GetType() const { return mSlot; }
 
     const std::string& GetHair() const { return mHair; }
     const std::string& GetFace() const { return mFace; }

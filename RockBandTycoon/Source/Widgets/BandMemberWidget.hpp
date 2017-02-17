@@ -15,6 +15,16 @@ public:
 
     virtual void UpdateSize() override;
 
+    template<typename T>
+    void Bind(vh::MultiDelegate<T>& del)
+    {
+        del.Add<BandMemberWidget*, void (BandMemberWidget::*)(const T&)>(this, &BandMemberWidget::SetBandMember);
+        OnDestroy.Add([&] (Widget* widget)
+        {
+            del.Remove<BandMemberWidget*, void (BandMemberWidget::*)(const T&)>(reinterpret_cast<BandMemberWidget*>(widget), &BandMemberWidget::SetBandMember);
+        });
+    }
+
 private:
     BandMember mBandMember;
 

@@ -13,7 +13,6 @@ GameProfile::GameProfile(int slot, const char* name /* = "" */)
     , mReputation(0)
     , mQuality(0)
 {
-    mBandMembers = { nullptr };
 }
 
 bool GameProfile::GetProfilePath(std::string& outPath, int slot)
@@ -41,11 +40,6 @@ bool GameProfile::GetProfilePath(std::string& outPath, int slot)
     outPath.append(filename);
 
     return true;
-}
-
-BandMember* GameProfile::GetBandMember(eBandSlot::Type slot) const
-{
-    return mBandMembers[slot];
 }
 
 template<typename T>
@@ -76,6 +70,32 @@ template<> void Read(std::istream& file, std::string& outStr)
     outStr.assign(buf, sz);
 }
 
+template<> void Write(std::ostream& file, const BandMember& bm)
+{
+    Write(file, bm.GetName());
+    Write(file, bm.GetType());
+    Write(file, bm.GetHair());
+    Write(file, bm.GetFace());
+    Write(file, bm.GetBody());
+    Write(file, bm.GetHands());
+    Write(file, bm.GetLegs());
+}
+
+template<> void Read(std::istream& file, BandMember& bm)
+{
+    std::string name, hair, face, body, hands, legs;
+    eBandSlot::Type type;
+    Read(file, name);
+    Read(file, type);
+    Read(file, hair);
+    Read(file, face);
+    Read(file, body);
+    Read(file, hands);
+    Read(file, legs);
+    bm = BandMember(type, name.c_str(), hair.c_str(), face.c_str(),
+        body.c_str(), hands.c_str(), legs.c_str());
+}
+
 bool GameProfile::Save() const
 {
     std::string fullPath;
@@ -97,6 +117,8 @@ bool GameProfile::Save() const
     Write(file, mQuality);
     Write(file, mReputation);
     Write(file, mSkill);
+
+    Write(file, mGuitarist);
 
     file.close();
 
@@ -130,6 +152,9 @@ bool GameProfile::Load()
     Read(file, mQuality);
     Read(file, mReputation);
     Read(file, mSkill);
+
+    Read(file, mGuitarist);
+    CHECK(mGuitarist.GetType() == eBandSlot::Guitar);
 
     file.close();
 

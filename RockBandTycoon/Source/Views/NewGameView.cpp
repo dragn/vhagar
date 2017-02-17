@@ -15,72 +15,82 @@ NewGameView::NewGameView(int slot)
 {
     SetBackground("Assets/Images/menu_background.png");
 
-    int32_t gridTop = 60;
+    Widget* panel = new Widget();
+    panel->SetSize(420, 210);
+    panel->SetBackground(vh::Color(0x00));
+    panel->SetPos(ePos::Center, ePos::Center, eAnchor::CenterCenter);
+    AddWidget(panel);
+
+    int32_t gridTop = 40;
     int32_t gridStep = 25;
     int32_t gridIdx = 0;
 
+    int32_t leftOffset = 180;
+    int32_t fieldW = 140;
+    int32_t fieldH = 20;
+
     TextWidget* enterBandNameTxt = new TextWidget("Enter band name");
-    enterBandNameTxt->SetPos(ePos::Center, gridTop + (gridIdx++) * gridStep, eAnchor::BottomCenter);
-    AddWidget(enterBandNameTxt);
+    enterBandNameTxt->SetPos(leftOffset, gridTop + (gridIdx++) * gridStep, eAnchor::BottomLeft);
+    panel->AddChild(enterBandNameTxt);
 
     mBandNameFld = new TextFieldWidget();
     mBandNameFld->SetValue("Human Burrito Sauce");
     mBandNameFld->SetMaxSize(32);
-    mBandNameFld->SetPos(ePos::Center, gridTop + (gridIdx++) * gridStep, eAnchor::BottomCenter);
-    mBandNameFld->SetSize(140, 20);
-    AddWidget(mBandNameFld);
+    mBandNameFld->SetPos(leftOffset, gridTop + (gridIdx++) * gridStep, eAnchor::BottomLeft);
+    mBandNameFld->SetSize(fieldW, fieldH);
+    panel->AddChild(mBandNameFld);
 
     TextWidget* enterYourNameTxt = new TextWidget("Enter your name");
-    enterYourNameTxt->SetPos(ePos::Center, gridTop + (gridIdx++) * gridStep, eAnchor::BottomCenter);
-    AddWidget(enterYourNameTxt);
+    enterYourNameTxt->SetPos(leftOffset, gridTop + (gridIdx++) * gridStep, eAnchor::BottomLeft);
+    panel->AddChild(enterYourNameTxt);
 
     mYourNameFld = new TextFieldWidget();
     std::string name = GetRandomName();
     mYourNameFld->SetValue(name.c_str());
     mYourNameFld->SetMaxSize(32);
-    mYourNameFld->SetPos(ePos::Center, gridTop + (gridIdx) * gridStep, eAnchor::BottomCenter);
-    mYourNameFld->SetSize(140, 20);
-    AddWidget(mYourNameFld);
+    mYourNameFld->SetPos(leftOffset, gridTop + (gridIdx) * gridStep, eAnchor::BottomLeft);
+    mYourNameFld->SetSize(fieldW, fieldH);
+    panel->AddChild(mYourNameFld);
 
     ButtonWidget* regenNameBtn = new ButtonWidget();
-    regenNameBtn->SetPos(312, gridTop + (gridIdx++) * gridStep - 1, eAnchor::BottomLeft);
+    regenNameBtn->SetPos(leftOffset + fieldW + 2, gridTop + (gridIdx++) * gridStep - 1, eAnchor::BottomLeft);
     regenNameBtn->SetSize(18, 18);
     regenNameBtn->SetOnClickHandler([&] ()
     {
         mYourNameFld->SetValue(GetRandomName().c_str());
     });
-    AddWidget(regenNameBtn);
+    panel->AddChild(regenNameBtn);
 
     ButtonWidget* backBtn = new ButtonWidget("Back");
-    backBtn->SetSize(40, 20);
+    backBtn->SetSize(40, fieldH);
     backBtn->SetPos(239, gridTop + (gridIdx) * gridStep, eAnchor::BottomRight);
     backBtn->SetOnClickHandler([] ()
     {
         GUI2D* gui = vh::App::Get<GUI2D>();
         gui->SetView(new MenuView());
     });
-    AddWidget(backBtn);
+    panel->AddChild(backBtn);
 
     ButtonWidget* startBtn = new ButtonWidget("Start");
-    startBtn->SetSize(40, 20);
+    startBtn->SetSize(40, fieldH);
     startBtn->SetPos(241, gridTop + (gridIdx++) * gridStep, eAnchor::BottomLeft);
     startBtn->SetOnClickHandler(this, &NewGameView::OnStart);
-    AddWidget(startBtn);
+    panel->AddChild(startBtn);
 
-    BandMember mem(mYourNameFld->GetValue(), "hair_1", "face_0",
+    BandMember mem(eBandSlot::Guitar, mYourNameFld->GetValue(), "hair_1", "face_0",
         "guitar_body_0", "guitar_hands_0", "legs_1");
 
     mBandMemberWdg = new BandMemberWidget();
-    mBandMemberWdg->SetPos(90, 40, eAnchor::TopCenter);
-    AddWidget(mBandMemberWdg);
+    mBandMemberWdg->SetPos(leftOffset / 2, 20, eAnchor::TopCenter);
+    panel->AddChild(mBandMemberWdg);
 
     GenBandMember();
 
     ButtonWidget* genBtn = new ButtonWidget("Generate");
-    genBtn->SetSize(50, 20);
-    genBtn->SetPos(90, 180, eAnchor::TopCenter);
+    genBtn->SetSize(50, fieldH);
+    genBtn->SetPos(90, 160, eAnchor::TopCenter);
     genBtn->SetOnClickHandler(this, &NewGameView::GenBandMember);
-    AddWidget(genBtn);
+    panel->AddChild(genBtn);
 }
 
 void NewGameView::OnStart()
@@ -88,6 +98,7 @@ void NewGameView::OnStart()
     CHECK(mBandNameFld);
 
     GameProfile* profile = new GameProfile(mSlot, mBandNameFld->GetValue());
+    profile->SetGuitarist(mBandMemberWdg->GetBandMember());
     if (profile->Save())
     {
         GUI2D* gui = vh::App::Get<GUI2D>();
@@ -125,7 +136,7 @@ void NewGameView::GenBandMember()
     bp->GetRandomHands(hands);
     bp->GetRandomLegs(legs);
 
-    BandMember mem(mYourNameFld->GetValue(), hair.c_str(), face.c_str(),
+    BandMember mem(eBandSlot::Guitar, mYourNameFld->GetValue(), hair.c_str(), face.c_str(),
         body.c_str(), hands.c_str(), legs.c_str());
     mBandMemberWdg->SetBandMember(mem);
 }

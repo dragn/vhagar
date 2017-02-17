@@ -14,6 +14,7 @@ class GameProfile
     VH_PROPERTY_RW(float, Reputation);
     VH_PROPERTY_RW(float, Popularity);
     VH_PROPERTY_RW(float, Quality);
+    VH_PROPERTY_RW(BandMember, Guitarist);
 
 public:
     GameProfile(int slot, const char* name = "");
@@ -26,12 +27,8 @@ public:
 
     static bool GetProfilePath(std::string& outPath, int slot);
 
-    BandMember* GetBandMember(eBandSlot::Type slot) const;
-
 private:
-    static const uint32_t VERSION_TAG = 0x31bca0b1;
+    static const uint32_t VERSION_TAG = 0x31bca0b2;
 
     int mSlot;
-
-    std::array<BandMember*, eBandSlot::MAX> mBandMembers;
 };

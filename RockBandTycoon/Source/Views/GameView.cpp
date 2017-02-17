@@ -2,6 +2,7 @@
 
 #include "GameView.hpp"
 #include "MenuView.hpp"
+#include "Widgets/BandMemberWidget.hpp"
 
 using namespace vh;
 using namespace gui;
@@ -21,6 +22,12 @@ GameView::GameView(int slot)
     }
 
     CreateToolbar();
+
+    BandMemberWidget* guitarist = new BandMemberWidget();
+    guitarist->SetPos(110, 100);
+    guitarist->Bind(mProfile->Guitarist_OnChange);
+    AddWidget(guitarist);
+    mProfile->Trigger_Guitarist_OnChange();
 
     ButtonWidget* exitBtn = new ButtonWidget("Exit");
     exitBtn->SetPos(2, 22);
