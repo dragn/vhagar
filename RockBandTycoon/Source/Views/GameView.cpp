@@ -74,16 +74,37 @@ void GameView::CreateToolbar()
     topBar->AddChild(moneyTxt);
 
     ImageWidget* skillIcon = new ImageWidget("Assets/Images/skill.png");
-    skillIcon->SetPos(gridLeft + gridStep * (gridIdx++), 1);
+    skillIcon->SetPos(gridLeft + gridStep * (gridIdx), 1);
     topBar->AddChild(skillIcon);
 
+    TextWidget* skillTxt = new TextWidget();
+    skillTxt->SetPos(gridLeft + gridStep * (gridIdx++) + 18, 4);
+    skillTxt->SetColor(vh::Color(0x00));
+    skillTxt->SetText(mProfile->GetSkill());
+    skillTxt->Bind(mProfile->Skill_OnChange);
+    topBar->AddChild(skillTxt);
+
     ImageWidget* popIcon = new ImageWidget("Assets/Images/pop.png");
-    popIcon->SetPos(gridLeft + gridStep * (gridIdx++), 1);
+    popIcon->SetPos(gridLeft + gridStep * (gridIdx), 1);
     topBar->AddChild(popIcon);
 
+    TextWidget* popTxt = new TextWidget();
+    popTxt->SetPos(gridLeft + gridStep * (gridIdx++) + 18, 4);
+    popTxt->SetColor(vh::Color(0x00));
+    popTxt->SetText(mProfile->GetPopularity());
+    popTxt->Bind(mProfile->Popularity_OnChange);
+    topBar->AddChild(popTxt);
+
     ImageWidget* repIcon = new ImageWidget("Assets/Images/rep.png");
-    repIcon->SetPos(gridLeft + gridStep * (gridIdx++), 1);
+    repIcon->SetPos(gridLeft + gridStep * (gridIdx), 1);
     topBar->AddChild(repIcon);
+
+    TextWidget* repTxt = new TextWidget();
+    repTxt->SetPos(gridLeft + gridStep * (gridIdx++) + 18, 4);
+    repTxt->SetColor(vh::Color(0x00));
+    repTxt->SetText(mProfile->GetReputation());
+    repTxt->Bind(mProfile->Reputation_OnChange);
+    topBar->AddChild(repTxt);
 
     mBandNameTxt = new TextWidget(mProfile->GetBandName().c_str());
     mBandNameTxt->SetPos(ePos::Right, ePos::Top, eAnchor::TopRight);

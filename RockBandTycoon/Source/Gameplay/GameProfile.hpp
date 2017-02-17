@@ -29,7 +29,7 @@ public:
     BandMember* GetBandMember(eBandSlot::Type slot) const;
 
 private:
-    static const uint32_t VERSION_TAG = 0x31b8a093;
+    static const uint32_t VERSION_TAG = 0x31bca0b1;
 
     int mSlot;
 

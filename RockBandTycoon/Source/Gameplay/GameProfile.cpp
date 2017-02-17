@@ -48,14 +48,26 @@ BandMember* GameProfile::GetBandMember(eBandSlot::Type slot) const
     return mBandMembers[slot];
 }
 
-void WriteString(std::fstream& file, const std::string& str)
+template<typename T>
+void Write(std::ostream& s, const T& val)
+{
+    s.write((char*) &val, sizeof(T));
+}
+
+template<typename T>
+void Read(std::istream& s, T& val)
+{
+    s.read((char*) &val, sizeof(T));
+}
+
+template<> void Write(std::ostream& file, const std::string& str)
 {
     std::string::size_type sz = str.size();
     file.write((char*) &sz, sizeof(std::string::size_type));
     file.write(str.c_str(), str.size());
 }
 
-void ReadString(std::fstream& file, std::string& outStr)
+template<> void Read(std::istream& file, std::string& outStr)
 {
     std::string::size_type sz;
     file.read((char*) &sz, sizeof(std::string::size_type));
@@ -77,10 +89,14 @@ bool GameProfile::Save() const
     }
 
     // right out all profile
-    file << VERSION_TAG;
-    WriteString(file, mBandName);
+    Write(file, VERSION_TAG);
 
-    file << mMoney;
+    Write(file, mBandName);
+    Write(file, mMoney);
+    Write(file, mPopularity);
+    Write(file, mQuality);
+    Write(file, mReputation);
+    Write(file, mSkill);
 
     file.close();
 
@@ -100,8 +116,7 @@ bool GameProfile::Load()
     }
 
     uint32_t tag;
-    file >> tag;
-
+    Read(file, tag);
     if (tag != VERSION_TAG)
     {
         LOG(ERROR) << "Version tag mismatch: " << tag;
@@ -109,9 +124,12 @@ bool GameProfile::Load()
         return false;
     }
 
-    ReadString(file, mBandName);
-
-    file >> mMoney;
+    Read(file, mBandName);
+    Read(file, mMoney);
+    Read(file, mPopularity);
+    Read(file, mQuality);
+    Read(file, mReputation);
+    Read(file, mSkill);
 
     file.close();
 
