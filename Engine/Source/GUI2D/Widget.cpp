@@ -82,6 +82,7 @@ void gui::Widget::OnClick(int32_t x, int32_t y)
 void gui::Widget::SetDirty()
 {
     mDirty = true;
+    if (mParent) mParent->mDirty = true;
     SetChildDirty();
 }
 
@@ -126,7 +127,6 @@ void gui::Widget::Draw(Widget* parent, bool force /* = false*/)
             render->DrawImage(mBgImage, mAbsPosX, mAbsPosY, mWidth, mHeight);
         }
 
-        LOG(INFO) << "Draw: " << mAbsPosX << " " << mAbsPosY;
         /* draw this widget */
         Draw(mAbsPosX, mAbsPosY);
 

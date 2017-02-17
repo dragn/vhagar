@@ -5,6 +5,8 @@
 #include "Gameplay/GameProfile.hpp"
 #include "GameView.hpp"
 #include "Gameplay/Names.hpp"
+#include "Widgets/BandMemberWidget.hpp"
+#include "Gameplay/BodyParts.hpp"
 
 using namespace gui;
 
@@ -64,6 +66,21 @@ NewGameView::NewGameView(int slot)
     startBtn->SetPos(241, gridTop + (gridIdx++) * gridStep, eAnchor::BottomLeft);
     startBtn->SetOnClickHandler(this, &NewGameView::OnStart);
     AddWidget(startBtn);
+
+    BandMember mem(mYourNameFld->GetValue(), "hair_1", "face_0",
+        "guitar_body_0", "guitar_hands_0", "legs_1");
+
+    mBandMemberWdg = new BandMemberWidget();
+    mBandMemberWdg->SetPos(90, 40, eAnchor::TopCenter);
+    AddWidget(mBandMemberWdg);
+
+    GenBandMember();
+
+    ButtonWidget* genBtn = new ButtonWidget("Generate");
+    genBtn->SetSize(50, 20);
+    genBtn->SetPos(90, 180, eAnchor::TopCenter);
+    genBtn->SetOnClickHandler(this, &NewGameView::GenBandMember);
+    AddWidget(genBtn);
 }
 
 void NewGameView::OnStart()
@@ -94,4 +111,21 @@ std::string NewGameView::GetRandomName()
     }
 
     return names->GetRandomMaleName();
+}
+
+void NewGameView::GenBandMember()
+{
+    std::string hair, face, body,
+        hands, legs;
+
+    BodyParts* bp = vh::App::Get<BodyParts>();
+    bp->GetRandomHair(hair);
+    bp->GetRandomFace(face);
+    bp->GetRandomBody(body);
+    bp->GetRandomHands(hands);
+    bp->GetRandomLegs(legs);
+
+    BandMember mem(mYourNameFld->GetValue(), hair.c_str(), face.c_str(),
+        body.c_str(), hands.c_str(), legs.c_str());
+    mBandMemberWdg->SetBandMember(mem);
 }

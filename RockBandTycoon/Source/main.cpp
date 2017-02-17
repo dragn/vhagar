@@ -9,6 +9,7 @@
 #include "Debug/DebugCommands.hpp"
 
 #include "Gameplay/Names.hpp"
+#include "Gameplay/BodyParts.hpp"
 
 using namespace vh;
 using namespace gui;
@@ -43,6 +44,7 @@ int main(int argc, char ** argv) {
     app.AddComponent<DebugCommands>();
 
     app.AddComponent<Names>();
+    app.AddComponent<BodyParts>();
 
     app.Run();
 

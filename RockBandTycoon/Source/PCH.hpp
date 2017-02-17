@@ -8,6 +8,8 @@
 #include "GUI2D/ImageWidget.hpp"
 #include "GUI2D/TextFieldWidget.hpp"
 
+#include "Renderer2D/Renderer2D.hpp"
+
 static const char* ORG_NAME = "Human Burrito";
 static const char* APP_NAME = "Rock Band Tycoon";
 
