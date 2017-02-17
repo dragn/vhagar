@@ -10,6 +10,7 @@ class TextFieldWidget : public Widget
 {
 public:
     TextFieldWidget();
+    ~TextFieldWidget();
 
     virtual void OnClick(int32_t x, int32_t y) override;
     virtual void Draw(int32_t x, int32_t y) override;
@@ -26,9 +27,14 @@ public:
     const char* GetValue() const;
 
 private:
+    static Uint32 TimerCallback(Uint32, void*);
+
     std::string mContent;
     uint32_t mMaxSize;
     bool mFocus;
+    bool mBlink;
+
+    SDL_TimerID mTimer;
 };
 
 } // namespace gui

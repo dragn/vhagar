@@ -7,9 +7,15 @@
 
 gui::TextFieldWidget::TextFieldWidget()
     : mFocus(false)
+    , mBlink(false)
     , mMaxSize(20)
 {
     SetBackground(vh::Color(0x00));
+}
+
+gui::TextFieldWidget::~TextFieldWidget()
+{
+    SDL_RemoveTimer(mTimer);
 }
 
 void gui::TextFieldWidget::OnClick(int32_t x, int32_t y)
@@ -33,23 +39,35 @@ void gui::TextFieldWidget::Draw(int32_t x, int32_t y)
 
     renderer->DrawRect(x, y, width, height, vh::Color(0xff));
 
-    if (mFocus) mContent.append(1, '|');
+    if (mFocus && mBlink) mContent.append(1, '|');
     int32_t textW, textH;
     renderer->CalcTextSize(gui->GetFont(), mContent.c_str(), textW, textH);
     renderer->DrawText(gui->GetFont(), mContent.c_str(), vh::Color(0xff), x + 4, y + height / 2 - textH / 2, width - 8);
-    if (mFocus && mContent.back() == '|') mContent.pop_back();
+    if (mFocus && mBlink && mContent.back() == '|') mContent.pop_back();
+}
+
+Uint32 gui::TextFieldWidget::TimerCallback(Uint32 interval, void* param)
+{
+    CHECK(param);
+    gui::TextFieldWidget* widget = reinterpret_cast<gui::TextFieldWidget*>(param);
+    widget->mBlink = !widget->mBlink;
+    widget->SetDirty();
+    return interval;
 }
 
 void gui::TextFieldWidget::OnFocus()
 {
     mFocus = true;
+    mBlink = true;
     SetDirty();
+    mTimer = SDL_AddTimer(1 << 9, &TimerCallback, this);
 }
 
 void gui::TextFieldWidget::OnBlur()
 {
     mFocus = false;
     SetDirty();
+    SDL_RemoveTimer(mTimer);
 }
 
 void gui::TextFieldWidget::HandleEvent(SDL_Event* event)
