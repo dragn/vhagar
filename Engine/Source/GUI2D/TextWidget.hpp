@@ -48,4 +48,6 @@ private:
     vh::Color mColor;
 };
 
+template<> void TextWidget::SetText(const float& val);
+
 }

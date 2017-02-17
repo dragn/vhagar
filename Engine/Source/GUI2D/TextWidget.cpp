@@ -84,3 +84,10 @@ void gui::TextWidget::UpdateSize()
 
     SetSize(width, height);
 }
+
+template<> void gui::TextWidget::SetText(const float& val)
+{
+    char buf[16];
+    snprintf(buf, 16, "%.2g", val);
+    SetText(buf);
+}
