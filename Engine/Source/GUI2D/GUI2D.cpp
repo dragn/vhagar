@@ -35,9 +35,13 @@ void GUI2D::TickInit(uint32_t delta)
 
 void GUI2D::TickRun(uint32_t delta)
 {
-    if (mActiveView != nullptr)
+    if (mModalView != nullptr)
     {
-        mActiveView->Render(this);
+        mModalView->Render(this);
+    }
+    else if (mView != nullptr)
+    {
+        mView->Render(this);
     }
 
     if (mNextView != nullptr)
@@ -46,19 +50,69 @@ void GUI2D::TickRun(uint32_t delta)
         SetFocus(nullptr);
 
         // switch to new view
-        if (mActiveView) delete mActiveView;
-        mActiveView = mNextView;
+        if (mView) delete mView;
+
+        mView = mNextView;
         mNextView = nullptr;
+
+        if (mModalView)
+        {
+            delete mModalView;
+            mModalView = nullptr;
+        }
+        if (mNextModalView)
+        {
+            delete mNextModalView;
+            mNextModalView = nullptr;
+        }
 
         // stretch root widget to all available space
         vh::Renderer2D* renderer = vh::App::Get<vh::Renderer2D>();
         CHECK(renderer);
 
-        if (mActiveView->mRootWidget)
+        if (mView->mRootWidget)
         {
-            mActiveView->mRootWidget->SetSize(renderer->GetWidth(), renderer->GetHeight());
-    }
+            mView->mRootWidget->SetSize(renderer->GetWidth(), renderer->GetHeight());
         }
+    }
+
+    if (mNextModalView != nullptr)
+    {
+        /* clear focus */
+        SetFocus(nullptr);
+
+        // switch to new view
+        if (mModalView)
+        {
+            delete mModalView;
+        }
+        mModalView = mNextModalView;
+        mNextModalView = nullptr;
+
+        // stretch root widget to all available space
+        vh::Renderer2D* renderer = vh::App::Get<vh::Renderer2D>();
+        CHECK(renderer);
+
+        if (mModalView->mRootWidget)
+        {
+            mModalView->mRootWidget->SetSize(renderer->GetWidth(), renderer->GetHeight());
+        }
+    }
+
+    if (mGoBack)
+    {
+        mGoBack = false;
+        if (mModalView)
+        {
+            delete mModalView;
+            mModalView = nullptr;
+        }
+
+        if (mView != nullptr)
+        {
+            mView->mRootWidget->SetDirty();
+        }
+    }
 }
 
 void GUI2D::TickClose(uint32_t delta)
@@ -67,8 +121,10 @@ void GUI2D::TickClose(uint32_t delta)
 
     if (TTF_WasInit()) TTF_Quit();
 
-    if (mActiveView) delete mActiveView;
+    if (mView) delete mView;
     if (mNextView) delete mNextView;
+    if (mModalView) delete mModalView;
+    if (mNextModalView) delete mNextModalView;
 
     if (mArrowCursor)
     {
@@ -99,6 +155,8 @@ void GUI2D::SetView(View* view)
 
 void GUI2D::HandleEvent(SDL_Event* event)
 {
+    View* view = mModalView == nullptr ? mView : mModalView;
+
     if (event->type == SDL_MOUSEBUTTONDOWN)
     {
         if (event->button.button == SDL_BUTTON_LEFT)
@@ -106,9 +164,9 @@ void GUI2D::HandleEvent(SDL_Event* event)
             int32_t x = event->button.x / mScale;
             int32_t y = event->button.y / mScale;
 
-            if (mActiveView && mActiveView->mRootWidget)
+            if (view && view->mRootWidget)
             {
-                mActiveView->mRootWidget->OnClick(x, y);
+                view->mRootWidget->OnClick(x, y);
             }
         }
     }
@@ -117,9 +175,9 @@ void GUI2D::HandleEvent(SDL_Event* event)
         int32_t x = event->motion.x / mScale;
         int32_t y = event->motion.y / mScale;
 
-        if (mActiveView && mActiveView->mRootWidget)
+        if (view && view->mRootWidget)
         {
-            mActiveView->mRootWidget->OnMouseMove(x, y);
+            view->mRootWidget->OnMouseMove(x, y);
         }
     }
     if (mFocused)
@@ -150,6 +208,20 @@ SDL_Cursor* GUI2D::GetHandCursor()
 SDL_Cursor* GUI2D::GetBeamCursor()
 {
     return mBeamCursor;
+}
+
+void GUI2D::SetModalView(View* view)
+{
+    if (mNextModalView != nullptr)
+    {
+        delete mNextModalView;
+    }
+    mNextModalView = view;
+}
+
+void GUI2D::Back()
+{
+    mGoBack = true;
 }
 
 }

@@ -24,8 +24,10 @@ class GUI2D : public vh::Component
 public:
     GUI2D(const GUI2DOptions& opts)
         : vh::Component(vh::eTickFrequency::NORMAL)
-        , mActiveView(nullptr)
+        , mView(nullptr)
+        , mModalView(nullptr)
         , mNextView(nullptr)
+        , mNextModalView(nullptr)
         , mScale(1)
         , mFont(nullptr)
         , mOptions(opts)
@@ -33,6 +35,7 @@ public:
         , mArrowCursor(nullptr)
         , mBeamCursor(nullptr)
         , mHandCursor(nullptr)
+        , mGoBack(false)
     {}
 
     virtual void TickInit(uint32_t delta);
@@ -40,7 +43,12 @@ public:
     virtual void TickClose(uint32_t delta);
 
     void SetView(View* view);
-    View* GetView() const { return mActiveView; }
+    View* GetView() const { return mView; }
+
+    void SetModalView(View* view);
+    View* GetModalView() const { return mModalView; }
+
+    void Back();
 
     virtual void HandleEvent(SDL_Event* event);
 
@@ -58,8 +66,10 @@ public:
     SDL_Cursor* GetBeamCursor();
 
 private:
-    View* mActiveView;
+    View* mView;
+    View* mModalView;
     View* mNextView;
+    View* mNextModalView;
     uint32_t mScale;
 
     TTF_Font* mFont;
@@ -72,6 +82,8 @@ private:
     SDL_Cursor* mArrowCursor;
     SDL_Cursor* mBeamCursor;
     SDL_Cursor* mHandCursor;
+
+    bool mGoBack;
 };
 
 }

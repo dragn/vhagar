@@ -3,6 +3,7 @@
 #include "GameView.hpp"
 #include "MenuView.hpp"
 #include "Widgets/BandMemberWidget.hpp"
+#include "HireView.hpp"
 
 using namespace vh;
 using namespace gui;
@@ -53,6 +54,11 @@ GameView::GameView(int slot)
         ButtonWidget* hireBass = new ButtonWidget("hire a base player");
         hireBass->SetSize(80, 20);
         hireBass->SetPos(280, 190);
+        hireBass->SetOnClickHandler([] ()
+        {
+            GUI2D* gui = App::Get<GUI2D>();
+            gui->SetModalView(new HireView());
+        });
         AddWidget(hireBass);
     }
 }
