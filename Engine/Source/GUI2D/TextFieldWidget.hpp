@@ -29,6 +29,9 @@ public:
 
     vh::MultiDelegate<std::string> OnChange;
 
+protected:
+    SDL_Cursor* GetCursor();
+
 private:
     static Uint32 TimerCallback(Uint32, void*);
 

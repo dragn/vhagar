@@ -10,9 +10,11 @@ namespace gui
 struct GUI2DOptions
 {
     const char* fontPath = "<font path is not set>";
-    int fontSize = 12;
-    const char* hdrFontPath = "<font path is not set>";
-    int hdrFontSize = 20;
+    int fontSize = 0;
+    const char* hdr1FontPath = "<font path is not set>";
+    int hdr1FontSize = 0;
+    const char* hdr2FontPath = "<font path is not set>";
+    int hdr2FontSize = 0;
 };
 
 class GUI2D : public vh::Component
@@ -28,6 +30,9 @@ public:
         , mFont(nullptr)
         , mOptions(opts)
         , mFocused(nullptr)
+        , mArrowCursor(nullptr)
+        , mBeamCursor(nullptr)
+        , mHandCursor(nullptr)
     {}
 
     virtual void TickInit(uint32_t delta);
@@ -40,12 +45,17 @@ public:
     virtual void HandleEvent(SDL_Event* event);
 
     TTF_Font* GetFont() const { return mFont; }
-    TTF_Font* GetHdrFont() const { return mHdrFont; }
+    TTF_Font* GetHdr1Font() const { return mHdr1Font; }
+    TTF_Font* GetHdr2Font() const { return mHdr2Font; }
 
     /* Calculate text size rendered with default font */
     void CalcTextSize(const char* text, int32_t& outWidth, int32_t& outHeight);
 
     void SetFocus(Widget* widget);
+
+    SDL_Cursor* GetArrowCursor();
+    SDL_Cursor* GetHandCursor();
+    SDL_Cursor* GetBeamCursor();
 
 private:
     View* mActiveView;
@@ -53,10 +63,15 @@ private:
     uint32_t mScale;
 
     TTF_Font* mFont;
-    TTF_Font* mHdrFont;
+    TTF_Font* mHdr1Font;
+    TTF_Font* mHdr2Font;
     GUI2DOptions mOptions;
 
     Widget* mFocused;
+
+    SDL_Cursor* mArrowCursor;
+    SDL_Cursor* mBeamCursor;
+    SDL_Cursor* mHandCursor;
 };
 
 }

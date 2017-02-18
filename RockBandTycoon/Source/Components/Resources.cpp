@@ -86,6 +86,7 @@ void Resources::TickClose(uint32_t delta)
 
     for (const std::pair<std::string, SDL_Surface*> p : mItemImgCache)
     {
+        LOG(INFO) << "Releasing img for item " << p.first;
         SDL_FreeSurface(p.second);
     }
     mItemImgCache.clear();

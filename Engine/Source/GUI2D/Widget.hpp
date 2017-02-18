@@ -40,19 +40,7 @@ class Widget
     friend class View;
 
 public:
-    Widget()
-        : mAnchor(eAnchor::TopLeft)
-        , mPosX(0)
-        , mPosY(0)
-        , mWidth(0)
-        , mHeight(0)
-        , mDirty(true)
-        , mChildDirty(true)
-        , mParent(nullptr)
-        , mBgColor()
-        , mBgImage(nullptr)
-    {
-    }
+    Widget();
 
     virtual ~Widget();
 
@@ -66,6 +54,7 @@ public:
     bool IsPointInside(int32_t x, int32_t y);
 
     virtual void OnClick(int32_t x, int32_t y);
+    virtual void OnMouseMove(int32_t x, int32_t y);
 
     virtual void SetDirty();
 
@@ -82,6 +71,9 @@ public:
 
 protected:
     virtual void UpdateSize() {};
+
+    virtual SDL_Cursor* GetCursor();
+    SDL_Cursor* mCursor;
 
     Widget* mParent;
 

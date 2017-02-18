@@ -3,9 +3,24 @@
 #include "Widget.hpp"
 #include "App/App.hpp"
 #include "Renderer2D/Renderer2D.hpp"
+#include "GUI2D/GUI2D.hpp"
 
 using vh::App;
 using vh::Renderer2D;
+
+gui::Widget::Widget() : mAnchor(eAnchor::TopLeft)
+, mPosX(0)
+, mPosY(0)
+, mWidth(0)
+, mHeight(0)
+, mDirty(true)
+, mChildDirty(true)
+, mParent(nullptr)
+, mBgColor()
+, mBgImage(nullptr)
+, mCursor(nullptr)
+{
+}
 
 gui::Widget::~Widget()
 {
@@ -44,6 +59,15 @@ void gui::Widget::SetSize(int32_t width, int32_t height)
     mHeight = height;
 }
 
+SDL_Cursor* gui::Widget::GetCursor()
+{
+    if (mCursor != nullptr) return mCursor;
+    gui::GUI2D* gui = vh::App::Get<gui::GUI2D>();
+    CHECK(gui);
+    mCursor = gui->GetArrowCursor();
+    return mCursor;
+}
+
 void gui::Widget::SetChildDirty()
 {
     mChildDirty = true;
@@ -75,6 +99,27 @@ void gui::Widget::OnClick(int32_t x, int32_t y)
         if (child->IsPointInside(x, y))
         {
             child->OnClick(x, y);
+        }
+    }
+}
+
+void gui::Widget::OnMouseMove(int32_t x, int32_t y)
+{
+    bool handled = false;
+    for (Widget* child : mChildren)
+    {
+        if (child->IsPointInside(x, y))
+        {
+            child->OnMouseMove(x, y);
+            handled = true;
+        }
+    }
+    if (!handled)
+    {
+        SDL_Cursor* cursor = GetCursor();
+        if (cursor != nullptr && SDL_GetCursor() != cursor)
+        {
+            SDL_SetCursor(cursor);
         }
     }
 }

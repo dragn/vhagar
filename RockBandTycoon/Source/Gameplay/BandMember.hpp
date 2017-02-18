@@ -36,6 +36,7 @@ public:
     BandMember(const BandMember&) = default;
     BandMember& operator=(const BandMember&) = default;
 
+    void SetName(const std::string& name) { mName = name; }
     const std::string& GetName() const { return mName; }
     const eBandSlot::Type GetType() const { return mSlot; }
 

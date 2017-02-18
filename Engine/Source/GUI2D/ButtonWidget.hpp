@@ -28,10 +28,20 @@ public:
     }
 
     void SetText(const char* text);
+    void SetTextColor(const vh::Color& color);
+    void SetFont(TTF_Font* font);
+
+    virtual void Draw(int32_t x, int32_t y);
+
+protected:
+    virtual SDL_Cursor* GetCursor();
 
 private:
     vh::Delegate mOnClickDelegate;
-    TextWidget* mText;
+
+    TTF_Font* mFont;
+    std::string mText;
+    vh::Color mTextColor;
 };
 
 }

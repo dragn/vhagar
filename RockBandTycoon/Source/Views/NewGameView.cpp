@@ -60,11 +60,10 @@ NewGameView::NewGameView(int slot)
     mYourNameFld->SetSize(fieldW, fieldH);
     mYourNameFld->OnChange.Add([&] (const std::string& val)
     {
-        BandMember mem = mBandMemberWdg->GetBandMember();
-        mBandMemberWdg->SetBandMember(BandMember(mem.GetType(), val.c_str(),
-            mem.GetHair().c_str(), mem.GetFace().c_str(), mem.GetBody().c_str(),
-            mem.GetHands().c_str(), mem.GetLegs().c_str()));
+        BandMember mem(mBandMemberWdg->GetBandMember());
+        mem.SetName(val);
         mem.SetItem(mTestGuitar);
+        mBandMemberWdg->SetBandMember(mem);
     });
     panel->AddChild(mYourNameFld);
 

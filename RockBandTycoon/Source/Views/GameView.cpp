@@ -24,7 +24,7 @@ GameView::GameView(int slot)
     CreateToolbar();
 
     BandMemberWidget* guitarist = new BandMemberWidget();
-    guitarist->SetPos(110, 100);
+    guitarist->SetPos(110, 82);
     guitarist->Bind(mProfile->Guitarist_OnChange);
     AddWidget(guitarist);
     mProfile->Trigger_Guitarist_OnChange();
@@ -38,6 +38,23 @@ GameView::GameView(int slot)
         gui->SetView(new MenuView());
     });
     AddWidget(exitBtn);
+
+    ButtonWidget* shopBtn = new ButtonWidget("SHOP");
+    shopBtn->SetSize(73, 28);
+    shopBtn->SetPos(ePos::Center, 222, eAnchor::TopCenter);
+    shopBtn->SetBackground(vh::Color(0x00, 0x00));
+    shopBtn->SetBackground("Assets/Images/button.png");
+    shopBtn->SetTextColor(vh::Color(0x00));
+    shopBtn->SetFont(gui->GetHdr2Font());
+    AddWidget(shopBtn);
+
+    if (mProfile->GetBassist().GetName().empty())
+    {
+        ButtonWidget* hireBass = new ButtonWidget("hire a base player");
+        hireBass->SetSize(80, 20);
+        hireBass->SetPos(280, 190);
+        AddWidget(hireBass);
+    }
 }
 
 GameView::~GameView()
@@ -115,7 +132,7 @@ void GameView::CreateToolbar()
 
     mBandNameTxt = new TextWidget(mProfile->GetBandName().c_str());
     mBandNameTxt->SetPos(ePos::Right, ePos::Top, eAnchor::TopRight);
-    mBandNameTxt->SetFont(gui->GetHdrFont());
+    mBandNameTxt->SetFont(gui->GetHdr1Font());
     mBandNameTxt->SetColor(0x00);
     mBandNameTxt->Bind(mProfile->BandName_OnChange);
 

@@ -14,7 +14,10 @@ class GameProfile
     VH_PROPERTY_RW(float, Reputation);
     VH_PROPERTY_RW(float, Popularity);
     VH_PROPERTY_RW(float, Quality);
+
     VH_PROPERTY_RW(BandMember, Guitarist);
+    VH_PROPERTY_RW(BandMember, Bassist);
+    VH_PROPERTY_RW(BandMember, Drummer);
 
 public:
     GameProfile(int slot, const char* name = "");

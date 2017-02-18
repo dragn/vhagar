@@ -46,6 +46,15 @@ void gui::TextFieldWidget::Draw(int32_t x, int32_t y)
     if (mFocus && mBlink && mContent.back() == '|') mContent.pop_back();
 }
 
+SDL_Cursor* gui::TextFieldWidget::GetCursor()
+{
+    if (mCursor != nullptr) return mCursor;
+    gui::GUI2D* gui = vh::App::Get<gui::GUI2D>();
+    CHECK(gui);
+    mCursor = gui->GetBeamCursor();
+    return mCursor;
+}
+
 Uint32 gui::TextFieldWidget::TimerCallback(Uint32 interval, void* param)
 {
     CHECK(param);
