@@ -9,6 +9,9 @@ public:
         , mImg(img)
     {}
 
+    const std::string& GetName() const { return mName; }
+    const std::string& GetImg() const { return mImg; }
+
 private:
     std::string mName;
     std::string mImg;

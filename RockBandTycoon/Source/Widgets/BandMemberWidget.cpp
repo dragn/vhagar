@@ -1,6 +1,6 @@
 #include "PCH.hpp"
 #include "BandMemberWidget.hpp"
-#include "Components/BodyParts.hpp"
+#include "Components/Resources.hpp"
 
 void BandMemberWidget::Draw(int32_t x, int32_t y)
 {
@@ -14,7 +14,9 @@ void BandMemberWidget::Draw(int32_t x, int32_t y)
     if (mFaceImg != nullptr) render->DrawImage(mFaceImg, x, y, 2.0f);
     if (mHairImg != nullptr) render->DrawImage(mHairImg, x, y, 2.0f);
 
-    // TODO draw instrument
+    int32_t itemX, itemY;
+    GetOffset(itemX, itemY);
+    if (mItemImg != nullptr) render->DrawImage(mItemImg, x + itemX, y + itemY, 2.0f);
 
     if (mHandsImg != nullptr) render->DrawImage(mHandsImg, x, y, 2.0f);
 
@@ -30,7 +32,7 @@ void BandMemberWidget::SetBandMember(const BandMember& member)
     mBandMember = member;
 
     // loading images
-    BodyParts* bp = vh::App::Get<BodyParts>();
+    Resources* bp = vh::App::Get<Resources>();
     CHECK(bp);
 
     mHairImg = bp->GetHairImg(mBandMember.GetHair());
@@ -38,6 +40,7 @@ void BandMemberWidget::SetBandMember(const BandMember& member)
     mBodyImg = bp->GetBodyImg(mBandMember.GetBody());
     mHandsImg = bp->GetHandsImg(mBandMember.GetHands());
     mLegsImg = bp->GetLegsImg(mBandMember.GetLegs());
+    mItemImg = bp->GetItemImg(mBandMember.GetItem().GetImg());
 
     SetDirty();
 }
@@ -53,4 +56,18 @@ void BandMemberWidget::UpdateSize()
 BandMember BandMemberWidget::GetBandMember() const
 {
     return mBandMember;
+}
+
+void BandMemberWidget::GetOffset(int32_t& x, int32_t& y)
+{
+    switch (mBandMember.GetType())
+    {
+    case eBandSlot::Guitar:
+        x = -24;
+        y = 54;
+        break;
+    default:
+        x = 0;
+        y = 0;
+    }
 }

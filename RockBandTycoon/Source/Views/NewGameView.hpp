@@ -17,6 +17,8 @@ private:
 
     BandMemberWidget* mBandMemberWdg;
 
+    Item mTestGuitar;
+
     std::string GetRandomName();
 
     void GenBandMember();

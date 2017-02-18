@@ -9,7 +9,7 @@
 #include "Debug/DebugCommands.hpp"
 
 #include "Components/Names.hpp"
-#include "Components/BodyParts.hpp"
+#include "Components/Resources.hpp"
 
 using namespace vh;
 using namespace gui;
@@ -44,7 +44,7 @@ int main(int argc, char ** argv) {
     app.AddComponent<DebugCommands>();
 
     app.AddComponent<Names>();
-    app.AddComponent<BodyParts>();
+    app.AddComponent<Resources>();
 
     app.Run();
 

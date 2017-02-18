@@ -6,7 +6,16 @@
 class BandMemberWidget : public gui::Widget
 {
 public:
-    BandMemberWidget() : Widget() {}
+    BandMemberWidget()
+        : Widget()
+        , mHairImg(nullptr)
+        , mFaceImg(nullptr)
+        , mBodyImg(nullptr)
+        , mHandsImg(nullptr)
+        , mLegsImg(nullptr)
+        , mItemImg(nullptr)
+    {
+    }
 
     void SetBandMember(const BandMember& member);
     BandMember GetBandMember() const;
@@ -33,4 +42,7 @@ private:
     SDL_Surface* mBodyImg;
     SDL_Surface* mHandsImg;
     SDL_Surface* mLegsImg;
+    SDL_Surface* mItemImg;
+
+    void GetOffset(int32_t& x, int32_t& y);
 };

@@ -45,6 +45,9 @@ public:
     const std::string& GetHands() const { return mHands; }
     const std::string& GetLegs() const { return mLegs; }
 
+    void SetItem(const Item& item) { mItem = item; }
+    const Item& GetItem() const { return mItem; }
+
 private:
     std::string mName;
     eBandSlot::Type mSlot;

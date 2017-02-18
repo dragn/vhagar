@@ -5,7 +5,7 @@
 #include "Gameplay/GameProfile.hpp"
 #include "GameView.hpp"
 #include "Components/Names.hpp"
-#include "Components/BodyParts.hpp"
+#include "Components/Resources.hpp"
 #include "Widgets/BandMemberWidget.hpp"
 
 using namespace gui;
@@ -14,6 +14,14 @@ NewGameView::NewGameView(int slot)
     : mSlot(slot)
 {
     SetBackground("Assets/Images/menu_background.png");
+
+    Resources* res = vh::App::Get<Resources>();
+    std::vector<ItemRes> guitars;
+    res->GetGuitars(guitars);
+    if (guitars.size())
+    {
+        mTestGuitar = Item(guitars[0].GetName(), guitars[0].GetImg());
+    }
 
     Widget* panel = new Widget();
     panel->SetSize(420, 210);
@@ -56,6 +64,7 @@ NewGameView::NewGameView(int slot)
         mBandMemberWdg->SetBandMember(BandMember(mem.GetType(), val.c_str(),
             mem.GetHair().c_str(), mem.GetFace().c_str(), mem.GetBody().c_str(),
             mem.GetHands().c_str(), mem.GetLegs().c_str()));
+        mem.SetItem(mTestGuitar);
     });
     panel->AddChild(mYourNameFld);
 
@@ -86,6 +95,7 @@ NewGameView::NewGameView(int slot)
 
     BandMember mem(eBandSlot::Guitar, mYourNameFld->GetValue(), "hair_1", "face_0",
         "guitar_body_0", "guitar_hands_0", "legs_1");
+    mem.SetItem(mTestGuitar);
 
     mBandMemberWdg = new BandMemberWidget();
     mBandMemberWdg->SetPos(leftOffset / 2, 20, eAnchor::TopCenter);
@@ -136,7 +146,7 @@ void NewGameView::GenBandMember()
     std::string hair, face, body,
         hands, legs;
 
-    BodyParts* bp = vh::App::Get<BodyParts>();
+    Resources* bp = vh::App::Get<Resources>();
     bp->GetRandomHair(hair);
     bp->GetRandomFace(face);
     bp->GetRandomBody(body);
@@ -145,5 +155,6 @@ void NewGameView::GenBandMember()
 
     BandMember mem(eBandSlot::Guitar, mYourNameFld->GetValue(), hair.c_str(), face.c_str(),
         body.c_str(), hands.c_str(), legs.c_str());
+    mem.SetItem(mTestGuitar);
     mBandMemberWdg->SetBandMember(mem);
 }
