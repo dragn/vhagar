@@ -64,6 +64,7 @@ public:
 
     void DrawImage(SDL_Surface* surf, int32_t x, int32_t y, int32_t width = 0, int32_t height = 0);
     void DrawImage(SDL_Surface* surf, int32_t x, int32_t y, float scale);
+    void DrawImage(SDL_Surface* surf, SDL_Rect* src, SDL_Rect* dst);
 
 private:
     Renderer2DOptions mOptions;

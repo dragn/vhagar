@@ -34,7 +34,7 @@ public:
         });
     }
 
-private:
+protected:
     BandMember mBandMember;
 
     SDL_Surface* mHairImg;

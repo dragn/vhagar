@@ -170,6 +170,17 @@ void vh::Renderer2D::DrawText(TTF_Font* font, const char* text, Color clr, int32
 
 void vh::Renderer2D::DrawImage(SDL_Surface* surf, int32_t x, int32_t y, int32_t w /* = 0 */, int32_t h /* = 0 */)
 {
+    SDL_Rect dst;
+    dst.x = x;
+    dst.y = y;
+    dst.w = w ? w : surf->w;
+    dst.h = h ? h : surf->h;
+
+    DrawImage(surf, NULL, &dst);
+}
+
+void vh::Renderer2D::DrawImage(SDL_Surface* surf, SDL_Rect* src, SDL_Rect* dst)
+{
     CHECK(surf);
 
     SDL_Texture* tex = SDL_CreateTextureFromSurface(mRenderer, surf);
@@ -179,12 +190,7 @@ void vh::Renderer2D::DrawImage(SDL_Surface* surf, int32_t x, int32_t y, int32_t 
         return;
     }
 
-    SDL_Rect dst;
-    dst.x = x;
-    dst.y = y;
-    dst.w = w ? w : surf->w;
-    dst.h = h ? h : surf->h;
-    SDL_RenderCopy(mRenderer, tex, NULL, &dst);
+    SDL_RenderCopy(mRenderer, tex, src, dst);
 
     SDL_DestroyTexture(tex);
 }
