@@ -50,6 +50,13 @@ NewGameView::NewGameView(int slot)
     mYourNameFld->SetMaxSize(32);
     mYourNameFld->SetPos(leftOffset, gridTop + (gridIdx) * gridStep, eAnchor::BottomLeft);
     mYourNameFld->SetSize(fieldW, fieldH);
+    mYourNameFld->OnChange.Add([&] (const std::string& val)
+    {
+        BandMember mem = mBandMemberWdg->GetBandMember();
+        mBandMemberWdg->SetBandMember(BandMember(mem.GetType(), val.c_str(),
+            mem.GetHair().c_str(), mem.GetFace().c_str(), mem.GetBody().c_str(),
+            mem.GetHands().c_str(), mem.GetLegs().c_str()));
+    });
     panel->AddChild(mYourNameFld);
 
     ButtonWidget* regenNameBtn = new ButtonWidget();

@@ -74,14 +74,19 @@ void gui::TextFieldWidget::HandleEvent(SDL_Event* event)
 {
     IF_KEYDOWN_SYM(event, SDLK_BACKSPACE)
     {
-        if (mContent.size()) mContent.pop_back();
-        SetDirty();
+        if (mContent.size())
+        {
+            mContent.pop_back();
+            OnChange(mContent);
+            SetDirty();
+        }
     }
     if (event->type == SDL_TEXTINPUT)
     {
         if (mContent.size() < mMaxSize)
         {
             mContent.append(event->text.text);
+            OnChange(mContent);
             SetDirty();
         }
     }
@@ -100,6 +105,7 @@ uint32_t gui::TextFieldWidget::GetMaxSize() const
 void gui::TextFieldWidget::SetValue(const char* value)
 {
     mContent = value;
+    OnChange(mContent);
     SetDirty();
 }
 

@@ -32,6 +32,9 @@ public:
         , mLegs(legs)
     {
     }
+    BandMember(BandMember&&) = default;
+    BandMember(const BandMember&) = default;
+    BandMember& operator=(const BandMember&) = default;
 
     const std::string& GetName() const { return mName; }
     const eBandSlot::Type GetType() const { return mSlot; }

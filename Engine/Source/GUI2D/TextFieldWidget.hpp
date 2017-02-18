@@ -2,6 +2,7 @@
 
 #include "Widget.hpp"
 #include <string>
+#include "Utils/Delegate.hpp"
 
 namespace gui
 {
@@ -25,6 +26,8 @@ public:
 
     void SetValue(const char* value);
     const char* GetValue() const;
+
+    vh::MultiDelegate<std::string> OnChange;
 
 private:
     static Uint32 TimerCallback(Uint32, void*);
