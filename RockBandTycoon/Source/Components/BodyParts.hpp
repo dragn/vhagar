@@ -1,7 +1,6 @@
 #pragma once
 
 #include "App/App.hpp"
-#include "BodyPart.hpp"
 
 class BodyPart
 {

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Item.hpp"
+
 namespace eBandSlot
 {
 enum Type
@@ -43,6 +45,8 @@ public:
 private:
     std::string mName;
     eBandSlot::Type mSlot;
+
+    Item mItem;
 
     std::string mHair;
     std::string mFace;

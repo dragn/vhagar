@@ -8,8 +8,8 @@
 #include "Views/MenuView.hpp"
 #include "Debug/DebugCommands.hpp"
 
-#include "Gameplay/Names.hpp"
-#include "Gameplay/BodyParts.hpp"
+#include "Components/Names.hpp"
+#include "Components/BodyParts.hpp"
 
 using namespace vh;
 using namespace gui;

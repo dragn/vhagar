@@ -4,9 +4,9 @@
 #include "MenuView.hpp"
 #include "Gameplay/GameProfile.hpp"
 #include "GameView.hpp"
-#include "Gameplay/Names.hpp"
+#include "Components/Names.hpp"
+#include "Components/BodyParts.hpp"
 #include "Widgets/BandMemberWidget.hpp"
-#include "Gameplay/BodyParts.hpp"
 
 using namespace gui;
 

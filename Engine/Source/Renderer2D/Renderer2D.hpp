@@ -3,6 +3,8 @@
 #include "App/Component.hpp"
 #include "Color.hpp"
 
+#undef DrawText
+
 namespace vh
 {
 
