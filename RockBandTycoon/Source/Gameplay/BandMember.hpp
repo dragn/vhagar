@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Item.hpp"
+#include "Looks.hpp"
 
 namespace eBandSlot
 {
@@ -19,45 +20,19 @@ class BandMember
 {
     friend class GameProfile;
 
+    VH_PROPERTY_RO(std::string, Name);
+    VH_PROPERTY_RO(eBandSlot::Type, Type);
+    VH_PROPERTY_RO(Looks, Looks);
+    VH_PROPERTY_RO(Item, Item);
+
 public:
     BandMember() {}
-    BandMember(eBandSlot::Type type, const char* name, const char* hair, const char* face,
-        const char* body, const char* hands, const char* legs)
-        : mName(name)
-        , mSlot(type)
-        , mHair(hair)
-        , mFace(face)
-        , mBody(body)
-        , mHands(hands)
-        , mLegs(legs)
+    BandMember(eBandSlot::Type type, const char* name, Item item, Looks looks)
+        : mType(type), mName(name), mItem(item), mLooks(looks)
     {
     }
     BandMember(BandMember&&) = default;
     BandMember(const BandMember&) = default;
     BandMember& operator=(const BandMember&) = default;
 
-    void SetName(const std::string& name) { mName = name; }
-    const std::string& GetName() const { return mName; }
-    const eBandSlot::Type GetType() const { return mSlot; }
-
-    const std::string& GetHair() const { return mHair; }
-    const std::string& GetFace() const { return mFace; }
-    const std::string& GetBody() const { return mBody; }
-    const std::string& GetHands() const { return mHands; }
-    const std::string& GetLegs() const { return mLegs; }
-
-    void SetItem(const Item& item) { mItem = item; }
-    const Item& GetItem() const { return mItem; }
-
-private:
-    std::string mName;
-    eBandSlot::Type mSlot;
-
-    Item mItem;
-
-    std::string mHair;
-    std::string mFace;
-    std::string mBody;
-    std::string mHands;
-    std::string mLegs;
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "App/App.hpp"
+#include "Gameplay/Looks.hpp"
 
 class BodyPart
 {
@@ -64,11 +65,7 @@ public:
     SDL_Surface* GetHandsImg(const std::string& name) const;
     SDL_Surface* GetLegsImg(const std::string& name) const;
 
-    SDL_Surface* GetRandomHair(std::string& name) const;
-    SDL_Surface* GetRandomFace(std::string& name) const;
-    SDL_Surface* GetRandomBody(std::string& name) const;
-    SDL_Surface* GetRandomHands(std::string& name) const;
-    SDL_Surface* GetRandomLegs(std::string& name) const;
+    Looks GetRandomLooks();
 
     SDL_Surface* GetItemImg(const std::string& name) const;
 

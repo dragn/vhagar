@@ -60,10 +60,9 @@ NewGameView::NewGameView(int slot)
     mYourNameFld->SetSize(fieldW, fieldH);
     mYourNameFld->OnChange.Add([&] (const std::string& val)
     {
-        BandMember mem(mBandMemberWdg->GetBandMember());
-        mem.SetName(val);
-        mem.SetItem(mTestGuitar);
-        mBandMemberWdg->SetBandMember(mem);
+        mBandMemberWdg->SetBandMember(BandMember(
+            eBandSlot::Guitar, val.c_str(), mTestGuitar, mBandMemberWdg->GetBandMember().GetLooks()
+        ));
     });
     panel->AddChild(mYourNameFld);
 
@@ -92,9 +91,7 @@ NewGameView::NewGameView(int slot)
     startBtn->SetOnClickHandler(this, &NewGameView::OnStart);
     panel->AddChild(startBtn);
 
-    BandMember mem(eBandSlot::Guitar, mYourNameFld->GetValue(), "hair_1", "face_0",
-        "guitar_body_0", "guitar_hands_0", "legs_1");
-    mem.SetItem(mTestGuitar);
+    BandMember mem(eBandSlot::Guitar, mYourNameFld->GetValue(), mTestGuitar, res->GetRandomLooks());
 
     mBandMemberWdg = new BandMemberWidget();
     mBandMemberWdg->SetPos(leftOffset / 2, 20, eAnchor::TopCenter);
@@ -142,18 +139,7 @@ std::string NewGameView::GetRandomName()
 
 void NewGameView::GenBandMember()
 {
-    std::string hair, face, body,
-        hands, legs;
-
-    Resources* bp = vh::App::Get<Resources>();
-    bp->GetRandomHair(hair);
-    bp->GetRandomFace(face);
-    bp->GetRandomBody(body);
-    bp->GetRandomHands(hands);
-    bp->GetRandomLegs(legs);
-
-    BandMember mem(eBandSlot::Guitar, mYourNameFld->GetValue(), hair.c_str(), face.c_str(),
-        body.c_str(), hands.c_str(), legs.c_str());
-    mem.SetItem(mTestGuitar);
+    Resources* res = vh::App::Get<Resources>();
+    BandMember mem(eBandSlot::Guitar, mYourNameFld->GetValue(), mTestGuitar, res->GetRandomLooks());
     mBandMemberWdg->SetBandMember(mem);
 }

@@ -42,18 +42,27 @@ bool GameProfile::GetProfilePath(std::string& outPath, int slot)
     return true;
 }
 
+/*
+    Write to binary stream. Default implementation.
+*/
 template<typename T>
 void Write(std::ostream& s, const T& val)
 {
     s.write((char*) &val, sizeof(T));
 }
 
+/*
+    Read from binary stream. Default implementation.
+*/
 template<typename T>
 void Read(std::istream& s, T& val)
 {
     s.read((char*) &val, sizeof(T));
 }
 
+/*
+    Write: std::string
+*/
 template<> void Write(std::ostream& file, const std::string& str)
 {
     std::string::size_type sz = str.size();
@@ -61,6 +70,9 @@ template<> void Write(std::ostream& file, const std::string& str)
     file.write(str.c_str(), str.size());
 }
 
+/*
+    Read: std::string
+*/
 template<> void Read(std::istream& file, std::string& outStr)
 {
     std::string::size_type sz;
@@ -70,30 +82,75 @@ template<> void Read(std::istream& file, std::string& outStr)
     outStr.assign(buf, sz);
 }
 
-template<> void Write(std::ostream& file, const BandMember& bm)
+/*
+    Write: Looks
+*/
+template<> void Write(std::ostream& file, const Looks& looks)
 {
-    Write(file, bm.GetName());
-    Write(file, bm.GetType());
-    Write(file, bm.GetHair());
-    Write(file, bm.GetFace());
-    Write(file, bm.GetBody());
-    Write(file, bm.GetHands());
-    Write(file, bm.GetLegs());
+    Write(file, looks.GetHair());
+    Write(file, looks.GetFace());
+    Write(file, looks.GetBody());
+    Write(file, looks.GetHands());
+    Write(file, looks.GetLegs());
 }
 
-template<> void Read(std::istream& file, BandMember& bm)
+/*
+    Read: Looks
+*/
+template<> void Read(std::istream& file, Looks& looks)
 {
-    std::string name, hair, face, body, hands, legs;
-    eBandSlot::Type type;
-    Read(file, name);
-    Read(file, type);
+    std::string hair, face, body, hands, legs;
     Read(file, hair);
     Read(file, face);
     Read(file, body);
     Read(file, hands);
     Read(file, legs);
-    bm = BandMember(type, name.c_str(), hair.c_str(), face.c_str(),
-        body.c_str(), hands.c_str(), legs.c_str());
+    looks = Looks(hair, face, body, hands, legs);
+}
+
+/*
+    Write: Item
+*/
+template<> void Write(std::ostream& file, const Item& item)
+{
+    Write(file, item.GetName());
+    Write(file, item.GetImg());
+}
+
+/*
+    Read: Item
+*/
+template<> void Read(std::istream& file, Item& item)
+{
+    std::string name, img;
+    Read(file, name);
+    Read(file, img);
+    item = Item(name, img);
+}
+
+/*
+    Write: BandMember
+*/
+template<> void Write(std::ostream& file, const BandMember& bm)
+{
+    Write(file, bm.GetName());
+    Write(file, bm.GetType());
+    Write(file, bm.GetItem());
+    Write(file, bm.GetLooks());
+}
+
+/*
+    Read: BandMember
+*/
+template<> void Read(std::istream& file, BandMember& bm)
+{
+    std::string name;
+    eBandSlot::Type type;
+    Read(file, name);
+    Read(file, type);
+    Item item; Read(file, item);
+    Looks looks; Read(file, looks);
+    bm = BandMember(type, name.c_str(), item, looks);
 }
 
 bool GameProfile::Save() const

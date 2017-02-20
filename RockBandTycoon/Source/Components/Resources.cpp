@@ -141,30 +141,6 @@ SDL_Surface* GetRandomBodyPart(std::string& outName, const std::vector<BodyPart>
     return list[idx].GetImg();
 }
 
-SDL_Surface* Resources::GetRandomHair(std::string& outName) const
-{
-    return GetRandomBodyPart(outName, mHairList);
-}
-
-SDL_Surface* Resources::GetRandomFace(std::string& outName) const
-{
-    return GetRandomBodyPart(outName, mFaceList);
-}
-
-SDL_Surface* Resources::GetRandomBody(std::string& outName) const
-{
-    return GetRandomBodyPart(outName, mBodyList);
-}
-
-SDL_Surface* Resources::GetRandomHands(std::string& outName) const
-{
-    return GetRandomBodyPart(outName, mHandsList);
-}
-
-SDL_Surface* Resources::GetRandomLegs(std::string& outName) const
-{
-    return GetRandomBodyPart(outName, mLegsList);
-}
 
 SDL_Surface* Resources::GetItemImg(const std::string& name) const
 {
@@ -178,4 +154,16 @@ void Resources::GetGuitars(std::vector<ItemRes>& outList) const
     {
         outList.push_back(res);
     }
+}
+
+Looks Resources::GetRandomLooks()
+{
+    std::string hair, face, body, hands, legs;
+    GetRandomBodyPart(hair, mHairList);
+    GetRandomBodyPart(face, mFaceList);
+    GetRandomBodyPart(body, mBodyList);
+    GetRandomBodyPart(hands, mHandsList);
+    GetRandomBodyPart(legs, mLegsList);
+
+    return Looks(hair, face, body, hands, legs);
 }

@@ -18,7 +18,7 @@ public:
     }
 
     void SetBandMember(const BandMember& member);
-    BandMember GetBandMember() const;
+    const BandMember& GetBandMember() const;
 
     virtual void Draw(int32_t x, int32_t y) override;
 

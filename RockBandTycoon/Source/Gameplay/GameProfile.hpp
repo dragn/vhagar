@@ -31,7 +31,7 @@ public:
     static bool GetProfilePath(std::string& outPath, int slot);
 
 private:
-    static const uint32_t VERSION_TAG = 0x31bca0b2;
+    static const uint32_t VERSION_TAG = 0x31bca0b3;
 
     int mSlot;
 };

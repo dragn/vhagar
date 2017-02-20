@@ -2,10 +2,12 @@
 #include "BandMemberWidget.hpp"
 #include "Components/Resources.hpp"
 
+using namespace gui;
+
 void BandMemberWidget::Draw(int32_t x, int32_t y)
 {
     vh::Renderer2D* render = vh::App::Get<vh::Renderer2D>();
-    gui::GUI2D* gui = vh::App::Get<gui::GUI2D>();
+    GUI2D* gui = vh::App::Get<gui::GUI2D>();
     CHECK(render);
     CHECK(gui);
 
@@ -35,11 +37,11 @@ void BandMemberWidget::SetBandMember(const BandMember& member)
     Resources* bp = vh::App::Get<Resources>();
     CHECK(bp);
 
-    mHairImg = bp->GetHairImg(mBandMember.GetHair());
-    mFaceImg = bp->GetFaceImg(mBandMember.GetFace());
-    mBodyImg = bp->GetBodyImg(mBandMember.GetBody());
-    mHandsImg = bp->GetHandsImg(mBandMember.GetHands());
-    mLegsImg = bp->GetLegsImg(mBandMember.GetLegs());
+    mHairImg = bp->GetHairImg(mBandMember.GetLooks().GetHair());
+    mFaceImg = bp->GetFaceImg(mBandMember.GetLooks().GetFace());
+    mBodyImg = bp->GetBodyImg(mBandMember.GetLooks().GetBody());
+    mHandsImg = bp->GetHandsImg(mBandMember.GetLooks().GetHands());
+    mLegsImg = bp->GetLegsImg(mBandMember.GetLooks().GetLegs());
     mItemImg = bp->GetItemImg(mBandMember.GetItem().GetImg());
 
     SetDirty();
@@ -53,7 +55,7 @@ void BandMemberWidget::UpdateSize()
     }
 }
 
-BandMember BandMemberWidget::GetBandMember() const
+const BandMember& BandMemberWidget::GetBandMember() const
 {
     return mBandMember;
 }
