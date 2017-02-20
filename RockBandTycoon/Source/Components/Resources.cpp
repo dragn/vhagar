@@ -167,3 +167,13 @@ Looks Resources::GetRandomLooks()
 
     return Looks(hair, face, body, hands, legs);
 }
+
+void Resources::GetBassGuitars(std::vector<ItemRes>& outList) const
+{
+    // TODO
+}
+
+void Resources::GetDrums(std::vector<ItemRes>& outList) const
+{
+    // TODO
+}

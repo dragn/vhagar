@@ -4,6 +4,7 @@
 #include "MenuView.hpp"
 #include "Widgets/BandMemberWidget.hpp"
 #include "HireView.hpp"
+#include "ShopView.hpp"
 
 using namespace vh;
 using namespace gui;
@@ -51,6 +52,11 @@ GameView::GameView(int slot)
     shopBtn->SetBackground("Assets/Images/button.png");
     shopBtn->SetTextColor(vh::Color(0x00));
     shopBtn->SetFont(gui->GetHdr2Font());
+    shopBtn->OnClick.Add([this] ()
+    {
+        GUI2D* gui = App::Get<GUI2D>();
+        gui->SetModalView(new ShopView(mProfile));
+    });
     AddWidget(shopBtn);
 }
 

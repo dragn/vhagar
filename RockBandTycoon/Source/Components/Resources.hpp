@@ -36,6 +36,7 @@ private:
 class ItemRes
 {
 public:
+    ItemRes() {};
     ItemRes(const std::string& name, const std::string& img, int32_t cost)
         : mName(name), mImg(img), mCost(cost)
     {
@@ -70,6 +71,8 @@ public:
     SDL_Surface* GetItemImg(const std::string& name) const;
 
     void GetGuitars(std::vector<ItemRes>& outList) const;
+    void GetBassGuitars(std::vector<ItemRes>& outList) const;
+    void GetDrums(std::vector<ItemRes>& outList) const;
 
 private:
     std::vector<BodyPart> mHairList;
