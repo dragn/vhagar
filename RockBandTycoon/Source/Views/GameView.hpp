@@ -12,10 +12,14 @@ public:
 
     GameProfile* GetProfile() const { return mProfile; }
 
+    void HandleMemberChange(const BandMember& member);
+
 private:
     GameProfile* mProfile;
 
     gui::TextWidget* mBandNameTxt;
 
     void CreateToolbar();
+
+    gui::Widget* mMemberWidgets[eBandSlot::MAX];
 };

@@ -51,6 +51,7 @@ public:
 
     virtual void Draw(int32_t x, int32_t y);
     void AddChild(Widget* widget);
+    void RemoveChild(Widget* widget);
 
     bool IsPointInside(int32_t x, int32_t y);
     virtual void OnMouseMove(int32_t x, int32_t y);

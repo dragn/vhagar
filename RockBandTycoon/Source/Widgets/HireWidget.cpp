@@ -14,7 +14,8 @@ HireWidget::HireWidget()
     btn->SetSize(46, 24);
     btn->SetPos(133, 44);
     btn->SetFont(gui->GetHdr2Font());
-    btn->SetBackground(vh::Color(0xfe, 0x83, 0x1e));
+    btn->SetBackground(Colors::Orange);
+    btn->OnClick.Add([this] () { OnHire(mHireItem); });
     AddChild(btn);
 }
 

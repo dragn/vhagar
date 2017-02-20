@@ -16,6 +16,7 @@ public:
     virtual ~View();
 
     void AddWidget(Widget* widget);
+    void RemoveWidget(Widget* widget);
 
     void SetBackground(const vh::Color& color);
     void SetBackground(const char* imagePath);

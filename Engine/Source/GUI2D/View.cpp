@@ -28,6 +28,11 @@ View::~View()
     Destroy();
 }
 
+void View::RemoveWidget(Widget* widget)
+{
+    mRootWidget->RemoveChild(widget);
+}
+
 void View::SetBackground(const vh::Color& color)
 {
     CHECK(mRootWidget);

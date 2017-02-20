@@ -20,6 +20,14 @@ HireItem GenHireItem()
     return HireItem(names->GetRandomMaleName(), res->GetRandomLooks());
 }
 
+void HireView::OnHire(HireItem item)
+{
+    GUI2D* gui = App::Get<GUI2D>();
+
+    mProfile->AddMember(BandMember(mType, item.GetName().c_str(), Item(), item.GetLooks()));
+    gui->Back();
+}
+
 HireView::HireView(eBandSlot::Type type, GameProfile* profile)
     : mType(type), mProfile(profile)
 {
@@ -37,6 +45,7 @@ HireView::HireView(eBandSlot::Type type, GameProfile* profile)
     mw1->SetSize(192, 82);
     mw1->SetBackground("Assets/Images/paper_1.png");
     mw1->SetHireItem(GenHireItem());
+    mw1->OnHire.Add(this, &HireView::OnHire);
     AddWidget(mw1);
 
     HireWidget* mw2 = new HireWidget();
@@ -44,6 +53,7 @@ HireView::HireView(eBandSlot::Type type, GameProfile* profile)
     mw2->SetSize(192, 82);
     mw2->SetBackground("Assets/Images/paper_2.png");
     mw2->SetHireItem(GenHireItem());
+    mw2->OnHire.Add(this, &HireView::OnHire);
     AddWidget(mw2);
 
     HireWidget* mw3 = new HireWidget();
@@ -51,6 +61,7 @@ HireView::HireView(eBandSlot::Type type, GameProfile* profile)
     mw3->SetSize(192, 82);
     mw3->SetBackground("Assets/Images/paper_3.png");
     mw3->SetHireItem(GenHireItem());
+    mw3->OnHire.Add(this, &HireView::OnHire);
     AddWidget(mw3);
 
     HireWidget* mw4 = new HireWidget();
@@ -58,6 +69,7 @@ HireView::HireView(eBandSlot::Type type, GameProfile* profile)
     mw4->SetSize(192, 82);
     mw4->SetBackground("Assets/Images/paper_4.png");
     mw4->SetHireItem(GenHireItem());
+    mw4->OnHire.Add(this, &HireView::OnHire);
     AddWidget(mw4);
 
     ButtonWidget* backBtn = new ButtonWidget("< BACK");

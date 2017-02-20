@@ -30,8 +30,10 @@ public:
 
     static bool GetProfilePath(std::string& outPath, int slot);
 
+    void AddMember(BandMember& member);
+
 private:
-    static const uint32_t VERSION_TAG = 0x31bca0b3;
+    static const uint32_t VERSION_TAG = 0x31bca0b4;
 
     int mSlot;
 };

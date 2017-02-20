@@ -85,6 +85,22 @@ void gui::Widget::AddChild(Widget* widget)
     mChildren.push_back(widget);
 }
 
+void gui::Widget::RemoveChild(Widget* widget)
+{
+    widget->mParent = nullptr;
+    for (auto child = mChildren.begin(); child != mChildren.end();)
+    {
+        if (*child == widget)
+        {
+            child = mChildren.erase(child);
+        }
+        else
+        {
+            ++child;
+        }
+    }
+}
+
 bool gui::Widget::IsPointInside(int32_t x, int32_t y)
 {
     return x >= mAbsPosX && x <= mAbsPosX + mWidth &&

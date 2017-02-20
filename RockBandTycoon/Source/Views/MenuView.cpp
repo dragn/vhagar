@@ -29,20 +29,23 @@ void NewGame(const int slot)
 
 MenuView::MenuView()
 {
-    SetBackground("Assets/Images/menu_background.png");
+    SetBackground("Assets/Images/hire.png");
 
     AddSlotButton(1);
     AddSlotButton(2);
     AddSlotButton(3);
 
-    ButtonWidget* exitButton = new ButtonWidget("Exit");
-    exitButton->SetSize(80, 28);
-    exitButton->SetPos(ePos::Center, 154, eAnchor::CenterCenter);
-    exitButton->OnClick.Add([] ()
+    ButtonWidget* exitBtn = new ButtonWidget("Exit");
+    exitBtn->SetSize(80, 28);
+    exitBtn->SetPos(ePos::Center, 200, eAnchor::CenterCenter);
+    exitBtn->SetBackground(Colors::White);
+    exitBtn->SetTextColor(Colors::Orange);
+    exitBtn->SetBorder(Colors::Orange);
+    exitBtn->OnClick.Add([] ()
     {
         vh::GetApp()->Close();
     });
-    AddWidget(exitButton);
+    AddWidget(exitBtn);
 }
 
 bool MenuView::GetProfile(std::string& outName, int slot)
@@ -59,8 +62,11 @@ bool MenuView::GetProfile(std::string& outName, int slot)
 void MenuView::AddSlotButton(int slot)
 {
     ButtonWidget* slotBtn = new ButtonWidget();
-    slotBtn->SetSize(100, 28);
-    slotBtn->SetPos(ePos::Center, 30 + 30 * slot, eAnchor::CenterCenter);
+    slotBtn->SetSize(140, 40);
+    slotBtn->SetPos(ePos::Center, 30 + 42 * slot, eAnchor::CenterCenter);
+    slotBtn->SetBackground(Colors::White);
+    slotBtn->SetTextColor(Colors::Orange);
+    slotBtn->SetBorder(Colors::Orange);
 
     std::string name;
     if (GetProfile(name, slot))
@@ -75,8 +81,11 @@ void MenuView::AddSlotButton(int slot)
         });
 
         ButtonWidget* dltBtn = new ButtonWidget("X");
-        dltBtn->SetPos(292, 30 + 30 * slot, eAnchor::CenterLeft);
+        dltBtn->SetPos(312, 30 + 42 * slot, eAnchor::CenterLeft);
         dltBtn->SetSize(20, 20);
+        dltBtn->SetBackground(Colors::White);
+        dltBtn->SetTextColor(Colors::Orange);
+        dltBtn->SetBorder(Colors::Orange);
         dltBtn->OnClick.Add([slot] () { DeleteProfile(slot); });
         AddWidget(dltBtn);
     }

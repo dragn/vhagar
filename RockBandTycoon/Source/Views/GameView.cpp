@@ -24,11 +24,15 @@ GameView::GameView(int slot)
 
     CreateToolbar();
 
-    BandMemberWidget* guitarist = new BandMemberWidget();
-    guitarist->SetPos(110, 82);
-    guitarist->Bind(mProfile->Guitarist_OnChange);
-    AddWidget(guitarist);
+    for (size_t idx = 0; idx < eBandSlot::MAX; ++idx) mMemberWidgets[idx] = nullptr;
+
+    mProfile->Guitarist_OnChange.Add(this, &GameView::HandleMemberChange);
+    mProfile->Drummer_OnChange.Add(this, &GameView::HandleMemberChange);
+    mProfile->Bassist_OnChange.Add(this, &GameView::HandleMemberChange);
+
     mProfile->Trigger_Guitarist_OnChange();
+    mProfile->Trigger_Bassist_OnChange();
+    mProfile->Trigger_Drummer_OnChange();
 
     ButtonWidget* exitBtn = new ButtonWidget("Exit");
     exitBtn->SetPos(2, 22);
@@ -48,19 +52,6 @@ GameView::GameView(int slot)
     shopBtn->SetTextColor(vh::Color(0x00));
     shopBtn->SetFont(gui->GetHdr2Font());
     AddWidget(shopBtn);
-
-    if (mProfile->GetBassist().GetName().empty())
-    {
-        ButtonWidget* hireBass = new ButtonWidget("hire a base player");
-        hireBass->SetSize(80, 20);
-        hireBass->SetPos(280, 190);
-        hireBass->OnClick.Add([this] ()
-        {
-            GUI2D* gui = App::Get<GUI2D>();
-            gui->SetModalView(new HireView(eBandSlot::Bass, mProfile));
-        });
-        AddWidget(hireBass);
-    }
 }
 
 GameView::~GameView()
@@ -143,4 +134,86 @@ void GameView::CreateToolbar()
     mBandNameTxt->Bind(mProfile->BandName_OnChange);
 
     topBar->AddChild(mBandNameTxt);
+}
+
+const char* GetHireBtnText(eBandSlot::Type type)
+{
+    switch (type)
+    {
+    case eBandSlot::Guitar: return "Hire a guitar player";
+    case eBandSlot::Bass: return "Hire a bass player";
+    case eBandSlot::Drums: return "Hire a drummer";
+    }
+    return "";
+}
+
+void SetHireBtnPos(Widget* btn, eBandSlot::Type type)
+{
+    switch (type)
+    {
+    case eBandSlot::Guitar:
+        btn->SetPos(110, 190);
+        break;
+    case eBandSlot::Bass:
+        btn->SetPos(280, 190);
+        break;
+    case eBandSlot::Drums:
+        btn->SetPos(ePos::Center, 160, eAnchor::BottomCenter);
+        break;
+    }
+}
+
+void SetMemberWdgPos(Widget* wdg, eBandSlot::Type type)
+{
+    switch (type)
+    {
+    case eBandSlot::Guitar:
+        wdg->SetPos(110, 82);
+        break;
+    case eBandSlot::Bass:
+        wdg->SetPos(280, 82);
+        break;
+    case eBandSlot::Drums:
+        wdg->SetPos(ePos::Center, 60, eAnchor::TopCenter);
+        break;
+    }
+}
+
+void GameView::HandleMemberChange(const BandMember& member)
+{
+    eBandSlot::Type type = member.GetType();
+
+    if (mMemberWidgets[type] != nullptr)
+    {
+        RemoveWidget(mMemberWidgets[type]);
+        delete mMemberWidgets[type];
+        mMemberWidgets[type] = nullptr;
+    }
+
+    if (member.GetName().empty())
+    {
+        ButtonWidget* hireBtn = new ButtonWidget(GetHireBtnText(type));
+        hireBtn->SetSize(80, 20);
+        hireBtn->SetBackground(Colors::White);
+        hireBtn->SetTextColor(Colors::Orange);
+        hireBtn->SetBorder(Colors::Orange);
+        SetHireBtnPos(hireBtn, type);
+        hireBtn->OnClick.Add([this, type] ()
+        {
+            GUI2D* gui = App::Get<GUI2D>();
+            gui->SetModalView(new HireView(type, mProfile));
+        });
+        AddWidget(hireBtn);
+
+        mMemberWidgets[type] = hireBtn;
+    }
+    else
+    {
+        BandMemberWidget* memberWdg = new BandMemberWidget();
+        SetMemberWdgPos(memberWdg, type);
+        memberWdg->SetBandMember(member);
+        AddWidget(memberWdg);
+
+        mMemberWidgets[type] = memberWdg;
+    }
 }

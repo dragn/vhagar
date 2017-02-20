@@ -16,6 +16,7 @@ public:
     void SetText(const char* text);
     void SetTextColor(const vh::Color& color);
     void SetFont(TTF_Font* font);
+    void SetBorder(const vh::Color& color);
 
     virtual void Draw(int32_t x, int32_t y);
 
@@ -26,6 +27,7 @@ private:
     TTF_Font* mFont;
     std::string mText;
     vh::Color mTextColor;
+    vh::Color mBorderColor;
 };
 
 }

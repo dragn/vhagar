@@ -13,6 +13,9 @@ GameProfile::GameProfile(int slot, const char* name /* = "" */)
     , mReputation(0)
     , mQuality(0)
 {
+    mGuitarist = BandMember(eBandSlot::Guitar, "", Item(), Looks());
+    mBassist = BandMember(eBandSlot::Bass, "", Item(), Looks());
+    mDrummer  = BandMember(eBandSlot::Drums, "", Item(), Looks());
 }
 
 bool GameProfile::GetProfilePath(std::string& outPath, int slot)
@@ -40,6 +43,24 @@ bool GameProfile::GetProfilePath(std::string& outPath, int slot)
     outPath.append(filename);
 
     return true;
+}
+
+void GameProfile::AddMember(BandMember& member)
+{
+    switch (member.GetType())
+    {
+    case eBandSlot::Bass:
+        SetBassist(member);
+        break;
+    case eBandSlot::Guitar:
+        SetGuitarist(member);
+        break;
+    case eBandSlot::Drums:
+        SetDrummer(member);
+        break;
+    default:
+        LOG(ERROR) << "Unsupported member type: " << member.GetType();
+    }
 }
 
 /*
@@ -176,6 +197,8 @@ bool GameProfile::Save() const
     Write(file, mSkill);
 
     Write(file, mGuitarist);
+    Write(file, mBassist);
+    Write(file, mDrummer);
 
     file.close();
 
@@ -210,8 +233,9 @@ bool GameProfile::Load()
     Read(file, mReputation);
     Read(file, mSkill);
 
-    Read(file, mGuitarist);
-    CHECK(mGuitarist.GetType() == eBandSlot::Guitar);
+    Read(file, mGuitarist); CHECK(mGuitarist.GetType() == eBandSlot::Guitar);
+    Read(file, mBassist); CHECK(mBassist.GetType() == eBandSlot::Bass);
+    Read(file, mDrummer); CHECK(mDrummer.GetType() == eBandSlot::Drums);
 
     file.close();
 
