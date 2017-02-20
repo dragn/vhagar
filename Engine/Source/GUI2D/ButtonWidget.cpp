@@ -19,11 +19,6 @@ gui::ButtonWidget::ButtonWidget(const char* text)
     SetBackground(vh::Color(0x10));
 }
 
-void gui::ButtonWidget::OnClick(int32_t x, int32_t y)
-{
-    mOnClickDelegate();
-}
-
 void gui::ButtonWidget::SetText(const char* text)
 {
     mText = text;

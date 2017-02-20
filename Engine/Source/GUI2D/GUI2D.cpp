@@ -166,7 +166,7 @@ void GUI2D::HandleEvent(SDL_Event* event)
 
             if (view && view->mRootWidget)
             {
-                view->mRootWidget->OnClick(x, y);
+                view->mRootWidget->OnClickInternal(x, y);
             }
         }
     }

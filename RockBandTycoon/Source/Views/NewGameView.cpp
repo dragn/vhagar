@@ -69,7 +69,7 @@ NewGameView::NewGameView(int slot)
     ButtonWidget* regenNameBtn = new ButtonWidget();
     regenNameBtn->SetPos(leftOffset + fieldW + 2, gridTop + (gridIdx++) * gridStep - 1, eAnchor::BottomLeft);
     regenNameBtn->SetSize(18, 18);
-    regenNameBtn->SetOnClickHandler([&] ()
+    regenNameBtn->OnClick.Add([&] ()
     {
         mYourNameFld->SetValue(GetRandomName().c_str());
     });
@@ -78,7 +78,7 @@ NewGameView::NewGameView(int slot)
     ButtonWidget* backBtn = new ButtonWidget("Back");
     backBtn->SetSize(40, fieldH);
     backBtn->SetPos(239, gridTop + (gridIdx) * gridStep, eAnchor::BottomRight);
-    backBtn->SetOnClickHandler([] ()
+    backBtn->OnClick.Add([] ()
     {
         GUI2D* gui = vh::App::Get<GUI2D>();
         gui->SetView(new MenuView());
@@ -88,7 +88,7 @@ NewGameView::NewGameView(int slot)
     ButtonWidget* startBtn = new ButtonWidget("Start");
     startBtn->SetSize(40, fieldH);
     startBtn->SetPos(241, gridTop + (gridIdx++) * gridStep, eAnchor::BottomLeft);
-    startBtn->SetOnClickHandler(this, &NewGameView::OnStart);
+    startBtn->OnClick.Add(this, &NewGameView::OnStart);
     panel->AddChild(startBtn);
 
     BandMember mem(eBandSlot::Guitar, mYourNameFld->GetValue(), mTestGuitar, res->GetRandomLooks());
@@ -102,7 +102,7 @@ NewGameView::NewGameView(int slot)
     ButtonWidget* genBtn = new ButtonWidget("Generate");
     genBtn->SetSize(50, fieldH);
     genBtn->SetPos(90, 160, eAnchor::TopCenter);
-    genBtn->SetOnClickHandler(this, &NewGameView::GenBandMember);
+    genBtn->OnClick.Add(this, &NewGameView::GenBandMember);
     panel->AddChild(genBtn);
 }
 

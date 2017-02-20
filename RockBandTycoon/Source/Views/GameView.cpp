@@ -33,7 +33,7 @@ GameView::GameView(int slot)
     ButtonWidget* exitBtn = new ButtonWidget("Exit");
     exitBtn->SetPos(2, 22);
     exitBtn->SetSize(24, 16);
-    exitBtn->SetOnClickHandler([this, gui] ()
+    exitBtn->OnClick.Add([this, gui] ()
     {
         mProfile->Save();
         gui->SetView(new MenuView());
@@ -54,7 +54,7 @@ GameView::GameView(int slot)
         ButtonWidget* hireBass = new ButtonWidget("hire a base player");
         hireBass->SetSize(80, 20);
         hireBass->SetPos(280, 190);
-        hireBass->SetOnClickHandler([this] ()
+        hireBass->OnClick.Add([this] ()
         {
             GUI2D* gui = App::Get<GUI2D>();
             gui->SetModalView(new HireView(eBandSlot::Bass, mProfile));

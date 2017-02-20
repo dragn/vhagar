@@ -38,6 +38,7 @@ enum Type
 class Widget
 {
     friend class View;
+    friend class GUI2D;
 
 public:
     Widget();
@@ -52,8 +53,6 @@ public:
     void AddChild(Widget* widget);
 
     bool IsPointInside(int32_t x, int32_t y);
-
-    virtual void OnClick(int32_t x, int32_t y);
     virtual void OnMouseMove(int32_t x, int32_t y);
 
     virtual void SetDirty();
@@ -68,8 +67,10 @@ public:
     virtual void HandleEvent(SDL_Event* event) {};
 
     vh::MultiDelegate<Widget*> OnDestroy;
+    vh::MultiDelegate<> OnClick;
 
 protected:
+    virtual void OnClickInternal(int32_t x, int32_t y);
     virtual void UpdateSize() {};
 
     virtual SDL_Cursor* GetCursor();

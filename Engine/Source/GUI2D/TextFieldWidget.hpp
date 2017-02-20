@@ -12,8 +12,6 @@ class TextFieldWidget : public Widget
 public:
     TextFieldWidget();
     ~TextFieldWidget();
-
-    virtual void OnClick(int32_t x, int32_t y) override;
     virtual void Draw(int32_t x, int32_t y) override;
 
     virtual void OnFocus() override;
@@ -30,6 +28,8 @@ public:
     vh::MultiDelegate<std::string> OnChange;
 
 protected:
+    virtual void OnClickInternal(int32_t x, int32_t y) override;
+
     SDL_Cursor* GetCursor();
 
 private:

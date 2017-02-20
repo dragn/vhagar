@@ -91,16 +91,19 @@ bool gui::Widget::IsPointInside(int32_t x, int32_t y)
         y >= mAbsPosY && y <= mAbsPosY + mHeight;
 }
 
-void gui::Widget::OnClick(int32_t x, int32_t y)
+void gui::Widget::OnClickInternal(int32_t x, int32_t y)
 {
-    // default behavior: propagate event to children
+    // propagate event to children
     for (Widget* child : mChildren)
     {
         if (child->IsPointInside(x, y))
         {
-            child->OnClick(x, y);
+            child->OnClickInternal(x, y);
         }
     }
+
+    // Fire up event delegate
+    OnClick();
 }
 
 void gui::Widget::OnMouseMove(int32_t x, int32_t y)

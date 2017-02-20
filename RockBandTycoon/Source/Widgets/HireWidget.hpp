@@ -14,6 +14,8 @@ public:
     virtual void Draw(int32_t x, int32_t y) override;
     virtual void UpdateSize() override {};
 
+    vh::MultiDelegate<HireItem> OnHire;
+
 private:
     HireItem mHireItem;
 

@@ -38,7 +38,7 @@ MenuView::MenuView()
     ButtonWidget* exitButton = new ButtonWidget("Exit");
     exitButton->SetSize(80, 28);
     exitButton->SetPos(ePos::Center, 154, eAnchor::CenterCenter);
-    exitButton->SetOnClickHandler([] ()
+    exitButton->OnClick.Add([] ()
     {
         vh::GetApp()->Close();
     });
@@ -66,7 +66,7 @@ void MenuView::AddSlotButton(int slot)
     if (GetProfile(name, slot))
     {
         slotBtn->SetText(name.c_str());
-        slotBtn->SetOnClickHandler([slot] ()
+        slotBtn->OnClick.Add([slot] ()
         {
             GUI2D* gui = vh::App::Get<GUI2D>();
             CHECK(gui);
@@ -77,13 +77,13 @@ void MenuView::AddSlotButton(int slot)
         ButtonWidget* dltBtn = new ButtonWidget("X");
         dltBtn->SetPos(292, 30 + 30 * slot, eAnchor::CenterLeft);
         dltBtn->SetSize(20, 20);
-        dltBtn->SetOnClickHandler([slot] () { DeleteProfile(slot); });
+        dltBtn->OnClick.Add([slot] () { DeleteProfile(slot); });
         AddWidget(dltBtn);
     }
     else
     {
         slotBtn->SetText("- New Game -");
-        slotBtn->SetOnClickHandler([slot] () { NewGame(slot); });
+        slotBtn->OnClick.Add([slot] () { NewGame(slot); });
     }
 
     AddWidget(slotBtn);

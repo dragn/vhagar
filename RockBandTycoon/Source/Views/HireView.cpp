@@ -67,7 +67,7 @@ HireView::HireView(eBandSlot::Type type, GameProfile* profile)
     backBtn->SetBackground("Assets/Images/button.png");
     backBtn->SetTextColor(Color(0x00));
     backBtn->SetFont(gui->GetHdr2Font());
-    backBtn->SetOnClickHandler([] ()
+    backBtn->OnClick.Add([] ()
     {
         GUI2D* gui = App::Get<GUI2D>();
         gui->Back();

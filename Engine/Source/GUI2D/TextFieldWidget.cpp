@@ -18,12 +18,14 @@ gui::TextFieldWidget::~TextFieldWidget()
     SDL_RemoveTimer(mTimer);
 }
 
-void gui::TextFieldWidget::OnClick(int32_t x, int32_t y)
+void gui::TextFieldWidget::OnClickInternal(int32_t x, int32_t y)
 {
     GUI2D* gui = vh::App::Get<GUI2D>();
     CHECK(gui);
 
     gui->SetFocus(this);
+
+    OnClick();
 }
 
 void gui::TextFieldWidget::Draw(int32_t x, int32_t y)
