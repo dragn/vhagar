@@ -26,7 +26,7 @@ public:
 
 protected:
 
-    virtual bool IsFocusable() override { return true; }
+    virtual bool IsFocusable() const override { return true; }
     virtual void OnFocus() override;
     virtual void OnBlur() override;
 

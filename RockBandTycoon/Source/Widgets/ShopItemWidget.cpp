@@ -8,7 +8,6 @@ using namespace gui;
 
 ShopItemWidget::ShopItemWidget(const ItemRes& item)
     : mItem(item)
-    , mFocus(false)
 {
     SetSize(347, 65);
     SetBackground(Colors::White);
@@ -41,12 +40,11 @@ void ShopItemWidget::Draw(int32_t x, int32_t y)
     render->DrawImage(mItemImg, nullptr, &dst);
 
     render->DrawText(gui->GetFont(), mItem.GetName().c_str(), vh::Color(0x00), x + 80, y + 6);
-}
 
-void ShopItemWidget::OnClickInternal(int32_t x, int32_t y)
-{
-    if (!mFocus)
+    if (IsFocused())
     {
-        mFocus = true;
+        int32_t w, h;
+        GetSize(w, h);
+        render->DrawRect(x, y, w, h, Colors::Orange);
     }
 }

@@ -11,11 +11,9 @@ public:
     virtual void Draw(int32_t x, int32_t y) override;
 
 protected:
-    virtual void OnClickInternal(int32_t x, int32_t y) override;
+    virtual bool IsFocusable() const override { return true; }
 
 private:
     ItemRes mItem;
     SDL_Surface* mItemImg;
-
-    bool mFocus;
 };

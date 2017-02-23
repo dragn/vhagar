@@ -84,6 +84,8 @@ private:
     SDL_Cursor* mHandCursor;
 
     bool mGoBack;
+
+    void FocusedDestroyed(Widget* widget);
 };
 
 }

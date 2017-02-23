@@ -72,7 +72,7 @@ public:
 protected:
     virtual void OnClickInternal(int32_t x, int32_t y);
 
-    virtual bool IsFocusable() { return false; }
+    virtual bool IsFocusable() const { return false; }
 
     virtual void OnFocus() {};
     virtual void OnBlur() {};

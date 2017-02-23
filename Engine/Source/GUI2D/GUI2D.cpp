@@ -186,12 +186,20 @@ void GUI2D::HandleEvent(SDL_Event* event)
     }
 }
 
+void GUI2D::FocusedDestroyed(Widget* widget)
+{
+    CHECK(widget == mFocused);
+
+    mFocused = nullptr;
+}
+
 void GUI2D::SetFocus(Widget* widget)
 {
     if (mFocused != nullptr)
     {
         mFocused->mFocused = false;
         mFocused->OnBlur();
+        mFocused->OnDestroy.Remove(this, &GUI2D::FocusedDestroyed);
     }
 
     mFocused = widget;
@@ -200,6 +208,7 @@ void GUI2D::SetFocus(Widget* widget)
     {
         mFocused->mFocused = true;
         mFocused->OnFocus();
+        mFocused->OnDestroy.Add(this, &GUI2D::FocusedDestroyed);
     }
 }
 
