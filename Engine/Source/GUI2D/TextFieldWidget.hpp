@@ -14,9 +14,6 @@ public:
     ~TextFieldWidget();
     virtual void Draw(int32_t x, int32_t y) override;
 
-    virtual void OnFocus() override;
-    virtual void OnBlur() override;
-
     virtual void HandleEvent(SDL_Event* event) override;
 
     void SetMaxSize(uint32_t size);
@@ -28,7 +25,10 @@ public:
     vh::MultiDelegate<std::string> OnChange;
 
 protected:
-    virtual void OnClickInternal(int32_t x, int32_t y) override;
+
+    virtual bool IsFocusable() override { return true; }
+    virtual void OnFocus() override;
+    virtual void OnBlur() override;
 
     SDL_Cursor* GetCursor();
 
@@ -37,7 +37,6 @@ private:
 
     std::string mContent;
     uint32_t mMaxSize;
-    bool mFocus;
     bool mBlink;
 
     SDL_TimerID mTimer;

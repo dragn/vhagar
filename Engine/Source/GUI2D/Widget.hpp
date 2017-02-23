@@ -61,17 +61,22 @@ public:
     void SetBackground(const vh::Color& color);
     void SetBackground(const char* imagePath);
 
-    virtual void OnFocus() {};
-    virtual void OnBlur() {};
-
     /* handle event passed to focused widget */
     virtual void HandleEvent(SDL_Event* event) {};
 
     vh::MultiDelegate<Widget*> OnDestroy;
     vh::MultiDelegate<> OnClick;
 
+    bool IsFocused() const { return mFocused; }
+
 protected:
     virtual void OnClickInternal(int32_t x, int32_t y);
+
+    virtual bool IsFocusable() { return false; }
+
+    virtual void OnFocus() {};
+    virtual void OnBlur() {};
+
     virtual void UpdateSize() {};
 
     virtual SDL_Cursor* GetCursor();
@@ -106,6 +111,8 @@ private:
 
     vh::Color mBgColor;
     SDL_Surface* mBgImage;
+
+    bool mFocused;
 };
 
 }

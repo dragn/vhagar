@@ -19,6 +19,7 @@ gui::Widget::Widget() : mAnchor(eAnchor::TopLeft)
 , mBgColor()
 , mBgImage(nullptr)
 , mCursor(nullptr)
+, mFocused(false)
 {
 }
 
@@ -116,6 +117,13 @@ void gui::Widget::OnClickInternal(int32_t x, int32_t y)
         {
             child->OnClickInternal(x, y);
         }
+    }
+
+    if (IsFocusable())
+    {
+        vh::App::Get<gui::GUI2D>()->SetFocus(this);
+        mFocused = true;
+        SetDirty();
     }
 
     // Fire up event delegate

@@ -10,7 +10,12 @@ public:
 
     virtual void Draw(int32_t x, int32_t y) override;
 
+protected:
+    virtual void OnClickInternal(int32_t x, int32_t y) override;
+
 private:
     ItemRes mItem;
     SDL_Surface* mItemImg;
+
+    bool mFocus;
 };

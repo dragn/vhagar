@@ -188,11 +188,19 @@ void GUI2D::HandleEvent(SDL_Event* event)
 
 void GUI2D::SetFocus(Widget* widget)
 {
-    if (mFocused != nullptr) mFocused->OnBlur();
+    if (mFocused != nullptr)
+    {
+        mFocused->mFocused = false;
+        mFocused->OnBlur();
+    }
 
     mFocused = widget;
 
-    if (mFocused != nullptr) mFocused->OnFocus();
+    if (mFocused != nullptr)
+    {
+        mFocused->mFocused = true;
+        mFocused->OnFocus();
+    }
 }
 
 SDL_Cursor* GUI2D::GetArrowCursor()
