@@ -124,6 +124,11 @@ void ShopView::DrawItems()
             mMemberWidget->SetBandMember(BandMember(mType, "",
                 item, mProfile->GetBandMember(mType).GetLooks()));
         });
+        wdg->OnBuy.Add([=] (const ItemRes& item)
+        {
+            mProfile->SetItem(mType, Item(item.GetName(), item.GetImg()));
+            App::Get<GUI2D>()->Back();
+        });
         mList->AddChild(wdg);
     }
 

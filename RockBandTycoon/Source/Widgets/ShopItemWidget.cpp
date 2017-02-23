@@ -48,3 +48,19 @@ void ShopItemWidget::Draw(int32_t x, int32_t y)
         render->DrawRect(x, y, w, h, Colors::Orange);
     }
 }
+
+void ShopItemWidget::OnClickInternal(int32_t x, int32_t y)
+{
+    if (IsFocused()) OnBuy(mItem);
+
+    Widget::OnClickInternal(x, y);
+}
+
+SDL_Cursor* ShopItemWidget::GetCursor()
+{
+    if (mCursor != nullptr) return mCursor;
+    gui::GUI2D* gui = vh::App::Get<gui::GUI2D>();
+    CHECK(gui);
+    mCursor = gui->GetHandCursor();
+    return mCursor;
+}

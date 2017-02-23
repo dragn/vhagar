@@ -33,6 +33,8 @@ public:
     void AddMember(BandMember& member);
     const BandMember& GetBandMember(eBandSlot::Type type) const;
 
+    void SetItem(eBandSlot::Type type, const Item& item);
+
 private:
     static const uint32_t VERSION_TAG = 0x31bca0b4;
 

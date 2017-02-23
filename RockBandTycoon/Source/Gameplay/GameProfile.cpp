@@ -79,6 +79,12 @@ const BandMember& GameProfile::GetBandMember(eBandSlot::Type type) const
     }
 }
 
+void GameProfile::SetItem(eBandSlot::Type type, const Item& item)
+{
+    BandMember mem = GetBandMember(type);
+    AddMember(BandMember(type, mem.GetName().c_str(), item, mem.GetLooks()));
+}
+
 /*
     Write to binary stream. Default implementation.
 */
