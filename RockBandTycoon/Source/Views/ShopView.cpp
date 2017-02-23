@@ -57,6 +57,10 @@ ShopView::ShopView(GameProfile* profile)
     });
     AddWidget(backBtn);
 
+    mMemberWidget = new BandMemberWidget();
+    mMemberWidget->SetPos(20, 80);
+    AddWidget(mMemberWidget);
+
     SetType(eBandSlot::Guitar);
 }
 
@@ -91,6 +95,9 @@ void ShopView::SetType(eBandSlot::Type type)
         break;
     }
 
+    mMemberWidget->SetBandMember(BandMember(mType, "",
+        Item(), mProfile->GetBandMember(mType).GetLooks()));
+
     DrawItems();
 }
 
@@ -111,6 +118,12 @@ void ShopView::DrawItems()
     {
         ShopItemWidget* wdg = new ShopItemWidget(mItems[idx]);
         wdg->SetPos(0, 68 * idx);
+        wdg->OnFocus.Add([=] ()
+        {
+            Item item(wdg->GetItem().GetName(), wdg->GetItem().GetImg());
+            mMemberWidget->SetBandMember(BandMember(mType, "",
+                item, mProfile->GetBandMember(mType).GetLooks()));
+        });
         mList->AddChild(wdg);
     }
 

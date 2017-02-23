@@ -198,7 +198,7 @@ void GUI2D::SetFocus(Widget* widget)
     if (mFocused != nullptr)
     {
         mFocused->mFocused = false;
-        mFocused->OnBlur();
+        mFocused->OnBlurInternal();
         mFocused->OnDestroy.Remove(this, &GUI2D::FocusedDestroyed);
     }
 
@@ -207,7 +207,7 @@ void GUI2D::SetFocus(Widget* widget)
     if (mFocused != nullptr)
     {
         mFocused->mFocused = true;
-        mFocused->OnFocus();
+        mFocused->OnFocusInternal();
         mFocused->OnDestroy.Add(this, &GUI2D::FocusedDestroyed);
     }
 }

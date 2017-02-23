@@ -14,6 +14,7 @@ public:
         , mHandsImg(nullptr)
         , mLegsImg(nullptr)
         , mItemImg(nullptr)
+        , mBandMember()
     {
     }
 

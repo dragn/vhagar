@@ -66,6 +66,8 @@ public:
 
     vh::MultiDelegate<Widget*> OnDestroy;
     vh::MultiDelegate<> OnClick;
+    vh::MultiDelegate<> OnFocus;
+    vh::MultiDelegate<> OnBlur;
 
     bool IsFocused() const { return mFocused; }
 
@@ -74,8 +76,8 @@ protected:
 
     virtual bool IsFocusable() const { return false; }
 
-    virtual void OnFocus() {};
-    virtual void OnBlur() {};
+    virtual void OnFocusInternal();
+    virtual void OnBlurInternal();
 
     virtual void UpdateSize() {};
 

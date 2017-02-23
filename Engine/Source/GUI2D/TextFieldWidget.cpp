@@ -55,14 +55,18 @@ Uint32 gui::TextFieldWidget::TimerCallback(Uint32 interval, void* param)
     return interval;
 }
 
-void gui::TextFieldWidget::OnFocus()
+void gui::TextFieldWidget::OnFocusInternal()
 {
+    Widget::OnFocusInternal();
+
     mBlink = true;
     mTimer = SDL_AddTimer(1 << 9, &TimerCallback, this);
 }
 
-void gui::TextFieldWidget::OnBlur()
+void gui::TextFieldWidget::OnBlurInternal()
 {
+    Widget::OnBlurInternal();
+
     SDL_RemoveTimer(mTimer);
 }
 

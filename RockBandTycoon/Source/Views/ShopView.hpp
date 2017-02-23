@@ -4,6 +4,7 @@
 #include "Gameplay/GameProfile.hpp"
 #include "Components/Resources.hpp"
 #include "GUI2D/ButtonWidget.hpp"
+#include "Widgets/BandMemberWidget.hpp"
 
 class ShopView : public gui::View
 {
@@ -20,6 +21,7 @@ private:
     gui::ButtonWidget* mBtn[eBandSlot::MAX];
 
     gui::Widget* mList;
+    BandMemberWidget* mMemberWidget;
 
     std::vector<ItemRes> mItems;
 

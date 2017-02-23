@@ -130,6 +130,16 @@ void gui::Widget::OnClickInternal(int32_t x, int32_t y)
     OnClick();
 }
 
+void gui::Widget::OnFocusInternal()
+{
+    OnFocus();
+}
+
+void gui::Widget::OnBlurInternal()
+{
+    OnBlur();
+}
+
 void gui::Widget::OnMouseMove(int32_t x, int32_t y)
 {
     bool handled = false;

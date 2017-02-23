@@ -63,6 +63,22 @@ void GameProfile::AddMember(BandMember& member)
     }
 }
 
+const BandMember& GameProfile::GetBandMember(eBandSlot::Type type) const
+{
+    switch (type)
+    {
+    case eBandSlot::Bass:
+        return mBassist;
+    case eBandSlot::Guitar:
+        return mGuitarist;
+    case eBandSlot::Drums:
+        return mDrummer;
+    default:
+        LOG(ERROR) << "Unsupported member type: " << type;
+        return mGuitarist;
+    }
+}
+
 /*
     Write to binary stream. Default implementation.
 */

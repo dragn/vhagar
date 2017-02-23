@@ -27,8 +27,8 @@ public:
 protected:
 
     virtual bool IsFocusable() const override { return true; }
-    virtual void OnFocus() override;
-    virtual void OnBlur() override;
+    virtual void OnFocusInternal() override;
+    virtual void OnBlurInternal() override;
 
     SDL_Cursor* GetCursor();
 
