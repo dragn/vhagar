@@ -71,6 +71,9 @@ public:
 
     bool IsFocused() const { return mFocused; }
 
+    bool IsVisible() const { return mVisible; }
+    void SetVisible(bool visible);
+
 protected:
     virtual void OnClickInternal(int32_t x, int32_t y);
 
@@ -115,6 +118,7 @@ private:
     SDL_Surface* mBgImage;
 
     bool mFocused;
+    bool mVisible;
 };
 
 }

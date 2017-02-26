@@ -16,6 +16,23 @@ ShopItemWidget::ShopItemWidget(const ShopItem& item)
     mItemImg = res->GetItemImg(item.GetImg());
 
     item.GetImg();
+
+    mTryBtn = new gui::ButtonWidget("TRY");
+    mTryBtn->SetPos(292, 33);
+    mTryBtn->SetSize(46, 24);
+    mTryBtn->SetBorder(Colors::Orange);
+    mTryBtn->SetBackground(Colors::White);
+    mTryBtn->SetTextColor(Colors::Orange);
+    AddChild(mTryBtn);
+
+    mBuyBtn = new gui::ButtonWidget("BUY");
+    mBuyBtn->SetPos(292, 33);
+    mBuyBtn->SetSize(46, 24);
+    mBuyBtn->SetBackground(Colors::Orange);
+    mBuyBtn->SetTextColor(Colors::White);
+    mBuyBtn->SetVisible(false);
+    mBuyBtn->OnClick.Add([&] () { OnBuy(mItem); });
+    AddChild(mBuyBtn);
 }
 
 void ShopItemWidget::Draw(int32_t x, int32_t y)
@@ -51,8 +68,6 @@ void ShopItemWidget::Draw(int32_t x, int32_t y)
 
 void ShopItemWidget::OnClickInternal(int32_t x, int32_t y)
 {
-    if (IsFocused()) OnBuy(mItem);
-
     Widget::OnClickInternal(x, y);
 }
 
@@ -63,4 +78,20 @@ SDL_Cursor* ShopItemWidget::GetCursor()
     CHECK(gui);
     mCursor = gui->GetHandCursor();
     return mCursor;
+}
+
+void ShopItemWidget::OnFocusInternal()
+{
+    Widget::OnFocusInternal();
+
+    mTryBtn->SetVisible(false);
+    mBuyBtn->SetVisible(true);
+}
+
+void ShopItemWidget::OnBlurInternal()
+{
+    Widget::OnBlurInternal();
+
+    mTryBtn->SetVisible(true);
+    mBuyBtn->SetVisible(false);
 }

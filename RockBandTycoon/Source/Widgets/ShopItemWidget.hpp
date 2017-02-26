@@ -17,6 +17,9 @@ public:
     vh::MultiDelegate<const ShopItem&> OnBuy;
 
 protected:
+    virtual void OnFocusInternal();
+    virtual void OnBlurInternal();
+
     virtual void OnClickInternal(int32_t x, int32_t y) override;
     virtual bool IsFocusable() const override { return true; }
     virtual SDL_Cursor* GetCursor();
@@ -24,4 +27,7 @@ protected:
 private:
     ShopItem mItem;
     SDL_Surface* mItemImg;
+
+    gui::ButtonWidget* mTryBtn;
+    gui::ButtonWidget* mBuyBtn;
 };

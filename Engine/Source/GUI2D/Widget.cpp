@@ -20,6 +20,7 @@ gui::Widget::Widget() : mAnchor(eAnchor::TopLeft)
 , mBgImage(nullptr)
 , mCursor(nullptr)
 , mFocused(false)
+, mVisible(true)
 {
 }
 
@@ -110,6 +111,8 @@ bool gui::Widget::IsPointInside(int32_t x, int32_t y)
 
 void gui::Widget::OnClickInternal(int32_t x, int32_t y)
 {
+    if (!mVisible) return;
+
     // propagate event to children
     for (Widget* child : mChildren)
     {
@@ -174,6 +177,12 @@ void gui::Widget::SetBackground(const vh::Color& color)
     SetDirty();
 }
 
+void gui::Widget::SetVisible(bool visible)
+{
+    mVisible = visible;
+    SetDirty();
+}
+
 void gui::Widget::SetBackground(const char* imagePath)
 {
     SDL_Surface* surf = IMG_Load(imagePath);
@@ -191,6 +200,8 @@ void gui::Widget::SetBackground(const char* imagePath)
 
 void gui::Widget::Draw(Widget* parent, bool force /* = false*/)
 {
+    if (!mVisible) return;
+
     if (mDirty || force)
     {
         /* run some custom size update logic, if any */
