@@ -23,7 +23,5 @@ private:
     gui::Widget* mList;
     BandMemberWidget* mMemberWidget;
 
-    std::vector<ItemRes> mItems;
-
     void DrawItems();
 };

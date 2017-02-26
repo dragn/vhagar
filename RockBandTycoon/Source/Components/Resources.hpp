@@ -68,7 +68,7 @@ public:
 
     Looks GetRandomLooks();
 
-    SDL_Surface* GetItemImg(const std::string& name) const;
+    SDL_Surface* GetItemImg(const std::string& name);
 
     void GetGuitars(std::vector<ItemRes>& outList) const;
     void GetBassGuitars(std::vector<ItemRes>& outList) const;

@@ -47,7 +47,6 @@ void Resources::LoadItems(const char* filename, std::vector<ItemRes>& vec)
                 }
                 else
                 {
-                    mItemImgCache[img] = surf;
                     vec.push_back(ItemRes(name, img, stoi(cost)));
                 }
             }
@@ -142,10 +141,23 @@ SDL_Surface* GetRandomBodyPart(std::string& outName, const std::vector<BodyPart>
 }
 
 
-SDL_Surface* Resources::GetItemImg(const std::string& name) const
+SDL_Surface* Resources::GetItemImg(const std::string& name)
 {
     if (name.empty()) return nullptr;
-    return mItemImgCache.at(name);
+
+    auto img = mItemImgCache.find(name);
+
+    if (img == mItemImgCache.end())
+    {
+        std::string path = "Assets/Images/Items/";
+        path += name;
+        SDL_Surface* surf = IMG_Load(path.c_str());
+        CHECK(surf);
+        mItemImgCache[name] = surf;
+        return surf;
+    }
+
+    return img->second;
 }
 
 void Resources::GetGuitars(std::vector<ItemRes>& outList) const

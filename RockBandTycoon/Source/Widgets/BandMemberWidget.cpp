@@ -65,6 +65,7 @@ void BandMemberWidget::GetOffset(int32_t& x, int32_t& y)
     switch (mBandMember.GetType())
     {
     case eBandSlot::Guitar:
+    case eBandSlot::Bass:
         x = -24;
         y = 54;
         break;

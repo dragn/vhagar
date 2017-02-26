@@ -112,6 +112,8 @@ void NewGameView::OnStart()
 
     GameProfile* profile = new GameProfile(mSlot, mBandNameFld->GetValue());
     profile->SetGuitarist(mBandMemberWdg->GetBandMember());
+    profile->SetShop(Shop::Generate());
+
     if (profile->Save())
     {
         GUI2D* gui = vh::App::Get<GUI2D>();

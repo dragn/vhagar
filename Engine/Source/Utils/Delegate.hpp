@@ -77,10 +77,6 @@ public:
     MultiDelegate() {};
     virtual ~MultiDelegate()
     {
-        if (!mList.empty())
-        {
-            LOG(WARNING) << "Destroying non-empty delegate!";
-        }
     };
 
     template<typename M>

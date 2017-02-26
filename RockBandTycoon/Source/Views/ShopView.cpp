@@ -79,22 +79,6 @@ void ShopView::SetType(eBandSlot::Type type)
 
     mType = type;
 
-    Resources* res = App::Get<Resources>();
-
-    mItems.clear();
-    switch (type)
-    {
-    case eBandSlot::Guitar:
-        res->GetGuitars(mItems);
-        break;
-    case eBandSlot::Bass:
-        res->GetBassGuitars(mItems);
-        break;
-    case eBandSlot::Drums:
-        res->GetDrums(mItems);
-        break;
-    }
-
     mMemberWidget->SetBandMember(BandMember(mType, "",
         Item(), mProfile->GetBandMember(mType).GetLooks()));
 
@@ -114,9 +98,11 @@ void ShopView::DrawItems()
     mList->SetSize(347, 240);
     mList->SetPos(112, 30);
 
-    for (size_t idx = 0; idx < mItems.size(); ++idx)
+    const std::vector<ShopItem>& items = mProfile->GetShop().GetItems(mType);
+
+    for (size_t idx = 0; idx < items.size(); ++idx)
     {
-        ShopItemWidget* wdg = new ShopItemWidget(mItems[idx]);
+        ShopItemWidget* wdg = new ShopItemWidget(items[idx]);
         wdg->SetPos(0, 68 * idx);
         wdg->OnFocus.Add([=] ()
         {
@@ -124,7 +110,7 @@ void ShopView::DrawItems()
             mMemberWidget->SetBandMember(BandMember(mType, "",
                 item, mProfile->GetBandMember(mType).GetLooks()));
         });
-        wdg->OnBuy.Add([=] (const ItemRes& item)
+        wdg->OnBuy.Add([=] (const ShopItem& item)
         {
             mProfile->SetItem(mType, Item(item.GetName(), item.GetImg()));
             App::Get<GUI2D>()->Back();

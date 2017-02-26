@@ -6,7 +6,7 @@
 using namespace vh;
 using namespace gui;
 
-ShopItemWidget::ShopItemWidget(const ItemRes& item)
+ShopItemWidget::ShopItemWidget(const ShopItem& item)
     : mItem(item)
 {
     SetSize(347, 65);

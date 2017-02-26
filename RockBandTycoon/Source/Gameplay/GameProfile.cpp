@@ -104,6 +104,31 @@ void Read(std::istream& s, T& val)
 }
 
 /*
+    Write: std::vector
+*/
+template<typename T>
+void Write(std::ostream& file, const std::vector<T>& obj)
+{
+    Write(file, obj.size());
+    for (const T& item : obj)
+    {
+        Write(file, item);
+    }
+}
+
+template<typename T>
+void Read(std::istream& file, std::vector<T>& obj)
+{
+    size_t size;
+    Read(file, size);
+    obj = std::vector<T>(size);
+    for (size_t idx = 0; idx < size; ++idx)
+    {
+        Read(file, obj[idx]);
+    }
+}
+
+/*
     Write: std::string
 */
 template<> void Write(std::ostream& file, const std::string& str)
@@ -196,6 +221,54 @@ template<> void Read(std::istream& file, BandMember& bm)
     bm = BandMember(type, name.c_str(), item, looks);
 }
 
+/*
+    Write: ShopItem
+*/
+template<> void Write(std::ostream& file, const ShopItem& obj)
+{
+    Write(file, obj.GetType());
+    Write(file, obj.GetName());
+    Write(file, obj.GetImg());
+    Write(file, obj.GetCost());
+}
+
+/*
+    Read: ShopItem
+*/
+template<> void Read(std::istream& file, ShopItem& obj)
+{
+    eBandSlot::Type type;
+    Read(file, type);
+    std::string name, img;
+    Read(file, name);
+    Read(file, img);
+    int32_t cost;
+    Read(file, cost);
+    obj = ShopItem(type, name, img, cost);
+}
+
+/*
+    Write: Shop
+*/
+template<> void Write(std::ostream& file, const Shop& obj)
+{
+    Write(file, obj.GetGuitars());
+    Write(file, obj.GetBassGuitars());
+    Write(file, obj.GetDrums());
+}
+
+/*
+    Read: Shop
+*/
+template<> void Read(std::istream& file, Shop& obj)
+{
+    std::vector<ShopItem> g, b, d;
+    Read(file, g);
+    Read(file, b);
+    Read(file, d);
+    obj = Shop(g, b, d);
+}
+
 bool GameProfile::Save() const
 {
     std::string fullPath;
@@ -221,6 +294,8 @@ bool GameProfile::Save() const
     Write(file, mGuitarist);
     Write(file, mBassist);
     Write(file, mDrummer);
+
+    Write(file, mShop);
 
     file.close();
 
@@ -258,6 +333,8 @@ bool GameProfile::Load()
     Read(file, mGuitarist); CHECK(mGuitarist.GetType() == eBandSlot::Guitar);
     Read(file, mBassist); CHECK(mBassist.GetType() == eBandSlot::Bass);
     Read(file, mDrummer); CHECK(mDrummer.GetType() == eBandSlot::Drums);
+
+    Read(file, mShop);
 
     file.close();
 

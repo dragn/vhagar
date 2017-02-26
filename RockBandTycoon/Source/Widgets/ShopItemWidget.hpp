@@ -3,17 +3,18 @@
 #include "GUI2D/Widget.hpp"
 #include "Components/Resources.hpp"
 #include "Utils/Delegate.hpp"
+#include "Gameplay/ShopItem.hpp"
 
 class ShopItemWidget : public gui::Widget
 {
 public:
-    ShopItemWidget(const ItemRes& item);
+    ShopItemWidget(const ShopItem& item);
 
     virtual void Draw(int32_t x, int32_t y) override;
 
-    const ItemRes& GetItem() const { return mItem; }
+    const ShopItem& GetItem() const { return mItem; }
 
-    vh::MultiDelegate<const ItemRes&> OnBuy;
+    vh::MultiDelegate<const ShopItem&> OnBuy;
 
 protected:
     virtual void OnClickInternal(int32_t x, int32_t y) override;
@@ -21,6 +22,6 @@ protected:
     virtual SDL_Cursor* GetCursor();
 
 private:
-    ItemRes mItem;
+    ShopItem mItem;
     SDL_Surface* mItemImg;
 };
