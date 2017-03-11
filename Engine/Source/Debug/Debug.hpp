@@ -1,7 +1,7 @@
 #pragma once
 
 #include "App/App.hpp"
-#include "app/World.hpp"
+#include "App/World.hpp"
 #include "DebugVisual.hpp"
 #include <SDL_ttf.h>
 

@@ -33,7 +33,7 @@ DEFINE_COMMAND(spawn_box)
 
     }
 
-    Mesh* mesh = new Mesh;
+    // Mesh* mesh = new Mesh;
 
     StaticMeshActor* box = App::Get<World>()->SpawnActor<StaticMeshActor>();
     box->SetPos(V3(stof(params[1]), stof(params[2]), stof(params[3])));

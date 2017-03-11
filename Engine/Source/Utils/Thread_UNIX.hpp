@@ -66,7 +66,7 @@ private:
     pthread_t _threadID;
 
     static const pthread_t INVALID_THREAD_ID = (pthread_t)-1;
-}
+};
 
 
 } // namespace vh

@@ -10,8 +10,8 @@
 
 #include "Renderer2D/Renderer2D.hpp"
 
-static const char* ORG_NAME = "Human Burrito";
-static const char* APP_NAME = "Rock Band Tycoon";
+extern const char* ORG_NAME;
+extern const char* APP_NAME;
 
 #include <string>
 #include <fstream>

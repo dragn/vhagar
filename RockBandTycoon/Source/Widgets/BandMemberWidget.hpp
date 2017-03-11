@@ -8,13 +8,13 @@ class BandMemberWidget : public gui::Widget
 public:
     BandMemberWidget()
         : Widget()
+        , mBandMember()
         , mHairImg(nullptr)
         , mFaceImg(nullptr)
         , mBodyImg(nullptr)
         , mHandsImg(nullptr)
         , mLegsImg(nullptr)
         , mItemImg(nullptr)
-        , mBandMember()
     {
     }
 
@@ -28,10 +28,10 @@ public:
     template<typename T>
     void Bind(vh::MultiDelegate<T>& del)
     {
-        del.Add<BandMemberWidget*, void (BandMemberWidget::*)(const T&)>(this, &BandMemberWidget::SetBandMember);
+        del.template Add<BandMemberWidget*, void (BandMemberWidget::*)(const T&)>(this, &BandMemberWidget::SetBandMember);
         OnDestroy.Add([&] (Widget* widget)
         {
-            del.Remove<BandMemberWidget*, void (BandMemberWidget::*)(const T&)>(reinterpret_cast<BandMemberWidget*>(widget), &BandMemberWidget::SetBandMember);
+            del.template Remove<BandMemberWidget*, void (BandMemberWidget::*)(const T&)>(reinterpret_cast<BandMemberWidget*>(widget), &BandMemberWidget::SetBandMember);
         });
     }
 

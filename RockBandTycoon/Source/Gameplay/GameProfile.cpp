@@ -3,15 +3,17 @@
 #include "GameProfile.hpp"
 #include <fstream>
 
+const uint32_t GameProfile::VERSION_TAG = 0x31bca0b6;
+
 GameProfile::GameProfile(int slot, const char* name /* = "" */)
-    : mSlot(slot)
-    , mBandName(name)
+    : mBandName(name)
     , mMoney(0)
     , mDay(0)
     , mSkill(0)
-    , mPopularity(0)
     , mReputation(0)
+    , mPopularity(0)
     , mQuality(0)
+    , mSlot(slot)
 {
     mGuitarist = BandMember(eBandSlot::Guitar, "", Item(), Looks());
     mBassist = BandMember(eBandSlot::Bass, "", Item(), Looks());
@@ -45,7 +47,7 @@ bool GameProfile::GetProfilePath(std::string& outPath, int slot)
     return true;
 }
 
-void GameProfile::AddMember(BandMember& member)
+void GameProfile::AddMember(const BandMember& member)
 {
     switch (member.GetType())
     {

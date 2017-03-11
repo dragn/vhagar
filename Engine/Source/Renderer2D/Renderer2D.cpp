@@ -61,7 +61,10 @@ void vh::Renderer2D::TickInit(uint32_t delta)
         return;
     }
 
+#if SDL_VERSION_ATLEAST(2, 0, 5)
     SDL_RenderSetIntegerScale(mRenderer, SDL_TRUE);
+#endif // SDL_VERSION_ATLEAST(2, 0, 5)
+
     SDL_RenderSetScale(mRenderer, mOptions.scale, mOptions.scale);
     SDL_SetRenderDrawBlendMode(mRenderer, SDL_BLENDMODE_BLEND);
 

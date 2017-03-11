@@ -8,19 +8,20 @@
 using vh::App;
 using vh::Renderer2D;
 
-gui::Widget::Widget() : mAnchor(eAnchor::TopLeft)
-, mPosX(0)
-, mPosY(0)
-, mWidth(0)
-, mHeight(0)
-, mDirty(true)
-, mChildDirty(true)
-, mParent(nullptr)
-, mBgColor()
-, mBgImage(nullptr)
-, mCursor(nullptr)
-, mFocused(false)
-, mVisible(true)
+gui::Widget::Widget()
+    : mCursor(nullptr)
+    , mParent(nullptr)
+    , mAnchor(eAnchor::TopLeft)
+    , mPosX(0)
+    , mPosY(0)
+    , mWidth(0)
+    , mHeight(0)
+    , mDirty(true)
+    , mChildDirty(true)
+    , mBgColor()
+    , mBgImage(nullptr)
+    , mFocused(false)
+    , mVisible(true)
 {
 }
 

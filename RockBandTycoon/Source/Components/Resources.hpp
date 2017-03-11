@@ -38,7 +38,7 @@ class ItemRes
 public:
     ItemRes() {};
     ItemRes(const std::string& name, const std::string& img, int32_t cost)
-        : mName(name), mImg(img), mCost(cost)
+        : mName(name), mCost(cost), mImg(img)
     {
     }
     const std::string& GetName() const { return mName; }

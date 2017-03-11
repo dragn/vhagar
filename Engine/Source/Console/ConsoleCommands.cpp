@@ -12,7 +12,7 @@
 namespace vh
 {
 
-#define REGISTER_COMMAND(name) console->Register(#name, ConsoleCommand_ ## name);
+#define REGISTER_COMMAND_LOCAL(name) console->Register(#name, ConsoleCommand_ ## name);
 
 namespace ConsoleCommands
 {
@@ -21,11 +21,11 @@ void RegisterAll(ConsoleEngine* console)
 {
     CHECK(console);
 
-    REGISTER_COMMAND(print);
-    REGISTER_COMMAND(list_actors);
-    REGISTER_COMMAND(quit);
-    REGISTER_COMMAND(help);
-    REGISTER_COMMAND(save_mesh);
+    REGISTER_COMMAND_LOCAL(print);
+    REGISTER_COMMAND_LOCAL(list_actors);
+    REGISTER_COMMAND_LOCAL(quit);
+    REGISTER_COMMAND_LOCAL(help);
+    REGISTER_COMMAND_LOCAL(save_mesh);
 }
 
 DEFINE_COMMAND(print)

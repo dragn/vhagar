@@ -42,7 +42,7 @@ void Console::TickInit(uint32_t delta)
     {
         LOG(ERROR) << "Could not open font";
     }
-    
+
     Uint32 rmask = 0x000000ff;
     Uint32 gmask = 0x0000ff00;
     Uint32 bmask = 0x00ff0000;

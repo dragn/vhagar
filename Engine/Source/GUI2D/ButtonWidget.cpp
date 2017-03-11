@@ -13,8 +13,8 @@ gui::ButtonWidget::ButtonWidget()
 }
 
 gui::ButtonWidget::ButtonWidget(const char* text)
-    : mText(text)
-    , mFont(NULL)
+    : mFont(NULL)
+    , mText(text)
     , mTextColor(vh::Color(0xff))
     , mBorderColor(vh::Color(0x00, 0x00))
 {

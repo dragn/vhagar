@@ -11,7 +11,7 @@ void Component::Tick(uint32_t time)
 
     if (mTickStep < 0 && mState == eCompState::RUN) return;
 
-    if (mTickStep > 0 && delta < mTickStep) return;
+    if (mTickStep > 0 && delta < static_cast<uint32_t>(mTickStep)) return;
 
     mLastTick = time;
 

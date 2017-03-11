@@ -30,14 +30,7 @@ public:
     void SetDirty() override;
 
     template<typename T>
-    void Bind(vh::MultiDelegate<T>& del)
-    {
-        del.Add<TextWidget*, void (TextWidget::*)(const T&)>(this, &TextWidget::SetText);
-        OnDestroy.Add([&] (Widget* widget)
-        {
-            del.Remove<TextWidget*, void (TextWidget::*)(const T&)>(reinterpret_cast<TextWidget*>(widget), &TextWidget::SetText);
-        });
-    }
+    void Bind(vh::MultiDelegate<T>& del);
 
 protected:
     virtual void UpdateSize() override;
@@ -47,6 +40,16 @@ private:
     std::string mText;
     vh::Color mColor;
 };
+
+template<typename T>
+void TextWidget::Bind(vh::MultiDelegate<T>& del)
+{
+    del.template Add<TextWidget*, void (TextWidget::*)(const T&)>(this, &TextWidget::SetText);
+    OnDestroy.Add([&] (Widget* widget)
+    {
+        del.template Remove<TextWidget*, void (TextWidget::*)(const T&)>(reinterpret_cast<TextWidget*>(widget), &TextWidget::SetText);
+    });
+}
 
 template<> void TextWidget::SetText(const float& val);
 

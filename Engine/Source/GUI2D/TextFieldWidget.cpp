@@ -6,8 +6,8 @@
 #include "GUI2D.hpp"
 
 gui::TextFieldWidget::TextFieldWidget()
-    : mBlink(false)
-    , mMaxSize(20)
+    : mMaxSize(20)
+    , mBlink(false)
 {
     SetBackground(vh::Color(0x00));
 }

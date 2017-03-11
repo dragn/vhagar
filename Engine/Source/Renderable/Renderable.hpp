@@ -6,6 +6,8 @@
 
 namespace vh {
 
+class Renderer; // forward decl
+
 struct GLBufferInfo {
     /**
      * The number of vertex attribute arrays

@@ -42,12 +42,6 @@ void ShopItemWidget::Draw(int32_t x, int32_t y)
 
     render->FillRect(x + 5, y + 6, 71, 53, vh::Color(0x68));
 
-    SDL_Rect src;
-    src.x = 7;
-    src.y = 0;
-    src.w = 57;
-    src.h = 53;
-
     SDL_Rect dst;
     dst.x = x + 5 + 53 / 2 - mItemImg->w / 2;
     dst.y = y + 6 + 57 / 2 - mItemImg->h / 2;

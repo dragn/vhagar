@@ -28,7 +28,10 @@ class BandMember
 public:
     BandMember() {}
     BandMember(eBandSlot::Type type, const char* name, Item item, Looks looks)
-        : mType(type), mName(name), mItem(item), mLooks(looks)
+        : mName(name)
+        , mType(type)
+        , mLooks(looks)
+        , mItem(item)
     {
     }
     BandMember(BandMember&&) = default;

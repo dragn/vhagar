@@ -41,13 +41,15 @@ public:
         : Component(eTickFrequency::NEVER)
         , mShowConsole(false)
         , mLogSink(nullptr)
-        , mOverlay(nullptr)
-        , mSurf(nullptr)
-        , mMsgIdx(0)
+        , mFont(nullptr)
         , mMessages(NUM_LINES)
+        , mMsgIdx(0)
         , mHistory(NUM_HISTORY)
         , mHistoryIdx(0)
         , mCurrHistoryIdx(0)
+        , mSurf(nullptr)
+        , mOverlay(nullptr)
+        , mEngine(nullptr)
     {
         App::CheckRequired<ConsoleEngine>();
         App::CheckRequired<Renderer>();

@@ -9,13 +9,14 @@ template<typename... Args>
 class IFunction
 {
 public:
+    virtual ~IFunction() {}
     virtual void Call(Args... args) = 0;
 };
 
 template<typename M, typename... Args>
 class Function : public IFunction<Args...>
 {
-    template<typename... Args>
+    template<typename... _Args>
     friend class MultiDelegate;
 
 public:
@@ -29,7 +30,7 @@ private:
 template<typename T, typename M, typename... Args>
 class BindFunction : public IFunction<Args...>
 {
-    template<typename... Args>
+    template<typename... _Args>
     friend class MultiDelegate;
 
 public:

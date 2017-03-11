@@ -17,8 +17,8 @@ void gui::View::Render(GUI2D* gui)
 }
 
 View::View(const char* name /*= "NonameView"*/)
-    : mName(name)
-    , mRootWidget(nullptr)
+    : mRootWidget(nullptr)
+    , mName(name)
 {
     mRootWidget = new Widget();
 }

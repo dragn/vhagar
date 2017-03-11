@@ -31,8 +31,8 @@ enum Type : int32_t
 
 #define COMPONENT_NAME(name) \
 public: \
-    static char* GetNameStatic() { return #name; } \
-    virtual char* GetName() { return #name; }
+    static const char* GetNameStatic() { return #name; } \
+    virtual const char* GetName() { return #name; }
 
 class Component
 {
@@ -48,7 +48,7 @@ public:
         CHECK(mState == eCompState::CLOSED);
     }
 
-    virtual char* GetName() = 0;
+    virtual const char* GetName() = 0;
 
     void Tick(uint32_t time);
 

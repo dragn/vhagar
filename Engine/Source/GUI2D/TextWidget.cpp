@@ -9,8 +9,8 @@ using vh::Renderer2D;
 using gui::GUI2D;
 
 gui::TextWidget::TextWidget(const char* text /* = nullptr */)
-    : mColor(0xff)
-    , mFont(nullptr)
+    : mFont(nullptr)
+    , mColor(0xff)
 {
     if (text != nullptr) SetText(text);
 }
@@ -89,5 +89,5 @@ template<> void gui::TextWidget::SetText(const float& val)
 {
     char buf[16];
     snprintf(buf, 16, "%.2g", val);
-    SetText(buf);
+    SetText((const char*) buf);
 }

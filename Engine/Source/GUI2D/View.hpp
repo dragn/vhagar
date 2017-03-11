@@ -7,6 +7,8 @@
 namespace gui
 {
 
+class GUI2D; // forward decl
+
 class View
 {
     friend class GUI2D;
