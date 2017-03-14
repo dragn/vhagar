@@ -10,9 +10,8 @@ void gui::View::AddWidget(Widget* widget)
     mRootWidget->AddChild(widget);
 }
 
-void gui::View::Render(GUI2D* gui)
+void gui::View::Render()
 {
-    mGUI = gui;
     if (mRootWidget != nullptr) mRootWidget->Draw(nullptr);
 }
 

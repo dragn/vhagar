@@ -4,19 +4,27 @@
 #include "NewGameView.hpp"
 #include "Gameplay/GameProfile.hpp"
 #include "GameView.hpp"
+#include "Views/DialogView.hpp"
 
+using namespace vh;
 using namespace gui;
 
 void DeleteProfile(int slot)
 {
-    std::string path;
-    if (GameProfile::GetProfilePath(path, slot))
+    DialogView* dlg = new DialogView("You are about to delete this band profile. Are you sure?");
+    dlg->AddOption("Absolutely").Set([slot]
     {
-        int ret = remove(path.c_str());
-        LOG_IF(ERROR, ret != 0) << "Could not delete profile " << slot;
-        GUI2D* gui = vh::App::Get<GUI2D>();
-        gui->SetView(new MenuView());
-    }
+        std::string path;
+        if (GameProfile::GetProfilePath(path, slot))
+        {
+            int ret = remove(path.c_str());
+            LOG_IF(ERROR, ret != 0) << "Could not delete profile " << slot;
+            GUI2D* gui = vh::App::Get<GUI2D>();
+            gui->SetView(new MenuView());
+        }
+    });
+    dlg->AddOption("No, wait!").Set(App::Get<GUI2D>(), &GUI2D::Back);
+    App::Get<GUI2D>()->SetModalView(dlg);
 }
 
 void NewGame(const int slot)
@@ -24,7 +32,15 @@ void NewGame(const int slot)
     GUI2D* gui = vh::App::Get<GUI2D>();
     CHECK(gui);
 
-    gui->SetView(new NewGameView(slot));
+    DialogView* dlg = new DialogView("You are about to create the best rock band in history. Are you ready?");
+    dlg->AddOption("Let's Rock!").Set([&]
+    {
+        App::Get<GUI2D>()->SetView(new NewGameView(slot));
+    });
+
+    dlg->AddOption("No, go back!").Set(App::Get<GUI2D>(), &GUI2D::Back);
+
+    gui->SetModalView(dlg);
 }
 
 MenuView::MenuView()

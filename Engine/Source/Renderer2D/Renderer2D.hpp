@@ -59,8 +59,8 @@ public:
     void DrawRect(int32_t x, int32_t y, int32_t width, int32_t height, Color color);
     void FillRect(int32_t x, int32_t y, int32_t width, int32_t height, Color color);
 
-    void CalcTextSize(TTF_Font* font, const char* text, int32_t& outWidth, int32_t& outHeight);
-    void DrawText(TTF_Font* font, const char* text, Color color, int32_t x, int32_t y, int32_t maxW = 0);
+    void CalcTextSize(TTF_Font* font, const char* text, int32_t& outWidth, int32_t& outHeight, int32_t wrap = 0);
+    void DrawText(TTF_Font* font, const char* text, Color color, int32_t x, int32_t y, int32_t maxW = 0, bool wrap = false);
 
     void DrawImage(SDL_Surface* surf, int32_t x, int32_t y, int32_t width = 0, int32_t height = 0);
     void DrawImage(SDL_Surface* surf, int32_t x, int32_t y, float scale);

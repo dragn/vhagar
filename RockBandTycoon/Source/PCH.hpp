@@ -21,4 +21,6 @@ namespace Colors
 {
     static const vh::Color Orange(0xfe, 0x83, 0x1e);
     static const vh::Color White(0xff, 0xff, 0xff);
+    static const vh::Color Blue(0xa0, 0xa0, 0xc0);
+    static const vh::Color Transparent(0x00, 0x00, 0x00, 0x00);
 }

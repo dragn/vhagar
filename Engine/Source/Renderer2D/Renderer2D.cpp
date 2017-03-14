@@ -112,14 +112,18 @@ void vh::Renderer2D::FillRect(int32_t x, int32_t y, int32_t width, int32_t heigh
     SDL_RenderFillRect(mRenderer, &rect);
 }
 
-void vh::Renderer2D::CalcTextSize(TTF_Font* font, const char* text, int32_t& outWidth, int32_t& outHeight)
+void vh::Renderer2D::CalcTextSize(TTF_Font* font, const char* text, int32_t& outWidth, int32_t& outHeight, int32_t wrap /* = 0 */)
 {
     CHECK(font);
     CHECK(text);
 
     SDL_Color any = { 0,0,0,0 };
 
-    SDL_Surface* surf = TTF_RenderText_Solid(font, text, any);
+    SDL_Surface* surf =
+        wrap > 0
+        ? TTF_RenderText_Blended_Wrapped(font, text, any, wrap)
+        : TTF_RenderText_Solid(font, text, any);
+
     if (surf == nullptr)
     {
         outWidth = 0;
@@ -133,13 +137,16 @@ void vh::Renderer2D::CalcTextSize(TTF_Font* font, const char* text, int32_t& out
     SDL_FreeSurface(surf);
 }
 
-void vh::Renderer2D::DrawText(TTF_Font* font, const char* text, Color clr, int32_t x, int32_t y, int32_t maxW /* = 0*/)
+void vh::Renderer2D::DrawText(TTF_Font* font, const char* text, Color clr, int32_t x, int32_t y, int32_t maxW /* = 0*/, bool wrap /* = false */)
 {
     CHECK(font);
     CHECK(text);
 
     SDL_Color white{ clr.r, clr.g, clr.b, clr.a };
-    SDL_Surface* surf = TTF_RenderText_Solid(font, text, white);
+    SDL_Surface* surf =
+        wrap
+        ? TTF_RenderText_Blended_Wrapped(font, text, white, maxW)
+        : TTF_RenderText_Solid(font, text, white);
     if (surf == nullptr)
     {
         return;

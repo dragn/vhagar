@@ -11,6 +11,7 @@ using gui::GUI2D;
 gui::TextWidget::TextWidget(const char* text /* = nullptr */)
     : mFont(nullptr)
     , mColor(0xff)
+    , mWrap(0)
 {
     if (text != nullptr) SetText(text);
 }
@@ -49,7 +50,14 @@ void gui::TextWidget::Draw(int32_t x, int32_t y)
     vh::Renderer2D* renderer = vh::App::Get<vh::Renderer2D>();
     CHECK(renderer);
 
-    renderer->DrawText(mFont, mText.c_str(), mColor, x, y);
+    if (mWrap > 0)
+    {
+        renderer->DrawText(mFont, mText.c_str(), mColor, x, y, mWrap, true);
+    }
+    else
+    {
+        renderer->DrawText(mFont, mText.c_str(), mColor, x, y);
+    }
 }
 
 void gui::TextWidget::SetDirty()
@@ -80,7 +88,7 @@ void gui::TextWidget::UpdateSize()
     CHECK(renderer);
 
     int32_t width, height;
-    renderer->CalcTextSize(mFont, mText.c_str(), width, height);
+    renderer->CalcTextSize(mFont, mText.c_str(), width, height, mWrap);
 
     SetSize(width, height);
 }

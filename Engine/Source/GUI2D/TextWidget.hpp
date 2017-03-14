@@ -32,13 +32,16 @@ public:
     template<typename T>
     void Bind(vh::MultiDelegate<T>& del);
 
-protected:
+    void SetWrap(int32_t wrap) { mWrap = wrap; }
+
     virtual void UpdateSize() override;
 
 private:
     TTF_Font* mFont;
     std::string mText;
     vh::Color mColor;
+
+    int32_t mWrap;
 };
 
 template<typename T>

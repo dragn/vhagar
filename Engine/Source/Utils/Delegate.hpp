@@ -42,6 +42,22 @@ private:
     M mMethod;
 };
 
+template<typename T, typename M, typename PARAM1, typename... Args>
+class BindParamFunction : public IFunction<Args...>
+{
+    template<typename... _Args>
+    friend class MultiDelegate;
+
+public:
+    BindParamFunction(T t, M method, PARAM1 param1) : mThis(t), mMethod(method), mParam1(param1) {}
+    virtual void Call(Args... args) override { if (mThis != nullptr) (mThis->*mMethod)(args..., mParam1); }
+
+private:
+    T mThis;
+    M mMethod;
+    PARAM1 mParam1;
+};
+
 class Delegate
 {
 public:
@@ -108,6 +124,12 @@ public:
     void Add(T t, M m)
     {
         mList.push_back(new BindFunction<T, M, Args...>(t, m));
+    }
+
+    template<typename T, typename M, typename P1>
+    void Add(T t, M m, P1 p)
+    {
+        mList.push_back(new BindParamFunction<T, M, P1, Args...>(t, m, p));
     }
 
     template<typename T, typename M>

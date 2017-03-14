@@ -39,11 +39,11 @@ void GUI2D::TickRun(uint32_t delta)
 {
     if (mModalView != nullptr)
     {
-        mModalView->Render(this);
+        mModalView->Render();
     }
     else if (mView != nullptr)
     {
-        mView->Render(this);
+        mView->Render();
     }
 
     if (mNextView != nullptr)
@@ -52,21 +52,11 @@ void GUI2D::TickRun(uint32_t delta)
         SetFocus(nullptr);
 
         // switch to new view
-        if (mView) delete mView;
+        SafeDelete(mView);
+        std::swap(mView, mNextView);
 
-        mView = mNextView;
-        mNextView = nullptr;
-
-        if (mModalView)
-        {
-            delete mModalView;
-            mModalView = nullptr;
-        }
-        if (mNextModalView)
-        {
-            delete mNextModalView;
-            mNextModalView = nullptr;
-        }
+        SafeDelete(mModalView);
+        SafeDelete(mNextModalView);
 
         // stretch root widget to all available space
         Renderer2D* renderer = App::Get<Renderer2D>();
@@ -84,12 +74,8 @@ void GUI2D::TickRun(uint32_t delta)
         SetFocus(nullptr);
 
         // switch to new view
-        if (mModalView)
-        {
-            delete mModalView;
-        }
-        mModalView = mNextModalView;
-        mNextModalView = nullptr;
+        SafeDelete(mModalView);
+        std::swap(mModalView, mNextModalView);
 
         // stretch root widget to all available space
         Renderer2D* renderer = App::Get<Renderer2D>();
@@ -104,11 +90,7 @@ void GUI2D::TickRun(uint32_t delta)
     if (mGoBack)
     {
         mGoBack = false;
-        if (mModalView)
-        {
-            delete mModalView;
-            mModalView = nullptr;
-        }
+        SafeDelete(mModalView);
 
         if (mView != nullptr)
         {
@@ -151,7 +133,7 @@ void GUI2D::TickClose(uint32_t delta)
 
 void GUI2D::SetView(View* view)
 {
-    if (mNextView != nullptr) delete mNextView;
+    SafeDelete(mNextView);
     mNextView = view;
 }
 
@@ -231,10 +213,7 @@ SDL_Cursor* GUI2D::GetBeamCursor()
 
 void GUI2D::SetModalView(View* view)
 {
-    if (mNextModalView != nullptr)
-    {
-        delete mNextModalView;
-    }
+    SafeDelete(mNextModalView);
     mNextModalView = view;
 }
 

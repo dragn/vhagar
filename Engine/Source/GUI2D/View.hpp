@@ -30,9 +30,7 @@ protected:
     void Destroy();
 
 private:
-    virtual void Render(GUI2D* gui);
-
-    GUI2D* mGUI;
+    virtual void Render();
 
     Widget* mRootWidget;
 
