@@ -3,6 +3,7 @@
 #include "ShopView.hpp"
 #include "Components/Resources.hpp"
 #include "Widgets/ShopItemWidget.hpp"
+#include "Views/DialogView.hpp"
 
 using namespace vh;
 using namespace gui;
@@ -112,8 +113,18 @@ void ShopView::DrawItems()
         });
         wdg->OnBuy.Add([=] (const ShopItem& item)
         {
-            mProfile->SetItem(mType, Item(item.GetName(), item.GetImg()));
-            App::Get<GUI2D>()->Back();
+            std::string text = "You are about to buy ";
+            text.append(item.GetName());
+            text.append(" for $");
+            text.append(std::to_string(item.GetCost()));
+            DialogView* dlg = new DialogView(text);
+            dlg->AddOption("Sound good!").Set([=]
+            {
+                mProfile->SetItem(mType, Item(item.GetName(), item.GetImg()));
+                App::Get<GUI2D>()->BackToMain();
+            });
+            dlg->AddOption("Nope, I changed my mind").Set(App::Get<GUI2D>(), &GUI2D::Back);
+            App::Get<GUI2D>()->SetModalView(dlg);
         });
         mList->AddChild(wdg);
     }

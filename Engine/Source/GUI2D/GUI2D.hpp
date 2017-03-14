@@ -25,7 +25,6 @@ public:
     GUI2D(const GUI2DOptions& opts)
         : vh::Component(vh::eTickFrequency::NORMAL)
         , mView(nullptr)
-        , mModalView(nullptr)
         , mNextView(nullptr)
         , mNextModalView(nullptr)
         , mScale(1)
@@ -36,6 +35,7 @@ public:
         , mBeamCursor(nullptr)
         , mHandCursor(nullptr)
         , mGoBack(false)
+        , mGoBackToMain(false)
     {}
 
     virtual void TickInit(uint32_t delta);
@@ -46,9 +46,10 @@ public:
     View* GetView() const { return mView; }
 
     void SetModalView(View* view);
-    View* GetModalView() const { return mModalView; }
+    View* GetModalView() const { return mModalViewStack.back(); }
 
-    void Back();
+    void Back(); // go back to previous view in stack
+    void BackToMain(); // clear the view stack and go back to main view
 
     virtual void HandleEvent(SDL_Event* event);
 
@@ -67,7 +68,8 @@ public:
 
 private:
     View* mView;
-    View* mModalView;
+    std::list<View*> mModalViewStack;
+
     View* mNextView;
     View* mNextModalView;
     uint32_t mScale;
@@ -84,6 +86,7 @@ private:
     SDL_Cursor* mHandCursor;
 
     bool mGoBack;
+    bool mGoBackToMain;
 
     void FocusedDestroyed(Widget* widget);
 };

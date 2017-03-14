@@ -37,9 +37,9 @@ void GUI2D::TickInit(uint32_t delta)
 
 void GUI2D::TickRun(uint32_t delta)
 {
-    if (mModalView != nullptr)
+    if (!mModalViewStack.empty())
     {
-        mModalView->Render();
+        mModalViewStack.back()->Render();
     }
     else if (mView != nullptr)
     {
@@ -55,7 +55,11 @@ void GUI2D::TickRun(uint32_t delta)
         SafeDelete(mView);
         std::swap(mView, mNextView);
 
-        SafeDelete(mModalView);
+        // clear modal view stack
+        for (View* view : mModalViewStack) SafeDelete(view);
+        mModalViewStack.clear();
+
+        // remove requested next modal view
         SafeDelete(mNextModalView);
 
         // stretch root widget to all available space
@@ -73,29 +77,50 @@ void GUI2D::TickRun(uint32_t delta)
         /* clear focus */
         SetFocus(nullptr);
 
-        // switch to new view
-        SafeDelete(mModalView);
-        std::swap(mModalView, mNextModalView);
+        // push new view to stack
+        mModalViewStack.push_back(mNextModalView);
 
         // stretch root widget to all available space
         Renderer2D* renderer = App::Get<Renderer2D>();
         CHECK(renderer);
 
-        if (mModalView->mRootWidget)
+        if (mNextModalView->mRootWidget)
         {
-            mModalView->mRootWidget->SetSize(renderer->GetWidth(), renderer->GetHeight());
+            mNextModalView->mRootWidget->SetSize(renderer->GetWidth(), renderer->GetHeight());
         }
+
+        mNextModalView = nullptr;
     }
 
     if (mGoBack)
     {
         mGoBack = false;
-        SafeDelete(mModalView);
 
-        if (mView != nullptr)
+        // pop view from stack
+        SafeDelete(mModalViewStack.back());
+        mModalViewStack.pop_back();
+
+        // set dirty flag to redraw next view
+        if (mModalViewStack.empty())
         {
             mView->mRootWidget->SetDirty();
         }
+        else
+        {
+            mModalViewStack.back()->mRootWidget->SetDirty();
+        }
+    }
+
+    if (mGoBackToMain)
+    {
+        mGoBackToMain = false;
+
+        // clear modal view stack
+        for (View* view : mModalViewStack) SafeDelete(view);
+        mModalViewStack.clear();
+
+        // set dirty flag to main view
+        if (mView && mView->mRootWidget) mView->mRootWidget->SetDirty();
     }
 }
 
@@ -107,7 +132,8 @@ void GUI2D::TickClose(uint32_t delta)
 
     SafeDelete(mView);
     SafeDelete(mNextView);
-    SafeDelete(mModalView);
+    for (View* view: mModalViewStack) SafeDelete(view);
+    mModalViewStack.clear();
     SafeDelete(mNextModalView);
 
     if (mArrowCursor)
@@ -139,7 +165,7 @@ void GUI2D::SetView(View* view)
 
 void GUI2D::HandleEvent(SDL_Event* event)
 {
-    View* view = mModalView == nullptr ? mView : mModalView;
+    View* view = mModalViewStack.empty() ? mView : mModalViewStack.back();
 
     if (event->type == SDL_MOUSEBUTTONDOWN)
     {
@@ -220,6 +246,11 @@ void GUI2D::SetModalView(View* view)
 void GUI2D::Back()
 {
     mGoBack = true;
+}
+
+void GUI2D::BackToMain()
+{
+    mGoBackToMain = true;
 }
 
 }

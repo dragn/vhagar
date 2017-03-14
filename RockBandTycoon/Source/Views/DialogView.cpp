@@ -28,7 +28,7 @@ void DialogView::AddOptionWidget(uint32_t idx, Option& option)
 
     ButtonWidget* btn = new ButtonWidget(option.text.c_str());
     btn->OnClick.Add(this, &DialogView::OnOptionSelect, idx);
-    btn->SetPos(MARGIN, h + MARGIN + 20 * idx);
+    btn->SetPos(MARGIN, h + MARGIN * 2 + 20 * idx);
     btn->SetSize(200 - MARGIN * 2, 18);
     btn->SetTextColor(Colors::Blue);
     btn->SetBackground(Colors::Transparent);
