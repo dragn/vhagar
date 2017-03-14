@@ -14,6 +14,8 @@ void GenBasses(std::vector<ShopItem>& list)
 
 void GenDrums(std::vector<ShopItem>& list)
 {
+    list.push_back(ShopItem(eBandSlot::Drums, "Drums 1", "drums_cheap.png", 200));
+    list.push_back(ShopItem(eBandSlot::Drums, "Drums 2", "drums_cheap.png", 250));
 }
 
 const std::vector<ShopItem>& Shop::GetItems(eBandSlot::Type type) const

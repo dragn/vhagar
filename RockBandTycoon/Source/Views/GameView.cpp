@@ -174,10 +174,10 @@ void SetMemberWdgPos(Widget* wdg, eBandSlot::Type type)
     switch (type)
     {
     case eBandSlot::Guitar:
-        wdg->SetPos(110, 82);
+        wdg->SetPos(70, 82);
         break;
     case eBandSlot::Bass:
-        wdg->SetPos(280, 82);
+        wdg->SetPos(270, 82);
         break;
     case eBandSlot::Drums:
         wdg->SetPos(ePos::Center, 60, eAnchor::TopCenter);

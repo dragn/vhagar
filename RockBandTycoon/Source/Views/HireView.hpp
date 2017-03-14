@@ -14,4 +14,6 @@ public:
 private:
     eBandSlot::Type mType;
     GameProfile* mProfile;
+
+    HireItem GenHireItem();
 };

@@ -68,9 +68,6 @@ void Resources::TickInit(uint32_t delta)
     LoadBodyParts("legs_", mLegsList);
     LoadBodyParts("drummer_body_", mDrumBodyList);
 
-    LoadItems("guitar.txt", mGuitarList);
-    LoadItems("bass.txt", mBassList);
-
     srand(clock());
 
     FinishInit();

@@ -33,7 +33,7 @@ void HireWidget::Draw(int32_t x, int32_t y)
     dst.h = 56;
 
     SDL_Rect src;
-    src.x = 1;
+    src.x = 15;
     src.y = 4;
     src.w = 28;
     src.h = 28;

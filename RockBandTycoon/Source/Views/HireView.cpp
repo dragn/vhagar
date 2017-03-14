@@ -9,7 +9,7 @@
 using namespace gui;
 using namespace vh;
 
-HireItem GenHireItem()
+HireItem HireView::GenHireItem()
 {
     Names* names = App::Get<Names>();
     CHECK(names);
@@ -17,7 +17,7 @@ HireItem GenHireItem()
     Resources* res = App::Get<Resources>();
     CHECK(res);
 
-    return HireItem(names->GetRandomMaleName(), res->GetRandomLooks());
+    return HireItem(names->GetRandomMaleName(), res->GetRandomLooks(mType));
 }
 
 void HireView::OnHire(HireItem item)
