@@ -32,15 +32,7 @@ void NewGame(const int slot)
     GUI2D* gui = vh::App::Get<GUI2D>();
     CHECK(gui);
 
-    DialogView* dlg = new DialogView("You are about to create the best rock band in history. Are you ready?");
-    dlg->AddOption("Let's Rock!").Set([&]
-    {
-        App::Get<GUI2D>()->SetView(new NewGameView(slot));
-    });
-
-    dlg->AddOption("No, go back!").Set(App::Get<GUI2D>(), &GUI2D::Back);
-
-    gui->SetModalView(dlg);
+    App::Get<GUI2D>()->SetView(new NewGameView(slot));
 }
 
 MenuView::MenuView()
