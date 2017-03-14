@@ -2,19 +2,7 @@
 
 #include "Item.hpp"
 #include "Looks.hpp"
-
-namespace eBandSlot
-{
-enum Type
-{
-    Drums = 0,
-    Bass,
-    Guitar,
-    Vocal,
-    Keyboard,
-    MAX
-};
-}
+#include "BandSlot.hpp"
 
 class BandMember
 {

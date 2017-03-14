@@ -2,6 +2,7 @@
 
 #include "App/App.hpp"
 #include "Gameplay/Looks.hpp"
+#include "Gameplay/BandSlot.hpp"
 
 class BodyPart
 {
@@ -63,10 +64,11 @@ public:
     SDL_Surface* GetHairImg(const std::string& name) const;
     SDL_Surface* GetFaceImg(const std::string& name) const;
     SDL_Surface* GetBodyImg(const std::string& name) const;
+    SDL_Surface* GetGuitarBodyImg(const std::string& name) const;
     SDL_Surface* GetHandsImg(const std::string& name) const;
     SDL_Surface* GetLegsImg(const std::string& name) const;
 
-    Looks GetRandomLooks();
+    Looks GetRandomLooks(eBandSlot::Type type = eBandSlot::Guitar);
 
     SDL_Surface* GetItemImg(const std::string& name);
 
@@ -78,7 +80,8 @@ private:
     std::vector<BodyPart> mHairList;
     std::vector<BodyPart> mFaceList;
     std::vector<BodyPart> mHandsList;
-    std::vector<BodyPart> mBodyList;
+    std::vector<BodyPart> mGuitarBodyList;
+    std::vector<BodyPart> mDrumBodyList;
     std::vector<BodyPart> mLegsList;
 
     std::vector<ItemRes> mGuitarList;

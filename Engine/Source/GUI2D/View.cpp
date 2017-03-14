@@ -49,11 +49,7 @@ void View::SetBackground(const char* imagePath)
 
 void View::Destroy()
 {
-    if (mRootWidget != nullptr)
-    {
-        delete mRootWidget;
-        mRootWidget = nullptr;
-    }
+    vh::SafeDelete(mRootWidget);
 }
 
 }

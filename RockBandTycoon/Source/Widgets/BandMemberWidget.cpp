@@ -39,7 +39,7 @@ void BandMemberWidget::SetBandMember(const BandMember& member)
 
     mHairImg = bp->GetHairImg(mBandMember.GetLooks().GetHair());
     mFaceImg = bp->GetFaceImg(mBandMember.GetLooks().GetFace());
-    mBodyImg = bp->GetBodyImg(mBandMember.GetLooks().GetBody());
+    mBodyImg = bp->GetGuitarBodyImg(mBandMember.GetLooks().GetBody());
     mHandsImg = bp->GetHandsImg(mBandMember.GetLooks().GetHands());
     mLegsImg = bp->GetLegsImg(mBandMember.GetLooks().GetLegs());
     mItemImg = bp->GetItemImg(mBandMember.GetItem().GetImg());
@@ -66,7 +66,7 @@ void BandMemberWidget::GetOffset(int32_t& x, int32_t& y)
     {
     case eBandSlot::Guitar:
     case eBandSlot::Bass:
-        x = -24;
+        x = 0;
         y = 54;
         break;
     default:

@@ -43,7 +43,6 @@ void HireWidget::Draw(int32_t x, int32_t y)
     if (mBodyImg != nullptr) render->DrawImage(mBodyImg, &src, &dst);
     if (mFaceImg != nullptr) render->DrawImage(mFaceImg, &src, &dst);
     if (mHairImg != nullptr) render->DrawImage(mHairImg, &src, &dst);
-    if (mHandsImg != nullptr) render->DrawImage(mHandsImg, &src, &dst);
 
     render->DrawText(gui->GetFont(), mHireItem.GetName().c_str(), vh::Color(0x00), x + 68, y + 16);
 }
@@ -55,8 +54,6 @@ void HireWidget::SetHireItem(const HireItem& item)
     mHairImg = res->GetHairImg(item.GetLooks().GetHair());
     mFaceImg = res->GetFaceImg(item.GetLooks().GetFace());
     mBodyImg = res->GetBodyImg(item.GetLooks().GetBody());
-    mHandsImg = res->GetHandsImg(item.GetLooks().GetHands());
-    mLegsImg = res->GetLegsImg(item.GetLooks().GetLegs());
 
     mHireItem = item;
 }

@@ -48,4 +48,11 @@ void for_each(T t, F f)
     std::for_each(t.begin(), t.end(), f);
 }
 
+template <typename T>
+void SafeDelete(T*& ptr)
+{
+    if (ptr) delete ptr;
+    ptr = nullptr;
+}
+
 } // namespace vh

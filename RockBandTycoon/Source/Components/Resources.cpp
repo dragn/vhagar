@@ -63,9 +63,10 @@ void Resources::TickInit(uint32_t delta)
 {
     LoadBodyParts("hair_", mHairList);
     LoadBodyParts("face_", mFaceList);
-    LoadBodyParts("guitar_body_", mBodyList);
+    LoadBodyParts("guitar_body_", mGuitarBodyList);
     LoadBodyParts("guitar_hands_", mHandsList);
     LoadBodyParts("legs_", mLegsList);
+    LoadBodyParts("drummer_body_", mDrumBodyList);
 
     LoadItems("guitar.txt", mGuitarList);
     LoadItems("bass.txt", mBassList);
@@ -79,7 +80,7 @@ void Resources::TickClose(uint32_t delta)
 {
     mHairList.clear();
     mFaceList.clear();
-    mBodyList.clear();
+    mGuitarBodyList.clear();
     mHandsList.clear();
     mLegsList.clear();
 
@@ -118,9 +119,9 @@ SDL_Surface* Resources::GetFaceImg(const std::string& name) const
     return GetBodyPart(name, mFaceList);
 }
 
-SDL_Surface* Resources::GetBodyImg(const std::string& name) const
+SDL_Surface* Resources::GetGuitarBodyImg(const std::string& name) const
 {
-    return GetBodyPart(name, mBodyList);
+    return GetBodyPart(name, mGuitarBodyList);
 }
 
 SDL_Surface* Resources::GetHandsImg(const std::string& name) const
@@ -168,14 +169,25 @@ void Resources::GetGuitars(std::vector<ItemRes>& outList) const
     }
 }
 
-Looks Resources::GetRandomLooks()
+Looks Resources::GetRandomLooks(eBandSlot::Type type)
 {
     std::string hair, face, body, hands, legs;
     GetRandomBodyPart(hair, mHairList);
     GetRandomBodyPart(face, mFaceList);
-    GetRandomBodyPart(body, mBodyList);
-    GetRandomBodyPart(hands, mHandsList);
-    GetRandomBodyPart(legs, mLegsList);
+
+    switch (type)
+    {
+    case eBandSlot::Guitar:
+    case eBandSlot::Bass:
+        GetRandomBodyPart(body, mGuitarBodyList);
+        GetRandomBodyPart(hands, mHandsList);
+        GetRandomBodyPart(legs, mLegsList);
+        break;
+
+    case eBandSlot::Drums:
+        GetRandomBodyPart(body, mDrumBodyList);
+        break;
+    }
 
     return Looks(hair, face, body, hands, legs);
 }
@@ -188,4 +200,15 @@ void Resources::GetBassGuitars(std::vector<ItemRes>& outList) const
 void Resources::GetDrums(std::vector<ItemRes>& outList) const
 {
     // TODO
+}
+
+SDL_Surface* Resources::GetBodyImg(const std::string& name) const
+{
+    auto it = std::find_if(mGuitarBodyList.begin(), mGuitarBodyList.end(), [&name] (const BodyPart& bp) { return bp.GetName() == name; });
+    if (it != mGuitarBodyList.end()) return it->GetImg();
+
+    it = std::find_if(mDrumBodyList.begin(), mDrumBodyList.end(), [&name] (const BodyPart& bp) { return bp.GetName() == name; });
+    if (it != mDrumBodyList.end()) return it->GetImg();
+
+    return nullptr;
 }

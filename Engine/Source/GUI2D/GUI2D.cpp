@@ -3,12 +3,14 @@
 #include "App/App.hpp"
 #include "Renderer2D/Renderer2D.hpp"
 
+using namespace vh;
+
 namespace gui
 {
 
 void GUI2D::TickInit(uint32_t delta)
 {
-    vh::App::CheckRequired<vh::Renderer2D>();
+    App::CheckRequired<Renderer2D>();
 
     TTF_Init();
     CHECK(TTF_WasInit()) << "Error initialising SDL_ttf";
@@ -22,7 +24,7 @@ void GUI2D::TickInit(uint32_t delta)
     mHdr2Font = TTF_OpenFont(mOptions.hdr2FontPath, mOptions.hdr2FontSize);
     CHECK(mHdr2Font) << "Could not open font: " << mOptions.hdr2FontPath;
 
-    vh::Renderer2D* renderer = vh::App::Get<vh::Renderer2D>();
+    Renderer2D* renderer = App::Get<Renderer2D>();
     CHECK(renderer);
     mScale = renderer->GetScale();
 
@@ -67,7 +69,7 @@ void GUI2D::TickRun(uint32_t delta)
         }
 
         // stretch root widget to all available space
-        vh::Renderer2D* renderer = vh::App::Get<vh::Renderer2D>();
+        Renderer2D* renderer = App::Get<Renderer2D>();
         CHECK(renderer);
 
         if (mView->mRootWidget)
@@ -90,7 +92,7 @@ void GUI2D::TickRun(uint32_t delta)
         mNextModalView = nullptr;
 
         // stretch root widget to all available space
-        vh::Renderer2D* renderer = vh::App::Get<vh::Renderer2D>();
+        Renderer2D* renderer = App::Get<Renderer2D>();
         CHECK(renderer);
 
         if (mModalView->mRootWidget)
@@ -121,10 +123,10 @@ void GUI2D::TickClose(uint32_t delta)
 
     if (TTF_WasInit()) TTF_Quit();
 
-    if (mView) delete mView;
-    if (mNextView) delete mNextView;
-    if (mModalView) delete mModalView;
-    if (mNextModalView) delete mNextModalView;
+    SafeDelete(mView);
+    SafeDelete(mNextView);
+    SafeDelete(mModalView);
+    SafeDelete(mNextModalView);
 
     if (mArrowCursor)
     {
