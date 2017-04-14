@@ -133,6 +133,18 @@ void GameView::CreateToolbar()
     repTxt->Bind(mProfile->Reputation_OnChange);
     topBar->AddChild(repTxt);
 
+    TextWidget* dayTxt = new TextWidget("Day");
+    dayTxt->SetPos(gridLeft + gridStep * (gridIdx), 4);
+    dayTxt->SetColor(vh::Color(0x00));
+    topBar->AddChild(dayTxt);
+
+    dayTxt = new TextWidget();
+    dayTxt->SetPos(gridLeft + gridStep * (gridIdx) + 20, 4);
+    dayTxt->SetColor(vh::Color(0x00));
+    dayTxt->SetText(mProfile->GetDay());
+    dayTxt->Bind(mProfile->Day_OnChange);
+    topBar->AddChild(dayTxt);
+
     mBandNameTxt = new TextWidget(mProfile->GetBandName().c_str());
     mBandNameTxt->SetPos(ePos::Right, ePos::Top, eAnchor::TopRight);
     mBandNameTxt->SetFont(gui->GetHdr1Font());

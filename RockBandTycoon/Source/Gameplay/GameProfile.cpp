@@ -7,7 +7,7 @@
 
 using namespace vh;
 
-const uint32_t GameProfile::VERSION_TAG = 0x31bca0b8;
+const uint32_t GameProfile::VERSION_TAG = 0x31bca0b9;
 
 static const int32_t START_MONEY = 50;
 static const float START_REP = 0.0f;
@@ -16,7 +16,7 @@ static const float START_POP = 0.0f;
 GameProfile::GameProfile(int slot, const char* name /* = "" */)
     : mBandName(name)
     , mMoney(0)
-    , mDay(0)
+    , mDay(1)
     , mSkill(0)
     , mReputation(0)
     , mPopularity(0)
@@ -353,6 +353,7 @@ bool GameProfile::Save() const
     Write(file, VERSION_TAG);
 
     Write(file, mBandName);
+    Write(file, mDay);
     Write(file, mMoney);
     Write(file, mPopularity);
     Write(file, mQuality);
@@ -396,6 +397,7 @@ bool GameProfile::Load()
     }
 
     Read(file, mBandName);
+    Read(file, mDay);
     Read(file, mMoney);
     Read(file, mPopularity);
     Read(file, mQuality);
