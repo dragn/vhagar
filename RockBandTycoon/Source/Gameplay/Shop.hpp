@@ -15,6 +15,7 @@ public:
     { }
 
     const std::vector<ShopItem>& GetItems(eBandSlot::Type type) const;
+    void SetItems(eBandSlot::Type type, std::vector<ShopItem>& items);
 
     static Shop Generate();
 };

@@ -103,7 +103,7 @@ void ShopView::DrawItems()
 
     for (size_t idx = 0; idx < items.size(); ++idx)
     {
-        ShopItemWidget* wdg = new ShopItemWidget(items[idx]);
+        ShopItemWidget* wdg = new ShopItemWidget(idx, items[idx], mProfile);
         wdg->SetPos(0, 68 * idx);
         wdg->OnFocus.Add([=] ()
         {
@@ -111,8 +111,11 @@ void ShopView::DrawItems()
             mMemberWidget->SetBandMember(BandMember(mType, "",
                 item, mProfile->GetBandMember(mType).GetLooks()));
         });
-        wdg->OnBuy.Add([=] (const ShopItem& item)
+        wdg->OnBuy.Add([=] (int idx)
         {
+            const std::vector<ShopItem>& items = mProfile->GetShop().GetItems(mType);
+            const ShopItem& item = items[idx];
+
             std::string text = "You are about to buy ";
             text.append(item.GetName());
             text.append(" for $");
@@ -120,7 +123,14 @@ void ShopView::DrawItems()
             DialogView* dlg = new DialogView(text);
             dlg->AddOption("Sound good!").Set([=]
             {
+                Shop shop = mProfile->GetShop();
+                std::vector<ShopItem> items = shop.GetItems(mType);
+                ShopItem item = items[idx];
+                items.erase(items.begin() + idx);
+                shop.SetItems(mType, items);
+                mProfile->SetShop(shop);
                 mProfile->SetItem(mType, Item(item.GetName(), item.GetImg()));
+                mProfile->SetMoney(mProfile->GetMoney() - item.GetCost());
                 App::Get<GUI2D>()->BackToMain();
             });
             dlg->AddOption("Nope, I changed my mind").Set(App::Get<GUI2D>(), &GUI2D::Back);

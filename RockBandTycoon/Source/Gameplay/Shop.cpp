@@ -31,6 +31,24 @@ const std::vector<ShopItem>& Shop::GetItems(eBandSlot::Type type) const
     }
 }
 
+void Shop::SetItems(eBandSlot::Type type, std::vector<ShopItem>& items)
+{
+    switch (type)
+    {
+    case eBandSlot::Guitar:
+        mGuitars = items;
+        break;
+    case eBandSlot::Bass:
+        mBassGuitars = items;
+        break;
+    case eBandSlot::Drums:
+        mDrums = items;
+        break;
+    default:
+        LOG(ERROR) << "Unsupported type: " << type;
+    }
+}
+
 Shop Shop::Generate()
 {
     std::vector<ShopItem> guitars;

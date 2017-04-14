@@ -4,17 +4,18 @@
 #include "Components/Resources.hpp"
 #include "Utils/Delegate.hpp"
 #include "Gameplay/ShopItem.hpp"
+#include "Gameplay/GameProfile.hpp"
 
 class ShopItemWidget : public gui::Widget
 {
 public:
-    ShopItemWidget(const ShopItem& item);
+    ShopItemWidget(int idx, const ShopItem& item, GameProfile* profile);
 
     virtual void Draw(int32_t x, int32_t y) override;
 
     const ShopItem& GetItem() const { return mItem; }
 
-    vh::MultiDelegate<const ShopItem&> OnBuy;
+    vh::MultiDelegate<int> OnBuy;
 
 protected:
     virtual void OnFocusInternal();
@@ -25,6 +26,7 @@ protected:
     virtual SDL_Cursor* GetCursor();
 
 private:
+    int mIdx;
     ShopItem mItem;
     SDL_Surface* mItemImg;
 
