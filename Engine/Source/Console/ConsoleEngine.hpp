@@ -14,7 +14,7 @@ typedef void (*CmdHandler)(const std::vector<std::string>&);
 
 class ConsoleEngine : public Component
 {
-    COMPONENT_NAME(Console);
+    COMPONENT_NAME(ConsoleEngine);
 
 public:
     ConsoleEngine()

@@ -18,17 +18,24 @@ DEFINE_COMMAND(toggle_labels)
     }
 }
 
-void vh::Debug::TickInit(uint32_t delta)
+vh::Debug::Debug() : Component(eTickFrequency::RARE)
 {
     App::CheckRequired<Renderer>();
     App::CheckRequired<World>();
+}
 
+void vh::Debug::TickInit(uint32_t delta)
+{
     Renderer* renderer = App::Get<Renderer>();
+
+    // wait for renderer to start
+    if (!renderer->IsRunning()) return;
+
     renderer->AddObject(&mDebugVisual);
 
     mWorld = App::Get<World>();
 
-    mFont = TTF_OpenFont("Assets/Fonts/Roboto-regular.ttf", 16);
+    mFont = TTF_OpenFont("Assets/Fonts/Roboto-Regular.ttf", 16);
     CHECK(mFont) << "Could not open font";
 
     REGISTER_COMMAND(toggle_labels);

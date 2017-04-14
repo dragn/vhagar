@@ -64,7 +64,7 @@ public:
     void SpawnActorByClassName(const std::string& name)
     {
         Actor* a = mActorFactory.Create(name);
-        AddActor(a);
+        if (a != nullptr) AddActor(a);
     }
 
 private:

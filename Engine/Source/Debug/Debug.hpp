@@ -13,7 +13,7 @@ class Debug : public Component
     COMPONENT_NAME(Debug);
 
 public:
-    Debug() : Component(eTickFrequency::RARE) {};
+    Debug();
 
     /* Component interface */
     virtual void TickInit(uint32_t delta);
