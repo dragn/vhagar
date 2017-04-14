@@ -10,10 +10,6 @@
 
 using namespace gui;
 
-static const int32_t START_MONEY = 1000;
-static const int32_t START_REP = 0;
-static const int32_t START_POP = 0;
-
 NewGameView::NewGameView(int slot)
     : mSlot(slot)
 {
@@ -114,12 +110,8 @@ void NewGameView::OnStart()
 {
     CHECK(mBandNameFld);
 
-    GameProfile* profile = new GameProfile(mSlot, mBandNameFld->GetValue());
+    GameProfile* profile = GameProfile::NewProfile(mSlot, mBandNameFld->GetValue());
     profile->SetGuitarist(mBandMemberWdg->GetBandMember());
-    profile->SetShop(Shop::Generate());
-    profile->SetMoney(START_MONEY);
-    profile->SetPopularity(START_POP);
-    profile->SetReputation(START_REP);
 
     if (profile->Save())
     {
@@ -133,6 +125,8 @@ void NewGameView::OnStart()
         // TODO handle error gracefully
         LOG(FATAL) << "Error saving profile";
     }
+
+    delete profile;
 }
 
 std::string NewGameView::GetRandomName()

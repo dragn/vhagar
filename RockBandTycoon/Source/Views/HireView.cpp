@@ -9,22 +9,34 @@
 using namespace gui;
 using namespace vh;
 
-HireItem HireView::GenHireItem()
-{
-    Names* names = App::Get<Names>();
-    CHECK(names);
-
-    Resources* res = App::Get<Resources>();
-    CHECK(res);
-
-    return HireItem(names->GetRandomMaleName(), res->GetRandomLooks(mType));
-}
-
-void HireView::OnHire(HireItem item)
+void HireView::OnHire(int idx)
 {
     GUI2D* gui = App::Get<GUI2D>();
 
-    mProfile->AddMember(BandMember(mType, item.GetName().c_str(), Item(), item.GetLooks()));
+    std::vector<HireItem> hires = GetHires();
+    CHECK(idx >= 0 && idx < hires.size());
+    HireItem& item = hires[idx];
+
+    if (item.GetCost() <= mProfile->GetMoney())
+    {
+        mProfile->SetMoney(mProfile->GetMoney() - item.GetCost());
+        mProfile->AddMember(BandMember(mType, item.GetName().c_str(), Item(), item.GetLooks()));
+        hires.erase(hires.begin() + idx);
+
+        switch (mType)
+        {
+        case eBandSlot::Guitar:
+            mProfile->SetGuitarHires(hires);
+            break;
+        case eBandSlot::Bass:
+            mProfile->SetBassHires(hires);
+            break;
+        case eBandSlot::Drums:
+            mProfile->SetDrumHires(hires);
+            break;
+        }
+    }
+
     gui->Back();
 }
 
@@ -40,37 +52,47 @@ HireView::HireView(eBandSlot::Type type, GameProfile* profile)
     int32_t paperX = 52;
     int32_t paperY = 44;
 
-    HireWidget* mw1 = new HireWidget();
-    mw1->SetPos(paperX, paperY);
-    mw1->SetSize(192, 82);
-    mw1->SetBackground("Assets/Images/paper_1.png");
-    mw1->SetHireItem(GenHireItem());
-    mw1->OnHire.Add(this, &HireView::OnHire);
-    AddWidget(mw1);
+    const std::vector<HireItem>& hireItems = GetHires();
 
-    HireWidget* mw2 = new HireWidget();
-    mw2->SetPos(paperX + paperW, paperY);
-    mw2->SetSize(192, 82);
-    mw2->SetBackground("Assets/Images/paper_2.png");
-    mw2->SetHireItem(GenHireItem());
-    mw2->OnHire.Add(this, &HireView::OnHire);
-    AddWidget(mw2);
+    if (hireItems.size() > 0)
+    {
+        HireWidget* mw = new HireWidget(0, hireItems[0], profile);
+        mw->SetPos(paperX, paperY);
+        mw->SetSize(192, 82);
+        mw->SetBackground("Assets/Images/paper_1.png");
+        mw->OnHire.Add(this, &HireView::OnHire);
+        AddWidget(mw);
+    }
 
-    HireWidget* mw3 = new HireWidget();
-    mw3->SetPos(paperX, paperY + paperH);
-    mw3->SetSize(192, 82);
-    mw3->SetBackground("Assets/Images/paper_3.png");
-    mw3->SetHireItem(GenHireItem());
-    mw3->OnHire.Add(this, &HireView::OnHire);
-    AddWidget(mw3);
+    if (hireItems.size() > 1)
+    {
+        HireWidget* mw = new HireWidget(1, hireItems[1], profile);
+        mw->SetPos(paperX + paperW, paperY);
+        mw->SetSize(192, 82);
+        mw->SetBackground("Assets/Images/paper_2.png");
+        mw->OnHire.Add(this, &HireView::OnHire);
+        AddWidget(mw);
+    }
 
-    HireWidget* mw4 = new HireWidget();
-    mw4->SetPos(paperX + paperW, paperY + paperH);
-    mw4->SetSize(192, 82);
-    mw4->SetBackground("Assets/Images/paper_4.png");
-    mw4->SetHireItem(GenHireItem());
-    mw4->OnHire.Add(this, &HireView::OnHire);
-    AddWidget(mw4);
+    if (hireItems.size() > 2)
+    {
+        HireWidget* mw = new HireWidget(2, hireItems[2], profile);
+        mw->SetPos(paperX, paperY + paperH);
+        mw->SetSize(192, 82);
+        mw->SetBackground("Assets/Images/paper_3.png");
+        mw->OnHire.Add(this, &HireView::OnHire);
+        AddWidget(mw);
+    }
+
+    if (hireItems.size() > 3)
+    {
+        HireWidget* mw = new HireWidget(3, hireItems[3], profile);
+        mw->SetPos(paperX + paperW, paperY + paperH);
+        mw->SetSize(192, 82);
+        mw->SetBackground("Assets/Images/paper_4.png");
+        mw->OnHire.Add(this, &HireView::OnHire);
+        AddWidget(mw);
+    }
 
     ButtonWidget* backBtn = new ButtonWidget("< BACK");
     backBtn->SetSize(73, 28);
@@ -85,4 +107,18 @@ HireView::HireView(eBandSlot::Type type, GameProfile* profile)
         gui->Back();
     });
     AddWidget(backBtn);
+}
+
+const std::vector<HireItem>& HireView::GetHires()
+{
+    switch (mType)
+    {
+    default:
+    case eBandSlot::Guitar:
+        return mProfile->GetGuitarHires();
+    case eBandSlot::Bass:
+        return mProfile->GetBassHires();
+    case eBandSlot::Drums:
+        return mProfile->GetDrumHires();
+    }
 }

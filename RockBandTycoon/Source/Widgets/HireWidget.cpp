@@ -2,21 +2,31 @@
 
 #include "HireWidget.hpp"
 #include "Components/Resources.hpp"
+#include "Views/HireView.hpp"
 
 using namespace gui;
 using namespace vh;
 
-HireWidget::HireWidget()
+HireWidget::HireWidget(int idx, const HireItem& item, const GameProfile* profile)
+    : mIdx(idx), mHireItem(item)
 {
+    Resources* res = App::Get<Resources>();
     GUI2D* gui = App::Get<GUI2D>();
 
-    ButtonWidget* btn = new ButtonWidget("HIRE");
-    btn->SetSize(46, 24);
-    btn->SetPos(133, 44);
-    btn->SetFont(gui->GetHdr2Font());
-    btn->SetBackground(Colors::Orange);
-    btn->OnClick.Add([this] () { OnHire(mHireItem); });
-    AddChild(btn);
+    mHairImg = res->GetHairImg(item.GetLooks().GetHair());
+    mFaceImg = res->GetFaceImg(item.GetLooks().GetFace());
+    mBodyImg = res->GetBodyImg(item.GetLooks().GetBody());
+
+    if (profile->GetMoney() >= mHireItem.GetCost())
+    {
+        ButtonWidget* btn = new ButtonWidget("HIRE");
+        btn->SetSize(46, 24);
+        btn->SetPos(133, 44);
+        btn->SetFont(gui->GetHdr2Font());
+        btn->SetBackground(Colors::Orange);
+        btn->OnClick.Add([this] () { OnHire(mIdx); });
+        AddChild(btn);
+    }
 }
 
 void HireWidget::Draw(int32_t x, int32_t y)
@@ -45,17 +55,10 @@ void HireWidget::Draw(int32_t x, int32_t y)
     if (mHairImg != nullptr) render->DrawImage(mHairImg, &src, &dst);
 
     render->DrawText(gui->GetFont(), mHireItem.GetName().c_str(), vh::Color(0x00), x + 68, y + 16);
-}
 
-void HireWidget::SetHireItem(const HireItem& item)
-{
-    Resources* res = App::Get<Resources>();
-
-    mHairImg = res->GetHairImg(item.GetLooks().GetHair());
-    mFaceImg = res->GetFaceImg(item.GetLooks().GetFace());
-    mBodyImg = res->GetBodyImg(item.GetLooks().GetBody());
-
-    mHireItem = item;
+    std::string cost = "$";
+    cost.append(std::to_string(mHireItem.GetCost()));
+    render->DrawText(gui->GetFont(), cost.c_str(), vh::Color(0x00), x + 68, y + 36);
 }
 
 const HireItem& HireWidget::GetHireItem() const

@@ -2,21 +2,22 @@
 
 #include "GUI2D/Widget.hpp"
 #include "Gameplay/HireItem.hpp"
+#include "Gameplay/GameProfile.hpp"
 
 class HireWidget : public gui::Widget
 {
 public:
-    HireWidget();
+    HireWidget(int idx, const HireItem& item, const GameProfile* profile);
 
-    void SetHireItem(const HireItem& item);
     const HireItem& GetHireItem() const;
 
     virtual void Draw(int32_t x, int32_t y) override;
     virtual void UpdateSize() override {};
 
-    vh::MultiDelegate<HireItem> OnHire;
+    vh::MultiDelegate<int> OnHire;
 
 private:
+    int mIdx;
     HireItem mHireItem;
 
     SDL_Surface* mHairImg;

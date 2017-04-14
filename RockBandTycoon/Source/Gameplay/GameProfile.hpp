@@ -4,6 +4,7 @@
 #include "Utils/Delegate.hpp"
 #include "Utils/Property.hpp"
 #include "Gameplay/Shop.hpp"
+#include "HireItem.hpp"
 #include <array>
 
 class GameProfile
@@ -22,6 +23,10 @@ class GameProfile
 
     VH_PROPERTY_RW(Shop, Shop);
 
+    VH_PROPERTY_RW(std::vector<HireItem>, GuitarHires);
+    VH_PROPERTY_RW(std::vector<HireItem>, BassHires);
+    VH_PROPERTY_RW(std::vector<HireItem>, DrumHires);
+
 public:
     GameProfile(int slot, const char* name = "");
 
@@ -37,6 +42,8 @@ public:
     const BandMember& GetBandMember(eBandSlot::Type type) const;
 
     void SetItem(eBandSlot::Type type, const Item& item);
+
+    static GameProfile* NewProfile(int slot, const std::string& name);
 
 private:
     static const uint32_t VERSION_TAG;

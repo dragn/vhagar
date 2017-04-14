@@ -2,8 +2,16 @@
 
 #include "GameProfile.hpp"
 #include <fstream>
+#include "Components/Names.hpp"
+#include "Components/Resources.hpp"
 
-const uint32_t GameProfile::VERSION_TAG = 0x31bca0b6;
+using namespace vh;
+
+const uint32_t GameProfile::VERSION_TAG = 0x31bca0b8;
+
+static const int32_t START_MONEY = 50;
+static const float START_REP = 0.0f;
+static const float START_POP = 0.0f;
 
 GameProfile::GameProfile(int slot, const char* name /* = "" */)
     : mBandName(name)
@@ -85,6 +93,40 @@ void GameProfile::SetItem(eBandSlot::Type type, const Item& item)
 {
     BandMember mem = GetBandMember(type);
     AddMember(BandMember(type, mem.GetName().c_str(), item, mem.GetLooks()));
+}
+
+GameProfile* GameProfile::NewProfile(int slot, const std::string& name)
+{
+    GameProfile* profile = new GameProfile(slot, name.c_str());
+    profile->SetShop(Shop::Generate());
+    profile->SetMoney(START_MONEY);
+    profile->SetPopularity(START_POP);
+    profile->SetReputation(START_REP);
+
+    Names* names = App::Get<Names>();
+    Resources* res = App::Get<Resources>();
+    CHECK(names);
+    CHECK(res);
+
+    std::vector<HireItem> guitarHires;
+    guitarHires.push_back(HireItem(names->GetRandomMaleName(), res->GetRandomLooks(eBandSlot::Guitar), 0));
+    guitarHires.push_back(HireItem(names->GetRandomMaleName(), res->GetRandomLooks(eBandSlot::Guitar), 50));
+    guitarHires.push_back(HireItem(names->GetRandomMaleName(), res->GetRandomLooks(eBandSlot::Guitar), 100));
+    guitarHires.push_back(HireItem(names->GetRandomMaleName(), res->GetRandomLooks(eBandSlot::Guitar), 100));
+    profile->SetGuitarHires(guitarHires);
+
+    std::vector<HireItem> bassHires;
+    bassHires.push_back(HireItem(names->GetRandomMaleName(), res->GetRandomLooks(eBandSlot::Bass), 0));
+    bassHires.push_back(HireItem(names->GetRandomMaleName(), res->GetRandomLooks(eBandSlot::Bass), 50));
+    bassHires.push_back(HireItem(names->GetRandomMaleName(), res->GetRandomLooks(eBandSlot::Bass), 100));
+    profile->SetBassHires(bassHires);
+
+    std::vector<HireItem> drumHires;
+    drumHires.push_back(HireItem(names->GetRandomMaleName(), res->GetRandomLooks(eBandSlot::Drums), 0));
+    drumHires.push_back(HireItem(names->GetRandomMaleName(), res->GetRandomLooks(eBandSlot::Drums), 40));
+    profile->SetDrumHires(drumHires);
+
+    return profile;
 }
 
 /*
@@ -271,6 +313,30 @@ template<> void Read(std::istream& file, Shop& obj)
     obj = Shop(g, b, d);
 }
 
+/*
+    Write: HireItem
+*/
+template<> void Write(std::ostream& file, const HireItem& obj)
+{
+    Write(file, obj.GetName());
+    Write(file, obj.GetLooks());
+    Write(file, obj.GetCost());
+}
+
+/*
+    Read: HireItem
+*/
+template<> void Read(std::istream& file, HireItem& obj)
+{
+    std::string name;
+    Looks looks;
+    int32_t cost;
+    Read(file, name);
+    Read(file, looks);
+    Read(file, cost);
+    obj = HireItem(name, looks, cost);
+}
+
 bool GameProfile::Save() const
 {
     std::string fullPath;
@@ -298,6 +364,10 @@ bool GameProfile::Save() const
     Write(file, mDrummer);
 
     Write(file, mShop);
+
+    Write(file, mGuitarHires);
+    Write(file, mBassHires);
+    Write(file, mDrumHires);
 
     file.close();
 
@@ -337,6 +407,10 @@ bool GameProfile::Load()
     Read(file, mDrummer); CHECK(mDrummer.GetType() == eBandSlot::Drums);
 
     Read(file, mShop);
+
+    Read(file, mGuitarHires);
+    Read(file, mBassHires);
+    Read(file, mDrumHires);
 
     file.close();
 
