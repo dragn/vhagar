@@ -7,9 +7,9 @@
 
 using namespace vh;
 
-const uint32_t GameProfile::VERSION_TAG = 0x31bca0b9;
+const uint32_t GameProfile::VERSION_TAG = 0x31bca0ba;
 
-static const int32_t START_MONEY = 50;
+static const int32_t START_MONEY = 1000;
 static const float START_REP = 0.0f;
 static const float START_POP = 0.0f;
 
@@ -127,6 +127,19 @@ GameProfile* GameProfile::NewProfile(int slot, const std::string& name)
     profile->SetDrumHires(drumHires);
 
     return profile;
+}
+
+bool GameProfile::WithdrawMoney(int32_t amount)
+{
+    if (amount < mMoney)
+    {
+        SetMoney(mMoney - amount);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 /*
@@ -274,6 +287,9 @@ template<> void Write(std::ostream& file, const ShopItem& obj)
     Write(file, obj.GetName());
     Write(file, obj.GetImg());
     Write(file, obj.GetCost());
+    Write(file, obj.GetReputation());
+    Write(file, obj.GetPopularity());
+    Write(file, obj.GetQuality());
 }
 
 /*
@@ -288,7 +304,11 @@ template<> void Read(std::istream& file, ShopItem& obj)
     Read(file, img);
     int32_t cost;
     Read(file, cost);
-    obj = ShopItem(type, name, img, cost);
+    float rep, pop, qual;
+    Read(file, rep);
+    Read(file, pop);
+    Read(file, qual);
+    obj = ShopItem(type, name, img, cost, rep, pop, qual);
 }
 
 /*

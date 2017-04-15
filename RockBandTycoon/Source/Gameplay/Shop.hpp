@@ -18,4 +18,11 @@ public:
     void SetItems(eBandSlot::Type type, std::vector<ShopItem>& items);
 
     static Shop Generate();
+
+    /*
+        Transfers an item from shop to profile,
+        withdraws money, applies modifiers, updates the shop.
+        Returns false on error (e.g. not enough money)
+    */
+    static bool BuyItem(GameProfile* profile, eBandSlot::Type type, int idx);
 };

@@ -121,16 +121,9 @@ void ShopView::DrawItems()
             text.append(" for $");
             text.append(std::to_string(item.GetCost()));
             DialogView* dlg = new DialogView(text);
-            dlg->AddOption("Sound good!").Set([=]
+            dlg->AddOption("Sounds good!").Set([=]
             {
-                Shop shop = mProfile->GetShop();
-                std::vector<ShopItem> items = shop.GetItems(mType);
-                ShopItem item = items[idx];
-                items.erase(items.begin() + idx);
-                shop.SetItems(mType, items);
-                mProfile->SetShop(shop);
-                mProfile->SetItem(mType, Item(item.GetName(), item.GetImg()));
-                mProfile->SetMoney(mProfile->GetMoney() - item.GetCost());
+                Shop::BuyItem(mProfile, mType, idx);
                 App::Get<GUI2D>()->BackToMain();
             });
             dlg->AddOption("Nope, I changed my mind").Set(App::Get<GUI2D>(), &GUI2D::Back);

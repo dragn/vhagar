@@ -45,6 +45,12 @@ public:
 
     static GameProfile* NewProfile(int slot, const std::string& name);
 
+    /*
+        Withdraws a specified amount of money from the profile,
+        returns false on error (e.g. not enough money on balance)
+    */
+    bool WithdrawMoney(int32_t amount);
+
 private:
     static const uint32_t VERSION_TAG;
 

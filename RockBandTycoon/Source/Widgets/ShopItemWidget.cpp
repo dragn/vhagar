@@ -2,6 +2,7 @@
 
 #include "ShopItemWidget.hpp"
 #include "Components/Resources.hpp"
+#include "Widgets/StatWidget.hpp"
 
 using namespace vh;
 using namespace gui;
@@ -36,6 +37,14 @@ ShopItemWidget::ShopItemWidget(int idx, const ShopItem& item, GameProfile* profi
     mBuyBtn->SetVisible(false);
     if (enoughMoney) mBuyBtn->OnClick.Add([&] () { OnBuy(mIdx); });
     AddChild(mBuyBtn);
+
+    RepStatWidget* repWdg = new RepStatWidget(item.GetReputation());
+    repWdg->SetPos(80, 46);
+    AddChild(repWdg);
+
+    PopStatWidget* popWdg = new PopStatWidget(item.GetPopularity());
+    popWdg->SetPos(140, 46);
+    AddChild(popWdg);
 }
 
 void ShopItemWidget::Draw(int32_t x, int32_t y)
