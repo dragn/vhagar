@@ -59,9 +59,6 @@ void GUI2D::TickRun(uint32_t delta)
         for (View* view : mModalViewStack) SafeDelete(view);
         mModalViewStack.clear();
 
-        // remove requested next modal view
-        SafeDelete(mNextModalView);
-
         // stretch root widget to all available space
         Renderer2D* renderer = App::Get<Renderer2D>();
         CHECK(renderer);
@@ -70,6 +67,8 @@ void GUI2D::TickRun(uint32_t delta)
         {
             mView->mRootWidget->SetSize(renderer->GetWidth(), renderer->GetHeight());
         }
+
+        return;
     }
 
     if (mNextModalView != nullptr)
@@ -90,6 +89,8 @@ void GUI2D::TickRun(uint32_t delta)
         }
 
         mNextModalView = nullptr;
+
+        return;
     }
 
     if (mGoBack)
@@ -109,6 +110,8 @@ void GUI2D::TickRun(uint32_t delta)
         {
             mModalViewStack.back()->mRootWidget->SetDirty();
         }
+
+        return;
     }
 
     if (mGoBackToMain)
@@ -121,6 +124,8 @@ void GUI2D::TickRun(uint32_t delta)
 
         // set dirty flag to main view
         if (mView && mView->mRootWidget) mView->mRootWidget->SetDirty();
+
+        return;
     }
 }
 
