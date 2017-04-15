@@ -5,6 +5,7 @@
 #include "Widgets/BandMemberWidget.hpp"
 #include "HireView.hpp"
 #include "ShopView.hpp"
+#include "Views/DialogView.hpp"
 
 using namespace vh;
 using namespace gui;
@@ -58,6 +59,13 @@ GameView::GameView(int slot)
         gui->SetModalView(new ShopView(mProfile));
     });
     AddWidget(shopBtn);
+
+    std::string dayStr = "DAY ";
+    dayStr.append(std::to_string(mProfile->GetDay()));
+    dayStr.append("\n<Message of the day>");
+    DialogView* dialog = new DialogView(dayStr);
+    dialog->AddOption("Proceed").Set(gui, &GUI2D::BackToMain);
+    gui->SetModalView(dialog);
 }
 
 GameView::~GameView()
