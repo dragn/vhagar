@@ -7,7 +7,7 @@
 
 using namespace vh;
 
-const uint32_t GameProfile::VERSION_TAG = 0x31bca0bb;
+const uint32_t GameProfile::VERSION_TAG = 0x31bca0bc;
 
 static const int32_t START_MONEY = 1000;
 static const float START_REP = 0.0f;
@@ -16,7 +16,7 @@ static const float START_POP = 0.0f;
 GameProfile::GameProfile(int slot, const char* name /* = "" */)
     : mBandName(name)
     , mMoney(0)
-    , mDay(1)
+    , mDay(0)
     , mSkill(0)
     , mReputation(0)
     , mPopularity(0)
@@ -126,6 +126,8 @@ GameProfile* GameProfile::NewProfile(int slot, const std::string& name)
     drumHires.push_back(HireItem(names->GetRandomMaleName(), res->GetRandomLooks(eBandSlot::Drums), 40, -20.0f, 0.0f));
     profile->SetDrumHires(drumHires);
 
+    profile->StartNextDay(-1);
+
     return profile;
 }
 
@@ -140,6 +142,31 @@ bool GameProfile::WithdrawMoney(int32_t amount)
     {
         return false;
     }
+}
+
+void GameProfile::StartNextDay(int eventId)
+{
+    if (eventId >= 0 && eventId < mEvents.size())
+    {
+        const EventItem& event = mEvents[eventId];
+        SetMoney(mMoney + event.GetMoney());
+        SetReputation(mReputation + event.GetReputation());
+        SetPopularity(mPopularity + event.GetPopularity());
+        SetSkill(mSkill + event.GetSkill());
+    }
+    SetEvents(GenerateEvents());
+    SetDay(mDay + 1);
+
+    // TODO: update shop and hires
+    // TODO: check for game over condition
+}
+
+std::vector<EventItem> GameProfile::GenerateEvents()
+{
+    std::vector<EventItem> events;
+    events.push_back(EventItem("Rehearsal", "No concerts for today, let's just focus on practice",
+        -10, 0.0f, -5.0f, 20.0f));
+    return events;
 }
 
 /*
@@ -362,6 +389,36 @@ template<> void Read(std::istream& file, HireItem& obj)
     obj = HireItem(name, looks, cost, rep, pop);
 }
 
+/*
+    Write: EventItem
+*/
+template<> void Write(std::ostream& file, const EventItem& obj)
+{
+    Write(file, obj.GetName());
+    Write(file, obj.GetDescription());
+    Write(file, obj.GetMoney());
+    Write(file, obj.GetReputation());
+    Write(file, obj.GetPopularity());
+    Write(file, obj.GetSkill());
+}
+
+/*
+    Read: EventItem
+*/
+template<> void Read(std::istream& file, EventItem& obj)
+{
+    std::string name, description;
+    Read(file, name);
+    Read(file, description);
+    int32_t money;
+    Read(file, money);
+    float rep, pop, skill;
+    Read(file, rep);
+    Read(file, pop);
+    Read(file, skill);
+    obj = EventItem(name, description, money, rep, pop, skill);
+}
+
 bool GameProfile::Save() const
 {
     std::string fullPath;
@@ -394,6 +451,8 @@ bool GameProfile::Save() const
     Write(file, mGuitarHires);
     Write(file, mBassHires);
     Write(file, mDrumHires);
+
+    Write(file, mEvents);
 
     file.close();
 
@@ -438,6 +497,8 @@ bool GameProfile::Load()
     Read(file, mGuitarHires);
     Read(file, mBassHires);
     Read(file, mDrumHires);
+
+    Read(file, mEvents);
 
     file.close();
 

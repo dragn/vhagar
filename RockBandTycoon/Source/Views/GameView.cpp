@@ -6,6 +6,7 @@
 #include "HireView.hpp"
 #include "ShopView.hpp"
 #include "Views/DialogView.hpp"
+#include "EventsView.hpp"
 
 using namespace vh;
 using namespace gui;
@@ -48,7 +49,7 @@ GameView::GameView(int slot)
 
     ButtonWidget* shopBtn = new ButtonWidget("SHOP");
     shopBtn->SetSize(73, 28);
-    shopBtn->SetPos(ePos::Center, 222, eAnchor::TopCenter);
+    shopBtn->SetPos(200, 222, eAnchor::TopCenter);
     shopBtn->SetBackground(vh::Color(0x00, 0x00));
     shopBtn->SetBackground("Assets/Images/button.png");
     shopBtn->SetTextColor(vh::Color(0x00));
@@ -59,6 +60,21 @@ GameView::GameView(int slot)
         gui->SetModalView(new ShopView(mProfile));
     });
     AddWidget(shopBtn);
+
+    ButtonWidget* eventsBtn = new ButtonWidget("EVENTS");
+    eventsBtn->SetSize(73, 28);
+    eventsBtn->SetPos(280, 222, eAnchor::TopCenter);
+    eventsBtn->SetBackground(vh::Color(0x00, 0x00));
+    eventsBtn->SetBackground("Assets/Images/button.png");
+    eventsBtn->SetTextColor(vh::Color(0x00));
+    eventsBtn->SetFont(gui->GetHdr2Font());
+    eventsBtn->OnClick.Add([this] ()
+    {
+        GUI2D* gui = App::Get<GUI2D>();
+        gui->SetModalView(new EventsView(mProfile));
+    });
+    AddWidget(eventsBtn);
+
 
     std::string dayStr = "DAY ";
     dayStr.append(std::to_string(mProfile->GetDay()));

@@ -18,12 +18,12 @@ public:
     vh::MultiDelegate<int> OnBuy;
 
 protected:
-    virtual void OnFocusInternal();
-    virtual void OnBlurInternal();
+    virtual void OnFocusInternal() override;
+    virtual void OnBlurInternal() override;
 
     virtual void OnClickInternal(int32_t x, int32_t y) override;
     virtual bool IsFocusable() const override { return true; }
-    virtual SDL_Cursor* GetCursor();
+    virtual SDL_Cursor* GetCursor() override;
 
 private:
     int mIdx;
