@@ -28,12 +28,10 @@ public:
 protected:
     /* Destroy all widgets */
     void Destroy();
-
-private:
     virtual void Render();
 
+private:
     Widget* mRootWidget;
-
     std::string mName;
 };
 
