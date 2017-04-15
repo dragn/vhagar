@@ -3,6 +3,7 @@
 #include "HireWidget.hpp"
 #include "Components/Resources.hpp"
 #include "Views/HireView.hpp"
+#include "Widgets/StatWidget.hpp"
 
 using namespace gui;
 using namespace vh;
@@ -27,6 +28,14 @@ HireWidget::HireWidget(int idx, const HireItem& item, const GameProfile* profile
         btn->OnClick.Add([this] () { OnHire(mIdx); });
         AddChild(btn);
     }
+
+    RepStatWidget* repWdg = new RepStatWidget(item.GetReputation());
+    repWdg->SetPos(66, 42);
+    AddChild(repWdg);
+
+    PopStatWidget* popWdg = new PopStatWidget(item.GetPopularity());
+    popWdg->SetPos(66, 59);
+    AddChild(popWdg);
 }
 
 void HireWidget::Draw(int32_t x, int32_t y)
@@ -58,7 +67,7 @@ void HireWidget::Draw(int32_t x, int32_t y)
 
     std::string cost = "$";
     cost.append(std::to_string(mHireItem.GetCost()));
-    render->DrawText(gui->GetFont(), cost.c_str(), vh::Color(0x00), x + 68, y + 36);
+    render->DrawText(gui->GetFont(), cost.c_str(), vh::Color(0x00), x + 68, y + 30);
 }
 
 const HireItem& HireWidget::GetHireItem() const
