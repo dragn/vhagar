@@ -4,10 +4,11 @@
 #include <fstream>
 #include "Components/Names.hpp"
 #include "Components/Resources.hpp"
+#include "Views/DialogView.hpp"
 
 using namespace vh;
 
-const uint32_t GameProfile::VERSION_TAG = 0x31bca0bc;
+const uint32_t GameProfile::VERSION_TAG = 0x31bca0bd;
 
 static const int32_t START_MONEY = 1000;
 static const float START_REP = 0.0f;
@@ -22,6 +23,7 @@ GameProfile::GameProfile(int slot, const char* name /* = "" */)
     , mPopularity(0)
     , mQuality(0)
     , mSlot(slot)
+    , mShowMOTG(false)
 {
     mGuitarist = BandMember(eBandSlot::Guitar, "", Item(), Looks());
     mBassist = BandMember(eBandSlot::Bass, "", Item(), Looks());
@@ -156,6 +158,8 @@ void GameProfile::StartNextDay(int eventId)
     }
     SetEvents(GenerateEvents());
     SetDay(mDay + 1);
+
+    mShowMOTG = true;
 
     // TODO: update shop and hires
     // TODO: check for game over condition
@@ -453,6 +457,7 @@ bool GameProfile::Save() const
     Write(file, mDrumHires);
 
     Write(file, mEvents);
+    Write(file, mShowMOTG);
 
     file.close();
 
@@ -499,6 +504,7 @@ bool GameProfile::Load()
     Read(file, mDrumHires);
 
     Read(file, mEvents);
+    Read(file, mShowMOTG);
 
     file.close();
 

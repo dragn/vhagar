@@ -74,14 +74,6 @@ GameView::GameView(int slot)
         gui->SetModalView(new EventsView(mProfile));
     });
     AddWidget(eventsBtn);
-
-
-    std::string dayStr = "DAY ";
-    dayStr.append(std::to_string(mProfile->GetDay()));
-    dayStr.append("\n<Message of the day>");
-    DialogView* dialog = new DialogView(dayStr);
-    dialog->AddOption("Proceed").Set(gui, &GUI2D::BackToMain);
-    gui->SetModalView(dialog);
 }
 
 GameView::~GameView()
@@ -258,4 +250,25 @@ void GameView::HandleMemberChange(const BandMember& member)
 
         mMemberWidgets[type] = memberWdg;
     }
+}
+
+void GameView::Render()
+{
+    // Check if we need to show MOTG
+    if (mProfile->GetShowMOTG())
+    {
+        std::string dayStr = "DAY ";
+        dayStr.append(std::to_string(mProfile->GetDay()));
+        dayStr.append("\n<Message of the day>");
+        DialogView* dialog = new DialogView(dayStr);
+        dialog->AddOption("Proceed").Set([this] ()
+        {
+            App::Get<gui::GUI2D>()->BackToMain();
+        });
+        App::Get<gui::GUI2D>()->SetModalView(dialog);
+        mProfile->SetShowMOTG(false);
+    }
+
+    // Parent render
+    View::Render();
 }

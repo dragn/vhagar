@@ -11,6 +11,8 @@ public:
     EventItemWidget(int idx, GameProfile* profile, const EventItem& item);
 
     virtual void Draw(int32_t x, int32_t y) override;
+    
+    const EventItem& GetItem() const { return mItem; }
 
 protected:
     virtual bool IsFocusable() const override { return true; }

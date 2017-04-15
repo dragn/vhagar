@@ -29,6 +29,7 @@ class GameProfile
     VH_PROPERTY_RW(std::vector<HireItem>, DrumHires);
 
     VH_PROPERTY_RW(std::vector<EventItem>, Events);
+    VH_PROPERTY_RW(bool, ShowMOTG);
 
 public:
     GameProfile(int slot, const char* name = "");

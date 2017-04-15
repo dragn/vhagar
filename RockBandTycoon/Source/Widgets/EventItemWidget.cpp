@@ -1,5 +1,6 @@
 #include "PCH.hpp"
 #include "EventItemWidget.hpp"
+#include "StatWidget.hpp"
 
 using namespace vh;
 using namespace gui;
@@ -18,6 +19,14 @@ EventItemWidget::EventItemWidget(int idx, GameProfile* profile, const EventItem&
     {
         mFont = gui->GetHdr2Font();
     }
+
+    RepStatWidget* repWdg = new RepStatWidget(item.GetReputation());
+    repWdg->SetPos(10, 30);
+    AddChild(repWdg);
+
+    PopStatWidget* popWdg = new PopStatWidget(item.GetPopularity());
+    popWdg->SetPos(10, 50);
+    AddChild(popWdg);
 }
 
 void EventItemWidget::Draw(int32_t x, int32_t y)

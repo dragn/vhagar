@@ -14,6 +14,8 @@ public:
 
     void HandleMemberChange(const BandMember& member);
 
+    virtual void Render() override;
+
 private:
     GameProfile* mProfile;
 
