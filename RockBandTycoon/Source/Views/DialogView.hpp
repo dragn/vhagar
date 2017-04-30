@@ -12,6 +12,7 @@ class DialogView : public gui::View
     {
         std::string text;
         vh::Delegate OnSelect;
+        bool isBack;
     };
 
 public:

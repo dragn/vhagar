@@ -16,6 +16,9 @@ extern const char* APP_NAME;
 #include <string>
 #include <fstream>
 #include <random>
+#include <unordered_set>
+#include <chrono>
+#include <condition_variable>
 
 namespace Colors
 {

@@ -7,16 +7,16 @@
 #include "ShopView.hpp"
 #include "Views/DialogView.hpp"
 #include "EventsView.hpp"
+#include "Gameplay/GameScript.hpp"
 
 using namespace vh;
 using namespace gui;
 
 GameView::GameView(int slot)
     : View("GameView")
+    , mScriptThreadExit(false)
 {
     GUI2D* gui = App::Get<GUI2D>();
-
-    SetBackground("Assets/Images/garage.png");
 
     mProfile = new GameProfile(slot);
     if (!mProfile->Load())
@@ -74,6 +74,8 @@ GameView::GameView(int slot)
         gui->SetModalView(new EventsView(mProfile));
     });
     AddWidget(eventsBtn);
+
+    mScriptThread = std::thread(&GameScript, &mProfile);
 }
 
 GameView::~GameView()
@@ -87,8 +89,10 @@ GameView::~GameView()
     /* Destroy view to clear out widget bindings before releasing GameProfile */
     Destroy();
 
-    delete mProfile;
-    mProfile = nullptr;
+    SafeDelete(mProfile);
+
+    // script will exit when profile is destroyed
+    if (mScriptThread.joinable()) mScriptThread.join();
 }
 
 void GameView::CreateToolbar()
@@ -250,25 +254,4 @@ void GameView::HandleMemberChange(const BandMember& member)
 
         mMemberWidgets[type] = memberWdg;
     }
-}
-
-void GameView::Render()
-{
-    // Check if we need to show MOTG
-    if (mProfile->GetShowMOTG())
-    {
-        std::string dayStr = "DAY ";
-        dayStr.append(std::to_string(mProfile->GetDay()));
-        dayStr.append("\n<Message of the day>");
-        DialogView* dialog = new DialogView(dayStr);
-        dialog->AddOption("Proceed").Set([this] ()
-        {
-            App::Get<gui::GUI2D>()->BackToMain();
-        });
-        App::Get<gui::GUI2D>()->SetModalView(dialog);
-        mProfile->SetShowMOTG(false);
-    }
-
-    // Parent render
-    View::Render();
 }

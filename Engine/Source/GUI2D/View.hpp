@@ -23,6 +23,8 @@ public:
     void SetBackground(const vh::Color& color);
     void SetBackground(const char* imagePath);
 
+    vh::MultiDelegate<> OnDestroy;
+
     const char* GetName() const { return mName.c_str(); }
 
 protected:

@@ -17,6 +17,10 @@ using namespace gui;
 int main(int argc, char ** argv) {
     vh::App app;
 
+    // start resources earle, we want to release them last, as they
+    // are used in views and widgets
+    app.AddComponent<Resources>();
+
     Renderer2DOptions ro;
     ro.screenWidth = 960;
     ro.screenHeight = 540;
@@ -46,7 +50,6 @@ int main(int argc, char ** argv) {
     app.AddComponent<DebugCommands>();
 
     app.AddComponent<Names>();
-    app.AddComponent<Resources>();
 
     app.Run();
 

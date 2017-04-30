@@ -68,6 +68,13 @@ void GUI2D::TickRun(uint32_t delta)
             mView->mRootWidget->SetSize(renderer->GetWidth(), renderer->GetHeight());
         }
 
+        mView->OnDestroy.Add([this]
+        {
+            // clear modal view stack on view destruction
+            for (View* view : mModalViewStack) SafeDelete(view);
+            mModalViewStack.clear();
+        });
+
         return;
     }
 
@@ -256,6 +263,12 @@ void GUI2D::Back()
 void GUI2D::BackToMain()
 {
     mGoBackToMain = true;
+}
+
+void GUI2D::CalcTextSize(const char* text, int32_t& outWidth, int32_t& outHeight)
+{
+    Renderer2D* renderer = App::Get<Renderer2D>();
+    renderer->CalcTextSize(mFont, text, outWidth, outHeight);
 }
 
 }

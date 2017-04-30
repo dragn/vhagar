@@ -29,7 +29,6 @@ class GameProfile
     VH_PROPERTY_RW(std::vector<HireItem>, DrumHires);
 
     VH_PROPERTY_RW(std::vector<EventItem>, Events);
-    VH_PROPERTY_RW(bool, ShowMOTG);
 
 public:
     GameProfile(int slot, const char* name = "");
@@ -65,8 +64,13 @@ public:
 
     std::vector<EventItem> GenerateEvents();
 
+    bool GetScriptState(const char* tag);
+    void SetScriptState(const char* tag, bool val);
+
 private:
     static const uint32_t VERSION_TAG;
 
     int mSlot;
+
+    std::unordered_set<std::string> mScriptState;
 };

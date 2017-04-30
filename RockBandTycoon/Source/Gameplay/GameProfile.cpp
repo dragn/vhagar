@@ -5,10 +5,11 @@
 #include "Components/Names.hpp"
 #include "Components/Resources.hpp"
 #include "Views/DialogView.hpp"
+#include "ScriptStates.hpp"
 
 using namespace vh;
 
-const uint32_t GameProfile::VERSION_TAG = 0x31bca0bd;
+const uint32_t GameProfile::VERSION_TAG = 0x31bca0bc;
 
 static const int32_t START_MONEY = 1000;
 static const float START_REP = 0.0f;
@@ -23,7 +24,6 @@ GameProfile::GameProfile(int slot, const char* name /* = "" */)
     , mPopularity(0)
     , mQuality(0)
     , mSlot(slot)
-    , mShowMOTG(false)
 {
     mGuitarist = BandMember(eBandSlot::Guitar, "", Item(), Looks());
     mBassist = BandMember(eBandSlot::Bass, "", Item(), Looks());
@@ -159,8 +159,7 @@ void GameProfile::StartNextDay(int eventId)
     SetEvents(GenerateEvents());
     SetDay(mDay + 1);
 
-    mShowMOTG = true;
-
+    mScriptState.insert(ScriptStates::MOTG);
     // TODO: update shop and hires
     // TODO: check for game over condition
 }
@@ -171,6 +170,23 @@ std::vector<EventItem> GameProfile::GenerateEvents()
     events.push_back(EventItem("Rehearsal", "No concerts for today, let's just focus on practice",
         -10, 0.0f, -5.0f, 20.0f));
     return events;
+}
+
+bool GameProfile::GetScriptState(const char* tag)
+{
+    return mScriptState.find(tag) != mScriptState.end();
+}
+
+void GameProfile::SetScriptState(const char* tag, bool val)
+{
+    if (val)
+    {
+        mScriptState.insert(tag);
+    }
+    else
+    {
+        mScriptState.erase(mScriptState.find(tag));
+    }
 }
 
 /*
@@ -236,6 +252,34 @@ template<> void Read(std::istream& file, std::string& outStr)
     char* buf = new char[sz];
     file.read(buf, sz);
     outStr.assign(buf, sz);
+}
+
+/*
+    Write: std::unordered_set
+*/
+template<typename T> void Write(std::ostream& file, const std::unordered_set<T>& set)
+{
+    Write(file, set.size());
+    for (auto it = set.begin(); it != set.end(); ++it)
+    {
+        Write(file, *it);
+    }
+}
+
+/*
+    Read: std::unordered_set
+*/
+template<typename T> void Read(std::istream& file, std::unordered_set<T>& set)
+{
+    set.clear();
+    size_t size;
+    Read(file, size);
+    for (size_t idx = 0; idx < size; ++idx)
+    {
+        T entry;
+        Read(file, entry);
+        set.insert(entry);
+    }
 }
 
 /*
@@ -457,7 +501,7 @@ bool GameProfile::Save() const
     Write(file, mDrumHires);
 
     Write(file, mEvents);
-    Write(file, mShowMOTG);
+    Write(file, mScriptState);
 
     file.close();
 
@@ -504,7 +548,7 @@ bool GameProfile::Load()
     Read(file, mDrumHires);
 
     Read(file, mEvents);
-    Read(file, mShowMOTG);
+    Read(file, mScriptState);
 
     file.close();
 

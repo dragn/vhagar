@@ -29,7 +29,10 @@ void DialogView::AddOptionWidget(uint32_t idx, Option& option)
     ButtonWidget* btn = new ButtonWidget(option.text.c_str());
     btn->OnClick.Add(this, &DialogView::OnOptionSelect, idx);
     btn->SetPos(MARGIN, h + MARGIN * 2 + 20 * idx);
-    btn->SetSize(200 - MARGIN * 2, 18);
+
+    int32_t textW, textH;
+    App::Get<GUI2D>()->CalcTextSize(option.text.c_str(), textW, textH);
+    btn->SetSize(textW, 18);
     btn->SetTextColor(Colors::Blue);
     btn->SetBackground(Colors::Transparent);
     mPanelWdg->AddChild(btn);
@@ -41,13 +44,20 @@ void DialogView::OnOptionSelect(uint32_t idx)
     {
         CHECK(mOptions[idx]);
         mOptions[idx]->OnSelect();
+        if (mOptions[idx]->isBack)
+        {
+            vh::App::Get<gui::GUI2D>()->Back();
+        }
     }
 }
 
 vh::Delegate& DialogView::AddOption(const std::string& text)
 {
     mOptions.push_back(new Option());
-    mOptions.back()->text = text;
+    mOptions.back()->isBack = true;
+    mOptions.back()->text = std::to_string(mOptions.size());
+    mOptions.back()->text.append(". ");
+    mOptions.back()->text.append(text);
     AddOptionWidget(mOptions.size() - 1, *mOptions.back());
     return mOptions.back()->OnSelect;
 }

@@ -66,6 +66,13 @@ public:
     SDL_Cursor* GetHandCursor();
     SDL_Cursor* GetBeamCursor();
 
+    template<typename T, typename... Args> T* MakeModal(Args... args)
+    {
+        T* view = new T(args...);
+        SetModalView(view);
+        return view;
+    }
+
 private:
     View* mView;
     std::list<View*> mModalViewStack;
