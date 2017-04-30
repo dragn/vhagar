@@ -10,8 +10,8 @@ const static int32_t MARGIN = 8;
 DialogView::DialogView(const std::string& text)
 {
     mPanelWdg = new PanelWidget();
-    mPanelWdg->SetSize(200, 100);
-    mPanelWdg->SetPos(ePos::Center, ePos::Center, eAnchor::CenterCenter);
+    mPanelWdg->SetSize(460, 90);
+    mPanelWdg->SetPos(ePos::Center, 170, eAnchor::TopCenter);
     AddWidget(mPanelWdg);
 
     mTextWdg = new TextWidget(text.c_str());
