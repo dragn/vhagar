@@ -60,22 +60,24 @@ void vh::Renderer2D::TickInit(uint32_t delta)
         Close();
         return;
     }
-
-#if SDL_VERSION_ATLEAST(2, 0, 5)
-    SDL_RenderSetIntegerScale(mRenderer, SDL_TRUE);
-#endif // SDL_VERSION_ATLEAST(2, 0, 5)
-
-    SDL_RenderSetScale(mRenderer, mOptions.scale, mOptions.scale);
     SDL_SetRenderDrawBlendMode(mRenderer, SDL_BLENDMODE_BLEND);
 
+    mFrameBuf = SDL_CreateTexture(mRenderer, SDL_PIXELFORMAT_RGBA8888,
+        SDL_TEXTUREACCESS_TARGET, mOptions.screenWidth, mOptions.screenHeight);
+
+    if (mFrameBuf == nullptr)
+    {
+        LOG(FATAL) << "Could not create frame buffer texture: " << SDL_GetError();
+        Close();
+        return;
+    }
+
+    mDstRect.x = 0;
+    mDstRect.y = 0;
+    mDstRect.w = mOptions.screenWidth * mOptions.scale;
+    mDstRect.h = mOptions.screenHeight * mOptions.scale;
+
     FinishInit();
-}
-
-void vh::Renderer2D::TickRun(uint32_t delta)
-{
-    CHECK(mRenderer);
-
-    SDL_RenderPresent(mRenderer);
 }
 
 void vh::Renderer2D::TickClose(uint32_t delta)
@@ -86,6 +88,21 @@ void vh::Renderer2D::TickClose(uint32_t delta)
     SDL_Quit();
 
     FinishClose();
+}
+
+void vh::Renderer2D::StartFrame()
+{
+    SDL_SetRenderTarget(mRenderer, mFrameBuf);
+}
+
+void vh::Renderer2D::EndFrame()
+{
+    SDL_SetRenderTarget(mRenderer, nullptr);
+
+    SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 0xff);
+    SDL_RenderClear(mRenderer);
+    SDL_RenderCopy(mRenderer, mFrameBuf, nullptr, &mDstRect);
+    SDL_RenderPresent(mRenderer);
 }
 
 void vh::Renderer2D::DrawRect(int32_t x, int32_t y, int32_t width, int32_t height, Color color)

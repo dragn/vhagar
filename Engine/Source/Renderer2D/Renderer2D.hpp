@@ -40,9 +40,11 @@ public:
     Renderer2D(const Renderer2DOptions& options);
 
     /* vh::Component interface */
-    virtual void TickInit(uint32_t delta);
-    virtual void TickRun(uint32_t delta);
-    virtual void TickClose(uint32_t delta);
+    virtual void TickInit(uint32_t delta) override;
+    virtual void TickClose(uint32_t delta) override;
+
+    virtual void StartFrame() override;
+    virtual void EndFrame() override;
 
     uint32_t GetWidth() const
     {
@@ -70,6 +72,8 @@ private:
     Renderer2DOptions mOptions;
     SDL_Window *mWindow;
     SDL_Renderer* mRenderer;
+    SDL_Texture* mFrameBuf;
+    SDL_Rect mDstRect;
 };
 
 }

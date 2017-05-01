@@ -71,6 +71,12 @@ void App::DoRun() {
         }
     }
 
+    // -- Dispatch StartFrame events
+    std::for_each(mComponents.begin(), mComponents.end(), [] (Component* comp)
+    {
+        if (comp->GetState() == eCompState::RUN) comp->StartFrame();
+    });
+
     // -- Tick all components
     std::list<Component*>::iterator iter = mComponents.begin();
     while (iter != mComponents.end())
@@ -90,6 +96,12 @@ void App::DoRun() {
             iter++;
         }
     }
+
+    // -- Dispatch EndFrame events
+    std::for_each(mComponents.begin(), mComponents.end(), [] (Component* comp)
+    {
+        if (comp->GetState() == eCompState::RUN) comp->EndFrame();
+    });
 }
 
 void App::Close()

@@ -36,6 +36,8 @@ public: \
 
 class Component
 {
+    friend class App;
+
 public:
     Component(int32_t tickStep = eTickFrequency::NEVER) :
         mState(eCompState::INIT),
@@ -88,6 +90,12 @@ protected:
     // call FinishClose to move to CLOSED state (and mark this component
     // ready to be destroyed)
     virtual void TickClose(uint32_t delta);
+
+    // called at the start of new frame
+    virtual void StartFrame() {};
+
+    // called at the end of the frame
+    virtual void EndFrame() {};
 
     void FinishInit();
     void FinishClose();
