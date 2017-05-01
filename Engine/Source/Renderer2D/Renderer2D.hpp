@@ -68,12 +68,15 @@ public:
     void DrawImage(SDL_Surface* surf, int32_t x, int32_t y, float scale);
     void DrawImage(SDL_Surface* surf, SDL_Rect* src, SDL_Rect* dst);
 
+    void SetAlpha(Uint8 alpha);
+
 private:
     Renderer2DOptions mOptions;
     SDL_Window *mWindow;
     SDL_Renderer* mRenderer;
     SDL_Texture* mFrameBuf;
     SDL_Rect mDstRect;
+    Uint8 mAlpha;
 };
 
 }

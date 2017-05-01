@@ -5,14 +5,16 @@
 vh::Renderer2D::Renderer2D()
     : Component(eTickFrequency::NORMAL)
     , mWindow(nullptr)
+    , mRenderer(nullptr)
+    , mFrameBuf(nullptr)
+    , mAlpha(SDL_ALPHA_OPAQUE)
 {
 }
 
 vh::Renderer2D::Renderer2D(const Renderer2DOptions& options)
-    : Component(eTickFrequency::NORMAL)
-    , mOptions(options)
-    , mWindow(nullptr)
+    : Renderer2D()
 {
+    mOptions = options;
 }
 
 void vh::Renderer2D::TickInit(uint32_t delta)
@@ -101,6 +103,10 @@ void vh::Renderer2D::EndFrame()
 
     SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 0xff);
     SDL_RenderClear(mRenderer);
+
+    SDL_SetTextureAlphaMod(mFrameBuf, mAlpha);
+    SDL_SetTextureBlendMode(mFrameBuf, SDL_BLENDMODE_BLEND);
+
     SDL_RenderCopy(mRenderer, mFrameBuf, nullptr, &mDstRect);
     SDL_RenderPresent(mRenderer);
 }
