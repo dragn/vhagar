@@ -3,9 +3,16 @@
 #include "App/Component.hpp"
 #include "View.hpp"
 #include "SDL_ttf.h"
+#include "Renderer2D/Renderer2D.hpp"
 
 namespace gui
 {
+
+enum class eTransitionMode
+{
+    NONE,
+    FADE
+};
 
 struct GUI2DOptions
 {
@@ -36,20 +43,21 @@ public:
         , mHandCursor(nullptr)
         , mGoBack(false)
         , mGoBackToMain(false)
+        , mTransition(-1)
     {}
 
     virtual void TickInit(uint32_t delta);
     virtual void TickRun(uint32_t delta);
     virtual void TickClose(uint32_t delta);
 
-    void SetView(View* view);
+    void SetView(View* view, bool withFade = true);
     View* GetView() const { return mView; }
 
-    void SetModalView(View* view);
+    void SetModalView(View* view, eTransitionMode transition = eTransitionMode::FADE);
     View* GetModalView() const { return mModalViewStack.back(); }
 
-    void Back(); // go back to previous view in stack
-    void BackToMain(); // clear the view stack and go back to main view
+    void Back(eTransitionMode mode = eTransitionMode::FADE); // go back to previous view in stack
+    void BackToMain(eTransitionMode mode = eTransitionMode::FADE); // clear the view stack and go back to main view
 
     virtual void HandleEvent(SDL_Event* event);
 
@@ -66,10 +74,10 @@ public:
     SDL_Cursor* GetHandCursor();
     SDL_Cursor* GetBeamCursor();
 
-    template<typename T, typename... Args> T* MakeModal(Args... args)
+    template<typename T, typename... Args> T* MakeModal(eTransitionMode mode, Args... args)
     {
         T* view = new T(args...);
-        SetModalView(view);
+        SetModalView(view, mode);
         return view;
     }
 
@@ -96,6 +104,15 @@ private:
     bool mGoBackToMain;
 
     void FocusedDestroyed(Widget* widget);
+
+    int16_t mTransition;
+
+    vh::Renderer2D* mRenderer;
+
+    void ApplyTransition();
+    bool WaitForTransition();
+    bool IsInTransition();
+    void StartTransition();
 };
 
 }

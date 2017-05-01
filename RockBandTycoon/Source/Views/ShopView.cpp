@@ -126,8 +126,8 @@ void ShopView::DrawItems()
                 Shop::BuyItem(mProfile, mType, idx);
                 App::Get<GUI2D>()->BackToMain();
             });
-            dlg->AddOption("Nope, I changed my mind").Set(App::Get<GUI2D>(), &GUI2D::Back);
-            App::Get<GUI2D>()->SetModalView(dlg);
+            dlg->AddOption("Nope, I changed my mind");
+            App::Get<GUI2D>()->SetModalView(dlg, eTransitionMode::NONE);
         });
         mList->AddChild(wdg);
     }

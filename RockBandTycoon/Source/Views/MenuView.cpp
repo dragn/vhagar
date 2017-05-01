@@ -23,8 +23,8 @@ void DeleteProfile(int slot)
             gui->SetView(new MenuView());
         }
     });
-    dlg->AddOption("No, wait!").Set(App::Get<GUI2D>(), &GUI2D::Back);
-    App::Get<GUI2D>()->SetModalView(dlg);
+    dlg->AddOption("No, wait!");
+    App::Get<GUI2D>()->SetModalView(dlg, eTransitionMode::NONE);
 }
 
 void NewGame(const int slot)

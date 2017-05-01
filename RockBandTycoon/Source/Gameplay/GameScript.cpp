@@ -3,9 +3,10 @@
 #include "Views/GameView.hpp"
 #include "GUI2D/GUI2D.hpp"
 #include "ScriptStates.hpp"
-#include "Views/WaitDialogView.hpp"
+#include "Views/DialogView.hpp"
 
 using namespace std::chrono_literals;
+using namespace gui;
 
 class GameScriptObj
 {
@@ -66,7 +67,7 @@ void GameScriptObj::MOTG()
         std::string dayStr = "DAY ";
         dayStr.append(std::to_string(mProfile->GetDay()));
         dayStr.append("\n<Message of the day>");
-        DialogView* dialog = mGui->MakeModal<DialogView>("MOTG test");
+        DialogView* dialog = mGui->MakeModal<DialogView>(eTransitionMode::NONE, "MOTG test");
         dialog->AddOption("Proceed").Set([this] ()
         {
             mProfile->SetScriptState("MOTG", false);
@@ -77,7 +78,6 @@ void GameScriptObj::MOTG()
 
 void GameScriptObj::DoGameView(GameView* view)
 {
-    view->SetBackground("Assets/Images/garage.png");
     MOTG();
 }
 

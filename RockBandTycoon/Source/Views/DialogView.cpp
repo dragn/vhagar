@@ -46,7 +46,7 @@ void DialogView::OnOptionSelect(uint32_t idx)
         mOptions[idx]->OnSelect();
         if (mOptions[idx]->isBack)
         {
-            vh::App::Get<gui::GUI2D>()->Back();
+            vh::App::Get<gui::GUI2D>()->Back(eTransitionMode::NONE);
         }
     }
 }

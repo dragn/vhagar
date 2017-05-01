@@ -18,6 +18,8 @@ GameView::GameView(int slot)
 {
     GUI2D* gui = App::Get<GUI2D>();
 
+    SetBackground("Assets/Images/garage.png");
+
     mProfile = new GameProfile(slot);
     if (!mProfile->Load())
     {
