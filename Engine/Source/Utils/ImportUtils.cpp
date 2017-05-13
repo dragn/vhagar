@@ -8,7 +8,7 @@
 #include <cstring>
 #include <limits>
 #include <glm/gtx/string_cast.hpp>
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 const size_t MAX_LEN = 512;
@@ -35,11 +35,14 @@ void getMtlFilename(char *mtlFilename, const char *objFilename) {
 }
 
 void readMaterials(FILE *mtlFile,
-        std::map<std::string, V3> &aColorMap,
-        std::map<std::string, V3> &dColorMap,
-        std::map<std::string, V3> &sColorMap) {
+        std::unordered_map<std::string, V3> &aColorMap,
+        std::unordered_map<std::string, V3> &dColorMap,
+        std::unordered_map<std::string, V3> &sColorMap,
+        std::unordered_map<std::string, std::string> &textures) {
     char line[MAX_LEN], material[MAX_LEN];
     V3 vec3;
+
+    char texFile[MAX_LEN];
 
     while (fgets(line, MAX_LEN, mtlFile) != NULL) {
         sscanf(line, "newmtl %s", material);
@@ -54,6 +57,11 @@ void readMaterials(FILE *mtlFile,
         if (sscanf(line, "Ks %f %f %f", &vec3.x, &vec3.y, &vec3.z)) {
             sColorMap.insert(std::pair<std::string, V3>(std::string(material), vec3));
             LOG(INFO) << material << ": " << glm::to_string(vec3);
+        }
+        if (sscanf_s(line, "map_Kd %s", texFile, MAX_LEN))
+        {
+            textures[std::string(material)] = std::string(texFile);
+            LOG(INFO) << material << ": texture " << texFile;
         }
     }
 }
@@ -95,23 +103,30 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
     }
 
     std::vector<V3> vertices, normals, aColor, dColor, sColor;
-    std::vector<V2> uvs;
+    std::vector<V3> uvs; // U, V, texIdx
 
     char line[MAX_LEN] = {0}, temp[MAX_LEN] = "";
     std::string mtl = "";
     char s1[32], s2[32], s3[32];
     V3 vec3;
     V2 vec2;
-    std::map<std::string, size_t> map;
+    std::unordered_map<std::string, size_t> map;
     std::vector<std::string> values;
     std::vector<size_t> indices;
 
-    std::map<std::string, size_t> materials;
-    std::map<std::string, V3> mtlAColor, mtlDColor, mtlSColor;
+    std::unordered_map<std::string, size_t> materials;
+    std::unordered_map<std::string, V3> mtlAColor, mtlDColor, mtlSColor;
+
+    std::unordered_map<std::string, std::string> mtlTex;
 
     if (mtlFile != NULL) {
-        readMaterials(mtlFile, mtlAColor, mtlDColor, mtlSColor);
+        readMaterials(mtlFile, mtlAColor, mtlDColor, mtlSColor, mtlTex);
     }
+
+    V3 aCol, dCol, sCol;
+
+    std::vector<std::string> textures;
+    size_t currTex = 0;
 
     while (!feof(objFile)) {
 
@@ -122,13 +137,19 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
             mtl = temp;
             LOG(INFO) << "Using material: " << mtl;
             map.clear(); // clear the map, so vertices with different material won't get the same index
+            aCol = mtlAColor[mtl];
+            dCol = mtlDColor[mtl];
+            sCol = mtlSColor[mtl];
+            textures.push_back(mtlTex[mtl]);
+            currTex = textures.size() - 1;
         }
 
         if (sscanf(line, "v %f %f %f", &vec3.x, &vec3.y, &vec3.z)) {
             vertices.push_back(vec3);
 
-        } else if (sscanf(line, "vt %f %f", &vec2.x, &vec2.y)) {
-            uvs.push_back(vec2);
+        } else if (sscanf(line, "vt %f %f", &vec3.x, &vec3.y)) {
+            vec3.z = currTex;
+            uvs.push_back(vec3);
 
         } else if (sscanf(line, "vn %f %f %f", &vec3.x, &vec3.y, &vec3.z)) {
             normals.push_back(vec3);
@@ -141,9 +162,9 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
             } else {
                 values.push_back(std::string(s1));
                 if (!mtl.empty()) {
-                    aColor.push_back(mtlAColor[mtl]);
-                    dColor.push_back(mtlDColor[mtl]);
-                    sColor.push_back(mtlSColor[mtl]);
+                    aColor.push_back(aCol);
+                    dColor.push_back(dCol);
+                    sColor.push_back(sCol);
                 }
                 map.insert(std::pair<std::string, size_t>(s1, values.size() - 1));
                 indices.push_back(values.size() - 1);
@@ -153,9 +174,9 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
             } else {
                 values.push_back(std::string(s2));
                 if (!mtl.empty()) {
-                    aColor.push_back(mtlAColor[mtl]);
-                    dColor.push_back(mtlDColor[mtl]);
-                    sColor.push_back(mtlSColor[mtl]);
+                    aColor.push_back(aCol);
+                    dColor.push_back(dCol);
+                    sColor.push_back(sCol);
                 }
                 map.insert(std::pair<std::string, size_t>(s2, values.size() - 1));
                 indices.push_back(values.size() - 1);
@@ -165,9 +186,9 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
             } else {
                 values.push_back(std::string(s3));
                 if (!mtl.empty()) {
-                    aColor.push_back(mtlAColor[mtl]);
-                    dColor.push_back(mtlDColor[mtl]);
-                    sColor.push_back(mtlSColor[mtl]);
+                    aColor.push_back(aCol);
+                    dColor.push_back(dCol);
+                    sColor.push_back(sCol);
                 }
                 map.insert(std::pair<std::string, size_t>(s3, values.size() - 1));
                 indices.push_back(values.size() - 1);
@@ -253,10 +274,10 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
 
         // uv coords
         base += attribSize;
-        if (vt > 0 && vt < uvs.size()) {
+        if (vt > 0 && vt <= uvs.size()) {
             base[0] = uvs[vt - 1].x;
-            base[1] = uvs[vt - 1].y;
-            base[2] = 0;
+            base[1] = 1.0f - uvs[vt - 1].y;
+            base[2] = uvs[vt - 1].z;
         }
     }
 
@@ -267,6 +288,19 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
     // Set attrib and index data to mesh
     mesh->SetAttribData(attribSize, attribCount, attribData);
     mesh->SetIndexData(indexSize, indexData);
+
+    for (size_t idx = 0; idx < textures.size(); ++idx)
+    {
+        SDL_Surface* surf = IMG_Load(textures[idx].c_str());
+        if (surf == nullptr)
+        {
+            LOG(ERROR) << "Unable to load texture " << textures[idx];
+        }
+        else
+        {
+            mesh->SetTexture(idx, surf);
+        }
+    }
 
     LOG(INFO) << "v: " << vertices.size();
     LOG(INFO) << "vn: " << normals.size();

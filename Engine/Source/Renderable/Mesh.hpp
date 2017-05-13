@@ -10,7 +10,7 @@ class Mesh : public Renderable {
     friend class SkyBox;
 
 public:
-    Mesh() : mTexture(nullptr) {};
+    Mesh();;
 
     virtual ~Mesh();
 
@@ -43,12 +43,19 @@ public:
         data = mIndexData;
     }
 
-    void SetTexture(const std::string &filename);
-    void SetTexture(const SDL_Surface*);
+    void SetTexture(size_t idx, SDL_Surface*);
 
-    const SDL_Surface* GetTexture() const
+    const SDL_Surface* GetTexture(size_t idx) const
     {
-        return mTexture;
+        if (idx < mTextures.size())
+        {
+            return mTextures[idx];
+        }
+        else
+        {
+            LOG(ERROR) << "accessing undefined texture " << idx;
+            return nullptr;
+        }
     }
 
 protected:
@@ -65,7 +72,7 @@ protected:
     GLuint mWireProgramID;
     GLBufferInfo mGLInfo;
 
-    SDL_Surface *mTexture;
+    std::vector<SDL_Surface*> mTextures;
 
     Renderer* mRenderer;
 

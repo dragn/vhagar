@@ -8,6 +8,8 @@ namespace vh {
 
 class Renderer; // forward decl
 
+const size_t MAX_TEXTURES = 1;
+
 struct GLBufferInfo {
     /**
      * The number of vertex attribute arrays
@@ -29,7 +31,7 @@ struct GLBufferInfo {
     /**
      *
      */
-    GLuint texture = 0;
+    GLuint texture[MAX_TEXTURES] = { 0 };
 };
 
 class Renderable {

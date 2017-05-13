@@ -38,11 +38,11 @@ void main() {
     diffuse += (fDiffuseColor + texture(textureSampler, fUV).rgb) * cosTheta * uPLightInt[i];
 
     // TODO take shininess from material properties
-    specular += fSpecularColor * pow(cosAlpha, 5) * uPLightInt[i];
+    specular += (fSpecularColor + texture(textureSampler, fUV).rgb) * pow(cosAlpha, 5) * uPLightInt[i];
   }
 
   // TODO replace 0.1 with ambient color amount
-  vec3 ambient = fAmbientColor * 0.1; 
+  vec3 ambient = (fAmbientColor + texture(textureSampler, fUV).rgb) * 0.1; 
 
   // TODO apply gamma correction
   color = ambient + diffuse + specular;

@@ -14,7 +14,10 @@ Mesh::~Mesh()
     LOG(INFO) << "Mesh destructor";
     if (mIndexSize > 0) delete[] mIndexData;
     if (mAttribSize > 0) delete[] mAttribData;
-    if (mTexture != NULL) SDL_FreeSurface(mTexture);
+    for (SDL_Surface* surf : mTextures)
+    {
+        if (surf != NULL) SDL_FreeSurface(surf);
+    }
 }
 
 void
@@ -73,10 +76,13 @@ Mesh::BeforeRender()
     }
 
     // load texture
-    if (mTexture != NULL)
+    for (size_t idx = 0; idx < mTextures.size(); ++idx)
     {
-        mGLInfo.texture = Utils::BufferTexture2D(mTexture);
-        LOG(INFO) << "Texture loaded with ID: " << mGLInfo.texture;
+        if (mTextures[idx] != nullptr)
+        {
+            mGLInfo.texture[idx] = Utils::BufferTexture2D(mTextures[idx]);
+            LOG(INFO) << "Texture loaded with ID: " << mGLInfo.texture[idx];
+        }
     }
 
     mRenderer = App::Get<Renderer>();
@@ -93,10 +99,13 @@ Mesh::AfterRender()
         glDeleteBuffers(2, ids);
         isReadyToRender = false;
     }
-    if (mGLInfo.texture > 0)
+    for (GLuint tex : mGLInfo.texture)
     {
-        LOG(INFO) << "Deleting previous texture: " << mGLInfo.texture;
-        glDeleteTextures(1, &mGLInfo.texture);
+        if (tex > 0)
+        {
+            LOG(INFO) << "Deleting previous texture: " << tex;
+            glDeleteTextures(1, &tex);
+        }
     }
 }
 
@@ -128,14 +137,7 @@ Mesh::Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer)
     glUniformMatrix4fv(uidM, 1, GL_FALSE, reinterpret_cast<float*>(&mModel[0][0]));
     glUniformMatrix4fv(uidV, 1, GL_FALSE, reinterpret_cast<float*>(&view[0][0]));
 
-    if (mGLInfo.texture)
-    {
-        glBindTexture(GL_TEXTURE_2D, mGLInfo.texture);
-    }
-    else
-    {
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
+    glBindTexture(GL_TEXTURE_2D, mGLInfo.texture[0]);
 
     for (GLuint i = 0; i < mAttribCount; i++)
     {
@@ -176,32 +178,33 @@ Mesh::Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer)
     }
 }
 
-void Mesh::SetTexture(const std::string &filename)
+vh::Mesh::Mesh()
+    : mTextures(MAX_TEXTURES, nullptr)
 {
-    if (mGLInfo.texture > 0)
-    {
-        LOG(INFO) << "Deleting previous texture: " << mGLInfo.texture;
-        glDeleteTextures(1, &mGLInfo.texture);
-        SDL_FreeSurface(mTexture);
-    }
-
-    LOG(INFO) << "Setting up texture " << filename;
-    mTexture = Utils::LoadImage(filename);
 }
 
-void vh::Mesh::SetTexture(const SDL_Surface* texture)
+void vh::Mesh::SetTexture(size_t idx, SDL_Surface* texture)
 {
-    if (mGLInfo.texture > 0)
+    if (idx >= MAX_TEXTURES)
     {
-        LOG(INFO) << "Deleting previous texture: " << mGLInfo.texture;
-        glDeleteTextures(1, &mGLInfo.texture);
+        LOG(ERROR) << "invalid texture index: " << idx;
+        return;
     }
 
-    if (mTexture != nullptr)
+    if (mGLInfo.texture[idx] > 0)
     {
-        SDL_FreeSurface(mTexture);
-        mTexture = nullptr;
+        LOG(INFO) << "Deleting previous texture: " << mGLInfo.texture[idx];
+        glDeleteTextures(1, &mGLInfo.texture[idx]);
     }
 
-    if (texture != nullptr) mTexture = new SDL_Surface(*texture);
+    if (mTextures[idx] != nullptr)
+    {
+        SDL_FreeSurface(mTextures[idx]);
+        mTextures[idx] = nullptr;
+    }
+
+    if (texture != nullptr)
+    {
+        mTextures[idx] = texture;
+    }
 }

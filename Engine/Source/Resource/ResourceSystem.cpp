@@ -89,7 +89,7 @@ template<> bool vh::ResourceSystem::Load(const char* path, Mesh* mesh)
     mesh->SetIndexData(indexSize, indexData);
 
     // TODO: load texture
-    mesh->SetTexture(nullptr);
+    // mesh->SetTexture(nullptr);
 
     stream.close();
 
