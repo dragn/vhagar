@@ -36,6 +36,18 @@ std::string GetFullPath(const char* relPath)
     return fullPath;
 }
 
+template<typename T>
+void Write(std::ostream& stream, const T* obj, size_t count = 1)
+{
+    stream.write(reinterpret_cast<const char*>(obj), sizeof(T) * count);
+}
+
+template<typename T>
+void Read(std::istream& stream, T* obj, size_t count = 1)
+{
+    stream.read(reinterpret_cast<char*>(obj), sizeof(T) * count);
+}
+
 /*
     Load mesh from binary stream
     Data layout:
@@ -65,12 +77,12 @@ template<> bool vh::ResourceSystem::Load(const char* path, Mesh* mesh)
     GLfloat* attrData = nullptr;
     GLuint* indexData = nullptr;
 
-    stream.read(reinterpret_cast<char*>(&indexSize), sizeof(GLuint));
-    stream.read(reinterpret_cast<char*>(&attrSize), sizeof(GLuint));
-    stream.read(reinterpret_cast<char*>(&attrCount), sizeof(GLuint));
+    Read(stream, &indexSize);
+    Read(stream, &attrSize);
+    Read(stream, &attrCount);
 
     indexData = new GLuint[indexSize];
-    stream.read(reinterpret_cast<char*>(indexData), sizeof(GLuint) * indexSize);
+    Read(stream, indexData, indexSize);
     if (stream.fail() || stream.eof())
     {
         LOG(FATAL) << "Resource load error";
@@ -78,7 +90,7 @@ template<> bool vh::ResourceSystem::Load(const char* path, Mesh* mesh)
     }
 
     attrData = new GLfloat[attrCount * attrSize];
-    stream.read(reinterpret_cast<char*>(attrData), sizeof(GLfloat) * attrCount * attrSize);
+    Read(stream, attrData, attrCount * attrSize);
     if (stream.fail())
     {
         LOG(FATAL) << "Resource load error";
@@ -88,8 +100,19 @@ template<> bool vh::ResourceSystem::Load(const char* path, Mesh* mesh)
     mesh->SetAttribData(attrSize, attrCount, attrData);
     mesh->SetIndexData(indexSize, indexData);
 
-    // TODO: load texture
-    // mesh->SetTexture(nullptr);
+    // -- load texture
+    if (!stream.eof())
+    {
+        size_t texW, texH;
+        Read(stream, &texW);
+        Read(stream, &texH);
+        if (texW > 0 && texH > 0)
+        {
+            uint32_t* data = new uint32_t[texW * texH];
+            Read(stream, data, texW * texH);
+            mesh->SetTexture(data, texW, texH);
+        }
+    }
 
     stream.close();
 
@@ -120,13 +143,20 @@ template<> bool vh::ResourceSystem::Save(const char* path, const Mesh* mesh)
     mesh->GetAttribData(attrSize, attrCount, attrData);
     mesh->GetIndexData(indexSize, indexData);
 
-    stream.write(reinterpret_cast<char*>(&indexSize), sizeof(GLuint));
-    stream.write(reinterpret_cast<char*>(&attrSize), sizeof(GLuint));
-    stream.write(reinterpret_cast<char*>(&attrCount), sizeof(GLuint));
-    stream.write(reinterpret_cast<char*>(indexData), sizeof(GLuint) * indexSize);
-    stream.write(reinterpret_cast<char*>(attrData), sizeof(GLfloat) * attrCount * attrSize);
+    Write(stream, &indexSize);
+    Write(stream, &attrSize);
+    Write(stream, &attrCount);
 
-    // TODO: save texture
+    Write(stream, indexData, indexSize);
+    Write(stream, attrData, attrCount * attrSize);
+
+    // -- serializing textures
+    uint32_t* texDta;
+    size_t texW, texH;
+    mesh->GetTexture(texDta, texW, texH);
+    Write(stream, &texW);
+    Write(stream, &texH);
+    if (texDta != nullptr) Write(stream, texDta, texW * texH);
 
     stream.close();
 

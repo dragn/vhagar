@@ -43,20 +43,8 @@ public:
         data = mIndexData;
     }
 
-    void SetTexture(size_t idx, SDL_Surface*);
-
-    const SDL_Surface* GetTexture(size_t idx) const
-    {
-        if (idx < mTextures.size())
-        {
-            return mTextures[idx];
-        }
-        else
-        {
-            LOG(ERROR) << "accessing undefined texture " << idx;
-            return nullptr;
-        }
-    }
+    void SetTexture(uint32_t* rgbaData, size_t width, size_t height);
+    void GetTexture(uint32_t*& rgbaData, size_t& width, size_t& height) const;
 
 protected:
     glm::mat4 mModel;
@@ -72,9 +60,11 @@ protected:
     GLuint mWireProgramID;
     GLBufferInfo mGLInfo;
 
-    std::vector<SDL_Surface*> mTextures;
-
     Renderer* mRenderer;
+
+    uint32_t* mTexDta;
+    size_t mTexW;
+    size_t mTexH;
 
 private:
     /**
@@ -105,6 +95,8 @@ private:
     // wireframe uniform
     GLuint uidWireColor;
     GLuint uidWireMVP;
+
+    virtual void BufferTexture();
 };
 
 }

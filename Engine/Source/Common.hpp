@@ -59,4 +59,11 @@ void SafeDelete(T*& ptr)
     ptr = nullptr;
 }
 
+template <typename T>
+void SafeDeleteArray(T*& ptr)
+{
+    if (ptr) delete [] ptr;
+    ptr = nullptr;
+}
+
 } // namespace vh

@@ -101,36 +101,7 @@ GLuint BufferElementArray(GLsizeiptr size, const GLuint *data) {
 }
 
 GLuint BufferTexture2D(SDL_Surface *surf) {
-    SDL_PixelFormat *format = surf->format;
-
-    size_t size = surf->w * surf->h;
-    Uint8 *data = new Uint8[size * 4];
-
-    if (format->palette) {
-        SDL_Color *colors = format->palette->colors;
-        Uint8 *pixels = (Uint8*) surf->pixels;
-
-        for (size_t i = 0; i < size; i++) {
-            Uint8 &index = pixels[i];
-            if (index >= 0 && index < format->palette->ncolors) {
-                SDL_Color &color = colors[index];
-                Uint8 *p = &data[i * 4];
-                *(p) = color.r;
-                *(p + 1) = color.g;
-                *(p + 2) = color.b;
-                *(p + 3) = 0xff;
-            }
-        }
-    } else {
-        if (format->BitsPerPixel != 32) {
-            LOG(FATAL) << "Can deal with 32 bit pixels only";
-        }
-        Uint32 *pixels = (Uint32*) surf->pixels;
-        for (size_t i = 0; i < size; i++) {
-            Uint8 *ptr = &data[i * 4];
-            SDL_GetRGBA(pixels[i], format, ptr + 0, ptr + 1, ptr + 2, ptr + 3);
-        }
-    }
+    uint32_t* data = ConvertToRGBA(surf);
 
     GLuint texId;
 
@@ -145,6 +116,51 @@ GLuint BufferTexture2D(SDL_Surface *surf) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     return texId;
+}
+
+uint32_t* ConvertToRGBA(SDL_Surface* surf)
+{
+    if (surf == nullptr) return nullptr;
+
+    SDL_PixelFormat *format = surf->format;
+
+    size_t size = surf->w * surf->h;
+    uint32_t *data = new uint32_t[size];
+
+    if (format->palette)
+    {
+        SDL_Color *colors = format->palette->colors;
+        Uint8 *pixels = (Uint8*) surf->pixels;
+
+        for (size_t i = 0; i < size; i++)
+        {
+            Uint8 &index = pixels[i];
+            if (index >= 0 && index < format->palette->ncolors)
+            {
+                SDL_Color &color = colors[index];
+                uint8_t* p = reinterpret_cast<uint8_t*>(&data[i]);
+                p[0] = color.r;
+                p[1] = color.g;
+                p[2] = color.b;
+                p[3] = 0xff;
+            }
+        }
+    }
+    else
+    {
+        if (format->BitsPerPixel != 32)
+        {
+            LOG(FATAL) << "Can deal with 32 bit pixels only";
+        }
+        Uint32 *pixels = (Uint32*) surf->pixels;
+        for (size_t i = 0; i < size; i++)
+        {
+            uint8_t *ptr = reinterpret_cast<uint8_t*>(&data[i]);
+            SDL_GetRGBA(pixels[i], format, &ptr[0], &ptr[1], &ptr[2], &ptr[3]);
+        }
+    }
+
+    return data;
 }
 
 GLuint LoadCubeMapTexture(const CubeMap &skyBox) {

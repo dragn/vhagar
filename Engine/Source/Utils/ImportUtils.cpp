@@ -1,6 +1,7 @@
 #include "Common.hpp"
 
 #include "ImportUtils.hpp"
+#include "GLUtils.hpp"
 
 #include <cstdio>
 #include <iostream>
@@ -15,12 +16,15 @@ const size_t MAX_LEN = 512;
 
 using vh::V3;
 
-namespace {
+namespace
+{
 
 // Check that objFile is a valid Wavefront .obj file
-bool checkFilename(const char *objFilename) {
+bool checkFilename(const char *objFilename)
+{
     size_t len = strlen(objFilename);
-    if (len > MAX_LEN) {
+    if (len > MAX_LEN)
+    {
         LOG(ERROR) << "Filename too long: " << objFilename;
         return false;
     }
@@ -28,33 +32,39 @@ bool checkFilename(const char *objFilename) {
 }
 
 // Get .mtl objFile for specified .obj file
-void getMtlFilename(char *mtlFilename, const char *objFilename) {
+void getMtlFilename(char *mtlFilename, const char *objFilename)
+{
     size_t len = strlen(objFilename);
     strncpy(mtlFilename, objFilename, MAX_LEN);
     strncpy(mtlFilename + (len - 4), ".mtl", 4);
 }
 
 void readMaterials(FILE *mtlFile,
-        std::unordered_map<std::string, V3> &aColorMap,
-        std::unordered_map<std::string, V3> &dColorMap,
-        std::unordered_map<std::string, V3> &sColorMap,
-        std::unordered_map<std::string, std::string> &textures) {
+    std::unordered_map<std::string, V3> &aColorMap,
+    std::unordered_map<std::string, V3> &dColorMap,
+    std::unordered_map<std::string, V3> &sColorMap,
+    std::unordered_map<std::string, std::string> &textures)
+{
     char line[MAX_LEN], material[MAX_LEN];
     V3 vec3;
 
     char texFile[MAX_LEN];
 
-    while (fgets(line, MAX_LEN, mtlFile) != NULL) {
+    while (fgets(line, MAX_LEN, mtlFile) != NULL)
+    {
         sscanf(line, "newmtl %s", material);
-        if (sscanf(line, "Ka %f %f %f", &vec3.x, &vec3.y, &vec3.z)) {
+        if (sscanf(line, "Ka %f %f %f", &vec3.x, &vec3.y, &vec3.z))
+        {
             aColorMap.insert(std::pair<std::string, V3>(std::string(material), vec3));
             LOG(INFO) << material << ": " << glm::to_string(vec3);
         }
-        if (sscanf(line, "Kd %f %f %f", &vec3.x, &vec3.y, &vec3.z)) {
+        if (sscanf(line, "Kd %f %f %f", &vec3.x, &vec3.y, &vec3.z))
+        {
             dColorMap.insert(std::pair<std::string, V3>(std::string(material), vec3));
             LOG(INFO) << material << ": " << glm::to_string(vec3);
         }
-        if (sscanf(line, "Ks %f %f %f", &vec3.x, &vec3.y, &vec3.z)) {
+        if (sscanf(line, "Ks %f %f %f", &vec3.x, &vec3.y, &vec3.z))
+        {
             sColorMap.insert(std::pair<std::string, V3>(std::string(material), vec3));
             LOG(INFO) << material << ": " << glm::to_string(vec3);
         }
@@ -71,18 +81,21 @@ void readMaterials(FILE *mtlFile,
 /**
  * Constructor
  **/
-bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
+bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename)
+{
     CHECK(mesh);
 
     // Open objFile specified by 'objFilename' (should and with .obj)
-    if (!checkFilename(objFilename)) {
+    if (!checkFilename(objFilename))
+    {
         LOG(ERROR) << "Invalid objFilename (should end with .obj): " << objFilename;
         return false;
     }
 
     FILE *objFile = fopen(objFilename, "r");
 
-    if (objFile == NULL) {
+    if (objFile == NULL)
+    {
         LOG(ERROR) << "Can't open objFile: " << objFilename;
         return false;
     }
@@ -96,16 +109,19 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
 
     FILE *mtlFile = fopen(mtlFilename, "r");
 
-    if (mtlFile != NULL) {
+    if (mtlFile != NULL)
+    {
         LOG(INFO) << "Found material library file: " << mtlFilename;
-    } else {
+    }
+    else
+    {
         LOG(INFO) << "No material library found at " << mtlFilename;
     }
 
     std::vector<V3> vertices, normals, aColor, dColor, sColor;
     std::vector<V3> uvs; // U, V, texIdx
 
-    char line[MAX_LEN] = {0}, temp[MAX_LEN] = "";
+    char line[MAX_LEN] = { 0 }, temp[MAX_LEN] = "";
     std::string mtl = "";
     char s1[32], s2[32], s3[32];
     V3 vec3;
@@ -119,7 +135,8 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
 
     std::unordered_map<std::string, std::string> mtlTex;
 
-    if (mtlFile != NULL) {
+    if (mtlFile != NULL)
+    {
         readMaterials(mtlFile, mtlAColor, mtlDColor, mtlSColor, mtlTex);
     }
 
@@ -128,12 +145,14 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
     std::vector<std::string> textures;
     size_t currTex = 0;
 
-    while (!feof(objFile)) {
+    while (!feof(objFile))
+    {
 
         // read next line
         if (fgets(line, MAX_LEN, objFile) == NULL) break;
 
-        if (sscanf(line, "usemtl %s", temp)) {
+        if (sscanf(line, "usemtl %s", temp))
+        {
             mtl = temp;
             LOG(INFO) << "Using material: " << mtl;
             map.clear(); // clear the map, so vertices with different material won't get the same index
@@ -144,24 +163,32 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
             currTex = textures.size() - 1;
         }
 
-        if (sscanf(line, "v %f %f %f", &vec3.x, &vec3.y, &vec3.z)) {
+        if (sscanf(line, "v %f %f %f", &vec3.x, &vec3.y, &vec3.z))
+        {
             vertices.push_back(vec3);
-
-        } else if (sscanf(line, "vt %f %f", &vec3.x, &vec3.y)) {
+        }
+        else if (sscanf(line, "vt %f %f", &vec3.x, &vec3.y))
+        {
             vec3.z = currTex;
             uvs.push_back(vec3);
 
-        } else if (sscanf(line, "vn %f %f %f", &vec3.x, &vec3.y, &vec3.z)) {
+        }
+        else if (sscanf(line, "vn %f %f %f", &vec3.x, &vec3.y, &vec3.z))
+        {
             normals.push_back(vec3);
-
-        } else if (sscanf(line, "f %s %s %s", s1, s2, s3)) {
-
+        }
+        else if (sscanf(line, "f %s %s %s", s1, s2, s3))
+        {
             // finding vertices with identical values for position/normals/uv (and material)
-            if (map.count(std::string(s1))) {
+            if (map.count(std::string(s1)))
+            {
                 indices.push_back(map[s1]);
-            } else {
+            }
+            else
+            {
                 values.push_back(std::string(s1));
-                if (!mtl.empty()) {
+                if (!mtl.empty())
+                {
                     aColor.push_back(aCol);
                     dColor.push_back(dCol);
                     sColor.push_back(sCol);
@@ -169,11 +196,15 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
                 map.insert(std::pair<std::string, size_t>(s1, values.size() - 1));
                 indices.push_back(values.size() - 1);
             }
-            if (map.count(std::string(s2))) {
+            if (map.count(std::string(s2)))
+            {
                 indices.push_back(map[s2]);
-            } else {
+            }
+            else
+            {
                 values.push_back(std::string(s2));
-                if (!mtl.empty()) {
+                if (!mtl.empty())
+                {
                     aColor.push_back(aCol);
                     dColor.push_back(dCol);
                     sColor.push_back(sCol);
@@ -181,11 +212,15 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
                 map.insert(std::pair<std::string, size_t>(s2, values.size() - 1));
                 indices.push_back(values.size() - 1);
             }
-            if (map.count(std::string(s3))) {
+            if (map.count(std::string(s3)))
+            {
                 indices.push_back(map[s3]);
-            } else {
+            }
+            else
+            {
                 values.push_back(std::string(s3));
-                if (!mtl.empty()) {
+                if (!mtl.empty())
+                {
                     aColor.push_back(aCol);
                     dColor.push_back(dCol);
                     sColor.push_back(sCol);
@@ -224,17 +259,22 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
     GLfloat *base;
 
     // Fill vertex data and normal data
-    for (size_t i = 0; i < values.size(); i++) {
+    for (size_t i = 0; i < values.size(); i++)
+    {
         str = values[i];
-        if (str.find("//") != std::string::npos) {
+        if (str.find("//") != std::string::npos)
+        {
             sscanf(str.c_str(), "%d//%d", &v, &vn);
-        } else {
+        }
+        else
+        {
             sscanf(str.c_str(), "%d/%d/%d", &v, &vt, &vn);
         }
 
         // Vertices
         base = attribData + 3 * i;
-        if (v > 0 && v <= vertices.size()) {
+        if (v > 0 && v <= vertices.size())
+        {
             base[0] = vertices[v - 1].x;
             base[1] = vertices[v - 1].y;
             base[2] = vertices[v - 1].z;
@@ -242,7 +282,8 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
 
         // Normals
         base += attribSize;
-        if (vn > 0 && vn <= normals.size()) {
+        if (vn > 0 && vn <= normals.size())
+        {
             base[0] = normals[vn - 1].x;
             base[1] = normals[vn - 1].y;
             base[2] = normals[vn - 1].z;
@@ -250,7 +291,8 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
 
         // Ambient colors
         base += attribSize;
-        if (i < aColor.size()) {
+        if (i < aColor.size())
+        {
             base[0] = aColor[i].x;
             base[1] = aColor[i].y;
             base[2] = aColor[i].z;
@@ -258,7 +300,8 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
 
         // Diffuse colors
         base += attribSize;
-        if (i < dColor.size()) {
+        if (i < dColor.size())
+        {
             base[0] = dColor[i].x;
             base[1] = dColor[i].y;
             base[2] = dColor[i].z;
@@ -266,7 +309,8 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
 
         // Specular colors
         base += attribSize;
-        if (i < sColor.size()) {
+        if (i < sColor.size())
+        {
             base[0] = sColor[i].x;
             base[1] = sColor[i].y;
             base[2] = sColor[i].z;
@@ -274,14 +318,16 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
 
         // uv coords
         base += attribSize;
-        if (vt > 0 && vt <= uvs.size()) {
+        if (vt > 0 && vt <= uvs.size())
+        {
             base[0] = uvs[vt - 1].x;
             base[1] = 1.0f - uvs[vt - 1].y;
             base[2] = uvs[vt - 1].z;
         }
     }
 
-    for (size_t i = 0; i < indices.size(); i++) {
+    for (size_t i = 0; i < indices.size(); i++)
+    {
         indexData[i] = indices[i];
     }
 
@@ -298,7 +344,9 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename) {
         }
         else
         {
-            mesh->SetTexture(idx, surf);
+            uint32_t* dta = Utils::ConvertToRGBA(surf);
+            mesh->SetTexture(dta, surf->w, surf->h);
+            SDL_FreeSurface(surf);
         }
     }
 
