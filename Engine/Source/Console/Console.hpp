@@ -50,6 +50,7 @@ public:
         , mSurf(nullptr)
         , mOverlay(nullptr)
         , mEngine(nullptr)
+        , mRenderer(nullptr)
     {
         App::CheckRequired<ConsoleEngine>();
         App::CheckRequired<Renderer>();
@@ -90,6 +91,7 @@ private:
     Overlay* mOverlay;
 
     ConsoleEngine* mEngine;
+    Renderer* mRenderer;
 
     void _Redraw();
 };

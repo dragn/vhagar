@@ -35,6 +35,15 @@ void Console::TickInit(uint32_t delta)
     mEngine = App::Get<ConsoleEngine>();
     CHECK(mEngine);
 
+    mRenderer = App::Get<Renderer>();
+    CHECK(mRenderer);
+
+    if (!mRenderer->IsRunning())
+    {
+        // Wait for renderer to init
+        return;
+    }
+
     mOverlay = new Overlay();
 
     mFont = TTF_OpenFont("Assets/Fonts/Roboto-regular.ttf", FONT_SIZE);
@@ -48,7 +57,7 @@ void Console::TickInit(uint32_t delta)
     Uint32 bmask = 0x00ff0000;
     Uint32 amask = 0xff000000;
 
-    mSurf = SDL_CreateRGBSurface(0, App::Get<Renderer>()->GetOptions().screenWidth - 40,
+    mSurf = SDL_CreateRGBSurface(0, mRenderer->GetOptions().screenWidth - 40,
         (NUM_LINES + 1) * (FONT_SIZE + LINE_SPACE), 32, rmask, gmask, bmask, amask);
 
     if (!mSurf)
@@ -159,13 +168,13 @@ void Console::ToggleConsole()
 {
     if (mShowConsole)
     {
-        App::Get<Renderer>()->RemoveObject(mOverlay);
+        mRenderer->RemoveObject(mOverlay);
         mShowConsole = false;
         SDL_StopTextInput();
     }
     else
     {
-        App::Get<Renderer>()->AddObject(mOverlay);
+        mRenderer->AddObject(mOverlay);
         mShowConsole = true;
         SDL_StartTextInput();
         _Redraw();

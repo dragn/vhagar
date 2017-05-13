@@ -50,6 +50,9 @@ Mesh::BeforeRender()
     uidPLightPos = glGetUniformLocation(mProgramID, "uPLightPos");
     uidPLightInt = glGetUniformLocation(mProgramID, "uPLightInt");
 
+    uidWireColor = glGetUniformLocation(mWireProgramID, "uColor");
+    uidWireMVP = glGetUniformLocation(mWireProgramID, "uMVP");
+
     // specify sizes
     mGLInfo.attribBufferSize = mAttribSize;
     mGLInfo.indexBufferSize = mIndexSize;
@@ -154,14 +157,15 @@ Mesh::Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer)
     {
         glDisableVertexAttribArray(i);
     }
-    /*
     if (mRenderer->IsOn(RenderFlags::DRAW_WIREFRAMES))
     {
         MVP = projection * view * mModel;
 
         glUseProgram(mWireProgramID);
-        Utils::PutUniformVec3(mWireProgramID, "uColor", V3(0, 0.4f, 0));
-        Utils::PutUniformMat4(mWireProgramID, "uMVP", MVP);
+
+        V3 wireColor(0, 0.4f, 0);
+        glUniform3fv(uidWireColor, 1, reinterpret_cast<GLfloat*>(&wireColor));
+        glUniformMatrix4fv(uidWireMVP, 1, GL_FALSE, reinterpret_cast<GLfloat*>(&MVP[0][0]));
 
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, mGLInfo.attribBuffer);
@@ -170,7 +174,6 @@ Mesh::Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer)
         glDrawElements(GL_LINE_STRIP, mGLInfo.indexBufferSize, GL_UNSIGNED_INT, (void*) 0);
         glDisableVertexAttribArray(0);
     }
-    */
 }
 
 void Mesh::SetTexture(const std::string &filename)

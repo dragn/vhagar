@@ -94,6 +94,10 @@ private:
     GLint uidPLightPos;
     GLint uidPLightInt;
     GLint uidPLightNum;
+
+    // wireframe uniform
+    GLuint uidWireColor;
+    GLuint uidWireMVP;
 };
 
 }
