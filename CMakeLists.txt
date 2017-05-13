@@ -4,6 +4,8 @@ project (Meraxes)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
+set(3RDPARTY "${CMAKE_SOURCE_DIR}" CACHE STRING "3rd party libraries folder")
+
 include(Utils)
 
 # Find dependencies
@@ -14,6 +16,7 @@ find_package(glog 0.3.4 REQUIRED)
 find_package(GLM REQUIRED)
 find_package(GL)
 find_package(GLEW REQUIRED)
+find_package(PhysX)
 
 # Setup dependencies
 if (SDL2_FOUND)
@@ -49,6 +52,12 @@ if (glog_FOUND)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWITH_GLOG")
   list(APPEND DEP_LIBRARIES glog::glog)
 endif (glog_FOUND)
+
+if (PhysX_FOUND)
+  include_directories(${PhysX_INCLUDE_DIR})
+  list(APPEND DEP_LIBRARIES "${PhysX_LIBRARIES}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWITH_PHYSX")
+endif (PhysX_FOUND)
 
 if (APPLE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DAPPLE")

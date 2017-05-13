@@ -47,6 +47,13 @@ void Renderer::TickInit(uint32_t delta)
         return;
     }
 
+    if (TTF_Init() < 0)
+    {
+        LOG(FATAL) << TTF_GetError();
+        Close();
+        return;
+    }
+
     Uint32 flags = SDL_WINDOW_OPENGL;
 
     if (mOptions.borderless) flags |= SDL_WINDOW_BORDERLESS;
@@ -151,6 +158,8 @@ void Renderer::TickClose(uint32_t delta)
 
     SDL_GL_DeleteContext(mGLContext);
     SDL_DestroyWindow(mWindow);
+
+    TTF_Quit();
     SDL_Quit();
 
     FinishClose();

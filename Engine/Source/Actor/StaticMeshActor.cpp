@@ -4,6 +4,8 @@
 #include "App/App.hpp"
 #include "Utils/ImportUtils.hpp"
 #include "Renderer/Renderer.hpp"
+#include "Resource/ResourceSystem.hpp"
+#include <regex>
 
 namespace vh
 {
@@ -11,7 +13,23 @@ namespace vh
 StaticMeshActor::StaticMeshActor(const char* filename)
 {
     mMesh = new Mesh;
-    Utils::ImportWavefront(mMesh, filename);
+    std::regex objRegex(".*\\.obj");
+    std::regex vhRegex(".*\\.vhmesh");
+    std::cmatch match;
+    if (std::regex_match(filename, match, objRegex))
+    {
+        Utils::ImportWavefront(mMesh, filename);
+    }
+    else if (std::regex_match(filename, match, vhRegex))
+    {
+        ResourceSystem* resource = App::Get<ResourceSystem>();
+        CHECK(resource);
+        resource->Load(filename, mMesh);
+    }
+    else
+    {
+        LOG(ERROR) << "Unsupported mesh file: " << filename;
+    }
 }
 
 
@@ -42,8 +60,7 @@ void StaticMeshActor::OnDestroy()
     if (mMesh != nullptr)
     {
         App::Get<Renderer>()->RemoveObject(mMesh);
-        delete mMesh;
-        mMesh = nullptr;
+        SafeDelete(mMesh);
     }
 }
 

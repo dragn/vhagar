@@ -19,8 +19,9 @@ public:
 
             if (world && world->IsRunning() && render && render->IsRunning())
             {
-                world->SpawnActor<PointLightActor>(V3(0, 2, 4), 0.4);
-                world->SpawnActor<PointLightActor>(V3(5, 0, 0), 0.4);
+                world->SpawnActor<PointLightActor>(V3(0, 2, 4), 0.4f);
+                world->SpawnActor<PointLightActor>(V3(5, 0, 0), 0.4f);
+                world->SpawnActor<StaticMeshActor>("Assets/Spaceship.vhmesh");
 
                 Get<PlayerController>()->Control(world->SpawnActor<FreeFloating>());
 
@@ -44,10 +45,12 @@ int main(int argc, char ** argv) {
 
     app.AddComponent<Renderer>(ro);
     app.AddComponent<World>();
+    app.AddComponent<ConsoleEngine>();
     app.AddComponent<Console>();
     app.AddComponent<PlayerController>();
     app.AddComponent<ResourceSystem>();
     app.AddComponent<Debug>();
+    app.AddComponent<Physics>();
 
     app.Run();
 

@@ -24,6 +24,10 @@
 #include <GL/gl.h>
 #endif
 
+#ifdef WITH_PHYSX
+#include "PxPhysicsAPI.h"
+#endif // WITH_PHYSX
+
 #include "Math/Math.hpp"
 
 template <typename T>
