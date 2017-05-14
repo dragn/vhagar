@@ -112,7 +112,7 @@ void Renderer::TickInit(uint32_t delta)
 
     float aspect = static_cast<float>(mOptions.screenWidth) / static_cast<float>(mOptions.screenHeight);
 
-    mProjection = glm::perspective(45.f, aspect, 0.1f, 100.f);
+    mProjection = glm::infinitePerspective(45.f, aspect, 0.1f);
 
     if (!GLEW_VERSION_3_0)
     {

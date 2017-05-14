@@ -73,12 +73,15 @@ template<> bool vh::ResourceSystem::Load(const char* path, Mesh* mesh)
 
     if (!OpenFile(stream, fullPath, std::ios_base::in | std::ios_base::binary)) return false;
 
-    GLuint attrSize, attrCount, indexSize;
+    GLuint vertexCount, attrCount, indexSize, dim;
     GLfloat* attrData = nullptr;
     GLuint* indexData = nullptr;
 
+    Read(stream, &dim);
+    CHECK(dim == 3 || dim == 4) << "invalid dimensions";
+
     Read(stream, &indexSize);
-    Read(stream, &attrSize);
+    Read(stream, &vertexCount);
     Read(stream, &attrCount);
 
     indexData = new GLuint[indexSize];
@@ -89,15 +92,18 @@ template<> bool vh::ResourceSystem::Load(const char* path, Mesh* mesh)
         return false;
     }
 
-    attrData = new GLfloat[attrCount * attrSize];
-    Read(stream, attrData, attrCount * attrSize);
+    size_t dataSize = vertexCount * (dim + 3 * attrCount);
+    attrData = new GLfloat[dataSize];
+    Read(stream, attrData, dataSize);
     if (stream.fail())
     {
         LOG(FATAL) << "Resource load error";
+        delete[] attrData;
         return false;
     }
 
-    mesh->SetAttribData(attrSize, attrCount, attrData);
+    mesh->SetDim(dim);
+    mesh->SetAttribData(vertexCount, attrCount, attrData);
     mesh->SetIndexData(indexSize, indexData);
 
     // -- load texture
@@ -136,19 +142,21 @@ template<> bool vh::ResourceSystem::Save(const char* path, const Mesh* mesh)
 
     CHECK(mesh);
 
-    GLuint attrSize, attrCount, indexSize;
+    GLuint vertexCount, attrCount, indexSize;
+    GLuint dim = mesh->GetDim();
     GLfloat* attrData = nullptr;
     GLuint* indexData = nullptr;
 
-    mesh->GetAttribData(attrSize, attrCount, attrData);
+    mesh->GetAttribData(vertexCount, attrCount, attrData);
     mesh->GetIndexData(indexSize, indexData);
 
+    Write(stream, &dim);
     Write(stream, &indexSize);
-    Write(stream, &attrSize);
+    Write(stream, &vertexCount);
     Write(stream, &attrCount);
 
     Write(stream, indexData, indexSize);
-    Write(stream, attrData, attrCount * attrSize);
+    Write(stream, attrData, mesh->GetAttribDataSize());
 
     // -- serializing textures
     uint32_t* texDta;

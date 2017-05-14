@@ -11,7 +11,7 @@ namespace vh {
 
 namespace Utils {
 
-std::map<std::string, GLuint> shaderPrograms;
+std::unordered_map<std::string, GLuint> shaderPrograms;
 
 SDL_Surface *LoadImage(const std::string &filename) {
     SDL_Surface *tex = IMG_Load(filename.c_str());

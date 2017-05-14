@@ -5,7 +5,8 @@
 
 namespace vh {
 
-class Mesh : public Renderable {
+class Mesh : public Renderable
+{
 
     friend class SkyBox;
 
@@ -19,21 +20,23 @@ public:
      */
     void SetModel(glm::mat4 _model) { mModel = _model; }
 
-    void SetAttribData(GLuint size, GLuint count, GLfloat* data) {
-        mAttribSize = size;
-        mAttribCount = count;
+    void SetAttribData(GLuint vertexCount, GLuint attribCount, GLfloat* data)
+    {
+        mVertexNum = vertexCount;
+        mAttribCount = attribCount;
         mAttribData = data;
     }
 
-    void SetIndexData(GLuint size, GLuint* data) {
+    void SetIndexData(GLuint size, GLuint* data)
+    {
         mIndexSize = size;
         mIndexData = data;
     }
 
-    void GetAttribData(GLuint& size, GLuint& count, GLfloat*& data) const
+    void GetAttribData(GLuint& vertexCount, GLuint& attribCount, GLfloat*& data) const
     {
-        size = mAttribSize;
-        count = mAttribCount;
+        vertexCount = mVertexNum;
+        attribCount = mAttribCount;
         data = mAttribData;
     }
 
@@ -46,17 +49,23 @@ public:
     void SetTexture(uint32_t* rgbaData, size_t width, size_t height);
     void GetTexture(uint32_t*& rgbaData, size_t& width, size_t& height) const;
 
+    void SetDim(GLuint);
+    GLuint GetDim() const;
+
+    GLuint GetAttribDataSize() const;
+
 protected:
     glm::mat4 mModel;
 
-    GLuint mAttribSize = 0;
+    GLuint mVertexNum = 0;
     GLuint mAttribCount = 0;
-    GLfloat *mAttribData;
+    GLfloat *mAttribData = nullptr;
 
     GLuint mIndexSize = 0;
-    GLuint *mIndexData;
+    GLuint *mIndexData = nullptr;
 
     GLuint mProgramID;
+    GLuint mProgram4ID;
     GLuint mWireProgramID;
     GLBufferInfo mGLInfo;
 
@@ -92,11 +101,23 @@ private:
     GLint uidPLightInt;
     GLint uidPLightNum;
 
+    // homogeneous shader locations
+    GLint uid4MVP;
+    GLint uid4M;
+    GLint uid4V;
+    GLint uid4PLightPos;
+    GLint uid4PLightInt;
+    GLint uid4PLightNum;
+
     // wireframe uniform
     GLuint uidWireColor;
     GLuint uidWireMVP;
 
     virtual void BufferTexture();
+
+    // -- size of the vertex pos vector,
+    // defaults to 3, 4 for homogeneous coordinates
+    GLuint mDim = 3;
 };
 
-}
+} // namespace vh

@@ -238,17 +238,14 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename)
     if (mtlFile != NULL) fclose(mtlFile);
     fclose(objFile);
 
-    size_t size = values.size() * 3;
-
-    LOG(INFO) << "data size: " << size;
-
     // Allocate attrib data
-    GLuint attribCount = 2;
-    if (aColor.size() > 0) attribCount += 3;
-    if (uvs.size() > 0) attribCount += 1;
+    GLuint attribCount = 1;                     // normals are always present
+    if (aColor.size() > 0) attribCount += 3;    // add color triad if specified
+    if (uvs.size() > 0) attribCount += 1;       // add UV coordinates if specified
 
-    GLuint attribSize = size;
-    GLfloat* attribData = new GLfloat[attribSize * attribCount];
+    GLuint vertexNum = values.size();
+    GLuint attribSize = values.size() * (3 + 3 * attribCount);      // for each vertex: vec3 coordinates + vec3 * attribCount
+    GLfloat* attribData = new GLfloat[attribSize];
 
     // Allocate index data
     GLuint indexSize = indices.size();
@@ -281,7 +278,7 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename)
         }
 
         // Normals
-        base += attribSize;
+        base += (3 * vertexNum);
         if (vn > 0 && vn <= normals.size())
         {
             base[0] = normals[vn - 1].x;
@@ -290,7 +287,7 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename)
         }
 
         // Ambient colors
-        base += attribSize;
+        base += (3 * vertexNum);
         if (i < aColor.size())
         {
             base[0] = aColor[i].x;
@@ -299,7 +296,7 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename)
         }
 
         // Diffuse colors
-        base += attribSize;
+        base += (3 * vertexNum);
         if (i < dColor.size())
         {
             base[0] = dColor[i].x;
@@ -308,7 +305,7 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename)
         }
 
         // Specular colors
-        base += attribSize;
+        base += (3 * vertexNum);
         if (i < sColor.size())
         {
             base[0] = sColor[i].x;
@@ -317,7 +314,7 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename)
         }
 
         // uv coords
-        base += attribSize;
+        base += (3 * vertexNum);
         if (vt > 0 && vt <= uvs.size())
         {
             base[0] = uvs[vt - 1].x;
@@ -332,7 +329,7 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename)
     }
 
     // Set attrib and index data to mesh
-    mesh->SetAttribData(attribSize, attribCount, attribData);
+    mesh->SetAttribData(vertexNum, attribCount, attribData);
     mesh->SetIndexData(indexSize, indexData);
 
     for (size_t idx = 0; idx < textures.size(); ++idx)

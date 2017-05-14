@@ -5,10 +5,10 @@ set(shaders_src "Shaders/Shaders.hpp")
 file(GLOB ShaderFiles "Shaders/*.glsl")
 
 file(WRITE ${shaders_src} "#pragma once
-#include<map>
+#include<unordered_map>
 #include<string>
 namespace vh {
-  const std::map<std::string, std::string> Shaders = {")
+  const std::unordered_map<std::string, std::string> Shaders = {")
 
 foreach(shader ${ShaderFiles})
   file(READ ${shader} shader_content)

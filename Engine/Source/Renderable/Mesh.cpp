@@ -20,7 +20,7 @@ Mesh::~Mesh()
 {
     LOG(INFO) << "Mesh destructor";
     if (mIndexSize > 0) delete[] mIndexData;
-    if (mAttribSize > 0) delete[] mAttribData;
+    if (mVertexNum > 0) delete[] mAttribData;
 
     if (mTexDta != nullptr)
     {
@@ -53,6 +53,39 @@ void vh::Mesh::GetTexture(uint32_t*& rgbaData, size_t& width, size_t& height) co
     rgbaData = mTexDta;
     width = mTexW;
     height = mTexH;
+}
+
+
+void vh::Mesh::SetDim(GLuint dim)
+{
+    if (dim != 3 && dim != 4)
+    {
+        LOG(ERROR) << "Unsupported dimensions: " << dim;
+        return;
+    }
+
+    if (dim != mDim)
+    {
+        mDim = dim;
+
+        if (isReadyToRender)
+        {
+            // reload buffers
+            AfterRender();
+            BeforeRender();
+        }
+    }
+}
+
+
+GLuint vh::Mesh::GetDim() const
+{
+    return mDim;
+}
+
+GLuint vh::Mesh::GetAttribDataSize() const
+{
+    return mVertexNum * (mDim + mAttribCount * 3);
 }
 
 void vh::Mesh::BufferTexture()
@@ -92,8 +125,16 @@ Mesh::BeforeRender()
         return;
     }
 
-    mProgramID = Utils::GetShaderProgram("SimpleShader");
-    mWireProgramID = Utils::GetShaderProgram("Wireframe");
+    if (mDim == 3)
+    {
+        mProgramID = Utils::GetShaderProgram("SimpleShader");   // default shader
+    }
+    else
+    {
+        mProgramID = Utils::GetShaderProgram("SimpleShader4"); // homogeneous coordinates shader
+    }
+
+    mWireProgramID = Utils::GetShaderProgram("Wireframe");  // wireframe shader
 
     if (mProgramID == 0)
     {
@@ -114,7 +155,7 @@ Mesh::BeforeRender()
     uidWireMVP = glGetUniformLocation(mWireProgramID, "uMVP");
 
     // specify sizes
-    mGLInfo.attribBufferSize = mAttribSize;
+    mGLInfo.attribBufferSize = GetAttribDataSize();
     mGLInfo.indexBufferSize = mIndexSize;
 
     // buffer index data
@@ -125,12 +166,7 @@ Mesh::BeforeRender()
     glBindBuffer(GL_ARRAY_BUFFER, mGLInfo.attribBuffer);
 
     GLuint bytes = mGLInfo.attribBufferSize * sizeof(GLfloat);
-    glBufferData(GL_ARRAY_BUFFER, mAttribCount * bytes, NULL, GL_STATIC_DRAW);
-
-    for (size_t i = 0; i < mAttribCount; i++)
-    {
-        glBufferSubData(GL_ARRAY_BUFFER, i * bytes, bytes, mAttribData + i * mAttribSize);
-    }
+    glBufferData(GL_ARRAY_BUFFER, bytes, mAttribData, GL_STATIC_DRAW);
 
     // -- load texture
     BufferTexture();
@@ -164,8 +200,8 @@ Mesh::Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer)
 
     glUseProgram(mProgramID);
 
+    // -- setup lights
     glUniform1i(uidPLightNum, renderer->GetPointLights().size());
-
     V3 lightPos[MAX_POINT_LIGHTS];
     float lightInt[MAX_POINT_LIGHTS];
     for (size_t i = 0; i < renderer->GetPointLights().size(); ++i)
@@ -176,32 +212,37 @@ Mesh::Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer)
     glUniform3fv(uidPLightPos, renderer->GetPointLights().size(), reinterpret_cast<GLfloat*>(lightPos));
     glUniform1fv(uidPLightInt, renderer->GetPointLights().size(), reinterpret_cast<GLfloat*>(lightInt));
 
+    // -- setup transforms
     glUniformMatrix4fv(uidMVP, 1, GL_FALSE, reinterpret_cast<float*>(&MVP[0][0]));
     glUniformMatrix4fv(uidM, 1, GL_FALSE, reinterpret_cast<float*>(&mModel[0][0]));
     glUniformMatrix4fv(uidV, 1, GL_FALSE, reinterpret_cast<float*>(&view[0][0]));
 
+    // -- bind texture
     glBindTexture(GL_TEXTURE_2D, mGLInfo.texture);
 
-    for (GLuint i = 0; i < mAttribCount; i++)
-    {
-        glEnableVertexAttribArray(i);
-    }
+    // -- setup buffers
+    glEnableVertexAttribArray(0);
+    for (GLuint i = 0; i < mAttribCount; i++) glEnableVertexAttribArray(i + 1);
 
     glBindBuffer(GL_ARRAY_BUFFER, mGLInfo.attribBuffer);
 
+    // -- vertex positions
+    glVertexAttribPointer(0, mDim, GL_FLOAT, GL_FALSE, 0, (GLfloat*) 0);
+
+    // -- attributes
     GLfloat *offset = 0;
     for (GLuint i = 0; i < mAttribCount; i++)
     {
-        glVertexAttribPointer(i, 3, GL_FLOAT, GL_FALSE, 0, offset + i * mGLInfo.attribBufferSize);
+        glVertexAttribPointer(i + 1, 3, GL_FLOAT, GL_FALSE, 0, offset + mVertexNum * (mDim + 3 * i));
     }
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mGLInfo.indexBuffer);
     glDrawElements(GL_TRIANGLES, mGLInfo.indexBufferSize, GL_UNSIGNED_INT, (void*) 0);
 
-    for (GLuint i = 0; i < mAttribCount; i++)
-    {
-        glDisableVertexAttribArray(i);
-    }
+    glDisableVertexAttribArray(0);
+    for (GLuint i = 0; i < mAttribCount; i++) glDisableVertexAttribArray(i + 1);
+
+    // -- optionally, draw wireframes
     if (mRenderer->IsOn(RenderFlags::DRAW_WIREFRAMES))
     {
         MVP = projection * view * mModel;
