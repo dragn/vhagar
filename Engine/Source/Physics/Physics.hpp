@@ -21,6 +21,7 @@ private:
     physx::PxFoundation* mFoundation;
     physx::PxPhysics* mPhysics;
     physx::PxTolerancesScale mScale;
+    physx::PxScene* mScene;
 };
 
 } // namespace vh

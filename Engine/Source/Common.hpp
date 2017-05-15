@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <cstdint>
 
 #define HAVE_M_PI
 #include "SDL.h"
@@ -29,12 +30,6 @@
 #endif // WITH_PHYSX
 
 #include "Math/Math.hpp"
-
-template <typename T>
-using uptr = std::unique_ptr<T>;
-
-template <typename T>
-using sptr = std::shared_ptr<T>;
 
 #define UNCOPYABLE(Class) \
   Class(const Class&) = delete; \

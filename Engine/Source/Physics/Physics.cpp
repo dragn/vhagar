@@ -27,7 +27,7 @@ void vh::Physics::TickInit(uint32_t delta)
     static ErrorCallback gErrorCallback;
     static PxDefaultAllocator gDefaultAllocatorCallback;
 
-    mFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gDefaultAllocatorCallback, gErrorCallback);
+    mFoundation = PxCreateFoundation(PX_FOUNDATION_VERSION, gDefaultAllocatorCallback, gErrorCallback);
     if (!mFoundation)
     {
         LOG(FATAL) << "PxCreateFoundation failed!";
@@ -45,6 +45,19 @@ void vh::Physics::TickInit(uint32_t delta)
 
     // -- Register any additional features here
 
+    // -- Create scene
+    PxSceneDesc sceneDesc(mScale);
+    sceneDesc.gravity = PxVec3(0, -9.8f, 0);
+    sceneDesc.cpuDispatcher = PxDefaultCpuDispatcherCreate(1);
+    sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+    mScene = mPhysics->createScene(sceneDesc);
+    if (!mScene)
+    {
+        LOG(FATAL) << "CreateScene failed!";
+        Close();
+        return;
+    }
+
     FinishInit();
 }
 
@@ -58,5 +71,7 @@ void vh::Physics::TickClose(uint32_t delta)
 
 void vh::Physics::TickRun(uint32_t delta)
 {
-    // TODO run simulation
+    // the most simple simulation step
+    mScene->simulate(delta * 0.001f);
+    mScene->fetchResults(true);
 }
