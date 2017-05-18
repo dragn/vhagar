@@ -22,7 +22,7 @@ public:
     virtual void OnDestroy();
 
     void SetMesh(Mesh* mesh);
-    const Mesh* GetMesh() const { return mMesh; }
+    const Mesh* GetMesh() const { return mMesh.get(); }
 
     void LoadMesh(const char* path);
 
@@ -30,7 +30,7 @@ protected:
     virtual void _UpdateTransform();
 
 private:
-    Mesh* mMesh;
+    std::unique_ptr<Mesh> mMesh;
 };
 
 } // namespace vh

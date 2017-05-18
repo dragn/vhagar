@@ -12,19 +12,19 @@ namespace vh
 
 StaticMeshActor::StaticMeshActor(const char* filename)
 {
-    mMesh = new Mesh;
+    mMesh = std::make_unique<Mesh>();
     std::regex objRegex(".*\\.obj");
     std::regex vhRegex(".*\\.vhmesh");
     std::cmatch match;
     if (std::regex_match(filename, match, objRegex))
     {
-        Utils::ImportWavefront(mMesh, filename);
+        Utils::ImportWavefront(mMesh.get(), filename);
     }
     else if (std::regex_match(filename, match, vhRegex))
     {
         ResourceSystem* resource = App::Get<ResourceSystem>();
         CHECK(resource);
-        resource->Load(filename, mMesh);
+        resource->Load(filename, mMesh.get());
     }
     else
     {
@@ -48,35 +48,33 @@ StaticMeshActor::~StaticMeshActor()
 
 void StaticMeshActor::OnCreate()
 {
-    if (mMesh != nullptr)
+    if (mMesh)
     {
         mMesh->SetModel(mTransform);
-        App::Get<Renderer>()->AddObject(mMesh);
+        App::Get<Renderer>()->AddObject(mMesh.get());
     }
 }
 
 void StaticMeshActor::OnDestroy()
 {
-    if (mMesh != nullptr)
+    if (mMesh)
     {
-        App::Get<Renderer>()->RemoveObject(mMesh);
-        SafeDelete(mMesh);
+        App::Get<Renderer>()->RemoveObject(mMesh.get());
+        mMesh = nullptr;
     }
 }
 
 
 void StaticMeshActor::SetMesh(Mesh* mesh)
 {
-    if (mMesh != nullptr)
+    if (mMesh)
     {
-        App::Get<Renderer>()->RemoveObject(mMesh);
-        delete mMesh;
-        mMesh = nullptr;
+        App::Get<Renderer>()->RemoveObject(mMesh.get());
     }
 
-    mMesh = mesh;
+    mMesh.reset(mesh);
     mMesh->SetModel(mTransform);
-    App::Get<Renderer>()->AddObject(mMesh);
+    App::Get<Renderer>()->AddObject(mMesh.get());
 }
 
 void StaticMeshActor::_UpdateTransform()
