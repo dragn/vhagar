@@ -61,21 +61,16 @@ private:
 class Delegate
 {
 public:
-    Delegate() : mFunc(nullptr) {};
-    ~Delegate() { if (mFunc != nullptr) delete mFunc; }
-
     template<typename M>
     void Set(M m)
     {
-        if (mFunc != nullptr) delete mFunc;
-        mFunc = new Function<M>(m);
+        mFunc.reset(new Function<M>(m));
     }
 
     template<typename T, typename M>
     void Set(T t, M m)
     {
-        if (mFunc != nullptr) delete mFunc;
-        mFunc = new BindFunction<T, M>(t, m);
+        mFunc.reset(new BindFunction<T, M>(t, m));
     }
 
     virtual void operator()()
@@ -84,7 +79,7 @@ public:
     }
 
 private:
-    IFunction<>* mFunc;
+    std::unique_ptr<IFunction<>> mFunc;
 };
 
 template<typename... Args>
