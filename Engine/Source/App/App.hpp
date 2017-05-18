@@ -36,7 +36,7 @@ public:
     COMP_TYPE* AddComponent()
     {
         COMP_TYPE* comp = new COMP_TYPE();
-        mComponents.push_back(comp);
+        mComponents.push_back(std::unique_ptr<Component>(comp));
         mComponentsMap[comp->GetName()] = comp;
         return comp;
     }
@@ -45,7 +45,7 @@ public:
     COMP_TYPE* AddComponent(const PARAM_TYPE& param)
     {
         COMP_TYPE* comp = new COMP_TYPE(param);
-        mComponents.push_back(comp);
+        mComponents.push_back(std::unique_ptr<Component>(comp));
         mComponentsMap[comp->GetName()] = comp;
         return comp;
     }
@@ -78,7 +78,7 @@ protected:
 private:
     eAppState::Type mState;
 
-    std::list<Component*> mComponents;
+    std::list<std::unique_ptr<Component>> mComponents;
     std::unordered_map<std::string, Component*> mComponentsMap;
 
     void DoRun();

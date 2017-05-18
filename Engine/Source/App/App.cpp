@@ -66,28 +66,27 @@ void App::DoRun() {
         }
         else
         {
-            Component* comp = mComponents.back();
+            const std::unique_ptr<Component>& comp = mComponents.back();
             if (comp->IsRunning()) comp->Close();
         }
     }
 
     // -- Dispatch StartFrame events
-    std::for_each(mComponents.begin(), mComponents.end(), [] (Component* comp)
+    std::for_each(mComponents.begin(), mComponents.end(), [] (const std::unique_ptr<Component>& comp)
     {
         if (comp->GetState() == eCompState::RUN) comp->StartFrame();
     });
 
     // -- Tick all components
-    std::list<Component*>::iterator iter = mComponents.begin();
+    std::list<std::unique_ptr<Component>>::iterator iter = mComponents.begin();
     while (iter != mComponents.end())
     {
-        Component* comp = *iter;
+        const std::unique_ptr<Component>& comp = *iter;
 
         if (comp->GetState() == eCompState::CLOSED)
         {
             LOG(INFO) << "Destroying component " << comp->GetName();
             mComponentsMap.erase(mComponentsMap.find(comp->GetName()));
-            delete comp;
             iter = mComponents.erase(iter);
         }
         else
@@ -98,7 +97,7 @@ void App::DoRun() {
     }
 
     // -- Dispatch EndFrame events
-    std::for_each(mComponents.begin(), mComponents.end(), [] (Component* comp)
+    std::for_each(mComponents.begin(), mComponents.end(), [] (const std::unique_ptr<Component>& comp)
     {
         if (comp->GetState() == eCompState::RUN) comp->EndFrame();
     });
@@ -132,7 +131,7 @@ void App::HandleEvent(SDL_Event *event) {
             break;
     }
 
-    for (Component* comp : mComponents)
+    for (const std::unique_ptr<Component>& comp : mComponents)
     {
         comp->HandleEvent(event);
     }
