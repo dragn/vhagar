@@ -28,11 +28,9 @@ const size_t LINE_SPACE = 6;
 // number of history records
 const size_t NUM_HISTORY = 10;
 
-typedef void (*CmdHandler)(const std::vector<std::string>&);
+typedef void(*CmdHandler)(const std::vector<std::string>&);
 
-class ConsoleLogSink;
-
-class Console : public Component
+class Console : public Component, public google::LogSink
 {
     COMPONENT_NAME(Console);
 
@@ -40,7 +38,6 @@ public:
     Console()
         : Component(eTickFrequency::NEVER)
         , mShowConsole(false)
-        , mLogSink(nullptr)
         , mFont(nullptr)
         , mMessages(NUM_LINES)
         , mMsgIdx(0)
@@ -74,7 +71,6 @@ public:
 
 private:
     bool mShowConsole;
-    ConsoleLogSink* mLogSink;
     TTF_Font* mFont;
 
     std::string mInput;
@@ -94,6 +90,11 @@ private:
     Renderer* mRenderer;
 
     void _Redraw();
+
+public:
+    virtual void send(google::LogSeverity severity, const char* full_filename,
+        const char* base_filename, int line, const struct ::tm* tm_time,
+        const char* message, size_t message_len) override;
 };
 
 } // namespace vh

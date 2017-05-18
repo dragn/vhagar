@@ -8,28 +8,6 @@
 namespace vh
 {
 
-class ConsoleLogSink : public google::LogSink
-{
-public:
-    ConsoleLogSink(Console* console)
-        : mConsole(console)
-    {
-        CHECK(console);
-    }
-
-    virtual void send(google::LogSeverity severity, const char* full_filename,
-        const char* base_filename, int line,
-        const struct ::tm* tm_time,
-        const char* message, size_t message_len)
-    {
-        std::string str(message, message_len);
-        mConsole->PrintMessage(str);
-    }
-
-private:
-    Console* mConsole;
-};
-
 void Console::TickInit(uint32_t delta)
 {
     mEngine = App::Get<ConsoleEngine>();
@@ -65,8 +43,7 @@ void Console::TickInit(uint32_t delta)
         LOG(ERROR) << SDL_GetError();
     }
 
-    mLogSink = new ConsoleLogSink(this);
-    google::AddLogSink(mLogSink);
+    google::AddLogSink(this);
 
     std::ifstream hist(".consolehist");
     if (hist.is_open())
@@ -85,12 +62,7 @@ void Console::TickInit(uint32_t delta)
 
 void Console::TickClose(uint32_t delta)
 {
-    if (mLogSink != nullptr)
-    {
-        google::RemoveLogSink(mLogSink);
-        delete mLogSink;
-        mLogSink = nullptr;
-    }
+    google::RemoveLogSink(this);
 
     if (mSurf) SDL_FreeSurface(mSurf);
 
@@ -201,7 +173,7 @@ void Console::HandleEvent(SDL_Event* event)
         {
             if (!mInput.empty())
             {
-                if (mHistory[(NUM_HISTORY + mHistoryIdx - 1) % NUM_HISTORY] != mInput 
+                if (mHistory[(NUM_HISTORY + mHistoryIdx - 1) % NUM_HISTORY] != mInput
                     && mInput != "quit")
                 {
                     mHistory[mHistoryIdx] = mInput;
@@ -247,6 +219,15 @@ void Console::HandleEvent(SDL_Event* event)
             }
         }
     }
+}
+
+void Console::send(google::LogSeverity severity, const char* full_filename,
+    const char* base_filename, int line,
+    const struct ::tm* tm_time,
+    const char* message, size_t message_len)
+{
+    std::string str(message, message_len);
+    PrintMessage(str);
 }
 
 } // namespace vh
