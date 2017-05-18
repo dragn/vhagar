@@ -44,7 +44,7 @@ public:
     virtual void OnData(net::TcpClient* client, char* data, size_t dataSz);
 
 private:
-    std::list<ClientLogSink*> mSinks;
+    std::list<std::unique_ptr<ClientLogSink>> mSinks;
     net::TcpServer mServer;
 };
 

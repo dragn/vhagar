@@ -27,25 +27,17 @@ void vh::RemoteConsoleServer::OnConnect(net::TcpClient* clt)
 {
     LOG(INFO) << "Remote console client connected: " << clt->GetAddr();
 
-    mSinks.push_back(new ClientLogSink(clt));
+    mSinks.push_back(std::make_unique<ClientLogSink>(clt));
 }
 
 void vh::RemoteConsoleServer::OnDisconnect(net::TcpClient* clt)
 {
     LOG(INFO) << "Remote console client disconnected: " << clt->GetAddr();
 
-    for (auto sink = mSinks.begin(); sink != mSinks.end();)
+    std::remove_if(mSinks.begin(), mSinks.end(), [clt] (const std::unique_ptr<ClientLogSink>& sink)
     {
-        if ((*sink)->mTcpClient == clt)
-        {
-            delete *sink;
-            sink = mSinks.erase(sink);
-        }
-        else
-        {
-            sink++;
-        }
-    }
+        return sink->mTcpClient == clt;
+    });
 }
 
 void vh::RemoteConsoleServer::OnData(net::TcpClient* clt, char* data, size_t dataSz)
