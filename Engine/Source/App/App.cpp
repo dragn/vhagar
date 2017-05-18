@@ -4,7 +4,8 @@
 #include <csignal>
 #include "Utils/CritSection.hpp"
 
-namespace vh {
+namespace vh
+{
 
 static App* sApp;
 
@@ -30,7 +31,8 @@ void Signal(int signal)
     SDL_PushEvent(&event);
 }
 
-void App::Run() {
+void App::Run()
+{
 #ifdef WITH_GLOG
     google::InitGoogleLogging("Vhagar");
     //google::InstallFailureSignalHandler();
@@ -43,7 +45,8 @@ void App::Run() {
 #endif
 
     LOG(INFO) << "Starting application";
-    while (mState != eAppState::CLOSED) {
+    while (mState != eAppState::CLOSED)
+    {
         DoRun();
 
         // TODO switch to event-based main thread?
@@ -51,7 +54,8 @@ void App::Run() {
     }
 }
 
-void App::DoRun() {
+void App::DoRun()
+{
     HandleEvents();
 
     OnTick();
@@ -74,7 +78,7 @@ void App::DoRun() {
     // -- Dispatch StartFrame events
     std::for_each(mComponents.begin(), mComponents.end(), [] (const std::unique_ptr<Component>& comp)
     {
-        if (comp->GetState() == eCompState::RUN) comp->StartFrame();
+        comp->StartFrame_Internal();
     });
 
     // -- Tick all components
@@ -91,7 +95,7 @@ void App::DoRun() {
         }
         else
         {
-            comp->Tick(SDL_GetTicks());
+            comp->Tick();
             iter++;
         }
     }
@@ -99,7 +103,7 @@ void App::DoRun() {
     // -- Dispatch EndFrame events
     std::for_each(mComponents.begin(), mComponents.end(), [] (const std::unique_ptr<Component>& comp)
     {
-        if (comp->GetState() == eCompState::RUN) comp->EndFrame();
+        comp->EndFrame_Internal();
     });
 }
 
@@ -108,27 +112,32 @@ void App::Close()
     mState = eAppState::CLOSE;
 }
 
-void App::HandleEvents() {
+void App::HandleEvents()
+{
     SDL_Event event;
-    while (SDL_PollEvent(&event)) {
+    while (SDL_PollEvent(&event))
+    {
         HandleEvent(&event);
     }
 }
 
-void App::HandleEvent(SDL_Event *event) {
-    switch (event->type) {
-        case SDL_WINDOWEVENT:
-            switch (event->window.event) {
-                case SDL_WINDOWEVENT_CLOSE:
-                    event->type = SDL_QUIT;
-                    SDL_PushEvent(event);
-                    break;
-            }
+void App::HandleEvent(SDL_Event *event)
+{
+    switch (event->type)
+    {
+    case SDL_WINDOWEVENT:
+        switch (event->window.event)
+        {
+        case SDL_WINDOWEVENT_CLOSE:
+            event->type = SDL_QUIT;
+            SDL_PushEvent(event);
             break;
-        case SDL_QUIT:
-            LOG(INFO) << "Closing application";
-            mState = eAppState::CLOSE;
-            break;
+        }
+        break;
+    case SDL_QUIT:
+        LOG(INFO) << "Closing application";
+        mState = eAppState::CLOSE;
+        break;
     }
 
     for (const std::unique_ptr<Component>& comp : mComponents)

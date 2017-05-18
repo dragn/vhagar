@@ -56,9 +56,12 @@ public:
     Renderer(const RendererOptions& opts) : Component(eTickFrequency::NORMAL), mOptions(opts) {}
     virtual ~Renderer() {}
 
-    virtual void TickInit(uint32_t delta);
-    virtual void TickRun(uint32_t delta);
-    virtual void TickClose(uint32_t delta);
+    virtual void TickInit(uint32_t delta) override;
+    virtual void TickRun(uint32_t delta) override;
+    virtual void TickClose(uint32_t delta) override;
+
+    virtual void StartFrame() override;
+    virtual void EndFrame() override;
 
     /**
      * Add the object to the rendered world.
@@ -118,20 +121,11 @@ private:
 
     std::vector<const PointLight*> mLights;
 
+    // TODO cache optimize: use array to store objects pointers
     std::forward_list<Renderable*> mObjects;
 
     glm::mat4 mProjection;
     glm::mat4 mView;
-
-    /**
-     * Override to provide custom actions before Rendering phase
-     */
-    virtual void BeforeRender() {};
-
-    /**
-     * Override to provide custom actions after Rendering phase
-     */
-    virtual void AfterRender() {};
 };
 
 }

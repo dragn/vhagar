@@ -185,22 +185,10 @@ void Renderer::RemoveObject(Renderable *object)
 
 void Renderer::TickRun(uint32_t delta)
 {
-    BeforeRender();
-
-    glClearColor(0, 0, 0, 1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     for (Renderable *obj : mObjects)
     {
         obj->Render(mProjection, mView, this);
     }
-
-    int error = glGetError();
-    if (error) reportGLError(error);
-
-    SDL_GL_SwapWindow(mWindow);
-
-    AfterRender();
 }
 
 void Renderer::AddLight(const PointLight* light)
@@ -225,6 +213,20 @@ void Renderer::RemoveLight(const PointLight* light)
 const std::vector<const PointLight*> Renderer::GetPointLights() const
 {
     return mLights;
+}
+
+void Renderer::StartFrame()
+{
+    glClearColor(0, 0, 0, 1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void Renderer::EndFrame()
+{
+    int error = glGetError();
+    if (error) reportGLError(error);
+
+    SDL_GL_SwapWindow(mWindow);
 }
 
 } // namespace vh

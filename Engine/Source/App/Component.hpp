@@ -52,7 +52,7 @@ public:
 
     virtual const char* GetName() = 0;
 
-    void Tick(uint32_t time);
+    void Tick();
 
     int32_t GetTickStep()
     {
@@ -103,7 +103,15 @@ protected:
 private:
     eCompState::Type mState;
     int32_t mTickStep;
+
+    // used by App to mark component for ticks
     uint32_t mLastTick;
+    uint32_t mTickDelta;
+    void MarkForTick();
+
+    // called by App
+    void StartFrame_Internal();
+    void EndFrame_Internal();
 };
 
 } // namespace vh
