@@ -16,9 +16,7 @@ class World : public Component
 public:
     World();
 
-    template<typename T> T* SpawnActor() { return AddActor(new T); }
-    template<typename T, typename ARG> T* SpawnActor(ARG arg) { return AddActor(new T(arg)); }
-    template<typename T, typename ARG1, typename ARG2> T* SpawnActor(ARG1 arg1, ARG2 arg2) { return AddActor(new T(arg1, arg2)); }
+    template<typename T, typename... Args> T* SpawnActor(Args... args) { return AddActor(new T(args...)); }
 
     virtual void TickInit(uint32_t delta);
     virtual void TickRun(uint32_t delta);
@@ -29,10 +27,9 @@ public:
         auto iter = mActors.begin();
         while (iter != mActors.end())
         {
-            if (*iter == actor)
+            if (iter->get() == actor)
             {
                 (*iter)->OnDestroy();
-                delete *iter;
                 iter = mActors.erase(iter);
                 actor = nullptr;
             }
@@ -43,7 +40,7 @@ public:
         }
     }
 
-    const std::list<Actor*>& GetActors()
+    const std::list<std::unique_ptr<Actor>>& GetActors()
     {
         return mActors;
     }
@@ -51,11 +48,11 @@ public:
     template<typename T>
     T* GetActorByName(const std::string& name)
     {
-        for (Actor* actor : mActors)
+        for (const std::unique_ptr<Actor>& actor : mActors)
         {
             if (actor->GetName() == name)
             {
-                return reinterpret_cast<T*>(actor);
+                return reinterpret_cast<T*>(actor.get());
             }
         }
         return nullptr;
@@ -68,7 +65,7 @@ public:
     }
 
 private:
-    std::list<Actor*> mActors;
+    std::list<std::unique_ptr<Actor>> mActors;
     ActorFactory mActorFactory;
 
     template<typename T>
@@ -84,7 +81,7 @@ private:
     template<typename T>
     T* AddActor(T* actor, const std::string& name)
     {
-        mActors.push_back(actor);
+        mActors.push_back(std::unique_ptr<Actor>(actor));
         actor->SetName(name);
         actor->OnCreate();
         return actor;

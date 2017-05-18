@@ -153,7 +153,7 @@ void World::TickInit(uint32_t delta)
 void World::TickRun(uint32_t delta)
 {
     // Tick each actor
-    for (Actor* actor : mActors)
+    for (const std::unique_ptr<Actor>& actor : mActors)
     {
         actor->Tick(delta);
     }
@@ -162,10 +162,9 @@ void World::TickRun(uint32_t delta)
 void World::TickClose(uint32_t delta)
 {
     // Destroy all actors
-    for (Actor* actor : mActors)
+    for (const std::unique_ptr<Actor>& actor : mActors)
     {
         actor->OnDestroy();
-        delete actor;
     }
     mActors.clear();
 

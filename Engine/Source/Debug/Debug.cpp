@@ -46,7 +46,7 @@ void vh::Debug::TickInit(uint32_t delta)
 void vh::Debug::TickRun(uint32_t delta)
 {
     mDebugVisual.GetLabels().clear();
-    for (const Actor* actor : mWorld->GetActors())
+    for (const std::unique_ptr<Actor>& actor : mWorld->GetActors())
     {
         mDebugVisual.GetLabels().push_back(DebugLabel{ actor->GetPos(), "XXX" });
     }
