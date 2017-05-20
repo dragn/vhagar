@@ -71,6 +71,18 @@ public:
                 ff->AddBehavior<FreeFloatingBehavior>();
                 ff->StartPlay();
 
+                Utils::CubeMap cube;
+                cube.pos_x = "Assets/images/space/pink_planet_pos_x.tga";
+                cube.neg_x = "Assets/images/space/pink_planet_neg_x.tga";
+                cube.pos_y = "Assets/images/space/pink_planet_pos_y.tga";
+                cube.neg_y = "Assets/images/space/pink_planet_neg_y.tga";
+                cube.pos_z = "Assets/images/space/pink_planet_pos_z.tga";
+                cube.neg_z = "Assets/images/space/pink_planet_neg_z.tga";
+
+                Actor* skyBox = world->CreateActor("SkyBox");
+                skyBox->AddBehavior<SkyBoxBehavior>(cube);
+                skyBox->StartPlay();
+
                 Get<PlayerController>()->Control(ff);
 
                 mSpawned = true;

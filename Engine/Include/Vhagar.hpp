@@ -12,6 +12,7 @@
 #include "../Source/Renderer/Renderer.hpp"
 #include "../Source/Renderer/PointLightBehavior.hpp"
 #include "../Source/Renderer/MeshBehavior.hpp"
+#include "../Source/Renderer/SkyBoxBehavior.hpp"
 #include "../Source/App/PlayerController.hpp"
 #include "../Source/App/World.hpp"
 #include "../Source/App/App.hpp"
