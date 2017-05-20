@@ -1,53 +1,24 @@
 #pragma once
 
 #include "Common.hpp"
+#include "ActorBehavior.hpp"
 
-namespace vh {
+namespace vh
+{
 
 /**
  * Actor is something that could be placed in Scene,
  * something with position and rotation, but not necessarily drawable or movable.
  */
-class Actor {
+class Actor
+{
+    friend class World;
 
 public:
-    Actor() :
-        mPos(V3(0, 0, 0)),
-        mScale(V3(1, 1, 1)),
-        mYaw(0.0f),
-        mPitch(0.0f)
-    {
-        _UpdateTransform();
-    }
+    virtual ~Actor();
 
-    Actor(V3 pos) :
-        mPos(pos),
-        mScale(V3(1, 1, 1)),
-        mYaw(0.0f),
-        mPitch(0.0f)
-    {
-        _UpdateTransform();
-    }
-
-    Actor(V3 pos, Rot rot) :
-        mPos(pos),
-        mScale(V3(1, 1, 1)),
-        mYaw(rot.yaw),
-        mPitch(rot.pitch)
-    {
-        _UpdateTransform();
-    }
-
-    virtual ~Actor() {};
-
-    // Called when actor is created
-    virtual void OnCreate() {};
-
-    // Called when actor is destroyed
-    virtual void OnDestroy() {};
-
-    // Actor ticks are called from World
-    virtual void Tick(uint32_t delta) {}
+    // -- transform
+    const M4& GetTransform() const { return mTransform; }
 
     // -- pos
     const V3& GetPos() const;
@@ -95,12 +66,40 @@ public:
         return mName;
     }
 
+    M4 GetView() const;
+
+    template<typename BEHAVIOR_CLASS, typename... ARGS>
+    BEHAVIOR_CLASS* AddBehavior(ARGS... args)
+    {
+        mBehaviors.push_back(std::make_unique<BEHAVIOR_CLASS>(this, args...));
+        return static_cast<BEHAVIOR_CLASS*>(mBehaviors.back().get());
+    }
+
+    template<typename BEHAVIOR_CLASS, typename FUNC>
+    void ForEachBehaviorOfType(FUNC func)
+    {
+        std::for_each(mBehaviors.begin(), mBehaviors.end(), [&func] (const std::unique_ptr<ActorBehavior>& behavior)
+        {
+            BEHAVIOR_CLASS* base = dynamic_cast<BEHAVIOR_CLASS*>(behavior.get());
+            if (base) func(base);
+        });
+    }
+
+    // -- Enable this actor
+    void StartPlay();
+
+    // -- Disable this actor
+    void EndPlay();
+
 protected:
     virtual void _UpdateTransform();
 
     M4 mTransform;
 
 private:
+    World* mOwner;
+    bool mPlaying;
+
     V3 mPos;
     V3 mScale;
 
@@ -108,6 +107,14 @@ private:
     float mPitch = 0;
 
     std::string mName;
+
+    std::list<std::unique_ptr<ActorBehavior>> mBehaviors;
+
+    // Actor ticks are called from World
+    void Tick(uint32_t delta);
+
+    // Construction of Actor is only allowed in World
+    Actor(World* world, V3 pos = V3(), Rot rot = Rot(), V3 scale = V3(1.0f, 1.0f, 1.0f));
 };
 
 } // namespace vh

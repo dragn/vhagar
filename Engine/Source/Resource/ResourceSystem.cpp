@@ -59,17 +59,25 @@ void Read(std::istream& stream, T* obj, size_t count = 1)
 */
 template<> bool vh::ResourceSystem::Load(const char* path, Mesh* mesh)
 {
+    CHECK(mesh);
+
+    std::regex objRegex(".*\\.obj");
+    std::regex vhRegex(".*\\.vhmesh");
+    std::cmatch match;
+
+    if (std::regex_match(path, match, objRegex))
+    {
+        return Utils::ImportWavefront(mesh, path);
+    }
+    else if (!std::regex_match(path, match, vhRegex))
+    {
+        LOG(ERROR) << "Unsupported mesh file: " << path;
+        return false;
+    }
+
     std::ifstream stream;
 
     std::string fullPath = GetFullPath(path);
-
-    CHECK(mesh);
-
-    if (fullPath.find(".obj") == fullPath.size() - 4)
-    {
-        LOG(INFO) << "Importing wavefront object";
-        return Utils::ImportWavefront(mesh, fullPath.c_str());
-    }
 
     if (!OpenFile(stream, fullPath, std::ios_base::in | std::ios_base::binary)) return false;
 
@@ -109,12 +117,12 @@ template<> bool vh::ResourceSystem::Load(const char* path, Mesh* mesh)
     // -- load texture
     if (!stream.eof())
     {
-        size_t texW, texH;
+        GLsizei texW, texH;
         Read(stream, &texW);
         Read(stream, &texH);
         if (texW > 0 && texH > 0)
         {
-            uint32_t* data = new uint32_t[texW * texH];
+            GLuint* data = new GLuint[texW * texH];
             Read(stream, data, texW * texH);
             mesh->SetTexture(data, texW, texH);
         }
@@ -159,9 +167,10 @@ template<> bool vh::ResourceSystem::Save(const char* path, const Mesh* mesh)
     Write(stream, attrData, mesh->GetAttribDataSize());
 
     // -- serializing textures
-    uint32_t* texDta;
-    size_t texW, texH;
+    GLuint* texDta;
+    GLsizei texW, texH;
     mesh->GetTexture(texDta, texW, texH);
+
     Write(stream, &texW);
     Write(stream, &texH);
     if (texDta != nullptr) Write(stream, texDta, texW * texH);

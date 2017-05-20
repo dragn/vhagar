@@ -22,8 +22,6 @@ void Console::TickInit(uint32_t delta)
         return;
     }
 
-    mOverlay = new Overlay();
-
     mFont = TTF_OpenFont("Assets/Fonts/Roboto-regular.ttf", FONT_SIZE);
     if (!mFont)
     {
@@ -57,11 +55,15 @@ void Console::TickInit(uint32_t delta)
         hist.close();
     }
 
+    mOverlay.Init();
+
     FinishInit();
 }
 
 void Console::TickClose(uint32_t delta)
 {
+    mOverlay.Destroy();
+
     google::RemoveLogSink(this);
 
     if (mSurf) SDL_FreeSurface(mSurf);
@@ -85,7 +87,7 @@ void Console::TickClose(uint32_t delta)
 
 void Console::_Redraw()
 {
-    mOverlay->SetPos(20, 20);
+    mOverlay.SetPos(20, 20);
 
     SDL_FillRect(mSurf, NULL, SDL_MapRGB(mSurf->format, 16, 16, 16));
 
@@ -118,7 +120,7 @@ void Console::_Redraw()
         SDL_FreeSurface(text);
     }
 
-    mOverlay->SetTexture(mSurf);
+    mOverlay.SetTexture(mSurf);
 }
 
 void Console::PrintMessage(const std::string& msg)
@@ -140,13 +142,11 @@ void Console::ToggleConsole()
 {
     if (mShowConsole)
     {
-        mRenderer->RemoveObject(mOverlay);
         mShowConsole = false;
         SDL_StopTextInput();
     }
     else
     {
-        mRenderer->AddObject(mOverlay);
         mShowConsole = true;
         SDL_StartTextInput();
         _Redraw();
@@ -228,6 +228,14 @@ void Console::send(google::LogSeverity severity, const char* full_filename,
 {
     std::string str(message, message_len);
     PrintMessage(str);
+}
+
+void Console::TickRun(uint32_t delta)
+{
+    if (mShowConsole)
+    {
+        mOverlay.Render(mRenderer);
+    }
 }
 
 } // namespace vh

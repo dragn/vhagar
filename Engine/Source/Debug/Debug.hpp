@@ -22,6 +22,7 @@ public:
 
 private:
     DebugVisual mDebugVisual;
+    Renderer* mRenderer;
     World* mWorld;
     TTF_Font* mFont;
 };

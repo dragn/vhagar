@@ -56,7 +56,7 @@ void Component::Close()
     }
 }
 
-void Component::StartFrame_Internal()
+void Component::StartFrame_Internal(uint32_t time)
 {
     // negative tick step - do not tick in running
     if (mTickStep < 0 && mState == eCompState::RUN)
@@ -66,7 +66,6 @@ void Component::StartFrame_Internal()
     }
 
     // time passed since last tick
-    uint32_t time = SDL_GetTicks();
     uint32_t delta = time - mLastTick;
 
     // check if delta is greater than tickStep (if tickStep == 0 we tick on each main loop tick)

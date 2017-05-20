@@ -11,12 +11,17 @@ struct DebugLabel
     const char* text;
 };
 
-class DebugVisual : public Renderable
+class DebugVisual
 {
 public:
     DebugVisual() : mGLBuf(0) {}
+    ~DebugVisual();
 
     std::vector<DebugLabel>& GetLabels() { return mLabels; };
+
+    void Init();
+    void Destroy();
+    void Render(const Renderer* renderer);
 
 private:
     std::vector<DebugLabel> mLabels;
@@ -26,23 +31,6 @@ private:
 
     GLint uidColor;
     GLuint uidMVP;
-
-    /**
-     * Called by Renderer when this object is added to the rendered world.
-     * Should allocate OpenGL buffers and textures.
-     */
-    virtual void BeforeRender();
-
-    /**
-     * Called by Renderer when this object is removed from rendered world.
-     * Should deallocate any OpenGL buffers and textures.
-     */
-    virtual void AfterRender();
-
-    /**
-     * Handles actual rendering of this object (called from Renderer::render())
-     */
-    virtual void Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer);
 };
 
 } // namespace vh

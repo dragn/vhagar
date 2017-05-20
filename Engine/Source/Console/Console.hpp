@@ -36,7 +36,7 @@ class Console : public Component, public google::LogSink
 
 public:
     Console()
-        : Component(eTickFrequency::NEVER)
+        : Component(eTickFrequency::NORMAL)
         , mShowConsole(false)
         , mFont(nullptr)
         , mMessages(NUM_LINES)
@@ -45,7 +45,6 @@ public:
         , mHistoryIdx(0)
         , mCurrHistoryIdx(0)
         , mSurf(nullptr)
-        , mOverlay(nullptr)
         , mEngine(nullptr)
         , mRenderer(nullptr)
     {
@@ -55,6 +54,7 @@ public:
 
     /* Component interface */
     virtual void TickInit(uint32_t delta);
+    virtual void TickRun(uint32_t delta);
     virtual void TickClose(uint32_t delta);
 
     virtual void HandleEvent(SDL_Event* event);
@@ -84,7 +84,7 @@ private:
     size_t mCurrHistoryIdx;
 
     SDL_Surface* mSurf;
-    Overlay* mOverlay;
+    Overlay mOverlay;
 
     ConsoleEngine* mEngine;
     Renderer* mRenderer;

@@ -29,7 +29,6 @@ public:
         {
             if (iter->get() == actor)
             {
-                (*iter)->OnDestroy();
                 iter = mActors.erase(iter);
                 actor = nullptr;
             }
@@ -58,34 +57,21 @@ public:
         return nullptr;
     }
 
-    void SpawnActorByClassName(const std::string& name)
+    Actor* CreateActor(const std::string& name)
     {
-        Actor* a = mActorFactory.Create(name);
-        if (a != nullptr) AddActor(a);
+        std::string tmp(name);
+        tmp.append("_");
+        tmp.append(std::to_string(mActors.size()));
+
+        Actor* actor = new Actor(this);
+        actor->SetName(tmp);
+        mActors.push_back(std::unique_ptr<Actor>(actor));
+        return actor;
     }
 
 private:
     std::list<std::unique_ptr<Actor>> mActors;
     ActorFactory mActorFactory;
-
-    template<typename T>
-    T* AddActor(T* actor)
-    {
-        std::string name = typeid(T).name();
-        name = name.substr(name.find("vh::") + 4);
-        name.append("_");
-        name.append(std::to_string(mActors.size()));
-        return AddActor(actor, name);
-    }
-
-    template<typename T>
-    T* AddActor(T* actor, const std::string& name)
-    {
-        mActors.push_back(std::unique_ptr<Actor>(actor));
-        actor->SetName(name);
-        actor->OnCreate();
-        return actor;
-    }
 
     UNCOPYABLE(World);
 };

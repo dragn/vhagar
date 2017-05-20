@@ -149,13 +149,6 @@ void Renderer::TickInit(uint32_t delta)
 
 void Renderer::TickClose(uint32_t delta)
 {
-    for (Renderable *obj : mObjects)
-    {
-        obj->AfterRender();
-        delete obj;
-    }
-    mObjects.clear();
-
     SDL_GL_DeleteContext(mGLContext);
     SDL_DestroyWindow(mWindow);
 
@@ -163,32 +156,6 @@ void Renderer::TickClose(uint32_t delta)
     SDL_Quit();
 
     FinishClose();
-}
-
-void Renderer::AddObject(Renderable *object)
-{
-    CHECK(IsRunning()) << "Invalid state";
-    CHECK(object);
-
-    mObjects.push_front(object);
-    object->BeforeRender();
-}
-
-void Renderer::RemoveObject(Renderable *object)
-{
-    CHECK(IsRunning()) << "Invalid state";
-    CHECK(object);
-
-    object->AfterRender();
-    mObjects.remove(object);
-}
-
-void Renderer::TickRun(uint32_t delta)
-{
-    for (Renderable *obj : mObjects)
-    {
-        obj->Render(mProjection, mView, this);
-    }
 }
 
 void Renderer::AddLight(const PointLight* light)

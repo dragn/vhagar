@@ -4,24 +4,23 @@
 
 namespace vh {
 
-class Overlay : public Renderable {
+class Overlay {
 
 public:
-    Overlay();
+    ~Overlay();
 
     void SetPos(uint32_t x, uint32_t y);
 
     void SetTexture(SDL_Surface *surf);
 
-    /* Object methods */
-    virtual void BeforeRender();
-    virtual void AfterRender();
-    virtual void Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer);
-    /* end of Object methods */
+    void Init();
+    void Destroy();
+
+    virtual void Render(const Renderer* renderer);
 
 private:
-    uint32_t mPosX;
-    uint32_t mPosY;
+    uint32_t mPosX = 0;
+    uint32_t mPosY = 0;
 
     GLuint vertexBuffer = 0;
     GLuint programID = 0;

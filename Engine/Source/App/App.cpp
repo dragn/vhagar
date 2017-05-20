@@ -75,10 +75,14 @@ void App::DoRun()
         }
     }
 
-    // -- Dispatch StartFrame events
-    std::for_each(mComponents.begin(), mComponents.end(), [] (const std::unique_ptr<Component>& comp)
+    uint32_t time = SDL_GetTicks();
+
+    // -- Dispatch StartFrame events (pass the same time for all components,
+    //    this will ensure, that components with the same tick frequency will be ticked
+    //    on the same frame.
+    std::for_each(mComponents.begin(), mComponents.end(), [time] (const std::unique_ptr<Component>& comp)
     {
-        comp->StartFrame_Internal();
+        comp->StartFrame_Internal(time);
     });
 
     // -- Tick all components

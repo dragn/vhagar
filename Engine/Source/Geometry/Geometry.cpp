@@ -4,7 +4,6 @@
 #include "App/World.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Console/ConsoleCommands.hpp"
-#include "Actor/StaticMeshActor.hpp"
 
 using namespace vh;
 
@@ -33,10 +32,12 @@ DEFINE_COMMAND(spawn_box)
 
     }
 
-    // Mesh* mesh = new Mesh;
-
-    StaticMeshActor* box = App::Get<World>()->SpawnActor<StaticMeshActor>();
+    /*
+    Actor* box = App::Get<World>()->CreateActor("Box_");
     box->SetPos(V3(stof(params[1]), stof(params[2]), stof(params[3])));
+    box->AddBehavior<MeshBehavior>("Assets/Meshes/box2.vhmesh");
+    box->StartPlay();
+    */
 }
 
 void vh::Geometry::TickInit(uint32_t delta)

@@ -1,8 +1,10 @@
 #pragma once
 
+#include <list>
 #include <algorithm>
 #include <memory>
 #include <cstdint>
+#include <regex>
 
 #define HAVE_M_PI
 #include "SDL.h"

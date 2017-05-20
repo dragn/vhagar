@@ -7,7 +7,8 @@
 #include "Console.hpp"
 
 #include "Resource/ResourceSystem.hpp"
-#include "Actor/StaticMeshActor.hpp"
+
+#include "Renderer/MeshBehavior.hpp"
 
 namespace vh
 {
@@ -77,17 +78,24 @@ DEFINE_COMMAND(save_mesh)
         return;
     }
 
-    StaticMeshActor* actor = world->GetActorByName<StaticMeshActor>(params[1]);
+    Actor* actor = world->GetActorByName<Actor>(params[1]);
     if (actor == nullptr)
     {
         LOG(INFO) << "Could not find actor " << params[1];
         return;
     }
 
-    if (rs->Save<Mesh>(params[2].c_str(), actor->GetMesh()))
+    const char* filename = params[2].c_str();
+    actor->ForEachBehaviorOfType<MeshBehavior>([rs, filename] (MeshBehavior* behavior)
     {
-        LOG(INFO) << "Saved mesh successfully";
-    }
+        if (behavior->GetMesh())
+        {
+            if (rs->Save<Mesh>(filename, behavior->GetMesh()))
+            {
+                LOG(INFO) << "Saved mesh successfully";
+            }
+        }
+    });
 }
 
 } // namespace ConsoleCommands

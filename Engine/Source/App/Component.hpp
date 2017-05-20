@@ -110,7 +110,7 @@ private:
     void MarkForTick();
 
     // called by App
-    void StartFrame_Internal();
+    void StartFrame_Internal(uint32_t time);
     void EndFrame_Internal();
 };
 

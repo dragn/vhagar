@@ -5,6 +5,14 @@
 
 using namespace vh;
 
+void AddPointLight(World* world, V3 pos, float intensity)
+{
+    Actor* actor = world->CreateActor("Light");
+    actor->AddBehavior<PointLightBehavior>(intensity);
+    actor->SetPos(pos);
+    actor->StartPlay();
+}
+
 class MyApp : public vh::App
 {
 public:
@@ -19,8 +27,8 @@ public:
 
             if (world && world->IsRunning() && render && render->IsRunning())
             {
-                world->SpawnActor<PointLightActor>(V3(0, 2, 4), 0.4f);
-                world->SpawnActor<PointLightActor>(V3(5, 0, 0), 0.4f);
+                AddPointLight(world, V3(0, 2, 4), 0.4f);
+                AddPointLight(world, V3(5, 0, 0), 0.4f);
                 /*
                 StaticMeshActor* actor = world->SpawnActor<StaticMeshActor>("Assets/box2.obj");
                 actor->SetScale(V3(3.0f, 0.2f, 3.0f));
@@ -55,7 +63,15 @@ public:
                 planeActor->SetMesh(mesh);
                 */
 
-                Get<PlayerController>()->Control(world->SpawnActor<FreeFloating>());
+                Actor* mesh = world->CreateActor("Mesh");
+                mesh->AddBehavior<MeshBehavior>("Assets/Sources/box2.obj");
+                mesh->StartPlay();
+
+                Actor* ff = world->CreateActor("FreeFloating");
+                ff->AddBehavior<FreeFloatingBehavior>();
+                ff->StartPlay();
+
+                Get<PlayerController>()->Control(ff);
 
                 mSpawned = true;
             }

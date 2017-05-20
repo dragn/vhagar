@@ -15,6 +15,11 @@ void Actor::AddPos(const V3& pos) {
     _UpdateTransform();
 }
 
+Actor::~Actor()
+{
+    EndPlay();
+}
+
 const V3& Actor::GetPos() const
 {
     return mPos;
@@ -49,6 +54,35 @@ void Actor::AddPitch(float pitch) {
     mPitch += pitch;
     mPitch = Math::WrapAngle(mPitch);
     _UpdateTransform();
+}
+
+vh::M4 Actor::GetView() const
+{
+    return glm::lookAt(GetPos(), GetPos() + GetForward(), GetUp());
+}
+
+void Actor::StartPlay()
+{
+    if (!mPlaying)
+    {
+        for (const std::unique_ptr<ActorBehavior>& behavior : mBehaviors)
+        {
+            behavior->StartPlay();
+        }
+        mPlaying = true;
+    }
+}
+
+void Actor::EndPlay()
+{
+    if (mPlaying)
+    {
+        for (const std::unique_ptr<ActorBehavior>& behavior : mBehaviors)
+        {
+            behavior->EndPlay();
+        }
+        mPlaying = false;
+    }
 }
 
 float Actor::GetYaw() const
@@ -99,6 +133,26 @@ void Actor::_UpdateTransform() {
     M4 rot = glm::rotate(glm::rotate(M4(1.f), - mYaw, V3(0, 1, 0)), mPitch, V3(1, 0, 0));
     mTransform = glm::translate(M4(1.f), mPos) * rot * glm::scale(M4(1.f), mScale);
     //  modelMatrix = glm::translate(glm::scale(mRot, mScale), mPos);
+}
+
+void Actor::Tick(uint32_t delta)
+{
+    // tick all behaviors
+    for (const std::unique_ptr<ActorBehavior>& behavior : mBehaviors)
+    {
+        behavior->Tick(delta);
+    }
+}
+
+Actor::Actor(World* world, V3 pos, Rot rot, V3 scale) :
+    mOwner(world),
+    mPlaying(false),
+    mPos(pos),
+    mScale(scale),
+    mYaw(rot.yaw),
+    mPitch(rot.pitch)
+{
+    _UpdateTransform();
 }
 
 } // namespace vh

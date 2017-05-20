@@ -3,6 +3,7 @@
 #include "DebugVisual.hpp"
 #include "Utils/GLUtils.hpp"
 #include <glm/gtx/transform.hpp>
+#include "Renderer/Renderer.hpp"
 
 static const GLfloat crossData[] = {
     -0.1f, 0.0f, 0.0f,
@@ -13,7 +14,7 @@ static const GLfloat crossData[] = {
      0.0f, 0.0f, 0.1f
 };
 
-void vh::DebugVisual::BeforeRender()
+void vh::DebugVisual::Init()
 {
     CHECK(mGLBuf == 0);
 
@@ -27,14 +28,19 @@ void vh::DebugVisual::BeforeRender()
     glBufferData(GL_ARRAY_BUFFER, sizeof(crossData), crossData, GL_STATIC_DRAW);
 }
 
-void vh::DebugVisual::AfterRender()
+void vh::DebugVisual::Destroy()
 {
     CHECK(mGLBuf > 0);
 
     glDeleteBuffers(1, &mGLBuf);
 }
 
-void vh::DebugVisual::Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer)
+vh::DebugVisual::~DebugVisual()
+{
+    Destroy();
+}
+
+void vh::DebugVisual::Render(const Renderer* renderer)
 {
     glUseProgram(mProgramId);
 
@@ -47,7 +53,7 @@ void vh::DebugVisual::Render(glm::mat4 projection, glm::mat4 view, const Rendere
 
     for (const DebugLabel& label : mLabels)
     {
-        M4 MVP = projection * view * glm::translate(M4(1.0f), label.pos);
+        M4 MVP = renderer->GetProjection() * renderer->GetView() * glm::translate(M4(1.0f), label.pos);
         glUniformMatrix4fv(uidMVP, 1, GL_FALSE, &MVP[0][0]);
         glDrawArrays(GL_LINES, 0, 6);
     }

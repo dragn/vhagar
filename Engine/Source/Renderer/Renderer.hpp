@@ -57,21 +57,10 @@ public:
     virtual ~Renderer() {}
 
     virtual void TickInit(uint32_t delta) override;
-    virtual void TickRun(uint32_t delta) override;
     virtual void TickClose(uint32_t delta) override;
 
     virtual void StartFrame() override;
     virtual void EndFrame() override;
-
-    /**
-     * Add the object to the rendered world.
-     */
-    void AddObject(Renderable *object);
-
-    /**
-     * Remove the object from rendering
-     */
-    void RemoveObject(Renderable *object);
 
     /**
      * Set up light sources
@@ -84,11 +73,13 @@ public:
      * Sets up a projection matrix
      */
     void SetProjection(glm::mat4 projection) { mProjection = projection; };
+    const M4& GetProjection() const { return mProjection; }
 
     /**
      * Sets up view matrix (camera)
      */
     void SetView(glm::mat4 view) { mView = view; };
+    const M4& GetView() const { return mView; }
 
     const RendererOptions& GetOptions() const
     {
@@ -120,9 +111,6 @@ private:
     uint32_t mWindowID;
 
     std::vector<const PointLight*> mLights;
-
-    // TODO cache optimize: use array to store objects pointers
-    std::forward_list<Renderable*> mObjects;
 
     glm::mat4 mProjection;
     glm::mat4 mView;

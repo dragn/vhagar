@@ -64,7 +64,7 @@ private:
      *
      * FIXME passing View and Projection here means every object will have the same view. but ok for now...
      */
-    virtual void Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer) = 0;
+    virtual void Render(const Renderer* renderer) = 0;
 };
 
 }

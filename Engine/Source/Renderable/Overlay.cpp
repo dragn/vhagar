@@ -4,40 +4,28 @@ using namespace vh;
 
 void Overlay::SetTexture(SDL_Surface *s)
 {
-    if (isReadyToRender)
-    {
-        if (texId > 0)
-        {
-            glDeleteTextures(1, &texId);
-            texId = 0;
-        }
-        texId = Utils::BufferTexture2D(s);
-    }
+    // TODO optimize performance (use PBO? or FBO?)
+    glDeleteTextures(1, &texId);
+
+    texId = Utils::BufferTexture2D(s);
 
     _UpdateVertices(s->w, s->h);
 }
 
-void Overlay::BeforeRender()
+void Overlay::Init()
 {
-    vertexBuffer = Utils::BufferData(12, vertices);
-
     programID = Utils::GetShaderProgram("OSD");
     if (programID < 0)
     {
         LOG(INFO) << "Unable to load program OSD";
         return;
     }
-
-    isReadyToRender = true;
 }
 
-void Overlay::AfterRender()
+void Overlay::Destroy()
 {
-    if (texId > 0)
-    {
-        glDeleteTextures(1, &texId);
-        texId = 0;
-    }
+    glDeleteTextures(1, &texId);
+    texId = 0;
     glDeleteBuffers(1, &vertexBuffer);
     vertexBuffer = 0;
 }
@@ -65,17 +53,13 @@ void Overlay::_UpdateVertices(uint32_t w, uint32_t h)
     std::copy(v, v + 12, vertices);
     mBounds = V4(glX, glY, w / width, h / height);
 
-    if (isReadyToRender)
-    {
-        glDeleteBuffers(1, &vertexBuffer);
-        vertexBuffer = Utils::BufferData(12, vertices);
-    }
+    // -- update vertex buffer
+    glDeleteBuffers(1, &vertexBuffer);
+    vertexBuffer = Utils::BufferData(12, vertices);
 }
 
-void Overlay::Render(glm::mat4 projection, glm::mat4 view, const Renderer* renderer)
+void Overlay::Render(const Renderer* renderer)
 {
-    if (!isReadyToRender) return;
-
     glDisable(GL_CULL_FACE);
     glUseProgram(programID);
 
@@ -92,11 +76,9 @@ void Overlay::Render(glm::mat4 projection, glm::mat4 view, const Renderer* rende
     glEnable(GL_CULL_FACE);
 }
 
-vh::Overlay::Overlay()
-    : mPosX(0)
-    , mPosY(0)
+vh::Overlay::~Overlay()
 {
-    _UpdateVertices(0, 0);
+    Destroy();
 }
 
 void vh::Overlay::SetPos(uint32_t x, uint32_t y)

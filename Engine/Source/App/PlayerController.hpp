@@ -1,10 +1,8 @@
 #pragma once
 
 #include "Actor/Actor.hpp"
-#include "Arm.hpp"
 #include "Component.hpp"
-#include "Actor/Controllable.hpp"
-#include "Actor/CameraActor.hpp"
+#include "Actor/ControlBehavior.hpp"
 #include "Console/Console.hpp"
 
 namespace vh {
@@ -20,7 +18,7 @@ public:
     PlayerController();
 
     // Take possession of the object
-    void Control(Controllable *actor);
+    void Control(Actor *actor);
 
     // Release previously possessed object
     void Release();
@@ -33,9 +31,9 @@ public:
 
 private:
     Console* mConsole;
-    Controllable* mActor;
+    Actor* mActor;
 
-    CameraActor* mCamera;
+    Actor* mCamera;
     //Arm* mCameraBoom;
 
     float mCameraTurnSpeed;

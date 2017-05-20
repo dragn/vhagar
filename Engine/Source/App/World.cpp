@@ -5,7 +5,7 @@
 #include "Renderer/Renderer.hpp"
 #include "Console/ConsoleCommands.hpp"
 #include "Resource/ResourceSystem.hpp"
-#include "Actor/StaticMeshActor.hpp"
+#include "Renderer/MeshBehavior.hpp"
 #include "Utils/ImportUtils.hpp"
 
 namespace vh {
@@ -28,17 +28,6 @@ DEFINE_COMMAND(destroy_actor)
 
     App::Get<World>()->DestroyActor(actor);
     LOG(INFO) << "Actor " << name << " destroyed";
-}
-
-DEFINE_COMMAND(spawn_actor)
-{
-    if (params.size() <= 1)
-    {
-        LOG(INFO) << "Usage: " << params[0] << " <actor class name>";
-        return;
-    }
-
-    App::Get<World>()->SpawnActorByClassName(params[1]);
 }
 
 DEFINE_COMMAND(pos_actor)
@@ -123,13 +112,15 @@ DEFINE_COMMAND(spawn_mesh_actor)
         return;
     }
 
-    Mesh* mesh = new Mesh;
-    if (rs->Load<Mesh>(params[1].c_str(), mesh))
+    Actor* actor = world->CreateActor("Mesh");
+    MeshBehavior* mb = actor->AddBehavior<MeshBehavior>(params[1].c_str());
+    if (mb->IsValid())
     {
-        LOG(INFO) << "Mesh loaded successfully";
-
-        StaticMeshActor* actor = world->SpawnActor<StaticMeshActor>();
-        actor->SetMesh(mesh);
+        actor->StartPlay();
+    }
+    else
+    {
+        world->DestroyActor(actor);
     }
 }
 
@@ -141,7 +132,6 @@ World::World() : Component(eTickFrequency::NORMAL)
 void World::TickInit(uint32_t delta)
 {
     REGISTER_COMMAND(destroy_actor);
-    REGISTER_COMMAND(spawn_actor);
     REGISTER_COMMAND(pos_actor);
     REGISTER_COMMAND(move_actor);
     REGISTER_COMMAND(spawn_mesh_actor);
@@ -162,10 +152,6 @@ void World::TickRun(uint32_t delta)
 void World::TickClose(uint32_t delta)
 {
     // Destroy all actors
-    for (const std::unique_ptr<Actor>& actor : mActors)
-    {
-        actor->OnDestroy();
-    }
     mActors.clear();
 
     FinishClose();

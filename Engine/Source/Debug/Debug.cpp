@@ -18,7 +18,7 @@ DEFINE_COMMAND(toggle_labels)
     }
 }
 
-vh::Debug::Debug() : Component(eTickFrequency::RARE)
+vh::Debug::Debug() : Component(eTickFrequency::NORMAL)
 {
     App::CheckRequired<Renderer>();
     App::CheckRequired<World>();
@@ -26,12 +26,12 @@ vh::Debug::Debug() : Component(eTickFrequency::RARE)
 
 void vh::Debug::TickInit(uint32_t delta)
 {
-    Renderer* renderer = App::Get<Renderer>();
+    mRenderer = App::Get<Renderer>();
 
     // wait for renderer to start
-    if (!renderer->IsRunning()) return;
+    if (!mRenderer->IsRunning()) return;
 
-    renderer->AddObject(&mDebugVisual);
+    mDebugVisual.Init();
 
     mWorld = App::Get<World>();
 
@@ -50,6 +50,8 @@ void vh::Debug::TickRun(uint32_t delta)
     {
         mDebugVisual.GetLabels().push_back(DebugLabel{ actor->GetPos(), "XXX" });
     }
+
+    mDebugVisual.Render(mRenderer);
 }
 
 void vh::Debug::TickClose(uint32_t delta)
@@ -57,7 +59,7 @@ void vh::Debug::TickClose(uint32_t delta)
     Renderer* renderer = App::Get<Renderer>();
     CHECK(renderer);
 
-    renderer->RemoveObject(&mDebugVisual);
+    mDebugVisual.Destroy();
 
     FinishClose();
 }
