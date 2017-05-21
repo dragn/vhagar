@@ -58,11 +58,18 @@ void vh::Physics::TickInit(uint32_t delta)
         return;
     }
 
+    mControllerManager = PxCreateControllerManager(*mScene);
+
     FinishInit();
 }
 
 void vh::Physics::TickClose(uint32_t delta)
 {
+    if (mControllerManager != nullptr)
+    {
+        mControllerManager->release();
+        mControllerManager = nullptr;
+    }
     if (mScene != nullptr)
     {
         mScene->release();
@@ -84,15 +91,24 @@ void vh::Physics::TickClose(uint32_t delta)
 
 void vh::Physics::TickRun(uint32_t delta)
 {
-    // the most simple simulation step
 }
 
 void vh::Physics::StartFrame()
 {
-    if (mScene) mScene->simulate(1.0f / 60.0f);
+    if (IsRunning())
+    {
+        CHECK(mScene);
+        mScene->simulate(1.0f / 60.0f);
+        mSimCalled = true;
+    }
 }
 
 void vh::Physics::EndFrame()
 {
-    if (mScene) mScene->fetchResults(true);
+    if (IsRunning() && mSimCalled)
+    {
+        CHECK(mScene);
+        mScene->fetchResults(true);
+        mSimCalled = false;
+    }
 }

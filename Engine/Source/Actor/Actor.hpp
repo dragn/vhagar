@@ -44,6 +44,9 @@ public:
     // -- get Actor's up vector
     V3 GetUp() const;
 
+    // -- get Actor's right vector
+    V3 GetRight() const;
+
     // -- yaw
     float GetYaw() const;
     void SetYaw(float yaw);
@@ -86,6 +89,17 @@ public:
             BEHAVIOR_CLASS* base = dynamic_cast<BEHAVIOR_CLASS*>(behavior.get());
             if (base) func(base);
         });
+    }
+
+    template<typename BEHAVIOR_CLASS>
+    BEHAVIOR_CLASS* GetBehaviorOfType()
+    {
+        for (auto beh = mBehaviors.begin(); beh != mBehaviors.end(); beh++)
+        {
+            BEHAVIOR_CLASS* base = dynamic_cast<BEHAVIOR_CLASS*>(beh->get());
+            if (base) return base;
+        }
+        return nullptr;
     }
 
     // -- Enable this actor

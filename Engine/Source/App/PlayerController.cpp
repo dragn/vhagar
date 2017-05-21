@@ -4,6 +4,7 @@
 #include "App.hpp"
 #include "Renderer/Renderer.hpp"
 #include "World.hpp"
+#include "Actor/CameraBehavior.hpp"
 
 namespace vh
 {
@@ -11,7 +12,6 @@ namespace vh
 PlayerController::PlayerController() :
     Component(eTickFrequency::NORMAL),
     mActor(nullptr),
-    mCamera(nullptr),
     mCameraTurnSpeed(0.001f)
 {
     App::CheckRequired<Renderer>();
@@ -20,9 +20,6 @@ PlayerController::PlayerController() :
 
 void PlayerController::TickInit(uint32_t delta)
 {
-    mCamera = App::Get<World>()->CreateActor("Camera");
-    mCamera->StartPlay();
-
     mConsole = App::Get<Console>();
 
     FinishInit();
@@ -45,20 +42,21 @@ void PlayerController::TickRun(uint32_t delta)
         if (mPressed['d']) behavior->MoveRight(sec);
     });
 
-    // Update camera position
-    if (mCamera)
+    // Update renderer view with Actor's custom or default camera behavior
+    CameraBehavior* camera = mActor->GetBehaviorOfType<CameraBehavior>();
+    if (camera != nullptr)
     {
-        mCamera->SetPos(mActor->GetPos());
-        mCamera->SetRot(mActor->GetRot());
-
-        App::Get<Renderer>()->SetView(mCamera->GetView());
+        App::Get<Renderer>()->SetView(camera->GetView());
+    }
+    else
+    {
+        // no camera behavior, use actor's view
+        App::Get<Renderer>()->SetView(mActor->GetView());
     }
 }
 
 void PlayerController::TickClose(uint32_t delta)
 {
-    App::Get<World>()->DestroyActor(mCamera);
-
     FinishClose();
 }
 

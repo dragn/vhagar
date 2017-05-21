@@ -33,9 +33,6 @@ private:
     Console* mConsole;
     Actor* mActor;
 
-    Actor* mCamera;
-    //Arm* mCameraBoom;
-
     float mCameraTurnSpeed;
 
     void _HandleKey(uint32_t type, SDL_KeyboardEvent *event);

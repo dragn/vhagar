@@ -114,7 +114,14 @@ V3 Actor::GetUp() const
     return V3(glm::toMat4(mQuat) * glm::vec4(0, 1, 0, 0));
 }
 
-void Actor::SetRot(Rot rot) {
+
+vh::V3 Actor::GetRight() const
+{
+    return V3(glm::toMat4(mQuat) * glm::vec4(1, 0, 0, 0));
+}
+
+void Actor::SetRot(Rot rot)
+{
     mQuat = Quat(V3(rot.pitch, rot.yaw, rot.roll));
     _UpdateTransform();
 }

@@ -22,3 +22,4 @@
 #include "../Source/Debug/Debug.hpp"
 #include "../Source/Physics/Physics.hpp"
 #include "../Source/Physics/PhysicsBehavior.hpp"
+#include "../Source/Physics/CapsuleCharacterBehavior.hpp"

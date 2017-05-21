@@ -22,7 +22,13 @@ physx::PxQuat vh::ToPhysX(const Quat& quat)
 
 glm::quat vh::FromPhysX(const physx::PxQuat& quat)
 {
+    // look out! glm quat's constructor accepts coordinates in this order: w, x, y, z
     return glm::quat(quat.w, quat.x, quat.y, quat.z);
+}
+
+glm::vec3 vh::FromPhysX(const physx::PxExtendedVec3& vec)
+{
+    return V3(vec.x, vec.y, vec.z);
 }
 
 glm::vec3 vh::FromPhysX(const physx::PxVec3& vec)

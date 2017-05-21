@@ -12,5 +12,6 @@ physx::PxQuat ToPhysX(const Quat& quat);
 
 glm::quat FromPhysX(const physx::PxQuat& quat);
 glm::vec3 FromPhysX(const physx::PxVec3& vec);
+glm::vec3 FromPhysX(const physx::PxExtendedVec3& vec);
 
 } // namespace vh

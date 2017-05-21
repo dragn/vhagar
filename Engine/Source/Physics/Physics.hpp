@@ -11,6 +11,7 @@ class Physics : public vh::Component
     COMPONENT_NAME(Physics);
 
     friend class PhysicsBehavior;
+    friend class CapsuleCharacterBehavior;
 
 public:
     Physics();
@@ -27,6 +28,8 @@ private:
     physx::PxPhysics* mPhysics = nullptr;
     physx::PxTolerancesScale mScale;
     physx::PxScene* mScene = nullptr;
+    physx::PxControllerManager* mControllerManager = nullptr;
+    bool mSimCalled = false;
 };
 
 } // namespace vh
