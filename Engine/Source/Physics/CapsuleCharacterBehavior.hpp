@@ -12,7 +12,7 @@ namespace vh
     movement inside a scene.
     Uses Capsule geometry for collision response.
 */
-class CapsuleCharacterBehavior : public ControlBehavior
+class CapsuleCharacterBehavior : public ControlBehavior, public physx::PxUserControllerHitReport
 {
 public:
     CapsuleCharacterBehavior(Actor* owner, float radius, float height);
@@ -27,6 +27,11 @@ public:
     virtual void MoveRight(float value) override;
     virtual void TurnRight(float value) override;
     virtual void TurnUp(float value) override;
+
+    // -- PxUserControllerHitReport interface
+    virtual void onShapeHit(const physx::PxControllerShapeHit& hit) override {};
+    virtual void onControllerHit(const physx::PxControllersHit &hit) override {};
+    virtual void onObstacleHit(const physx::PxControllerObstacleHit &hit) override {};
 
 private:
     float mRadius;

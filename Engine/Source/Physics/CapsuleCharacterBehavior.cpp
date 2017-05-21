@@ -23,6 +23,7 @@ void vh::CapsuleCharacterBehavior::StartPlay()
     PxCapsuleControllerDesc desc;
     desc.radius = mRadius;
     desc.height = 2 * mHeight;
+    desc.reportCallback = this;
     mMaterial = mPhysics->mPhysics->createMaterial(0.5f, 0.5f, 0.0);
     desc.material = mMaterial;
     mController = mPhysics->mControllerManager->createController(desc);

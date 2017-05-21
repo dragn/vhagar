@@ -4,6 +4,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 using namespace vh;
+using namespace physx;
 
 class FirstPersonCamera : public CameraBehavior
 {
@@ -30,6 +31,26 @@ public:
 private:
     float mPitch = 0.0f;
     V3 mRelPos;
+};
+
+class CustomCharacterBehavior : public CapsuleCharacterBehavior
+{
+public:
+    CustomCharacterBehavior(Actor* owner, float radius, float height)
+        : CapsuleCharacterBehavior(owner, radius, height)
+    {
+    }
+
+    virtual void onShapeHit(const physx::PxControllerShapeHit& hit) override
+    {
+        PxRigidBody* body = hit.actor->is<PxRigidBody>();
+        if (body)
+        {
+            PxVec3 vec = hit.actor->getGlobalPose().p - ToPhysX(mOwner->GetPos());
+            LOG(INFO) << "shape hit " << vec.x << ", " << vec.y << ", " << vec.z;
+            body->addForce(ToPhysX(mOwner->GetForward()) * 100.0f);
+        }
+    }
 };
 
 void AddPointLight(World* world, V3 pos, float intensity)
@@ -134,7 +155,7 @@ public:
                 skyBox->StartPlay();
 
                 Actor* character = world->CreateActor("Character");
-                character->AddBehavior<CapsuleCharacterBehavior>(0.4f, 0.5f);
+                character->AddBehavior<CustomCharacterBehavior>(0.4f, 0.5f);
                 character->AddBehavior<FirstPersonCamera>(V3(0.0f, 0.25f, 0.0f));
                 character->StartPlay();
 
@@ -166,8 +187,8 @@ int main(int argc, char ** argv)
     srand(clock());
 
     RendererOptions ro;
-    ro.screenWidth = 900;
-    ro.screenHeight = 600;
+    ro.screenWidth = 1600;
+    ro.screenHeight = 900;
     ro.antialias = RendererOptions::AA_4X;
     ro.monitor = RendererOptions::MON_SECOND;
 
