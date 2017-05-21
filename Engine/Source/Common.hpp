@@ -29,6 +29,7 @@
 
 #ifdef WITH_PHYSX
 #include "PxPhysicsAPI.h"
+#include "Utils/PhysXUtils.hpp"
 #endif // WITH_PHYSX
 
 #include "Math/Math.hpp"

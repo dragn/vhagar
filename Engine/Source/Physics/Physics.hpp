@@ -10,6 +10,8 @@ class Physics : public vh::Component
 {
     COMPONENT_NAME(Physics);
 
+    friend class PhysicsBehavior;
+
 public:
     Physics();
 

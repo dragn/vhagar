@@ -14,6 +14,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include "Math/Rot.hpp"
 
 #include <ostream>
@@ -27,6 +28,8 @@ typedef glm::vec2 V2;
 
 typedef glm::mat4 M4;
 typedef glm::mat3 M3;
+
+typedef glm::quat Quat;
 
 } // namespace vh
 

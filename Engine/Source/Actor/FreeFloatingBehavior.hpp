@@ -28,7 +28,7 @@ public:
 
     void TurnRight(float value) override
     {
-        mOwner->AddYaw(mTurnSpeed * value);
+        mOwner->AddYaw(- mTurnSpeed * value);
     }
 
     void TurnUp(float value) override

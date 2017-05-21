@@ -151,6 +151,10 @@ void World::TickRun(uint32_t delta)
 
 void World::TickClose(uint32_t delta)
 {
+    for (const std::unique_ptr<Actor>& actor : mActors)
+    {
+        actor->EndPlay();
+    }
     // Destroy all actors
     mActors.clear();
 

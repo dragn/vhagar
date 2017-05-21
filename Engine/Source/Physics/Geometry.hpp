@@ -42,7 +42,7 @@ public:
         return GeometryType::Box;
     }
 
-    V3 GetExtents() const { return mExtents; }
+    const V3& GetExtents() const { return mExtents; }
 
 private:
     V3 mExtents;

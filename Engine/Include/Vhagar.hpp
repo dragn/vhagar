@@ -6,7 +6,6 @@
 #include "../Source/Actor/FreeFloatingBehavior.hpp"
 #include "../Source/Renderable/Renderable.hpp"
 #include "../Source/Renderable/Mesh.hpp"
-#include "../Source/Renderable/SkyBox.hpp"
 #include "../Source/Renderable/Overlay.hpp"
 #include "../Source/Utils/ImportUtils.hpp"
 #include "../Source/Renderer/Renderer.hpp"
@@ -22,3 +21,4 @@
 #include "../Source/Resource/ResourceSystem.hpp"
 #include "../Source/Debug/Debug.hpp"
 #include "../Source/Physics/Physics.hpp"
+#include "../Source/Physics/PhysicsBehavior.hpp"

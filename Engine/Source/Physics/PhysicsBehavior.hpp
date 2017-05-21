@@ -1,24 +1,36 @@
 #pragma once
 
 #include "Geometry.hpp"
+#include "Actor/ActorBehavior.hpp"
+#include "Physics.hpp"
 
 namespace vh
 {
 
-class PhysicsBehavior
+class PhysicsBehavior : public ActorBehavior
 {
 public:
-    PhysicsBehavior();
-    ~PhysicsBehavior();
+    PhysicsBehavior(Actor* owner, bool isStatic = true);
+
+    // -- ActorBehavior interface
+    virtual void StartPlay() override;
+    virtual void EndPlay() override;
+    virtual void Tick(uint32_t delta) override;
 
     bool IsStatic() const;
     bool IsDynamic() const;
 
-    void SetCollisionGeometry(Geometry*);
+    void SetBoxGeometry(V3 extents);
+    void SetCapsuleGeometry(float radius, float halfHeight);
+    void SetSphereGeometry(float radius);
 
 private:
-    bool mIsStatic = true;
-    Geometry* mCollisionGeometry = nullptr;
+    bool mIsStatic;
+    std::unique_ptr<Geometry> mCollisionGeometry;
+
+    Physics* mPhysics;
+    physx::PxRigidActor* mActor;
+    physx::PxMaterial* mMaterial;
 };
 
 } // namespace vh

@@ -32,8 +32,11 @@ public:
 
     // -- rot
     Rot GetRot() const;
+    Quat GetQuat() const;
     void AddRot(Rot rot);
     void SetRot(Rot rot);
+    void SetRot(V3 rot); // vec3 of euler angles
+    void SetRot(Quat quat);
 
     // -- get Actor's forward vector
     V3 GetForward() const;
@@ -103,8 +106,9 @@ private:
     V3 mPos;
     V3 mScale;
 
-    float mYaw = 0;
-    float mPitch = 0;
+    float mYaw;
+    float mPitch;
+    Quat mQuat;
 
     std::string mName;
 

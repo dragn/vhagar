@@ -13,6 +13,18 @@ void AddPointLight(World* world, V3 pos, float intensity)
     actor->StartPlay();
 }
 
+void SpawnBox(World* world)
+{
+    Actor* box = world->CreateActor("Box");
+    box->AddPos(V3(rand() / INT_MAX, rand() / INT_MAX, rand() / INT_MAX));
+    box->SetScale(V3(0.2, 0.2, 0.2));
+    box->AddBehavior<MeshBehavior>("Assets/Sources/box2.obj");
+    PhysicsBehavior* pb = box->AddBehavior<PhysicsBehavior>(false);
+    pb->SetBoxGeometry(V3(0.2f, 0.2f, 0.2f));
+    box->SetPitch(rand() / INT_MAX);
+    box->StartPlay();
+}
+
 class MyApp : public vh::App
 {
 public:
@@ -63,11 +75,16 @@ public:
                 planeActor->SetMesh(mesh);
                 */
 
-                Actor* mesh = world->CreateActor("Mesh");
+                Actor* mesh = world->CreateActor("Plane");
+                mesh->AddPos(V3(0, -2, 0));
                 mesh->AddBehavior<MeshBehavior>("Assets/Sources/box2.obj");
+                PhysicsBehavior* pb = mesh->AddBehavior<PhysicsBehavior>();
+                pb->SetBoxGeometry(V3(1.0f, 1.0f, 1.0f));
                 mesh->StartPlay();
 
+
                 Actor* ff = world->CreateActor("FreeFloating");
+                ff->AddPos(V3(0, 0, 2));
                 ff->AddBehavior<FreeFloatingBehavior>();
                 ff->StartPlay();
 
@@ -90,11 +107,22 @@ public:
         }
     }
 
+protected:
+    virtual void HandleEvent(SDL_Event *event) override
+    {
+        vh::App::HandleEvent(event);
+        IF_KEYDOWN_SYM(event, SDLK_RETURN)
+        {
+            SpawnBox(Get<World>());
+        }
+    }
+
 private:
     bool mSpawned;
 };
 
-int main(int argc, char ** argv) {
+int main(int argc, char ** argv)
+{
     MyApp app;
 
     RendererOptions ro;
@@ -104,13 +132,13 @@ int main(int argc, char ** argv) {
     ro.monitor = RendererOptions::MON_SECOND;
 
     app.AddComponent<Renderer>(ro);
-    app.AddComponent<World>();
     app.AddComponent<ConsoleEngine>();
     app.AddComponent<Console>();
-    app.AddComponent<PlayerController>();
     app.AddComponent<ResourceSystem>();
-    app.AddComponent<Debug>();
     app.AddComponent<Physics>();
+    app.AddComponent<World>();
+    app.AddComponent<PlayerController>();
+    app.AddComponent<Debug>();
 
     app.Run();
 

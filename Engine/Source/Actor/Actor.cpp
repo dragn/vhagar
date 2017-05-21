@@ -47,12 +47,13 @@ float Actor::GetPitch() const
 
 void Actor::SetPitch(float pitch) {
     mPitch = Math::WrapAngle(pitch);
+    mQuat = Quat(V3(mPitch, mYaw, 0));
     _UpdateTransform();
 }
 
 void Actor::AddPitch(float pitch) {
-    mPitch += pitch;
-    mPitch = Math::WrapAngle(mPitch);
+    mPitch = Math::WrapAngle(mPitch + pitch);
+    mQuat = Quat(V3(mPitch, mYaw, 0));
     _UpdateTransform();
 }
 
@@ -92,55 +93,79 @@ float Actor::GetYaw() const
 
 void Actor::SetYaw(float yaw) {
     mYaw = Math::WrapAngle(yaw);
+    mQuat = Quat(V3(mPitch, mYaw, 0));
     _UpdateTransform();
 }
 
 void Actor::AddYaw(float yaw) {
-    mYaw += yaw;
-    mYaw = Math::WrapAngle(mYaw);
+    mYaw = Math::WrapAngle(mYaw + yaw);
+    mQuat = Quat(V3(mPitch, mYaw, 0));
     _UpdateTransform();
 }
 
 V3 Actor::GetForward() const
 {
-    M4 rot = glm::rotate(glm::rotate(M4(1.f), - mYaw, V3(0, 1, 0)), mPitch, V3(1, 0, 0));
+    M4 rot = glm::toMat4(mQuat);
     return V3(rot * glm::vec4(0, 0, -1, 0));
 }
 
 V3 Actor::GetUp() const
 {
-    M4 rot = glm::rotate(glm::rotate(M4(1.f), - mYaw, V3(0, 1, 0)), mPitch, V3(1, 0, 0));
-    return V3(rot * glm::vec4(0, 1, 0, 0));
+    return V3(glm::toMat4(mQuat) * glm::vec4(0, 1, 0, 0));
 }
 
 void Actor::SetRot(Rot rot) {
-    mYaw = rot.yaw;
-    mPitch = rot.pitch;
+    mQuat = Quat(V3(rot.pitch, rot.yaw, rot.roll));
     _UpdateTransform();
 }
 
-Rot Actor::GetRot() const {
-    return Rot(mYaw, mPitch, 0.0f);
+void Actor::SetRot(V3 rot)
+{
+    mQuat = Quat(rot);
+    _UpdateTransform();
 }
 
-void Actor::AddRot(Rot rot) {
-    mYaw += rot.yaw;
-    mPitch += rot.pitch;
+void Actor::SetRot(Quat quat)
+{
+    mQuat = quat;
+    _UpdateTransform();
+}
+
+Rot Actor::GetRot() const
+{
+    V3 euler = glm::eulerAngles(mQuat);
+    return Rot(euler.y, euler.x, euler.z);
+}
+
+vh::Quat Actor::GetQuat() const
+{
+    return mQuat;
+}
+
+void Actor::AddRot(Rot rot)
+{
+    V3 euler = glm::eulerAngles(mQuat);
+    euler.x = Math::WrapAngle(euler.x + rot.pitch);
+    euler.y = Math::WrapAngle(euler.y + rot.yaw);
+    euler.z = Math::WrapAngle(euler.z + rot.roll);
+    mQuat = Quat(euler);
     _UpdateTransform();
 }
 
 void Actor::_UpdateTransform() {
-    M4 rot = glm::rotate(glm::rotate(M4(1.f), - mYaw, V3(0, 1, 0)), mPitch, V3(1, 0, 0));
-    mTransform = glm::translate(M4(1.f), mPos) * rot * glm::scale(M4(1.f), mScale);
+    mTransform = glm::translate(M4(1.f), mPos) * glm::mat4_cast(mQuat) * glm::scale(M4(1.f), mScale);
     //  modelMatrix = glm::translate(glm::scale(mRot, mScale), mPos);
 }
 
 void Actor::Tick(uint32_t delta)
 {
-    // tick all behaviors
-    for (const std::unique_ptr<ActorBehavior>& behavior : mBehaviors)
+    if (mPlaying)
     {
-        behavior->Tick(delta);
+        // tick all behaviors
+        for (const std::unique_ptr<ActorBehavior>& behavior : mBehaviors)
+        {
+            behavior->Tick(delta);
+        }
     }
 }
 
@@ -152,6 +177,7 @@ Actor::Actor(World* world, V3 pos, Rot rot, V3 scale) :
     mYaw(rot.yaw),
     mPitch(rot.pitch)
 {
+    mQuat = Quat(V3(mPitch, mYaw, 0));
     _UpdateTransform();
 }
 

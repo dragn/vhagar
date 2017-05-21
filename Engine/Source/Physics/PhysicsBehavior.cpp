@@ -1,7 +1,107 @@
 #include "Common.hpp"
 #include "PhysicsBehavior.hpp"
+#include "App/App.hpp"
+#include "Actor/Actor.hpp"
 
-vh::PhysicsBehavior::~PhysicsBehavior()
+using namespace vh;
+using namespace physx;
+
+PhysicsBehavior::PhysicsBehavior(Actor* owner, bool isStatic /*= true*/)
+    : ActorBehavior(owner)
+    , mIsStatic(isStatic)
+{}
+
+void PhysicsBehavior::StartPlay()
 {
-    SafeDelete(mCollisionGeometry);
+    mPhysics = App::Get<Physics>();
+    CHECK(mPhysics);
+
+    if (!mCollisionGeometry)
+    {
+        LOG(WARNING) << "No collision geometry specified, creating default";
+        SetBoxGeometry(V3(1.0f));
+    }
+
+    PxTransform pose;
+    pose.p = ToPhysX(mOwner->GetPos());
+    pose.q = ToPhysX(mOwner->GetQuat());
+    if (mIsStatic)
+    {
+        mActor = mPhysics->mPhysics->createRigidStatic(pose);
+    }
+    else
+    {
+        mActor = mPhysics->mPhysics->createRigidDynamic(pose);
+    }
+
+    if (mActor == nullptr)
+    {
+        LOG(ERROR) << "Could not create physx actor!";
+        return;
+    }
+
+    mMaterial = mPhysics->mPhysics->createMaterial(1.0, 1.0, 0.5);
+
+    BoxGeometry* box = nullptr;
+    SphereGeometry* sphere = nullptr;
+    CapsuleGeometry* capsule = nullptr;
+    switch (mCollisionGeometry->GetType())
+    {
+    case GeometryType::Box:
+        box = static_cast<BoxGeometry*>(mCollisionGeometry.get());
+        mActor->createShape(PxBoxGeometry(box->GetExtents().x, box->GetExtents().y, box->GetExtents().z), *mMaterial);
+        break;
+    case GeometryType::Sphere:
+        sphere = static_cast<SphereGeometry*>(mCollisionGeometry.get());
+        mActor->createShape(PxSphereGeometry(sphere->GetRadius()), *mMaterial);
+        break;
+    case GeometryType::Capsule:
+        capsule = static_cast<CapsuleGeometry*>(mCollisionGeometry.get());
+        mActor->createShape(PxCapsuleGeometry(capsule->GetRadius(), capsule->GetHalfHeight()), *mMaterial);
+        break;
+    }
+
+    mPhysics->mScene->addActor(*mActor);
+}
+
+void PhysicsBehavior::SetBoxGeometry(V3 extents)
+{
+    mCollisionGeometry = std::unique_ptr<Geometry>(new BoxGeometry(extents));
+}
+
+void PhysicsBehavior::SetCapsuleGeometry(float radius, float halfHeight)
+{
+    mCollisionGeometry = std::unique_ptr<Geometry>(new CapsuleGeometry(radius, halfHeight));
+}
+
+void PhysicsBehavior::SetSphereGeometry(float radius)
+{
+    mCollisionGeometry = std::unique_ptr<Geometry>(new SphereGeometry(radius));
+}
+
+void vh::PhysicsBehavior::EndPlay()
+{
+    if (mActor)
+    {
+        mPhysics->mScene->removeActor(*mActor);
+
+        mActor->release();
+        mActor = nullptr;
+    }
+
+    if (mMaterial)
+    {
+        mMaterial->release();
+        mMaterial = nullptr;
+    }
+}
+
+void vh::PhysicsBehavior::Tick(uint32_t delta)
+{
+    if (mActor)
+    {
+        PxTransform pose = mActor->getGlobalPose();
+        mOwner->SetPos(FromPhysX(pose.p));
+        mOwner->SetRot(FromPhysX(pose.q));
+    }
 }
