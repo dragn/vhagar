@@ -47,7 +47,7 @@ void vh::Physics::TickInit(uint32_t delta)
 
     // -- Create scene
     PxSceneDesc sceneDesc(mScale);
-    sceneDesc.gravity = PxVec3(0, -9.8f, 0);
+    sceneDesc.gravity = PxVec3(0, -20.0f, 0);
     sceneDesc.cpuDispatcher = PxDefaultCpuDispatcherCreate(1);
     sceneDesc.filterShader = PxDefaultSimulationFilterShader;
     mScene = mPhysics->createScene(sceneDesc);
@@ -63,8 +63,21 @@ void vh::Physics::TickInit(uint32_t delta)
 
 void vh::Physics::TickClose(uint32_t delta)
 {
-    if (mPhysics != nullptr) mPhysics->release();
-    if (mFoundation != nullptr) mFoundation->release();
+    if (mScene != nullptr)
+    {
+        mScene->release();
+        mScene = nullptr;
+    }
+    if (mPhysics != nullptr)
+    {
+        mPhysics->release();
+        mPhysics = nullptr;
+    }
+    if (mFoundation != nullptr)
+    {
+        mFoundation->release();
+        mFoundation = nullptr;
+    }
 
     FinishClose();
 }
@@ -72,6 +85,14 @@ void vh::Physics::TickClose(uint32_t delta)
 void vh::Physics::TickRun(uint32_t delta)
 {
     // the most simple simulation step
-    mScene->simulate(delta * 0.001f);
-    mScene->fetchResults(true);
+}
+
+void vh::Physics::StartFrame()
+{
+    if (mScene) mScene->simulate(1.0f / 60.0f);
+}
+
+void vh::Physics::EndFrame()
+{
+    if (mScene) mScene->fetchResults(true);
 }

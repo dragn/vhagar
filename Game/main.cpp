@@ -16,12 +16,12 @@ void AddPointLight(World* world, V3 pos, float intensity)
 void SpawnBox(World* world)
 {
     Actor* box = world->CreateActor("Box");
-    box->AddPos(V3(rand() / INT_MAX, rand() / INT_MAX, rand() / INT_MAX));
+    box->AddPos(V3((float) 2 * rand() / (float) RAND_MAX - 1.0f, 0.0f, (float) 2 * rand() / (float) RAND_MAX - 1.0f));
     box->SetScale(V3(0.2, 0.2, 0.2));
     box->AddBehavior<MeshBehavior>("Assets/Sources/box2.obj");
     PhysicsBehavior* pb = box->AddBehavior<PhysicsBehavior>(false);
     pb->SetBoxGeometry(V3(0.2f, 0.2f, 0.2f));
-    box->SetPitch(rand() / INT_MAX);
+    box->SetPitch(0.2);
     box->StartPlay();
 }
 
@@ -77,9 +77,10 @@ public:
 
                 Actor* mesh = world->CreateActor("Plane");
                 mesh->AddPos(V3(0, -2, 0));
+                mesh->SetScale(V3(5.0f, 0.2f, 5.0f));
                 mesh->AddBehavior<MeshBehavior>("Assets/Sources/box2.obj");
                 PhysicsBehavior* pb = mesh->AddBehavior<PhysicsBehavior>();
-                pb->SetBoxGeometry(V3(1.0f, 1.0f, 1.0f));
+                pb->SetBoxGeometry(V3(5.0f, 0.2f, 5.0f));
                 mesh->StartPlay();
 
 
@@ -125,6 +126,8 @@ int main(int argc, char ** argv)
 {
     MyApp app;
 
+    srand(clock());
+
     RendererOptions ro;
     ro.screenWidth = 1600;
     ro.screenHeight = 900;
@@ -138,7 +141,7 @@ int main(int argc, char ** argv)
     app.AddComponent<Physics>();
     app.AddComponent<World>();
     app.AddComponent<PlayerController>();
-    app.AddComponent<Debug>();
+    //app.AddComponent<Debug>();
 
     app.Run();
 

@@ -19,11 +19,14 @@ public:
     virtual void TickRun(uint32_t delta) override;
     virtual void TickClose(uint32_t delta) override;
 
+    virtual void StartFrame() override;
+    virtual void EndFrame() override;
+
 private:
-    physx::PxFoundation* mFoundation;
-    physx::PxPhysics* mPhysics;
+    physx::PxFoundation* mFoundation = nullptr;
+    physx::PxPhysics* mPhysics = nullptr;
     physx::PxTolerancesScale mScale;
-    physx::PxScene* mScene;
+    physx::PxScene* mScene = nullptr;
 };
 
 } // namespace vh

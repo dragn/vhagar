@@ -31,7 +31,9 @@ void PhysicsBehavior::StartPlay()
     }
     else
     {
-        mActor = mPhysics->mPhysics->createRigidDynamic(pose);
+        PxRigidDynamic* dyn = mPhysics->mPhysics->createRigidDynamic(pose);
+        dyn->setMass(3.0f);
+        mActor = dyn;
     }
 
     if (mActor == nullptr)
