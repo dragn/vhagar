@@ -20,8 +20,13 @@ public:
     template<typename T>
     bool Save(const char* path, const T* res);
 
+    std::shared_ptr<Mesh> GetMesh(const char* name);
+
     virtual void TickInit(uint32_t delta);
     virtual void TickClose(uint32_t delta);
+
+private:
+    std::unordered_map<std::string, std::shared_ptr<Mesh>> mMeshStorage;
 };
 
 template<> bool ResourceSystem::Load(const char* path, Mesh* mesh);

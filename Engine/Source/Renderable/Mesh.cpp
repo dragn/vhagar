@@ -11,7 +11,6 @@ using namespace vh;
 
 Mesh::~Mesh()
 {
-    LOG(INFO) << "Mesh destructor";
     if (mIndexSize > 0) delete[] mIndexData;
     if (mVertexCount > 0) delete[] mAttribData;
 

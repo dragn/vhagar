@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "ResourceSystem.hpp"
 #include "Utils/ImportUtils.hpp"
+#include "Utils/FileSystem.hpp"
 
 #include <cstdio>
 #ifdef CMAKE_PLATFORM_WINDOWS
@@ -14,6 +15,8 @@
 #endif
 
 static std::string currDir;
+
+using namespace vh;
 
 template<typename T>
 bool OpenFile(T& stream, const std::string& filename, std::ios_base::openmode mode)
@@ -180,6 +183,35 @@ template<> bool vh::ResourceSystem::Save(const char* path, const Mesh* mesh)
     return true;
 }
 
+std::shared_ptr<vh::Mesh> vh::ResourceSystem::GetMesh(const char* name)
+{
+    auto iter = mMeshStorage.find(name);
+    if (iter == mMeshStorage.end())
+    {
+        std::shared_ptr<vh::Mesh> ptr = std::make_shared<vh::Mesh>();
+        if (!ptr)
+        {
+            LOG(FATAL) << "Unable to allocate mesh";
+            return nullptr;
+        }
+        mMeshStorage[std::string(name)] = ptr;
+        if (Load<vh::Mesh>(name, ptr.get()))
+        {
+            LOG(INFO) << "Loaded mesh " << name;
+            return ptr;
+        }
+        else
+        {
+            LOG(FATAL) << "Unable to load mesh " << name;
+            return nullptr;
+        }
+    }
+    else
+    {
+        return iter->second;
+    }
+}
+
 void vh::ResourceSystem::TickInit(uint32_t delta)
 {
     char cd[FILENAME_MAX];
@@ -188,10 +220,29 @@ void vh::ResourceSystem::TickInit(uint32_t delta)
     currDir = cd;
     std::replace(currDir.begin(), currDir.end(), '\\', '/');
 
+    // preload meshes from Assets/Meshes
+    std::vector<std::string> names;
+    vh::Utils::ListFiles("Assets/Meshes", names);
+    for (const std::string& name : names)
+    {
+        std::shared_ptr<Mesh> ptr = std::make_shared<Mesh>();
+        if (Load<Mesh>(name.c_str(), ptr.get()))
+        {
+            LOG(INFO) << "Preloaded mesh " << name;
+            mMeshStorage[name] = ptr;
+        }
+        else
+        {
+            LOG(ERROR) << "Mesh preload failed " << name;
+        }
+    }
+
     FinishInit();
 }
 
 void vh::ResourceSystem::TickClose(uint32_t delta)
 {
+    mMeshStorage.clear();
+
     FinishClose();
 }

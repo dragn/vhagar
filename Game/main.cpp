@@ -47,7 +47,6 @@ public:
         if (body)
         {
             PxVec3 vec = hit.actor->getGlobalPose().p - ToPhysX(mOwner->GetPos());
-            LOG(INFO) << "shape hit " << vec.x << ", " << vec.y << ", " << vec.z;
             body->addForce(ToPhysX(mOwner->GetForward()) * 100.0f);
         }
     }
@@ -66,7 +65,7 @@ void SpawnBox(World* world)
     Actor* box = world->CreateActor("Box");
     box->AddPos(V3((float) 2 * rand() / (float) RAND_MAX - 1.0f, 0.0f, (float) 2 * rand() / (float) RAND_MAX - 1.0f));
     box->SetScale(V3(0.2, 0.2, 0.2));
-    box->AddBehavior<MeshBehavior>("Assets/Sources/box2.obj");
+    box->AddBehavior<MeshBehavior>("Assets/Meshes/box2.vhmesh");
     PhysicsBehavior* pb = box->AddBehavior<PhysicsBehavior>(false);
     pb->SetBoxGeometry(V3(0.2f, 0.2f, 0.2f));
     box->SetPitch(0.2);
@@ -79,7 +78,7 @@ void StaticBox(V3 pos, V3 size)
     Actor* mesh = world->CreateActor("Static");
     mesh->AddPos(pos);
     mesh->SetScale(size);
-    mesh->AddBehavior<MeshBehavior>("Assets/Sources/box2.obj");
+    mesh->AddBehavior<MeshBehavior>("Assets/Meshes/box2.vhmesh");
     PhysicsBehavior* pb = mesh->AddBehavior<PhysicsBehavior>();
     pb->SetBoxGeometry(size);
     mesh->StartPlay();

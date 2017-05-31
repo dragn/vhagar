@@ -9,6 +9,7 @@ class ActorBehavior
 {
 public:
     ActorBehavior(Actor* owner) : mOwner(owner) {}
+    virtual ~ActorBehavior() {}
 
     // Called when actor enters a World
     virtual void StartPlay() {}

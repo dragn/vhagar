@@ -24,7 +24,7 @@ public:
 
 private:
     GLBufferInfo mGLInfo;
-    std::unique_ptr<Mesh> mMesh;
+    std::shared_ptr<Mesh> mMesh;
     glm::mat4 mModel;
     Renderer* mRenderer;
 

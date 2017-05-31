@@ -30,12 +30,11 @@ void reportGLError()
 vh::MeshBehavior::MeshBehavior(Actor* owner, const char* name)
     : ActorBehavior(owner)
 {
-    mMesh = std::make_unique<Mesh>();
-
     ResourceSystem* resource = App::Get<ResourceSystem>();
     CHECK(resource);
 
-    if (!resource->Load(name, mMesh.get()))
+    mMesh = resource->GetMesh(name);
+    if (!mMesh)
     {
         LOG(WARNING) << "Could not load mesh by name " << name;
     }

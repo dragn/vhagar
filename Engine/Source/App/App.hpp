@@ -29,6 +29,7 @@ public:
     {
         SetApp(this);
     }
+    virtual ~App() {}
 
     void Run();
 
