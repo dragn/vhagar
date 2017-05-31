@@ -45,15 +45,6 @@ void vh::MeshBehavior::StartPlay()
     mRenderer = App::Get<Renderer>();
     CHECK(mRenderer);
 
-    GLuint indexSize;
-    GLuint* indexData;
-    mMesh->GetIndexData(indexSize, indexData);
-
-    GLuint vertexCount;
-    GLuint attribCount;
-    GLfloat* attribData;
-    mMesh->GetAttribData(vertexCount, attribCount, attribData);
-
     if (mMesh->GetDim() == 3)
     {
         mProgramID = Utils::GetShaderProgram("SimpleShader");   // default shader
@@ -83,45 +74,12 @@ void vh::MeshBehavior::StartPlay()
     uidWireColor = glGetUniformLocation(mWireProgramID, "uColor");
     uidWireMVP = glGetUniformLocation(mWireProgramID, "uMVP");
 
-    // specify sizes
-    mGLInfo.attribCount = attribCount;
-    mGLInfo.attribBufferSize = mMesh->GetAttribDataSize();
-    mGLInfo.indexBufferSize = indexSize;
-
-    // buffer index data
-    glGenBuffers(1, &mGLInfo.indexBuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mGLInfo.indexBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mGLInfo.indexBufferSize * sizeof(GLuint), indexData, GL_STATIC_DRAW);
-
-    // buffer attribute data
-    glGenBuffers(1, &mGLInfo.attribBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, mGLInfo.attribBuffer);
-    glBufferData(GL_ARRAY_BUFFER, mGLInfo.attribBufferSize * sizeof(GLfloat), attribData, GL_STATIC_DRAW);
-
-    // -- load texture
-    GLuint* texDta;
-    GLsizei texW, texH;
-    mMesh->GetTexture(texDta, texW, texH);
-
-    if (texDta != nullptr)
-    {
-        glGenTextures(1, &mGLInfo.texture);
-        glBindTexture(GL_TEXTURE_2D, mGLInfo.texture);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texW, texH, 0, GL_RGBA, GL_UNSIGNED_BYTE, texDta);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-        LOG(INFO) << "Texture loaded with ID: " << mGLInfo.texture;
-    }
+    mMesh->AddUsage();
 }
 
 void vh::MeshBehavior::EndPlay()
 {
-    GLuint ids[] = { mGLInfo.indexBuffer, mGLInfo.attribBuffer };
-    glDeleteBuffers(2, ids);
-    glDeleteTextures(1, &mGLInfo.texture);
+    mMesh->ReleaseUsage();
 }
 
 void vh::MeshBehavior::Tick(uint32_t delta)
@@ -131,6 +89,9 @@ void vh::MeshBehavior::Tick(uint32_t delta)
     const M4& model = mOwner->GetTransform();
 
     M4 MVP = projection * view * model;
+
+    const GLBufferInfo* glInfo = mMesh->GetBufferInfo();
+    CHECK(glInfo);
 
     glUseProgram(mProgramID);
 
@@ -152,29 +113,29 @@ void vh::MeshBehavior::Tick(uint32_t delta)
     glUniformMatrix4fv(uidV, 1, GL_FALSE, reinterpret_cast<const float*>(&view[0][0]));
 
     // -- bind texture
-    glBindTexture(GL_TEXTURE_2D, mGLInfo.texture);
+    glBindTexture(GL_TEXTURE_2D, glInfo->texture);
 
     // -- setup buffers
     glEnableVertexAttribArray(0);
-    for (GLuint i = 0; i < mGLInfo.attribCount; i++) glEnableVertexAttribArray(i + 1);
+    for (GLuint i = 0; i < glInfo->attribCount; i++) glEnableVertexAttribArray(i + 1);
 
-    glBindBuffer(GL_ARRAY_BUFFER, mGLInfo.attribBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, glInfo->attribBuffer);
 
     // -- vertex positions
     glVertexAttribPointer(0, mMesh->GetDim(), GL_FLOAT, GL_FALSE, 0, (GLfloat*) 0);
 
     // -- attributes
     GLfloat *offset = 0;
-    for (GLuint i = 0; i < mGLInfo.attribCount; i++)
+    for (GLuint i = 0; i < glInfo->attribCount; i++)
     {
         glVertexAttribPointer(i + 1, 3, GL_FLOAT, GL_FALSE, 0, offset + mMesh->GetVertexCount() * (mMesh->GetDim() + 3 * i));
     }
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mGLInfo.indexBuffer);
-    glDrawElements(GL_TRIANGLES, mGLInfo.indexBufferSize, GL_UNSIGNED_INT, (void*) 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glInfo->indexBuffer);
+    glDrawElements(GL_TRIANGLES, glInfo->indexBufferSize, GL_UNSIGNED_INT, (void*) 0);
 
     glDisableVertexAttribArray(0);
-    for (GLuint i = 0; i < mGLInfo.attribCount; i++) glDisableVertexAttribArray(i + 1);
+    for (GLuint i = 0; i < glInfo->attribCount; i++) glDisableVertexAttribArray(i + 1);
 
     // -- optionally, draw wireframes
     if (mRenderer->IsOn(RenderFlags::DRAW_WIREFRAMES))
@@ -186,10 +147,10 @@ void vh::MeshBehavior::Tick(uint32_t delta)
         glUniformMatrix4fv(uidWireMVP, 1, GL_FALSE, reinterpret_cast<GLfloat*>(&MVP[0][0]));
 
         glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, mGLInfo.attribBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, glInfo->attribBuffer);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mGLInfo.indexBuffer);
-        glDrawElements(GL_LINE_STRIP, mGLInfo.indexBufferSize, GL_UNSIGNED_INT, (void*) 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glInfo->indexBuffer);
+        glDrawElements(GL_LINE_STRIP, glInfo->indexBufferSize, GL_UNSIGNED_INT, (void*) 0);
         glDisableVertexAttribArray(0);
     }
 }

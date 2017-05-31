@@ -11,6 +11,12 @@ using namespace vh;
 
 Mesh::~Mesh()
 {
+    if (mRenderUsage)
+    {
+        LOG(ERROR) << "Not all rendered usage of mesh was released!";
+        ReleaseRender();
+    }
+
     if (mIndexSize > 0) delete[] mIndexData;
     if (mVertexCount > 0) delete[] mAttribData;
 
@@ -60,4 +66,90 @@ GLuint vh::Mesh::GetDim() const
 GLuint vh::Mesh::GetAttribDataSize() const
 {
     return mVertexCount * (mDim + mAttribCount * 3);
+}
+
+
+void vh::Mesh::AddUsage()
+{
+    mRenderUsage++;
+    if (mRenderUsage == 1)
+    {
+        AddRender();
+    }
+}
+
+
+void vh::Mesh::ReleaseUsage()
+{
+    if (mRenderUsage == 0)
+    {
+        LOG(ERROR) << "Too much release!";
+        return;
+    }
+    mRenderUsage--;
+    if (mRenderUsage == 0)
+    {
+        ReleaseRender();
+    }
+}
+
+const vh::GLBufferInfo* vh::Mesh::GetBufferInfo() const
+{
+    if (mRenderUsage == 0)
+    {
+        LOG(ERROR) << "Access to render context for unbuffered mesh";
+        return nullptr;
+    }
+
+    return &mGLInfo;
+}
+
+
+void vh::Mesh::AddRender()
+{
+    CHECK(mGLInfo.attribBuffer == 0);
+    CHECK(mGLInfo.indexBuffer == 0);
+    CHECK(mGLInfo.texture == 0);
+
+    // specify sizes
+    mGLInfo.attribCount = mAttribCount;
+    mGLInfo.attribBufferSize = GetAttribDataSize();
+    mGLInfo.indexBufferSize = mIndexSize;
+
+    // buffer index data
+    glGenBuffers(1, &mGLInfo.indexBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mGLInfo.indexBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mGLInfo.indexBufferSize * sizeof(GLuint), mIndexData, GL_STATIC_DRAW);
+
+    // buffer attribute data
+    glGenBuffers(1, &mGLInfo.attribBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, mGLInfo.attribBuffer);
+    glBufferData(GL_ARRAY_BUFFER, mGLInfo.attribBufferSize * sizeof(GLfloat), mAttribData, GL_STATIC_DRAW);
+
+    // -- load texture
+    if (mTexDta != nullptr)
+    {
+        glGenTextures(1, &mGLInfo.texture);
+        glBindTexture(GL_TEXTURE_2D, mGLInfo.texture);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mTexW, mTexH, 0, GL_RGBA, GL_UNSIGNED_BYTE, mTexDta);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+        LOG(INFO) << "Texture loaded with ID: " << mGLInfo.texture;
+    }
+}
+
+void vh::Mesh::ReleaseRender()
+{
+    GLuint ids[] = { mGLInfo.indexBuffer, mGLInfo.attribBuffer };
+    glDeleteBuffers(2, ids);
+    glDeleteTextures(1, &mGLInfo.texture);
+
+    mGLInfo.indexBuffer = 0;
+    mGLInfo.indexBufferSize = 0;
+    mGLInfo.attribBuffer = 0;
+    mGLInfo.attribBufferSize = 0;
+    mGLInfo.texture = 0;
 }

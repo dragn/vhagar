@@ -49,6 +49,11 @@ public:
 
     GLuint GetAttribDataSize() const;
 
+    void AddUsage();
+    void ReleaseUsage();
+
+    const GLBufferInfo* GetBufferInfo() const;
+
 private:
     GLuint mVertexCount = 0;
     GLuint mAttribCount = 0;
@@ -61,9 +66,22 @@ private:
     GLsizei mTexW = 0;
     GLsizei mTexH = 0;
 
+    // render context buffers
+    GLBufferInfo mGLInfo;
+
     // -- size of the vertex pos vector,
     // defaults to 3, 4 for homogeneous coordinates
     GLuint mDim = 3;
+
+    // Counts the rendered references.
+    // Mesh is automatically buffered when the value changed from zero
+    // and removed from render context, when value reaches zero again.
+    uint32_t mRenderUsage = 0;
+
+    // buffer mesh to GPU memory
+    void AddRender();
+    // release mesh from GPU memory
+    void ReleaseRender();
 };
 
 } // namespace vh

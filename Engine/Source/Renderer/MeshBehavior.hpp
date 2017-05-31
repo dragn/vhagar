@@ -23,7 +23,6 @@ public:
     const Mesh* GetMesh() const { return mMesh.get(); }
 
 private:
-    GLBufferInfo mGLInfo;
     std::shared_ptr<Mesh> mMesh;
     glm::mat4 mModel;
     Renderer* mRenderer;
