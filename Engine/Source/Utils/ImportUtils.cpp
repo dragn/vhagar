@@ -145,6 +145,11 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename)
     std::vector<std::string> textures;
     size_t currTex = 0;
 
+    if (mtlTex.size())
+    {
+        textures.push_back(mtlTex.begin()->second);
+    }
+
     while (!feof(objFile))
     {
 
@@ -159,8 +164,7 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename)
             aCol = mtlAColor[mtl];
             dCol = mtlDColor[mtl];
             sCol = mtlSColor[mtl];
-            textures.push_back(mtlTex[mtl]);
-            currTex = textures.size() - 1;
+            currTex = 0;
         }
 
         if (sscanf(line, "v %f %f %f", &vec3.x, &vec3.y, &vec3.z))
