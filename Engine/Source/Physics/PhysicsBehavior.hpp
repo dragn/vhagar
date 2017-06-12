@@ -24,6 +24,11 @@ public:
     void SetCapsuleGeometry(float radius, float halfHeight);
     void SetSphereGeometry(float radius);
 
+    physx::PxRigidActor* GetRigidActor()
+    {
+        return mActor;
+    }
+
 private:
     bool mIsStatic;
     std::unique_ptr<Geometry> mCollisionGeometry;

@@ -6,6 +6,114 @@
 using namespace vh;
 using namespace physx;
 
+class FilterCallback : public PxQueryFilterCallback
+{
+public:
+    virtual PxQueryHitType::Enum preFilter(const PxFilterData &filterData, const PxShape *shape, const PxRigidActor *actor, PxHitFlags &queryFlags)
+    {
+        if (actor)
+        {
+            LOG(INFO) << "prefilter " << actor;
+        }
+        return PxQueryHitType::eTOUCH;
+    }
+    virtual PxQueryHitType::Enum postFilter(const PxFilterData &filterData, const PxQueryHit &hit)
+    {
+        if (hit.actor)
+        {
+            LOG(INFO) << "postfilter " << hit.actor;
+        }
+        return PxQueryHitType::eTOUCH;
+    }
+};
+
+class CustomPlayerController : public PlayerController
+{
+public:
+    virtual void HandleEvent(SDL_Event *event) override
+    {
+        PlayerController::HandleEvent(event);
+
+        switch (event->type)
+        {
+        case SDL_MOUSEBUTTONDOWN:
+            if (event->button.button = SDL_BUTTON_LEFT)
+            {
+                CameraBehavior* cam = GetControlledActor()->GetBehaviorOfType<CameraBehavior>();
+                if (mHolding)
+                {
+                    PxRigidDynamic* actor = mHolding->GetBehaviorOfType<PhysicsBehavior>()->GetRigidActor()->is<PxRigidDynamic>();
+                    actor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, false);
+                    actor->addForce(ToPhysX(cam->GetForward() * 50.0f), PxForceMode::eIMPULSE);
+                    mHolding = nullptr;
+                }
+                else
+                {
+                    PxScene* scene = App::Get<Physics>()->GetScene();
+                    PxVec3 origin = ToPhysX(cam->GetPos());
+                    PxVec3 unitDir = ToPhysX(cam->GetForward()).getNormalized();
+                    PxReal maxDistance = 100.0f;
+                    PxRaycastBuffer hits;
+                    PxRaycastHit buf[5];
+                    hits.touches = buf;
+                    hits.maxNbTouches = 5;
+                    PxQueryFilterData filterData(PxQueryFlag::eDYNAMIC | PxQueryFlag::eNO_BLOCK);
+                    FilterCallback callback;
+                    bool status = scene->raycast(origin, unitDir, maxDistance, hits, PxHitFlag::eDEFAULT, filterData, &callback);
+                    if (status)
+                    {
+                        LOG(INFO) << "Trace " << hits.nbTouches << " hits";
+                        for (uint32_t i = 0; i < hits.nbTouches; i++)
+                        {
+                            PxRaycastHit& hit = hits.touches[i];
+                            if (hit.actor->is<PxRigidDynamic>() && hit.actor->userData != nullptr)
+                            {
+                                mHolding = reinterpret_cast<Actor*>(hit.actor->userData);
+                                hit.actor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+                                LOG(INFO) << "Catch " << mHolding->GetName();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    virtual void TickRun(uint32_t delta) override
+    {
+        PlayerController::TickRun(delta);
+
+        Actor* actor = GetControlledActor();
+        if (actor && mHolding)
+        {
+            PhysicsBehavior* pb = mHolding->GetBehaviorOfType<PhysicsBehavior>();
+            if (pb)
+            {
+                PxRigidDynamic* dynamic = pb->GetRigidActor()->is<PxRigidDynamic>();
+                if (dynamic)
+                {
+                    PxVec3 holdPos = ToPhysX(actor->GetPos() + V3(0, 0.25, 0) + actor->GetBehaviorOfType<CameraBehavior>()->GetForward());
+                    PxVec3 vel = dynamic->getLinearVelocity();
+                    PxVec3 pos = dynamic->getGlobalPose().p;
+                    float dt = 1.0f / 60.0f;
+
+                    float freq = 10.0f;
+                    float kp = 36.0f * freq * freq * 0.25f;
+                    float kd = 4.5f * freq;
+                    float g = 1 / (1 + kd * dt + kp * dt * dt);
+                    float ksg = kp * g;
+                    float kdg = (kd + kp * dt) * g;
+                    PxVec3 F = (holdPos - pos) * ksg + ( - vel) * kdg;
+
+                    dynamic->addForce(F);
+                }
+            }
+        }
+    }
+
+private:
+    Actor* mHolding = nullptr;
+};
+
 class FirstPersonCamera : public CameraBehavior
 {
 public:
@@ -19,13 +127,14 @@ public:
         mPitch = Math::Clamp<float>(mPitch + value, - (M_PI_2 - 0.02f), M_PI_2 - 0.02f);
     }
 
-    virtual M4 GetView() override
+    virtual V3 GetPos() override
     {
-        V3 pos = GetOwner()->GetPos() + mRelPos;
-        V3 up = V3(0, 1, 0);
-        V3 forward = GetOwner()->GetForward();
-        V3 test = glm::rotate(forward, mPitch, GetOwner()->GetRight());
-        return glm::lookAt(pos, pos + test, up);
+        return GetOwner()->GetPos() + mRelPos;
+    }
+
+    virtual V3 GetForward() override
+    {
+        return glm::rotate(GetOwner()->GetForward(), mPitch, GetOwner()->GetRight());
     }
 
 private:
@@ -190,6 +299,7 @@ int main(int argc, char ** argv)
     ro.screenHeight = 900;
     ro.antialias = RendererOptions::AA_4X;
     ro.monitor = RendererOptions::MON_SECOND;
+    ro.borderless = false;
 
     app.AddComponent<Renderer>(ro);
     app.AddComponent<ConsoleEngine>();
@@ -197,7 +307,7 @@ int main(int argc, char ** argv)
     app.AddComponent<ResourceSystem>();
     app.AddComponent<Physics>();
     app.AddComponent<World>();
-    app.AddComponent<PlayerController>();
+    app.AddComponent<CustomPlayerController>();
     app.AddComponent<Debug>();
 
     app.Run();

@@ -23,6 +23,11 @@ public:
     virtual void StartFrame() override;
     virtual void EndFrame() override;
 
+    physx::PxScene* GetScene()
+    {
+        return mScene;
+    }
+
 private:
     physx::PxFoundation* mFoundation = nullptr;
     physx::PxPhysics* mPhysics = nullptr;

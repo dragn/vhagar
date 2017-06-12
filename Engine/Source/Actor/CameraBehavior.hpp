@@ -15,6 +15,12 @@ public:
 
     virtual void TurnUp(float value) {};
     virtual M4 GetView();
+
+    // -- get camera position
+    virtual V3 GetPos();
+
+    // -- get camera look direction
+    virtual V3 GetForward();
 };
 
 } // namespace vh

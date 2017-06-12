@@ -29,6 +29,11 @@ public:
     virtual void TickRun(uint32_t delta);
     virtual void TickClose(uint32_t delta);
 
+    Actor* GetControlledActor()
+    {
+        return mActor;
+    }
+
 private:
     Console* mConsole;
     Actor* mActor;

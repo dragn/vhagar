@@ -42,24 +42,27 @@ void PhysicsBehavior::StartPlay()
         return;
     }
 
+    mActor->userData = (void*) mOwner;
+
     mMaterial = mPhysics->mPhysics->createMaterial(1.0, 1.0, 0.5);
 
     BoxGeometry* box = nullptr;
     SphereGeometry* sphere = nullptr;
     CapsuleGeometry* capsule = nullptr;
+    PxShape* shape;
     switch (mCollisionGeometry->GetType())
     {
     case GeometryType::Box:
         box = static_cast<BoxGeometry*>(mCollisionGeometry.get());
-        mActor->createShape(PxBoxGeometry(box->GetExtents().x, box->GetExtents().y, box->GetExtents().z), *mMaterial);
+        shape = mActor->createShape(PxBoxGeometry(box->GetExtents().x, box->GetExtents().y, box->GetExtents().z), *mMaterial);
         break;
     case GeometryType::Sphere:
         sphere = static_cast<SphereGeometry*>(mCollisionGeometry.get());
-        mActor->createShape(PxSphereGeometry(sphere->GetRadius()), *mMaterial);
+        shape = mActor->createShape(PxSphereGeometry(sphere->GetRadius()), *mMaterial);
         break;
     case GeometryType::Capsule:
         capsule = static_cast<CapsuleGeometry*>(mCollisionGeometry.get());
-        mActor->createShape(PxCapsuleGeometry(capsule->GetRadius(), capsule->GetHalfHeight()), *mMaterial);
+        shape = mActor->createShape(PxCapsuleGeometry(capsule->GetRadius(), capsule->GetHalfHeight()), *mMaterial);
         break;
     }
 
@@ -100,10 +103,4 @@ void vh::PhysicsBehavior::EndPlay()
 
 void vh::PhysicsBehavior::Tick(uint32_t delta)
 {
-    if (mActor)
-    {
-        PxTransform pose = mActor->getGlobalPose();
-        mOwner->SetPos(FromPhysX(pose.p));
-        mOwner->SetRot(FromPhysX(pose.q));
-    }
 }

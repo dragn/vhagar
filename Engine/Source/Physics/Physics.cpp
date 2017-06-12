@@ -1,5 +1,6 @@
 #include "Common.hpp"
 #include "Physics.hpp"
+#include "Actor/Actor.hpp"
 
 using namespace physx;
 
@@ -51,6 +52,7 @@ void vh::Physics::TickInit(uint32_t delta)
     sceneDesc.cpuDispatcher = PxDefaultCpuDispatcherCreate(1);
     sceneDesc.filterShader = PxDefaultSimulationFilterShader;
     mScene = mPhysics->createScene(sceneDesc);
+    mScene->setFlag(PxSceneFlag::eENABLE_ACTIVETRANSFORMS, true);
     if (!mScene)
     {
         LOG(FATAL) << "CreateScene failed!";
@@ -110,5 +112,18 @@ void vh::Physics::EndFrame()
         CHECK(mScene);
         mScene->fetchResults(true);
         mSimCalled = false;
+
+        // Update actors positions
+        PxU32 nbActiveTransforms;
+        const PxActiveTransform* activeTransforms = mScene->getActiveTransforms(nbActiveTransforms);
+        for (PxU32 i = 0; i < nbActiveTransforms; ++i)
+        {
+            vh::Actor* actor = static_cast<vh::Actor*>(activeTransforms[i].userData);
+            if (actor)
+            {
+                actor->SetPos(FromPhysX(activeTransforms[i].actor2World.p));
+                actor->SetRot(FromPhysX(activeTransforms[i].actor2World.q));
+            }
+        }
     }
 }
