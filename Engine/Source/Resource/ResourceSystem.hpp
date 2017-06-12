@@ -1,6 +1,7 @@
 #pragma once
 
 #include "App/App.hpp"
+#include "Actor/Actor.hpp"
 #include "Renderable/Mesh.hpp"
 #include <fstream>
 
@@ -31,5 +32,8 @@ private:
 
 template<> bool ResourceSystem::Load(const char* path, Mesh* mesh);
 template<> bool ResourceSystem::Save(const char* path, const Mesh* mesh);
+
+template<> bool ResourceSystem::Load(const char* path, Actor* actor);
+template<> bool ResourceSystem::Save(const char* path, const Actor* actor);
 
 }
