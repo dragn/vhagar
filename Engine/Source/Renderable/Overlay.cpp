@@ -67,6 +67,9 @@ void Overlay::Render(const Renderer* renderer)
 
     if (texId > 0) glBindTexture(GL_TEXTURE_2D, texId);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);

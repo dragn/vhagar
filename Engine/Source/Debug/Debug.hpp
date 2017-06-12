@@ -4,6 +4,7 @@
 #include "App/World.hpp"
 #include "DebugVisual.hpp"
 #include <SDL_ttf.h>
+#include "TextOverlay.hpp"
 
 namespace vh
 {
@@ -25,6 +26,7 @@ private:
     Renderer* mRenderer;
     World* mWorld;
     TTF_Font* mFont;
+    TextOverlay mStatOverlay;
 };
 
 } // namespace vh

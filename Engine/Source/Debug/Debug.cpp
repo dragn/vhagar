@@ -18,7 +18,9 @@ DEFINE_COMMAND(toggle_labels)
     }
 }
 
-vh::Debug::Debug() : Component(eTickFrequency::NORMAL)
+vh::Debug::Debug()
+    : Component(eTickFrequency::NORMAL)
+    , mStatOverlay(5, 5, 200, 50)
 {
     App::CheckRequired<Renderer>();
     App::CheckRequired<World>();
@@ -40,6 +42,8 @@ void vh::Debug::TickInit(uint32_t delta)
 
     REGISTER_COMMAND(toggle_labels);
 
+    mStatOverlay.Init();
+
     FinishInit();
 }
 
@@ -52,6 +56,11 @@ void vh::Debug::TickRun(uint32_t delta)
     }
 
     mDebugVisual.Render(mRenderer);
+
+    std::string fps("FPS: ");
+    fps.append(std::to_string(1000.0f / delta));
+    mStatOverlay.SetText(fps.c_str());
+    mStatOverlay.Render();
 }
 
 void vh::Debug::TickClose(uint32_t delta)
@@ -60,6 +69,7 @@ void vh::Debug::TickClose(uint32_t delta)
     CHECK(renderer);
 
     mDebugVisual.Destroy();
+    mStatOverlay.Destroy();
 
     FinishClose();
 }
