@@ -25,6 +25,7 @@ enum Type : int32_t
     NEVER = -1,     // Tick disabled while running
     EACH = 0,       // Tick as fast as possible
     NORMAL = 16,    // Normal tick ~60 fps
+    HALF = 32,      // Hald rate ~30 fps
     RARE = 50       // Rare tick
 };
 }

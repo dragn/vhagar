@@ -37,7 +37,7 @@ void vh::DebugVisual::Destroy()
 
 vh::DebugVisual::~DebugVisual()
 {
-    Destroy();
+    // Destroy();
 }
 
 void vh::DebugVisual::Render(const Renderer* renderer)

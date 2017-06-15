@@ -8,29 +8,16 @@ namespace vh
 {
 
 PointLightBehavior::PointLightBehavior(Actor* owner, float intensity)
-    : ActorBehavior(owner)
+    : RenderableBehavior(owner)
     , mIntensity(intensity)
 {
+    Set(&mLight);
 }
 
-void PointLightBehavior::StartPlay()
+void PointLightBehavior::SetupPayload(PointLight::Payload* payload)
 {
-    App::Get<Renderer>()->AddLight(this);
-}
-
-void PointLightBehavior::EndPlay()
-{
-    App::Get<Renderer>()->RemoveLight(this);
-}
-
-float PointLightBehavior::GetIntensity() const
-{
-    return mIntensity;
-}
-
-V3 PointLightBehavior::GetPos() const
-{
-    return GetOwner()->GetPos();
+    payload->pos = GetOwner()->GetPos();
+    payload->intensity = mIntensity;
 }
 
 } // namespace vh

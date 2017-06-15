@@ -100,7 +100,7 @@ void vh::Physics::StartFrame()
     if (IsRunning())
     {
         CHECK(mScene);
-        mScene->simulate(1.0f / 60.0f);
+        mScene->simulate(GetTickStep() / 1000.0f);
         mSimCalled = true;
     }
 }

@@ -11,10 +11,9 @@ using namespace vh;
 
 Mesh::~Mesh()
 {
-    if (mRenderUsage)
+    if (IsLoaded())
     {
         LOG(ERROR) << "Not all rendered usage of mesh was released!";
-        ReleaseRender();
     }
 
     if (mIndexSize > 0) delete[] mIndexData;
@@ -68,48 +67,29 @@ GLuint vh::Mesh::GetAttribDataSize() const
     return mVertexCount * (mDim + mAttribCount * 3);
 }
 
-
-void vh::Mesh::AddUsage()
-{
-    mRenderUsage++;
-    if (mRenderUsage == 1)
-    {
-        AddRender();
-    }
-}
-
-
-void vh::Mesh::ReleaseUsage()
-{
-    if (mRenderUsage == 0)
-    {
-        LOG(ERROR) << "Too much release!";
-        return;
-    }
-    mRenderUsage--;
-    if (mRenderUsage == 0)
-    {
-        ReleaseRender();
-    }
-}
-
 const vh::GLBufferInfo* vh::Mesh::GetBufferInfo() const
 {
-    if (mRenderUsage == 0)
-    {
-        LOG(ERROR) << "Access to render context for unbuffered mesh";
-        return nullptr;
-    }
-
     return &mGLInfo;
 }
 
-
-void vh::Mesh::AddRender()
+bool vh::Mesh::DoLoad()
 {
+    LOG(INFO) << "Mesh load " << this;
+
     CHECK(mGLInfo.attribBuffer == 0);
     CHECK(mGLInfo.indexBuffer == 0);
     CHECK(mGLInfo.texture == 0);
+
+    if (mDim == 4)
+    {
+        mShaderId = Utils::GetShaderProgram("SimpleShader4");
+    }
+    else
+    {
+        mShaderId = Utils::GetShaderProgram("SimpleShader");
+    }
+
+    if (mShaderId < 0) return false;
 
     // specify sizes
     mGLInfo.attribCount = mAttribCount;
@@ -139,10 +119,14 @@ void vh::Mesh::AddRender()
 
         LOG(INFO) << "Texture loaded with ID: " << mGLInfo.texture;
     }
+
+    return true;
 }
 
-void vh::Mesh::ReleaseRender()
+bool vh::Mesh::DoUnload()
 {
+    LOG(INFO) << "Mesh unload " << this;
+
     GLuint ids[] = { mGLInfo.indexBuffer, mGLInfo.attribBuffer };
     glDeleteBuffers(2, ids);
     glDeleteTextures(1, &mGLInfo.texture);
@@ -152,4 +136,6 @@ void vh::Mesh::ReleaseRender()
     mGLInfo.attribBuffer = 0;
     mGLInfo.attribBufferSize = 0;
     mGLInfo.texture = 0;
+
+    return true;
 }

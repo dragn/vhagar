@@ -1,25 +1,21 @@
 #pragma once
 
 #include "Actor/ActorBehavior.hpp"
-#include "Lights.hpp"
+#include "Renderable/RenderableBehavior.hpp"
+#include "Renderable/Lights.hpp"
 
 namespace vh
 {
 
-class PointLightBehavior : public ActorBehavior, public PointLight
+class PointLightBehavior : public RenderableBehavior<eRenderBlockType::Light, PointLight>
 {
 public:
     PointLightBehavior(Actor* owner, float intensity);
 
-    // -- ActorBehavior interface
-    virtual void StartPlay() override;
-    virtual void EndPlay() override;
-
-    // -- PointLight interface
-    virtual float GetIntensity() const override;
-    virtual V3 GetPos() const override;
+    virtual void SetupPayload(PointLight::Payload* payload);
 
 private:
+    PointLight mLight;
     float mIntensity = 0.1f;
 };
 

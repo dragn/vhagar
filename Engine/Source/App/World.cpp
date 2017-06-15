@@ -7,6 +7,9 @@
 #include "Resource/ResourceSystem.hpp"
 #include "Renderer/MeshBehavior.hpp"
 #include "Utils/ImportUtils.hpp"
+#include "App/PlayerController.hpp"
+#include "Actor/CameraBehavior.hpp"
+#include "Physics/Physics.hpp"
 
 namespace vh {
 
@@ -131,6 +134,12 @@ World::World() : Component(eTickFrequency::NORMAL)
 
 void World::TickInit(uint32_t delta)
 {
+    Physics* physics = App::Get<Physics>();
+    if (!physics->IsRunning()) return;
+
+    mRenderer = App::Get<Renderer>();
+    if (!mRenderer->IsRunning()) return;
+
     REGISTER_COMMAND(destroy_actor);
     REGISTER_COMMAND(pos_actor);
     REGISTER_COMMAND(move_actor);
@@ -159,6 +168,38 @@ void World::TickClose(uint32_t delta)
     mActors.clear();
 
     FinishClose();
+}
+
+void World::StartFrame()
+{
+    if (IsRunning())
+    {
+        RenderBuffer* buffer = mRenderer->GetBufferHandler().GetNextBuffer();
+        if (buffer)
+        {
+            buffer->header.size = 0;
+            buffer->header.time = SDL_GetTicks();
+            buffer->header.timestep = 16;
+
+            PlayerController* controller = App::Get<PlayerController>();
+            if (controller && controller->GetControlledActor())
+            {
+                CameraBehavior* camera = controller->GetControlledActor()->GetBehaviorOfType<CameraBehavior>();
+                if (camera)
+                {
+                    buffer->header.view = camera->GetView();
+                }
+            }
+        }
+    }
+}
+
+void World::EndFrame()
+{
+    if (IsRunning())
+    {
+        mRenderer->GetBufferHandler().FlipBuffers();
+    }
 }
 
 } // namespace vh

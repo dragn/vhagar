@@ -2,13 +2,13 @@
 
 #include "Common.hpp"
 
-#include "../Renderer/Lights.hpp"
-
-namespace vh {
+namespace vh
+{
 
 class Renderer; // forward decl
 
-struct GLBufferInfo {
+struct GLBufferInfo
+{
     /**
      * The number of vertex attribute arrays
      */
@@ -32,39 +32,26 @@ struct GLBufferInfo {
     GLuint texture = 0;
 };
 
-class Renderable {
-
+class Renderable
+{
 public:
-    friend class Renderer;
-    virtual ~Renderable() {};
+    void AddUsage();
+    void ReleaseUsage();
+
+    bool IsLoaded() const { return mLoaded; }
 
 protected:
-    /**
-     * Is this object ready to render?
-     * Should be set to true by beforeRender() on successful completion.
-     */
-    bool isReadyToRender = false;
+    virtual bool DoLoad() = 0;
+    virtual bool DoUnload() = 0;
 
 private:
-    /**
-     * Called by Renderer when this object is added to the rendered world.
-     * Should alocate OpenGL buffers.
-     */
-    virtual void BeforeRender() = 0;
+    int32_t id = -1;
+    bool mLoaded = false;
 
-    /**
-     * Called by Renderer when this object is removed from rendered world.
-     * Should deallocate any OpenGL buffers.
-     */
-    virtual void AfterRender() = 0;
-
-    /**
-     * Handles actual rendering of this object (called from Renderer::render())
-     * This variant does not accept light source and should only be used for object's, that do not use lights (like sky box).
-     *
-     * FIXME passing View and Projection here means every object will have the same view. but ok for now...
-     */
-    virtual void Render(const Renderer* renderer) = 0;
+    // Counts the rendered references.
+    // Renderable is automatically buffered when the value changed from zero
+    // and removed from render context, when value reaches zero again.
+    uint32_t mRenderUsage = 0;
 };
 
 }

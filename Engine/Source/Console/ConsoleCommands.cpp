@@ -88,9 +88,9 @@ DEFINE_COMMAND(save_mesh)
     const char* filename = params[2].c_str();
     actor->ForEachBehaviorOfType<MeshBehavior>([rs, filename] (MeshBehavior* behavior)
     {
-        if (behavior->GetMesh())
+        if (behavior->Get())
         {
-            if (rs->Save<Mesh>(filename, behavior->GetMesh()))
+            if (rs->Save<Mesh>(filename, behavior->Get()))
             {
                 LOG(INFO) << "Saved mesh successfully";
             }

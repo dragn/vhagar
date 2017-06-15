@@ -58,7 +58,7 @@ void Overlay::_UpdateVertices(uint32_t w, uint32_t h)
     vertexBuffer = Utils::BufferData(12, vertices);
 }
 
-void Overlay::Render(const Renderer* renderer)
+void Overlay::Render()
 {
     glDisable(GL_CULL_FACE);
     glUseProgram(programID);

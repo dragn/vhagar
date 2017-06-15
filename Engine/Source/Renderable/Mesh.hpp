@@ -1,16 +1,32 @@
 #pragma once
 
-#include "Renderer/Lights.hpp"
 #include "Renderable.hpp"
+#include "Renderer/RenderBuffersHandler.hpp"
 
-namespace vh {
+namespace vh
+{
+
+class MeshBehavior;
 
 /*
     Internal mesh representation
 */
-class Mesh
+class Mesh : public Renderable
 {
 public:
+
+    struct Payload
+    {
+        GLuint progId;
+        glm::vec3 translate;
+        glm::vec3 scale;
+        glm::quat rotate;
+        GLBufferInfo info;
+        GLuint dim;
+        GLsizei vertexCount;
+        MeshBehavior* owner;
+    };
+
     virtual ~Mesh();
 
     void SetAttribData(GLuint vertexCount, GLuint attribCount, GLfloat* data)
@@ -54,6 +70,8 @@ public:
 
     const GLBufferInfo* GetBufferInfo() const;
 
+    GLint GetShaderId() const { return mShaderId; }
+
 private:
     GLuint mVertexCount = 0;
     GLuint mAttribCount = 0;
@@ -73,15 +91,16 @@ private:
     // defaults to 3, 4 for homogeneous coordinates
     GLuint mDim = 3;
 
-    // Counts the rendered references.
-    // Mesh is automatically buffered when the value changed from zero
-    // and removed from render context, when value reaches zero again.
-    uint32_t mRenderUsage = 0;
-
     // buffer mesh to GPU memory
-    void AddRender();
+    virtual bool DoLoad() override;
+
     // release mesh from GPU memory
-    void ReleaseRender();
+    virtual bool DoUnload() override;
+
+    GLint mShaderId = -1;
 };
+
+
+static_assert(sizeof(Mesh::Payload) <= RenderBufferConstants::PAYLOAD_SIZE, "invalid payload size");
 
 } // namespace vh

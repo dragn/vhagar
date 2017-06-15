@@ -55,14 +55,14 @@ void Console::TickInit(uint32_t delta)
         hist.close();
     }
 
-    mOverlay.Init();
+//    mOverlay.Init();
 
     FinishInit();
 }
 
 void Console::TickClose(uint32_t delta)
 {
-    mOverlay.Destroy();
+//    mOverlay.Destroy();
 
     google::RemoveLogSink(this);
 
@@ -234,7 +234,7 @@ void Console::TickRun(uint32_t delta)
 {
     if (mShowConsole)
     {
-        mOverlay.Render(mRenderer);
+        mOverlay.Render();
     }
 }
 

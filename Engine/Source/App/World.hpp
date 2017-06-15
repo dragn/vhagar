@@ -3,9 +3,9 @@
 #include "Common.hpp"
 #include "Actor/Actor.hpp"
 #include "Component.hpp"
-#include "Renderer/Lights.hpp"
 #include <list>
 #include "Actor/ActorFactory.hpp"
+#include "Renderer/Renderer.hpp"
 
 namespace vh {
 
@@ -18,9 +18,12 @@ public:
 
     template<typename T, typename... Args> T* SpawnActor(Args... args) { return AddActor(new T(args...)); }
 
-    virtual void TickInit(uint32_t delta);
-    virtual void TickRun(uint32_t delta);
-    virtual void TickClose(uint32_t delta);
+    virtual void TickInit(uint32_t delta) override;
+    virtual void TickRun(uint32_t delta) override;
+    virtual void TickClose(uint32_t delta) override;
+
+    virtual void StartFrame() override;
+    virtual void EndFrame() override;
 
     template<typename T> void DestroyActor(T*& actor)
     {
@@ -72,6 +75,7 @@ public:
 private:
     std::list<std::unique_ptr<Actor>> mActors;
     ActorFactory mActorFactory;
+    Renderer* mRenderer;
 
     UNCOPYABLE(World);
 };

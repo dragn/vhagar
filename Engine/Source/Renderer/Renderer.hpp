@@ -1,10 +1,15 @@
 #pragma once
 
+#include <queue>
+#include <thread>
 #include <vector>
 #include <forward_list>
 #include "Renderable/Renderable.hpp"
-#include "Lights.hpp"
 #include "App/Component.hpp"
+#include "RenderBuffersHandler.hpp"
+#include "Renderable/Mesh.hpp"
+#include "Renderable/Lights.hpp"
+#include "Debug/TextOverlay.hpp"
 
 namespace vh {
 
@@ -44,6 +49,17 @@ enum Type
 };
 }
 
+struct RenderTask
+{
+    enum class Action
+    {
+        Load,
+        Release
+    } action;
+
+    Renderable* renderable;
+};
+
 /**
  * The Renderer
  **/
@@ -52,23 +68,16 @@ class Renderer : public vh::Component {
 
 public:
 
-    Renderer() : Component(eTickFrequency::NORMAL) {}
-    Renderer(const RendererOptions& opts) : Component(eTickFrequency::NORMAL), mOptions(opts) {}
+    Renderer(const RendererOptions& opts)
+        : Component(eTickFrequency::NEVER)
+        , mOptions(opts)
+        , mStatOverlay(10, 10, 100, 20)
+    {}
     virtual ~Renderer() {}
 
     virtual void TickInit(uint32_t delta) override;
     virtual void TickClose(uint32_t delta) override;
 
-    virtual void StartFrame() override;
-    virtual void EndFrame() override;
-
-    /**
-     * Set up light sources
-     */
-    void AddLight(const PointLight* light);
-    void RemoveLight(const PointLight* light);
-    const std::vector<const PointLight*> GetPointLights() const;
-;
     /**
      * Sets up a projection matrix
      */
@@ -101,6 +110,15 @@ public:
         mFlags ^= flag;
     }
 
+    // Get writable render buffer
+    RenderBufferHandler& GetBufferHandler()
+    {
+        return mBufferHandler;
+    }
+
+    void AddLoadTask(Renderable* renderable);
+    void AddReleaseTask(Renderable* renderable);
+
 private:
     RendererOptions mOptions;
 
@@ -110,10 +128,33 @@ private:
     SDL_Window *mWindow;
     uint32_t mWindowID;
 
-    std::vector<const PointLight*> mLights;
-
     glm::mat4 mProjection;
     glm::mat4 mView;
+
+    RenderBufferHandler mBufferHandler;
+
+    GLuint mWireProgramID;
+
+    std::thread mRenderThread;
+    static void RenderThreadStatic(Renderer* renderer);
+    void RenderThread();
+    bool mRenderThreadExit = false;
+    bool mRenderThreadReady = false;
+    bool mRenderThreadStarted = false;
+
+    void DoInit();
+    void DoRender(const RenderBuffer* last, const RenderBuffer* cur, float factor);
+    void DoRenderMesh(glm::mat4 view, glm::mat4 projection, const Mesh::Payload* payload, const std::vector<PointLight::Payload>& lights);
+
+    std::mutex mTaskQueueLock;
+    std::queue<RenderTask> mTaskQueue;
+
+    void HandleTasks();
+
+    uint32_t mLastFPSReport = 0;
+    uint32_t mFrameCount = 0;
+
+    TextOverlay mStatOverlay;
 };
 
 }

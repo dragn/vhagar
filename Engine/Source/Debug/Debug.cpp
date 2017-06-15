@@ -33,7 +33,7 @@ void vh::Debug::TickInit(uint32_t delta)
     // wait for renderer to start
     if (!mRenderer->IsRunning()) return;
 
-    mDebugVisual.Init();
+    //mDebugVisual.Init();
 
     mWorld = App::Get<World>();
 
@@ -42,13 +42,14 @@ void vh::Debug::TickInit(uint32_t delta)
 
     REGISTER_COMMAND(toggle_labels);
 
-    mStatOverlay.Init();
+    //mStatOverlay.Init();
 
     FinishInit();
 }
 
 void vh::Debug::TickRun(uint32_t delta)
 {
+    /*
     mDebugVisual.GetLabels().clear();
     for (const std::unique_ptr<Actor>& actor : mWorld->GetActors())
     {
@@ -61,6 +62,7 @@ void vh::Debug::TickRun(uint32_t delta)
     fps.append(std::to_string(1000.0f / delta));
     mStatOverlay.SetText(fps.c_str());
     mStatOverlay.Render();
+    */
 }
 
 void vh::Debug::TickClose(uint32_t delta)
@@ -68,8 +70,8 @@ void vh::Debug::TickClose(uint32_t delta)
     Renderer* renderer = App::Get<Renderer>();
     CHECK(renderer);
 
-    mDebugVisual.Destroy();
-    mStatOverlay.Destroy();
+    //mDebugVisual.Destroy();
+    //mStatOverlay.Destroy();
 
     FinishClose();
 }

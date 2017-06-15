@@ -26,7 +26,7 @@ void vh::TextOverlay::SetSize(uint32_t width, uint32_t height)
     mSurf = SDL_CreateRGBSurface(0, width, height, 32, rmask, gmask, bmask, amask);
 }
 
-void vh::TextOverlay::Init()
+void vh::TextOverlay::Create()
 {
     mOverlay.Init();
     mFont = TTF_OpenFont("Assets/Fonts/Roboto-regular.ttf", 12);
@@ -34,6 +34,7 @@ void vh::TextOverlay::Init()
     {
         LOG(ERROR) << "Could not open font";
     }
+    SetText("");
 }
 
 void vh::TextOverlay::Destroy()
@@ -61,5 +62,5 @@ void vh::TextOverlay::SetText(const char* text)
 
 void vh::TextOverlay::Render()
 {
-    mOverlay.Render(vh::App::Get<vh::Renderer>());
+    mOverlay.Render();
 }

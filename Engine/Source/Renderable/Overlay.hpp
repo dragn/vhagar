@@ -16,7 +16,7 @@ public:
     void Init();
     void Destroy();
 
-    virtual void Render(const Renderer* renderer);
+    virtual void Render();
 
 private:
     uint32_t mPosX = 0;
