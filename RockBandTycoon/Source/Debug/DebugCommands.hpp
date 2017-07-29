@@ -5,7 +5,7 @@
 
 class DebugCommands : public vh::Component
 {
-    COMPONENT_NAME(DebugCommands);
+    VH_COMPONENT(DebugCommands);
 
 public:
     DebugCommands() : Component(vh::eTickFrequency::NEVER) {}

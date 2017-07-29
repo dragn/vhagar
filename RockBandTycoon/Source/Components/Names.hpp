@@ -4,11 +4,11 @@
 
 class Names : public vh::Component
 {
-    COMPONENT_NAME(Names);
-
-    static const size_t MAX_WORD_SIZE = 32;
+    VH_COMPONENT(Names);
 
 public:
+    static const size_t MAX_WORD_SIZE = 32;
+
     Names()
         : vh::Component(vh::eTickFrequency::NEVER)
         , mDictionaryLoaded(false)

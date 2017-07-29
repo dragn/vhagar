@@ -1,6 +1,8 @@
 #include "PCH.hpp"
 #include "Names.hpp"
 
+VH_COMPONENT_IMPL(Names);
+
 void Names::TickInit(uint32_t delta)
 {
     LoadDictionary();

@@ -7,6 +7,8 @@
 using namespace vh;
 using namespace gui;
 
+VH_COMPONENT_IMPL(DebugCommands);
+
 DEFINE_COMMAND(set_band_name)
 {
     if (params.size() > 1)

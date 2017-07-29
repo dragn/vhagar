@@ -2,6 +2,8 @@
 
 #include "Renderer2D.hpp"
 
+VH_COMPONENT_IMPL(vh::Renderer2D);
+
 vh::Renderer2D::Renderer2D()
     : Component(eTickFrequency::NORMAL)
     , mWindow(nullptr)

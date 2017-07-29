@@ -8,6 +8,8 @@ using namespace vh;
 namespace gui
 {
 
+VH_COMPONENT_IMPL(GUI2D);
+
 void GUI2D::TickInit(uint32_t delta)
 {
     App::CheckRequired<Renderer2D>();

@@ -1,6 +1,8 @@
 #include "PCH.hpp"
 #include "Resources.hpp"
 
+VH_COMPONENT_IMPL(Resources);
+
 void LoadBodyParts(const char* prefix, std::vector<BodyPart>& vec)
 {
     std::string dir = "Assets/Images/BodyParts/";

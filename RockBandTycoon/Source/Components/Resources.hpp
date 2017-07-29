@@ -53,7 +53,7 @@ private:
 
 class Resources : public vh::Component
 {
-    COMPONENT_NAME(Resources);
+    VH_COMPONENT(Resources);
 
 public:
     Resources() : Component(vh::eTickFrequency::NEVER) {}
