@@ -12,7 +12,7 @@ namespace vh {
  * PlayerController has a camera, that specifies what the human sees.
  */
 class PlayerController : public Component {
-    COMPONENT_NAME(PlayerController);
+    VH_COMPONENT(PlayerController);
 
 public:
     PlayerController();

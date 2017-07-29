@@ -11,7 +11,7 @@ namespace vh {
 
 class World : public Component
 {
-    COMPONENT_NAME(World);
+    VH_COMPONENT(World);
 
 public:
     World();

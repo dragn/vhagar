@@ -11,7 +11,7 @@ namespace vh
 
 class Debug : public Component
 {
-    COMPONENT_NAME(Debug);
+    VH_COMPONENT(Debug);
 
 public:
     Debug();

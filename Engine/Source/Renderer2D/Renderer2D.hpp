@@ -33,7 +33,7 @@ struct Renderer2DOptions
 
 class Renderer2D : public Component
 {
-    COMPONENT_NAME(Renderer2D);
+    VH_COMPONENT(Renderer2D);
 
 public:
     Renderer2D();

@@ -9,6 +9,8 @@
 namespace vh
 {
 
+VH_COMPONENT_IMPL(PlayerController);
+
 PlayerController::PlayerController() :
     Component(eTickFrequency::NORMAL),
     mActor(nullptr),

@@ -8,7 +8,7 @@ namespace vh
 class Geometry : public Component
 {
 public:
-    static const char* COMPONENT_NAME;
+    static const char* VH_COMPONENT;
 
     Geometry();
 

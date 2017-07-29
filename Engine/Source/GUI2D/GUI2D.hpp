@@ -26,7 +26,7 @@ struct GUI2DOptions
 
 class GUI2D : public vh::Component
 {
-    COMPONENT_NAME(GUI2D);
+    VH_COMPONENT(GUI2D);
 
 public:
     GUI2D(const GUI2DOptions& opts)

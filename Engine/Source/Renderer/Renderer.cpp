@@ -9,6 +9,8 @@
 namespace vh
 {
 
+VH_COMPONENT_IMPL(Renderer);
+
 namespace
 {
 void reportGLError(int error)

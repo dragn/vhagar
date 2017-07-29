@@ -64,7 +64,7 @@ struct RenderTask
  * The Renderer
  **/
 class Renderer : public vh::Component {
-    COMPONENT_NAME(Renderer);
+    VH_COMPONENT(Renderer);
 
 public:
 

@@ -9,6 +9,8 @@
 namespace vh
 {
 
+VH_COMPONENT_IMPL(ConsoleEngine)
+
 void ConsoleEngine::TickInit(uint32_t delta)
 {
     ConsoleCommands::RegisterAll(this);

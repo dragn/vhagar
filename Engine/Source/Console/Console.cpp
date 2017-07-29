@@ -8,6 +8,8 @@
 namespace vh
 {
 
+VH_COMPONENT_IMPL(Console);
+
 void Console::TickInit(uint32_t delta)
 {
     mEngine = App::Get<ConsoleEngine>();

@@ -5,6 +5,8 @@
 
 using namespace vh;
 
+VH_COMPONENT_IMPL(Debug);
+
 DEFINE_COMMAND(toggle_labels)
 {
     Debug* debug = App::Get<Debug>();

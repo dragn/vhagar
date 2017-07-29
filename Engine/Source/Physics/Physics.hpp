@@ -8,7 +8,7 @@ namespace vh
 
 class Physics : public vh::Component
 {
-    COMPONENT_NAME(Physics);
+    VH_COMPONENT(Physics);
 
     friend class PhysicsBehavior;
     friend class CapsuleCharacterBehavior;

@@ -60,18 +60,35 @@ void App::DoRun()
 
     OnTick();
 
-    if (mState == eAppState::CLOSE)
+    if (mState == eAppState::CLOSE && mNumComp > 0)
     {
         // -- Close components one-by-one from the end
-        if (mComponents.empty())
+        int32_t compIdx;
+        for (compIdx = int32_t(mNumComp) - 1; compIdx >= 0; --compIdx) if (mComponents[compIdx])
         {
+            const std::unique_ptr<Component>& comp = mComponents[compIdx];
+
+            if (comp->GetState() == eCompState::CLOSE)
+            {
+                break; // encountered closing component - wait for it to close
+            }
+            else if (comp->GetState() == eCompState::CLOSED)
+            {
+                // component is closed - remove the reference and proceed to next one
+                LOG(INFO) << "Destroying component " << comp->GetName();
+                mComponents[compIdx] = nullptr;
+            }
+            else
+            {
+                comp->Close();
+                break; // stop on the first not-closed component
+            }
+        }
+        if (compIdx == -1)
+        {
+            // -- all components closed
             LOG(INFO) << "All components closed. Stopping application";
             mState = eAppState::CLOSED;
-        }
-        else
-        {
-            const std::unique_ptr<Component>& comp = mComponents.back();
-            if (comp->IsRunning()) comp->Close();
         }
     }
 
@@ -80,35 +97,22 @@ void App::DoRun()
     // -- Dispatch StartFrame events (pass the same time for all components,
     //    this will ensure, that components with the same tick frequency will be ticked
     //    on the same frame.
-    std::for_each(mComponents.begin(), mComponents.end(), [time] (const std::unique_ptr<Component>& comp)
+    for (size_t compIdx = 0; compIdx < mNumComp; ++compIdx) if (mComponents[compIdx]) 
     {
-        comp->StartFrame_Internal(time);
-    });
+        mComponents[compIdx]->StartFrame_Internal(time);
+    }
 
     // -- Tick all components
-    std::list<std::unique_ptr<Component>>::iterator iter = mComponents.begin();
-    while (iter != mComponents.end())
+    for (size_t compIdx = 0; compIdx < mNumComp; ++compIdx) if (mComponents[compIdx])
     {
-        const std::unique_ptr<Component>& comp = *iter;
-
-        if (comp->GetState() == eCompState::CLOSED)
-        {
-            LOG(INFO) << "Destroying component " << comp->GetName();
-            mComponentsMap.erase(mComponentsMap.find(comp->GetName()));
-            iter = mComponents.erase(iter);
-        }
-        else
-        {
-            comp->Tick();
-            iter++;
-        }
+        mComponents[compIdx]->Tick();
     }
 
     // -- Dispatch EndFrame events
-    std::for_each(mComponents.begin(), mComponents.end(), [] (const std::unique_ptr<Component>& comp)
+    for (size_t compIdx = 0; compIdx < mNumComp; ++compIdx) if (mComponents[compIdx]) 
     {
-        comp->EndFrame_Internal();
-    });
+        mComponents[compIdx]->EndFrame_Internal();
+    }
 }
 
 void App::Close()
@@ -144,9 +148,9 @@ void App::HandleEvent(SDL_Event *event)
         break;
     }
 
-    for (const std::unique_ptr<Component>& comp : mComponents)
+    for (size_t compIdx = 0; compIdx < mNumComp; ++compIdx) if (mComponents[compIdx]) 
     {
-        comp->HandleEvent(event);
+        mComponents[compIdx]->HandleEvent(event);
     }
 }
 

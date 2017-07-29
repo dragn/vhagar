@@ -32,7 +32,7 @@ typedef void(*CmdHandler)(const std::vector<std::string>&);
 
 class Console : public Component, public google::LogSink
 {
-    COMPONENT_NAME(Console);
+    VH_COMPONENT(Console);
 
 public:
     Console()

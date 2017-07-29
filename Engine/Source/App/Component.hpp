@@ -30,10 +30,22 @@ enum Type : int32_t
 };
 }
 
-#define COMPONENT_NAME(name) \
-public: \
-    static const char* GetNameStatic() { return #name; } \
-    virtual const char* GetName() { return #name; }
+typedef uint32_t CompID;
+static const CompID CompID_Invalid = CompID(-1);
+
+#define VH_COMPONENT(name)                                          \
+friend class vh::App;                                               \
+public:                                                             \
+    static const char* GetNameStatic() { return #name; }            \
+    virtual const char* GetName() { return #name; }                 \
+    static vh::CompID GetIDStatic() { return name::_ID; }           \
+    virtual vh::CompID GetID() const { return name::GetIDStatic(); }\
+                                                                    \
+private:                                                            \
+    static vh::CompID _ID;                                          \
+
+#define VH_COMPONENT_IMPL(name)                                     \
+vh::CompID name::_ID = vh::CompID_Invalid;                          \
 
 class Component
 {

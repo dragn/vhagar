@@ -10,7 +10,7 @@ namespace vh
 */
 class Network : public Component
 {
-    COMPONENT_NAME(Network);
+    VH_COMPONENT(Network);
 
 public:
     virtual void TickInit(uint32_t delta);

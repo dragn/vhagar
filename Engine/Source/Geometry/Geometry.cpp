@@ -7,8 +7,6 @@
 
 using namespace vh;
 
-const char* vh::Geometry::COMPONENT_NAME = "Geometry";
-
 vh::Geometry::Geometry()
 {
     App::CheckRequired<World>();

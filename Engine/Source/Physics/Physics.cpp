@@ -15,6 +15,8 @@ class ErrorCallback : public PxErrorCallback
 };
 }
 
+VH_COMPONENT_IMPL(vh::Physics);
+
 vh::Physics::Physics()
     : Component(eTickFrequency::NORMAL)
     , mFoundation(nullptr)

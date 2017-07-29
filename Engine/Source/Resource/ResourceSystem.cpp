@@ -18,6 +18,8 @@ static std::string currDir;
 
 using namespace vh;
 
+VH_COMPONENT_IMPL(ResourceSystem);
+
 template<typename T>
 bool OpenFile(T& stream, const std::string& filename, std::ios_base::openmode mode)
 {

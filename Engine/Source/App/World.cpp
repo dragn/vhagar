@@ -11,7 +11,10 @@
 #include "Actor/CameraBehavior.hpp"
 #include "Physics/Physics.hpp"
 
-namespace vh {
+namespace vh
+{
+
+VH_COMPONENT_IMPL(World);
 
 DEFINE_COMMAND(destroy_actor)
 {

@@ -10,7 +10,7 @@ namespace vh
 
 class ResourceSystem : public Component
 {
-    COMPONENT_NAME(ResourceSystem);
+    VH_COMPONENT(ResourceSystem);
 
 public:
     ResourceSystem() : Component() {}

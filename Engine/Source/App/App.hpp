@@ -16,6 +16,8 @@ enum Type
 };
 }
 
+const static size_t VH_MAX_COMPONENTS = 128;
+
 class App;
 
 // Global instance accessors
@@ -36,19 +38,35 @@ public:
     template<typename COMP_TYPE>
     COMP_TYPE* AddComponent()
     {
-        COMP_TYPE* comp = new COMP_TYPE();
-        mComponents.push_back(std::unique_ptr<Component>(comp));
-        mComponentsMap[comp->GetName()] = comp;
-        return comp;
+        if (COMP_TYPE::GetIDStatic() != CompID_Invalid)
+        {
+            LOG(FATAL) << "Component is already registered";
+            return nullptr;
+        }
+        mComponents[mNumComp] = std::make_unique<COMP_TYPE>();
+        COMP_TYPE::_ID = CompID(mNumComp);
+        mNumComp++;
+
+        LOG(INFO) << "Registered component " << COMP_TYPE::GetNameStatic() << " with ID " << COMP_TYPE::_ID;
+
+        return Get<COMP_TYPE>();
     }
 
     template<typename COMP_TYPE, typename PARAM_TYPE>
     COMP_TYPE* AddComponent(const PARAM_TYPE& param)
     {
-        COMP_TYPE* comp = new COMP_TYPE(param);
-        mComponents.push_back(std::unique_ptr<Component>(comp));
-        mComponentsMap[comp->GetName()] = comp;
-        return comp;
+        if (COMP_TYPE::GetIDStatic() != CompID_Invalid)
+        {
+            LOG(FATAL) << "Component is already registered";
+            return nullptr;
+        }
+        mComponents[mNumComp] = std::make_unique<COMP_TYPE>(param);
+        COMP_TYPE::_ID = CompID(mNumComp);
+        mNumComp++;
+
+        LOG(INFO) << "Registered component " << COMP_TYPE::GetNameStatic() << " with ID " << COMP_TYPE::_ID;
+
+        return Get<COMP_TYPE>();
     }
 
     template<typename T>
@@ -57,7 +75,12 @@ public:
         App* app = GetApp();
         if (app == nullptr) return nullptr;
 
-        return reinterpret_cast<T*>(app->mComponentsMap.at(T::GetNameStatic()));
+        if (T::_ID == CompID_Invalid || !(app->mComponents[T::_ID]))
+        {
+            LOG(ERROR) << "No such component: " << T::GetNameStatic();
+            return nullptr;
+        }
+        return reinterpret_cast<T*>(app->mComponents[T::_ID].get());
     }
 
     template<typename COMPONENT_TYPE>
@@ -79,8 +102,8 @@ protected:
 private:
     eAppState::Type mState;
 
-    std::list<std::unique_ptr<Component>> mComponents;
-    std::unordered_map<std::string, Component*> mComponentsMap;
+    std::unique_ptr<Component> mComponents[VH_MAX_COMPONENTS];
+    size_t mNumComp = 0;
 
     void DoRun();
     void Quit();
