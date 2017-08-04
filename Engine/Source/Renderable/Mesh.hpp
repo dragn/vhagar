@@ -65,9 +65,6 @@ public:
 
     GLuint GetAttribDataSize() const;
 
-    void AddUsage();
-    void ReleaseUsage();
-
     const GLBufferInfo* GetBufferInfo() const;
 
     GLint GetShaderId() const { return mShaderId; }

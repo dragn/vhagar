@@ -53,7 +53,7 @@ void vh::DebugVisual::Render(const Renderer* renderer)
 
     for (const DebugLabel& label : mLabels)
     {
-        M4 MVP = renderer->GetProjection() * renderer->GetView() * glm::translate(M4(1.0f), label.pos);
+        M4 MVP; // = renderer->GetProjection() * renderer->GetView() * glm::translate(M4(1.0f), label.pos);
         glUniformMatrix4fv(uidMVP, 1, GL_FALSE, &MVP[0][0]);
         glDrawArrays(GL_LINES, 0, 6);
     }

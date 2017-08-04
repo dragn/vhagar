@@ -19,8 +19,6 @@ public:
     bool IsValid();
 
 private:
-    std::shared_ptr<Mesh> mMesh;
-
     glm::mat4 mModel;
 };
 

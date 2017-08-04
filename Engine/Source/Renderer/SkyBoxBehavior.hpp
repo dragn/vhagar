@@ -3,26 +3,21 @@
 #include "Actor/ActorBehavior.hpp"
 #include "Utils/GLUtils.hpp"
 #include "Renderer/Renderer.hpp"
+#include "Renderable/RenderableBehavior.hpp"
+#include "Renderable/SkyBox.hpp"
 
 namespace vh
 {
 
-class SkyBoxBehavior : public ActorBehavior
+class SkyBoxBehavior : public RenderableBehavior<eRenderBlockType::SkyBox, SkyBox>
 {
 public:
     SkyBoxBehavior(Actor* owner, const Utils::CubeMap& cubeMap);
 
-    // -- ActorBehavior interface
-    virtual void StartPlay() override;
-    virtual void EndPlay() override;
-    virtual void Tick(uint32_t delta) override;
+    virtual void SetupPayload(typename SkyBox::Payload* payload);
 
 private:
-    GLBufferInfo mGLInfo;
-    GLuint mTexture;
-    GLuint mProgramID;
-    Utils::CubeMap mCubeMap;
-    Renderer* mRenderer;
+    SkyBox mSkyBox;
 };
 
 } // namespace vh

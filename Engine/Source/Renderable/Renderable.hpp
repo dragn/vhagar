@@ -35,8 +35,8 @@ struct GLBufferInfo
 class Renderable
 {
 public:
-    void AddUsage();
-    void ReleaseUsage();
+    void AddRef();
+    void ReleaseRef();
 
     bool IsLoaded() const { return mLoaded; }
 
@@ -51,7 +51,7 @@ private:
     // Counts the rendered references.
     // Renderable is automatically buffered when the value changed from zero
     // and removed from render context, when value reaches zero again.
-    uint32_t mRenderUsage = 0;
+    uint32_t mRefCount = 0;
 };
 
 }

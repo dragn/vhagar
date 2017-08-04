@@ -8,6 +8,7 @@
 #include "App/Component.hpp"
 #include "RenderBuffersHandler.hpp"
 #include "Renderable/Mesh.hpp"
+#include "Renderable/SkyBox.hpp"
 #include "Renderable/Lights.hpp"
 #include "Debug/TextOverlay.hpp"
 
@@ -78,18 +79,6 @@ public:
     virtual void TickInit(uint32_t delta) override;
     virtual void TickClose(uint32_t delta) override;
 
-    /**
-     * Sets up a projection matrix
-     */
-    void SetProjection(glm::mat4 projection) { mProjection = projection; };
-    const M4& GetProjection() const { return mProjection; }
-
-    /**
-     * Sets up view matrix (camera)
-     */
-    void SetView(glm::mat4 view) { mView = view; };
-    const M4& GetView() const { return mView; }
-
     const RendererOptions& GetOptions() const
     {
         return mOptions;
@@ -129,7 +118,6 @@ private:
     uint32_t mWindowID;
 
     glm::mat4 mProjection;
-    glm::mat4 mView;
 
     RenderBufferHandler mBufferHandler;
 
@@ -145,6 +133,7 @@ private:
     void DoInit();
     void DoRender(const RenderBuffer* last, const RenderBuffer* cur, float factor);
     void DoRenderMesh(glm::mat4 view, glm::mat4 projection, const Mesh::Payload* payload, const std::vector<PointLight::Payload>& lights);
+    void DoRenderSkyBox(glm::mat4 view, glm::mat4 projection, const SkyBox::Payload& payload);
 
     std::mutex mTaskQueueLock;
     std::queue<RenderTask> mTaskQueue;

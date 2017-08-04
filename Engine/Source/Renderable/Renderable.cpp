@@ -4,9 +4,9 @@
 namespace vh
 {
 
-void Renderable::AddUsage()
+void Renderable::AddRef()
 {
-    if (mRenderUsage == 0)
+    if (mRefCount == 0)
     {
         bool result = DoLoad();
         if (result)
@@ -18,15 +18,15 @@ void Renderable::AddUsage()
             LOG(ERROR) << "Could not load renderable";
         }
     }
-    mRenderUsage++;
+    mRefCount++;
 }
 
-void Renderable::ReleaseUsage()
+void Renderable::ReleaseRef()
 {
-    if (mRenderUsage != 0)
+    if (mRefCount != 0)
     {
-        mRenderUsage--;
-        if (mRenderUsage == 0)
+        mRefCount--;
+        if (mRefCount == 0)
         {
             DoUnload();
             mLoaded = false;

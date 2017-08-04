@@ -131,7 +131,6 @@ void Renderer::DoRender(const RenderBuffer* last, const RenderBuffer* cur, float
         // do mesh render task
         if (block.type == eRenderBlockType::Mesh && (block.flags & eRenderBlockFlags::Active))
         {
-            // TODO: do interpolation
             Mesh::Payload lastPayload = *reinterpret_cast<const Mesh::Payload*>(block.payload);
             Mesh::Payload curPayload = *reinterpret_cast<const Mesh::Payload*>(cur->blocks[idx].payload);
             if (block.flags & eRenderBlockFlags::Interpolated)
@@ -146,13 +145,19 @@ void Renderer::DoRender(const RenderBuffer* last, const RenderBuffer* cur, float
             DoRenderMesh(view, projection, &lastPayload, lights);
         }
 
+        if (block.type == eRenderBlockType::SkyBox && (block.flags & eRenderBlockFlags::Active))
+        {
+            SkyBox::Payload payload = *reinterpret_cast<const SkyBox::Payload*>(cur->blocks[idx].payload);
+            DoRenderSkyBox(view, projection, payload);
+        }
+
         // do load task
         if (block.type == eRenderBlockType::RenderableLoad)
         {
             void* ptr = const_cast<void*>(reinterpret_cast<const void*>(block.payload));
             if (ptr != nullptr)
             {
-                reinterpret_cast<Renderable*>(ptr)->AddUsage();
+                reinterpret_cast<Renderable*>(ptr)->AddRef();
             }
         }
 
@@ -162,7 +167,7 @@ void Renderer::DoRender(const RenderBuffer* last, const RenderBuffer* cur, float
             void* ptr = const_cast<void*>(reinterpret_cast<const void*>(block.payload));
             if (ptr != nullptr)
             {
-                reinterpret_cast<Renderable*>(ptr)->ReleaseUsage();
+                reinterpret_cast<Renderable*>(ptr)->ReleaseRef();
             }
         }
     }
@@ -344,11 +349,11 @@ void Renderer::HandleTasks()
             mTaskQueue.pop();
             if (task.action == RenderTask::Action::Load && task.renderable)
             {
-                task.renderable->AddUsage();
+                task.renderable->AddRef();
             }
             if (task.action == RenderTask::Action::Release && task.renderable)
             {
-                task.renderable->ReleaseUsage();
+                task.renderable->ReleaseRef();
             }
         }
     }
@@ -430,6 +435,31 @@ void Renderer::DoInit()
     mBufferHandler.Create();
 
     mStatOverlay.Create();
+}
+
+void Renderer::DoRenderSkyBox(glm::mat4 _view, glm::mat4 projection, const SkyBox::Payload& payload)
+{
+    glDisable(GL_CULL_FACE);
+    glDepthMask(GL_FALSE);
+    glUseProgram(payload.progId);
+
+    M4 view = _view;
+    view[3] = { 0, 0, 0, 1 }; // remove translation from view
+
+    M4 MVP = projection * view * glm::scale(M4(1.0f), V3(50.f, 50.f, 50.f));
+    Utils::PutUniformMat4(payload.progId, "uMVP", MVP);
+
+    glBindBuffer(GL_ARRAY_BUFFER, payload.info.attribBuffer);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+
+    glBindTexture(GL_TEXTURE_CUBE_MAP, payload.info.texture);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, payload.info.indexBuffer);
+    glDrawElements(GL_TRIANGLES, payload.info.indexBufferSize, GL_UNSIGNED_INT, (void*) 0);
+
+    glDisableVertexAttribArray(0);
+    glDepthMask(GL_TRUE);
+    glEnable(GL_CULL_FACE);
 }
 
 } // namespace vh

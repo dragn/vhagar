@@ -43,18 +43,6 @@ void PlayerController::TickRun(uint32_t delta)
         if (mPressed['a']) behavior->MoveRight(-sec);
         if (mPressed['d']) behavior->MoveRight(sec);
     });
-
-    // Update renderer view with Actor's custom or default camera behavior
-    CameraBehavior* camera = mActor->GetBehaviorOfType<CameraBehavior>();
-    if (camera != nullptr)
-    {
-        App::Get<Renderer>()->SetView(camera->GetView());
-    }
-    else
-    {
-        // no camera behavior, use actor's view
-        App::Get<Renderer>()->SetView(mActor->GetView());
-    }
 }
 
 void PlayerController::TickClose(uint32_t delta)
