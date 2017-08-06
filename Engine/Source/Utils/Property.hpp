@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Utils/Delegate.hpp"
+
 /*
     Basic read/write property
     Generates a setter, a getter and a on-change MultiDelegate

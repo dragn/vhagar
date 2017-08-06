@@ -8,6 +8,10 @@
 
 vh::MeshBehavior::MeshBehavior(Actor* owner, const char* name)
     : RenderableBehavior(owner)
+    , mRelPos(0.0f)
+    , mRelRot()
+    , mScale(1.0f)
+    , mUseOwnerScale(true)
 {
     ResourceSystem* resource = App::Get<ResourceSystem>();
     CHECK(resource);
@@ -26,9 +30,10 @@ vh::MeshBehavior::MeshBehavior(Actor* owner, const char* name)
 void vh::MeshBehavior::SetupPayload(Mesh::Payload* payload)
 {
     payload->progId = Get()->GetShaderId();
-    payload->translate = GetOwner()->GetPos();
-    payload->scale = GetOwner()->GetScale();
-    payload->rotate = GetOwner()->GetQuat();
+    glm::vec3 offset = glm::toMat3(GetOwner()->GetQuat()) * mRelPos;
+    payload->translate = GetOwner()->GetPos() + offset;
+    payload->scale = mUseOwnerScale ? GetOwner()->GetScale() : mScale;
+    payload->rotate = GetOwner()->GetQuat(); // *mRelRot;
     payload->info = *Get()->GetBufferInfo();
     payload->dim = Get()->GetDim();
     payload->vertexCount = Get()->GetVertexCount();
