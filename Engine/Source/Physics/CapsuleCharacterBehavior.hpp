@@ -44,6 +44,7 @@ private:
     float mTurnSpeed = 0.001f;
     float mWalkSpeed = 5.0f;
     physx::PxControllerFilters mFilters;
+    float mCameraPitch = 0.0f;
 };
 
 } // namespace vh

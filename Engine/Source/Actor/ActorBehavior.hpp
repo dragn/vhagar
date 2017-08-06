@@ -11,6 +11,10 @@ class ActorBehavior
 {
     friend class Actor;
 
+    VH_PROPERTY_RW(glm::vec3, RelPos);
+    VH_PROPERTY_RW(glm::quat, RelRot);
+    VH_PROPERTY_RW(glm::vec3, RelScale);
+
 public:
     ActorBehavior()
         : mOwner(nullptr)
@@ -34,10 +38,6 @@ public:
     V3 GetPos();
     glm::quat GetRot();
     V3 GetScale();
-
-    VH_PROPERTY_RW(glm::vec3, RelPos);
-    VH_PROPERTY_RW(glm::quat, RelRot);
-    VH_PROPERTY_RW(glm::vec3, RelScale);
 
     template<typename BEHAVIOR_CLASS, typename... Args>
     BEHAVIOR_CLASS* AddChild(Args... args)

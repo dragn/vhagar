@@ -114,33 +114,6 @@ private:
     Actor* mHolding = nullptr;
 };
 
-class FirstPersonCamera : public CameraBehavior
-{
-public:
-    FirstPersonCamera(V3 relPos)
-        : mRelPos(relPos)
-    {}
-
-    virtual void TurnUp(float value) override
-    {
-        mPitch = Math::Clamp<float>(mPitch + value, - (M_PI_2 - 0.02f), M_PI_2 - 0.02f);
-    }
-
-    virtual V3 GetPos() override
-    {
-        return GetOwner()->GetPos() + mRelPos;
-    }
-
-    virtual V3 GetForward() override
-    {
-        return glm::rotate(GetOwner()->GetForward(), mPitch, GetOwner()->GetRight());
-    }
-
-private:
-    float mPitch = 0.0f;
-    V3 mRelPos;
-};
-
 class CustomCharacterBehavior : public CapsuleCharacterBehavior
 {
 public:
@@ -267,10 +240,13 @@ public:
 
                 Actor* character = world->CreateActor("Character");
                 character->AddBehavior<CustomCharacterBehavior>(0.4f, 0.5f);
-                character->AddBehavior<FirstPersonCamera>(V3(0.0f, 0.25f, 0.0f));
-                MeshBehavior* mb = character->AddBehavior<MeshBehavior>("Assets/Meshes/box2.vhmesh");
-                mb->SetRelPos(V3(0.0f, 0.25f, -1.0f));
-                mb->SetRelScale(V3(0.1f, 0.1f, 0.1f));
+
+                CameraBehavior* cb = character->AddBehavior<CameraBehavior>();
+                cb->SetRelPos(V3(0.0f, 0.25f, 0.0f));
+
+                MeshBehavior* mb = cb->AddChild<MeshBehavior>("Assets/Meshes/box2.vhmesh");
+                mb->SetRelPos(V3(0.5f, -0.5f, -0.7f));
+                mb->SetRelScale(V3(0.1f, 0.1f, 0.6f));
                 character->StartPlay();
 
                 Get<PlayerController>()->Control(character);

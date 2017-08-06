@@ -10,12 +10,7 @@ vh::M4 vh::CameraBehavior::GetView()
     return glm::lookAt(GetPos(), GetPos() + GetForward(), GetOwner()->GetUp());
 }
 
-vh::V3 vh::CameraBehavior::GetPos()
-{
-    return GetOwner()->GetPos();
-}
-
 vh::V3 vh::CameraBehavior::GetForward()
 {
-    return GetOwner()->GetForward();
+    return V3(glm::toMat4(GetRot()) * glm::vec4(0, 0, -1, 0));
 }

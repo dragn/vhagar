@@ -89,6 +89,7 @@ void vh::CapsuleCharacterBehavior::TurnUp(float value)
 {
     if (mCamera)
     {
-        mCamera->TurnUp(mTurnSpeed * value);
+        mCameraPitch = Math::Clamp<float>(mCameraPitch + value * mTurnSpeed, - (M_PI_2 - 0.02f), M_PI_2 - 0.02f);
+        mCamera->SetRelRot(glm::rotate(glm::quat(), mCameraPitch, V3(1.0f, 0.0f, 0.0f)));
     }
 }
