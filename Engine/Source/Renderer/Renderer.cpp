@@ -69,6 +69,14 @@ void Renderer::TickInit(uint32_t delta)
 
     if (mOptions.borderless) flags |= SDL_WINDOW_BORDERLESS;
 
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+    if (mOptions.antialias != RendererOptions::AA_OFF)
+    {
+        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, int(mOptions.antialias) << 2);
+    }
+
     // Window mode MUST include SDL_WINDOW_OPENGL for use with OpenGL.
     mWindow = SDL_CreateWindow(
         "GameEngine Demo",
@@ -417,18 +425,6 @@ void Renderer::DoInit()
         LOG(FATAL) << "GL context create error: " << SDL_GetError();
     }
 
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 4);
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 4);
-    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 4);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-    if (mOptions.antialias != RendererOptions::AA_OFF)
-    {
-        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, int(mOptions.antialias) << 2);
-    }
-
     LOG(INFO) << "Initializing OpenGL renderer";
     LOG(INFO) << "OpenGL Version: " << glGetString(GL_VERSION);
     LOG(INFO) << "GLSL Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION);
@@ -472,6 +468,8 @@ void Renderer::DoInit()
 
     // Enable cube map textures
     glEnable(GL_TEXTURE_CUBE_MAP);
+
+    glEnable(GL_DITHER);
 
     // Enable multisampling
     if (mOptions.antialias != RendererOptions::AA_OFF) glEnable(GL_MULTISAMPLE);
