@@ -238,17 +238,22 @@ public:
                 skyBox->AddBehavior<SkyBoxBehavior>(cube);
                 skyBox->StartPlay();
 
+                // -- setup a character
                 Actor* character = world->CreateActor("Character");
                 character->AddBehavior<CustomCharacterBehavior>(0.4f, 0.5f);
 
+                // -- add a camera
                 CameraBehavior* cb = character->AddBehavior<CameraBehavior>();
                 cb->SetRelPos(V3(0.0f, 0.25f, 0.0f));
 
+                // -- add a "weapon"
                 MeshBehavior* mb = cb->AddChild<MeshBehavior>("Assets/Meshes/box2.vhmesh");
                 mb->SetRelPos(V3(0.5f, -0.5f, -0.7f));
                 mb->SetRelScale(V3(0.1f, 0.1f, 0.6f));
+                mb->SetIgnoreDepth(true);
                 character->StartPlay();
 
+                // -- posses spawned character
                 Get<PlayerController>()->Control(character);
 
                 mSpawned = true;

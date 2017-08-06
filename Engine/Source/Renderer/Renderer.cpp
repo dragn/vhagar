@@ -139,7 +139,7 @@ void Renderer::DoRender(const RenderBuffer* last, const RenderBuffer* cur, float
                 {
                     lastPayload.translate = glm::mix(lastPayload.translate, curPayload.translate, factor);
                     lastPayload.scale = glm::mix(lastPayload.scale, curPayload.scale, factor);
-                    lastPayload.rotate = glm::mix(lastPayload.rotate, curPayload.rotate, factor);
+                    lastPayload.rotate = glm::slerp(lastPayload.rotate, curPayload.rotate, factor);
                 }
             }
             DoRenderMesh(view, projection, &lastPayload, lights);
@@ -226,8 +226,18 @@ void Renderer::DoRenderMesh(glm::mat4 view, glm::mat4 projection, const Mesh::Pa
         glVertexAttribPointer(i + 1, 3, GL_FLOAT, GL_FALSE, 0, offset + payload->vertexCount * (payload->dim + 3 * i));
     }
 
+    if (payload->ignoreDepth)
+    {
+        glDisable(GL_DEPTH_TEST);
+    }
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glInfo.indexBuffer);
     glDrawElements(GL_TRIANGLES, glInfo.indexBufferSize, GL_UNSIGNED_INT, (void*) 0);
+
+    if (payload->ignoreDepth)
+    {
+        glEnable(GL_DEPTH_TEST);
+    }
 
     glDisableVertexAttribArray(0);
     for (GLuint i = 0; i < glInfo.attribCount; i++) glDisableVertexAttribArray(i + 1);
@@ -281,6 +291,7 @@ void Renderer::RenderThread()
         CHECK(last->header.time <= cur->header.time) << "sanity check failed";
         float factor = (float) (time - cur->header.time) / (cur->header.time - last->header.time);
         if (cur->header.time == last->header.time) factor = 0.0f;
+        factor = Math::Clamp(factor, 0.0f, 1.0f);
         DoRender(last, cur, factor);
 
         mBufferHandler.UnlockRead();

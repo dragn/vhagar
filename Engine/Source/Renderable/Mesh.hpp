@@ -25,6 +25,7 @@ public:
         GLuint dim;
         GLsizei vertexCount;
         MeshBehavior* owner;
+        bool ignoreDepth;
     };
 
     virtual ~Mesh();

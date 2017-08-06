@@ -7,6 +7,7 @@
 #include "Actor/Actor.hpp"
 
 vh::MeshBehavior::MeshBehavior(const char* name)
+    : mIgnoreDepth(false)
 {
     ResourceSystem* resource = App::Get<ResourceSystem>();
     CHECK(resource);
@@ -32,6 +33,7 @@ void vh::MeshBehavior::SetupPayload(Mesh::Payload* payload)
     payload->dim = Get()->GetDim();
     payload->vertexCount = Get()->GetVertexCount();
     payload->owner = this;
+    payload->ignoreDepth = mIgnoreDepth;
 }
 
 bool vh::MeshBehavior::IsValid()

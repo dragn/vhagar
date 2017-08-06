@@ -11,6 +11,8 @@ namespace vh
 
 class MeshBehavior : public RenderableBehavior<eRenderBlockType::Mesh, Mesh>
 {
+    VH_PROPERTY_RW(bool, IgnoreDepth);
+
 public:
     MeshBehavior(const char* name);
 
