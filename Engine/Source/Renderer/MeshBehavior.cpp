@@ -33,7 +33,7 @@ void vh::MeshBehavior::SetupPayload(Mesh::Payload* payload)
     glm::vec3 offset = glm::toMat3(GetOwner()->GetQuat()) * mRelPos;
     payload->translate = GetOwner()->GetPos() + offset;
     payload->scale = mUseOwnerScale ? GetOwner()->GetScale() : mScale;
-    payload->rotate = GetOwner()->GetQuat(); // *mRelRot;
+    payload->rotate = GetOwner()->GetQuat() * mRelRot;
     payload->info = *Get()->GetBufferInfo();
     payload->dim = Get()->GetDim();
     payload->vertexCount = Get()->GetVertexCount();
