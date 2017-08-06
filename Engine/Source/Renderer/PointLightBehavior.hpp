@@ -10,7 +10,7 @@ namespace vh
 class PointLightBehavior : public RenderableBehavior<eRenderBlockType::Light, PointLight>
 {
 public:
-    PointLightBehavior(Actor* owner, float intensity);
+    PointLightBehavior(float intensity);
 
     virtual void SetupPayload(PointLight::Payload* payload);
 

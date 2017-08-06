@@ -11,8 +11,6 @@ namespace vh
 class CameraBehavior : public ActorBehavior
 {
 public:
-    CameraBehavior(Actor* owner) : ActorBehavior(owner) {}
-
     virtual void TurnUp(float value) {};
     virtual M4 GetView();
 

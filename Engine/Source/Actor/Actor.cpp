@@ -66,10 +66,10 @@ void Actor::StartPlay()
 {
     if (!mPlaying)
     {
-        for (const std::unique_ptr<ActorBehavior>& behavior : mBehaviors)
+        ForEachBehaviorOfType<ActorBehavior>([] (ActorBehavior* behavior)
         {
             behavior->StartPlay();
-        }
+        });
         mPlaying = true;
     }
 }
@@ -78,10 +78,10 @@ void Actor::EndPlay()
 {
     if (mPlaying)
     {
-        for (const std::unique_ptr<ActorBehavior>& behavior : mBehaviors)
+        ForEachBehaviorOfType<ActorBehavior>([] (ActorBehavior* behavior)
         {
             behavior->EndPlay();
-        }
+        });
         mPlaying = false;
     }
 }
@@ -169,10 +169,10 @@ void Actor::Tick(uint32_t delta)
     if (mPlaying)
     {
         // tick all behaviors
-        for (const std::unique_ptr<ActorBehavior>& behavior : mBehaviors)
+        ForEachBehaviorOfType<ActorBehavior>([delta] (ActorBehavior* behavior)
         {
             behavior->Tick(delta);
-        }
+        });
     }
 }
 
@@ -182,10 +182,12 @@ Actor::Actor(World* world, V3 pos, Rot rot, V3 scale) :
     mPos(pos),
     mScale(scale),
     mYaw(rot.yaw),
-    mPitch(rot.pitch)
+    mPitch(rot.pitch),
+    mRootBehavior()
 {
     mQuat = Quat(V3(mPitch, mYaw, 0));
     _UpdateTransform();
+    mRootBehavior.Attach(this, nullptr);
 }
 
 } // namespace vh

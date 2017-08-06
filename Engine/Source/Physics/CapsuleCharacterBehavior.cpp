@@ -6,12 +6,10 @@
 using namespace vh;
 using namespace physx;
 
-vh::CapsuleCharacterBehavior::CapsuleCharacterBehavior(Actor* owner, float radius, float height)
-    : ControlBehavior(owner)
-    , mRadius(radius)
+vh::CapsuleCharacterBehavior::CapsuleCharacterBehavior(float radius, float height)
+    : mRadius(radius)
     , mHeight(height)
 {
-
 }
 
 void vh::CapsuleCharacterBehavior::StartPlay()

@@ -12,7 +12,7 @@ namespace vh
 class SkyBoxBehavior : public RenderableBehavior<eRenderBlockType::SkyBox, SkyBox>
 {
 public:
-    SkyBoxBehavior(Actor* owner, const Utils::CubeMap& cubeMap);
+    SkyBoxBehavior(const Utils::CubeMap& cubeMap);
 
     virtual void SetupPayload(typename SkyBox::Payload* payload);
 

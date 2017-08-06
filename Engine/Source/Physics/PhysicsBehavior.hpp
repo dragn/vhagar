@@ -10,7 +10,7 @@ namespace vh
 class PhysicsBehavior : public ActorBehavior
 {
 public:
-    PhysicsBehavior(Actor* owner, bool isStatic = true);
+    PhysicsBehavior(bool isStatic = true);
 
     // -- ActorBehavior interface
     virtual void StartPlay() override;

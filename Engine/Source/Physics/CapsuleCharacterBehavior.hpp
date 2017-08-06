@@ -15,7 +15,7 @@ namespace vh
 class CapsuleCharacterBehavior : public ControlBehavior, public physx::PxUserControllerHitReport
 {
 public:
-    CapsuleCharacterBehavior(Actor* owner, float radius, float height);
+    CapsuleCharacterBehavior(float radius, float height);
 
     // -- ActorBehavior interface
     virtual void StartPlay() override;

@@ -9,9 +9,8 @@ namespace vh
 class FreeFloatingBehavior : public ControlBehavior
 {
 public:
-    FreeFloatingBehavior(Actor* owner)
-        : ControlBehavior(owner)
-        , mMoveSpeed(5)
+    FreeFloatingBehavior()
+        : mMoveSpeed(5)
         , mTurnSpeed(0.001f)
     {}
 

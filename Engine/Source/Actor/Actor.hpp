@@ -15,6 +15,7 @@ class Actor
     friend class World;
 
 public:
+    Actor();
     virtual ~Actor();
 
     // -- transform
@@ -77,24 +78,19 @@ public:
     template<typename BEHAVIOR_CLASS, typename... ARGS>
     BEHAVIOR_CLASS* AddBehavior(ARGS... args)
     {
-        mBehaviors.push_back(std::make_unique<BEHAVIOR_CLASS>(this, args...));
-        return static_cast<BEHAVIOR_CLASS*>(mBehaviors.back().get());
+        return mRootBehavior.AddChild<BEHAVIOR_CLASS>(args...);
     }
 
     template<typename BEHAVIOR_CLASS, typename FUNC>
     void ForEachBehaviorOfType(FUNC func)
     {
-        std::for_each(mBehaviors.begin(), mBehaviors.end(), [&func] (const std::unique_ptr<ActorBehavior>& behavior)
-        {
-            BEHAVIOR_CLASS* base = dynamic_cast<BEHAVIOR_CLASS*>(behavior.get());
-            if (base) func(base);
-        });
+        mRootBehavior.ForEachChildOfType<BEHAVIOR_CLASS>(func);
     }
 
     template<typename BEHAVIOR_CLASS>
     BEHAVIOR_CLASS* GetBehaviorOfType()
     {
-        for (auto beh = mBehaviors.begin(); beh != mBehaviors.end(); beh++)
+        for (auto beh = mRootBehavior.mChildren.begin(); beh != mRootBehavior.mChildren.end(); beh++)
         {
             BEHAVIOR_CLASS* base = dynamic_cast<BEHAVIOR_CLASS*>(beh->get());
             if (base) return base;
@@ -126,7 +122,9 @@ private:
 
     std::string mName;
 
-    std::list<std::unique_ptr<ActorBehavior>> mBehaviors;
+    ActorBehavior mRootBehavior;
+
+    //std::list<std::unique_ptr<ActorBehavior>> mBehaviors;
 
     // Actor ticks are called from World
     void Tick(uint32_t delta);

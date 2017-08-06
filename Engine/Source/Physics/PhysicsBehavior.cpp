@@ -6,9 +6,8 @@
 using namespace vh;
 using namespace physx;
 
-PhysicsBehavior::PhysicsBehavior(Actor* owner, bool isStatic /*= true*/)
-    : ActorBehavior(owner)
-    , mIsStatic(isStatic)
+PhysicsBehavior::PhysicsBehavior(bool isStatic /*= true*/)
+    : mIsStatic(isStatic)
 {}
 
 void PhysicsBehavior::StartPlay()

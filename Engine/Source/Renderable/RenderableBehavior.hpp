@@ -11,8 +11,6 @@ template<eRenderBlockType TYPE, typename RENDERABLE_TYPE>
 class RenderableBehavior : public ActorBehavior
 {
 public:
-    RenderableBehavior(Actor* owner) : ActorBehavior(owner) {}
-
     virtual void StartPlay() override
     {
         mRenderer = App::Get<Renderer>();

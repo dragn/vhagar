@@ -7,9 +7,8 @@
 namespace vh
 {
 
-PointLightBehavior::PointLightBehavior(Actor* owner, float intensity)
-    : RenderableBehavior(owner)
-    , mIntensity(intensity)
+PointLightBehavior::PointLightBehavior(float intensity)
+    : mIntensity(intensity)
 {
     Set(&mLight);
 }

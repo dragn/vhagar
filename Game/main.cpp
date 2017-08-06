@@ -117,9 +117,8 @@ private:
 class FirstPersonCamera : public CameraBehavior
 {
 public:
-    FirstPersonCamera(Actor* owner, V3 relPos)
-        : CameraBehavior(owner)
-        , mRelPos(relPos)
+    FirstPersonCamera(V3 relPos)
+        : mRelPos(relPos)
     {}
 
     virtual void TurnUp(float value) override
@@ -145,8 +144,8 @@ private:
 class CustomCharacterBehavior : public CapsuleCharacterBehavior
 {
 public:
-    CustomCharacterBehavior(Actor* owner, float radius, float height)
-        : CapsuleCharacterBehavior(owner, radius, height)
+    CustomCharacterBehavior(float radius, float height)
+        : CapsuleCharacterBehavior(radius, height)
     {
     }
 
@@ -175,6 +174,10 @@ void SpawnBox(World* world)
     box->AddPos(V3((float) 2 * rand() / (float) RAND_MAX - 1.0f, 0.0f, (float) 2 * rand() / (float) RAND_MAX - 1.0f));
     box->SetScale(V3(0.2, 0.2, 0.2));
     box->AddBehavior<MeshBehavior>("Assets/Meshes/box2.vhmesh");
+    MeshBehavior* mb = box->AddBehavior<MeshBehavior>("Assets/Meshes/box2.vhmesh");
+    mb->SetRelPos(V3(0.15f, 0.15f, 0.15f));
+    mb->SetRelScale(V3(0.5f, 0.5f, 0.5f));
+    mb->SetRelRot(glm::quat(V3(0.7f, 0.0f, 0.0f)));
     PhysicsBehavior* pb = box->AddBehavior<PhysicsBehavior>(false);
     pb->SetBoxGeometry(V3(0.2f, 0.2f, 0.2f));
     box->SetPitch(0.2);
@@ -265,6 +268,9 @@ public:
                 Actor* character = world->CreateActor("Character");
                 character->AddBehavior<CustomCharacterBehavior>(0.4f, 0.5f);
                 character->AddBehavior<FirstPersonCamera>(V3(0.0f, 0.25f, 0.0f));
+                MeshBehavior* mb = character->AddBehavior<MeshBehavior>("Assets/Meshes/box2.vhmesh");
+                mb->SetRelPos(V3(0.0f, 0.25f, -1.0f));
+                mb->SetRelScale(V3(0.1f, 0.1f, 0.1f));
                 character->StartPlay();
 
                 Get<PlayerController>()->Control(character);

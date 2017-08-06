@@ -12,9 +12,8 @@ const GLuint indexData[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1
 const GLuint indexDataSize = 36;
 }
 
-SkyBoxBehavior::SkyBoxBehavior(Actor* owner, const Utils::CubeMap& cubeMap)
-    : RenderableBehavior(owner)
-    , mSkyBox(cubeMap)
+SkyBoxBehavior::SkyBoxBehavior(const Utils::CubeMap& cubeMap)
+    : mSkyBox(cubeMap)
 {
     Set(&mSkyBox);
 }
