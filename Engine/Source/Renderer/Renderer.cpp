@@ -112,14 +112,48 @@ void Renderer::DoRender(const RenderBuffer* last, const RenderBuffer* cur, float
     glm::mat4 view = glm::mix(last->header.view, cur->header.view, factor);
     glm::mat4 projection = mProjection;
 
-    // first pass - collect lights
+    // first pass - load/unload, collect lights
     std::vector<PointLight::Payload> lights;
     for (size_t idx = 0; idx < cur->header.size; ++idx)
     {
         const RenderBlock& block = cur->blocks[idx];
-        if (block.type == eRenderBlockType::Light && (block.flags & eRenderBlockFlags::Active))
+
+        // do load task
+        if (block.type == eRenderBlockType::RenderableLoad)
+        {
+            void* ptr = const_cast<void*>(reinterpret_cast<const void*>(block.payload));
+            if (ptr != nullptr)
+            {
+                reinterpret_cast<Renderable*>(ptr)->AddRef();
+            }
+        }
+
+        // do release task
+        else if (block.type == eRenderBlockType::RendarableRelease)
+        {
+            void* ptr = const_cast<void*>(reinterpret_cast<const void*>(block.payload));
+            if (ptr != nullptr)
+            {
+                reinterpret_cast<Renderable*>(ptr)->ReleaseRef();
+            }
+        }
+
+        // collect lights
+        else if (block.type == eRenderBlockType::Light && (block.flags & eRenderBlockFlags::Active))
         {
             lights.push_back(*reinterpret_cast<const PointLight::Payload*>(block.payload));
+        }
+    }
+
+    // second pass - render skyboxes
+    for (size_t idx = 0; idx < last->header.size; ++idx)
+    {
+        const RenderBlock& block = last->blocks[idx];
+
+        if (block.type == eRenderBlockType::SkyBox && (block.flags & eRenderBlockFlags::Active))
+        {
+            SkyBox::Payload payload = *reinterpret_cast<const SkyBox::Payload*>(cur->blocks[idx].payload);
+            DoRenderSkyBox(view, projection, payload);
         }
     }
 
@@ -131,6 +165,9 @@ void Renderer::DoRender(const RenderBuffer* last, const RenderBuffer* cur, float
         // do mesh render task
         if (block.type == eRenderBlockType::Mesh && (block.flags & eRenderBlockFlags::Active))
         {
+            // skip depth-ignore meshes
+            if (reinterpret_cast<const Mesh::Payload*>(cur->blocks[idx].payload)->ignoreDepth) continue;
+
             Mesh::Payload lastPayload = *reinterpret_cast<const Mesh::Payload*>(block.payload);
             Mesh::Payload curPayload = *reinterpret_cast<const Mesh::Payload*>(cur->blocks[idx].payload);
             if (block.flags & eRenderBlockFlags::Interpolated)
@@ -144,31 +181,31 @@ void Renderer::DoRender(const RenderBuffer* last, const RenderBuffer* cur, float
             }
             DoRenderMesh(view, projection, &lastPayload, lights);
         }
+    }
 
-        if (block.type == eRenderBlockType::SkyBox && (block.flags & eRenderBlockFlags::Active))
-        {
-            SkyBox::Payload payload = *reinterpret_cast<const SkyBox::Payload*>(cur->blocks[idx].payload);
-            DoRenderSkyBox(view, projection, payload);
-        }
+    // third pass - depth-ignore meshes
+    for (size_t idx = 0; idx < last->header.size; ++idx)
+    {
+        const RenderBlock& block = last->blocks[idx];
 
-        // do load task
-        if (block.type == eRenderBlockType::RenderableLoad)
+        // do mesh render task
+        if (block.type == eRenderBlockType::Mesh && (block.flags & eRenderBlockFlags::Active))
         {
-            void* ptr = const_cast<void*>(reinterpret_cast<const void*>(block.payload));
-            if (ptr != nullptr)
+            // render only depth-ignore meshes
+            if (!(reinterpret_cast<const Mesh::Payload*>(cur->blocks[idx].payload)->ignoreDepth)) continue;
+
+            Mesh::Payload lastPayload = *reinterpret_cast<const Mesh::Payload*>(block.payload);
+            Mesh::Payload curPayload = *reinterpret_cast<const Mesh::Payload*>(cur->blocks[idx].payload);
+            if (block.flags & eRenderBlockFlags::Interpolated)
             {
-                reinterpret_cast<Renderable*>(ptr)->AddRef();
+                if (lastPayload.owner == curPayload.owner)
+                {
+                    lastPayload.translate = glm::mix(lastPayload.translate, curPayload.translate, factor);
+                    lastPayload.scale = glm::mix(lastPayload.scale, curPayload.scale, factor);
+                    lastPayload.rotate = glm::slerp(lastPayload.rotate, curPayload.rotate, factor);
+                }
             }
-        }
-
-        // do release task
-        if (block.type == eRenderBlockType::RendarableRelease)
-        {
-            void* ptr = const_cast<void*>(reinterpret_cast<const void*>(block.payload));
-            if (ptr != nullptr)
-            {
-                reinterpret_cast<Renderable*>(ptr)->ReleaseRef();
-            }
+            DoRenderMesh(view, projection, &lastPayload, lights);
         }
     }
 }

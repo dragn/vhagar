@@ -71,6 +71,7 @@ public:
                                 mHolding = reinterpret_cast<Actor*>(hit.actor->userData);
                                 hit.actor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
                                 LOG(INFO) << "Catch " << mHolding->GetName();
+                                break;
                             }
                         }
                     }
@@ -147,10 +148,6 @@ void SpawnBox(World* world)
     box->AddPos(V3((float) 2 * rand() / (float) RAND_MAX - 1.0f, 0.0f, (float) 2 * rand() / (float) RAND_MAX - 1.0f));
     box->SetScale(V3(0.2, 0.2, 0.2));
     box->AddBehavior<MeshBehavior>("Assets/Meshes/box2.vhmesh");
-    MeshBehavior* mb = box->AddBehavior<MeshBehavior>("Assets/Meshes/box2.vhmesh");
-    mb->SetRelPos(V3(0.15f, 0.15f, 0.15f));
-    mb->SetRelScale(V3(0.5f, 0.5f, 0.5f));
-    mb->SetRelRot(glm::quat(V3(0.7f, 0.0f, 0.0f)));
     PhysicsBehavior* pb = box->AddBehavior<PhysicsBehavior>(false);
     pb->SetBoxGeometry(V3(0.2f, 0.2f, 0.2f));
     box->SetPitch(0.2);

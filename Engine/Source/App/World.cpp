@@ -201,6 +201,19 @@ void World::EndFrame()
 {
     if (IsRunning())
     {
+        RenderBuffer* buffer = mRenderer->GetBufferHandler().GetNextBuffer();
+        if (buffer)
+        {
+            PlayerController* controller = App::Get<PlayerController>();
+            if (controller && controller->GetControlledActor())
+            {
+                CameraBehavior* camera = controller->GetControlledActor()->GetBehaviorOfType<CameraBehavior>();
+                if (camera)
+                {
+                    buffer->header.view = camera->GetView();
+                }
+            }
+        }
         mRenderer->GetBufferHandler().FlipBuffers();
     }
 }
