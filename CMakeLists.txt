@@ -6,6 +6,17 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 set(3RDPARTY "../vhagar-deps" CACHE STRING "3rd party libraries folder")
 
+set(ENV{GLM_ROOT_DIR} "${3RDPARTY}/glm")
+set(ENV{SDL2DIR} "${3RDPARTY}/SDL2-2.0.5")
+set(ENV{SDL2TTFDIR} "${3RDPARTY}/SDL2_ttf-2.0.14")
+set(ENV{SDL2IMAGEDIR} "${3RDPARTY}/SDL2_image-2.0.1")
+set(glog_DIR "${3RDPARTY}/glog/Release/lib/cmake/glog")
+set(gflags_DIR "${3RDPARTY}/gflags/CMake")
+
+list(APPEND CMAKE_PREFIX_PATH
+  "${3RDPARTY}/glew"
+  )
+
 include(Utils)
 
 # Find dependencies
@@ -14,8 +25,8 @@ find_package(SDL2_Image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 find_package(glog 0.3.4 REQUIRED)
 find_package(GLM REQUIRED)
-find_package(GL)
-find_package(GLEW REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(glew REQUIRED)
 find_package(PhysX)
 
 # Setup dependencies
@@ -40,12 +51,12 @@ endif (SDL2_TTF_FOUND)
 
 if (GLEW_FOUND)
   include_directories(${GLEW_INCLUDE_DIR})
-  list(APPEND DEP_LIBRARIES "${GLEW_LIBRARIES}")
+  list(APPEND DEP_LIBRARIES GLEW::GLEW)
 endif()
 
-if (GL_FOUND)
+if (OpenGL_FOUND)
   include_directories(${GL_INCLUDE_DIR})
-  list(APPEND DEP_LIBRARIES "${GL_gl_LIBRARY}")
+  list(APPEND DEP_LIBRARIES OpenGL::GL)
 endif()
 
 if (glog_FOUND)

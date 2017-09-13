@@ -136,8 +136,6 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 foreach(name ${static_names})
-message(${PhysX_${name}_LIBRARY_DEBUG})
-message(${PhysX_${name}_LIBRARY_RELEASE})
   list(APPEND PhysX_LIBRARIES
     optimized ${PhysX_${name}_LIBRARY_RELEASE}
     debug ${PhysX_${name}_LIBRARY_DEBUG}
