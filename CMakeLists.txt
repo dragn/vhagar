@@ -1,10 +1,10 @@
-cmake_minimum_required (VERSION 3.0)
-project (Meraxes)
+cmake_minimum_required(VERSION 3.0)
+project(Vhagar)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-set(3RDPARTY "${CMAKE_SOURCE_DIR}" CACHE STRING "3rd party libraries folder")
+set(3RDPARTY "../vhagar-deps" CACHE STRING "3rd party libraries folder")
 
 include(Utils)
 
@@ -78,6 +78,4 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 add_subdirectory (Engine)
-add_subdirectory (Game)
 add_subdirectory (ConsoleClient)
-add_subdirectory (RockBandTycoon)
