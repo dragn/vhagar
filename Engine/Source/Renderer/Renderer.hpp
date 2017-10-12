@@ -105,8 +105,8 @@ public:
         return mBufferHandler;
     }
 
-    void AddLoadTask(Renderable* renderable);
-    void AddReleaseTask(Renderable* renderable);
+    void AddLoadTask(std::shared_ptr<Renderable> renderable);
+    void AddReleaseTask(std::shared_ptr<Renderable> renderable);
 
 private:
     RendererOptions mOptions;

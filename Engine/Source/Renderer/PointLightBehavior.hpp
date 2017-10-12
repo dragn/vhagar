@@ -14,8 +14,9 @@ public:
 
     virtual void SetupPayload(PointLight::Payload* payload);
 
+    virtual uint16_t GetFlags() override;
+
 private:
-    PointLight mLight;
     float mIntensity = 0.1f;
 };
 

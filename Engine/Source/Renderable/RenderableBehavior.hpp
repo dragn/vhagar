@@ -3,6 +3,7 @@
 #include "App/App.hpp"
 #include "Actor/ActorBehavior.hpp"
 #include "Renderer/Renderer.hpp"
+#include "Resource/ResourceSystem.hpp"
 
 namespace vh
 {
@@ -11,58 +12,87 @@ template<eRenderBlockType TYPE, typename RENDERABLE_TYPE>
 class RenderableBehavior : public ActorBehavior
 {
 public:
+    RenderableBehavior()
+    {
+        // -- create default resource object if default constructor exists
+        mResource = std::make_shared<RENDERABLE_TYPE>();
+    }
+
+    RenderableBehavior(std::shared_ptr<RENDERABLE_TYPE>& resource)
+    {
+        // -- use existing resource object
+        CHECK(resource) << "resource is null";
+
+        mResource = resource;
+    }
+
+    RenderableBehavior(const char* resourceName)
+    {
+        // -- request resource from resource system
+        CHECK(resourceName) << "resource name is null";
+
+        ResourceSystem* rs = App::Get<ResourceSystem>();
+        if (rs)
+        {
+            mResource = rs->GetResource<RENDERABLE_TYPE>(resourceName);
+            if (!mResource)
+            {
+                LOG(WARNING) << "Could not load resource: " << resourceName;
+            }
+        }
+    }
+
     virtual void StartPlay() override
     {
         mRenderer = App::Get<Renderer>();
 
-        if (mRenderable == nullptr)
+        if (mResource == nullptr)
         {
             LOG(ERROR) << "renderable is not set!";
         }
         else
         {
-            mRenderer->AddLoadTask(mRenderable);
+            mRenderer->AddLoadTask(mResource);
         }
     }
 
     virtual void EndPlay() override
     {
-        if (mRenderable != nullptr)
+        if (mResource != nullptr)
         {
-            mRenderer->AddReleaseTask(mRenderable);
+            mRenderer->AddReleaseTask(mResource);
         }
     }
 
     virtual void Tick(uint32_t delta) override
     {
         // start rendering as soon as it's loaded (in render thread)
-        if (mRenderable && mRenderable->IsLoaded())
+        if (mResource && mResource->IsLoaded())
         {
             RenderBlock* block = mRenderer->GetBufferHandler().AllocateNewBlock();
             if (block == nullptr) return;
 
-            block->flags = eRenderBlockFlags::Active;
-            block->flags |= eRenderBlockFlags::Interpolated;
+            block->flags = GetFlags();
             block->type = TYPE;
             SetupPayload(reinterpret_cast<typename RENDERABLE_TYPE::Payload*>(&block->payload));
         }
     }
 
-    virtual void SetupPayload(typename RENDERABLE_TYPE::Payload* payload) = 0;
-
-    void Set(RENDERABLE_TYPE* renderable)
+    virtual uint16_t GetFlags()
     {
-        mRenderable = renderable;
+        return eRenderBlockFlags::Active;
     }
 
-    RENDERABLE_TYPE* Get() const
+    virtual void SetupPayload(typename RENDERABLE_TYPE::Payload* payload) = 0;
+
+    std::shared_ptr<RENDERABLE_TYPE> Get() const
     {
-        return mRenderable;
+        return mResource;
     }
 
 protected:
     Renderer* mRenderer;
-    RENDERABLE_TYPE* mRenderable = nullptr;
+    std::shared_ptr<RENDERABLE_TYPE> mResource;
 };
 
 } // namespace vh

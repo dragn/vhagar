@@ -20,7 +20,7 @@ SDL_Surface *LoadImage(const std::string &filename)
     SDL_Surface *tex = IMG_Load(filename.c_str());
     if (tex == NULL)
     {
-        LOG(ERROR) << "Could not load texture " << filename;
+        LOG(ERROR) << "Could not load texture " << filename << ": " << IMG_GetError();
     }
     else
     {
@@ -214,10 +214,19 @@ GLuint LoadCubeMapTexture(const CubeMap &skyBox)
         SDL_Surface *tex = LoadImage(files[i]);
         if (tex != NULL)
         {
-            glTexImage2D(modes[i], 0, GL_RGB, tex->h, tex->h, 0, GL_RGB, GL_UNSIGNED_BYTE, tex->pixels);
+            uint32_t* data = ConvertToRGBA(tex);
+            glTexImage2D(modes[i], 0, GL_RGBA, tex->h, tex->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            delete[] data;
+
+            int error = glGetError();
+            if (error) ReportGLError(error);
+
             SDL_FreeSurface(tex);
         }
-
+        else
+        {
+            LOG(WARNING) << "Could not load texture: " << files[i];
+        }
     }
 
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -268,5 +277,23 @@ GLuint GetShaderProgram(const std::string &key)
         return programID;
     }
 }
+
+void ReportGLError(int error)
+{
+    switch (error)
+    {
+    case GL_NO_ERROR:
+        return;
+    case GL_INVALID_OPERATION:
+        LOG(ERROR) << "GL ERROR: INVALID_OPERATION";
+        return;
+    case GL_INVALID_VALUE:
+        LOG(ERROR) << "GL ERROR: INVALID_VALUE";
+        return;
+    default:
+        LOG(ERROR) << "GL ERROR: " << error;
+    }
+}
+
 }
 }

@@ -15,7 +15,6 @@ class Actor
     friend class World;
 
 public:
-    Actor();
     virtual ~Actor();
 
     // -- transform

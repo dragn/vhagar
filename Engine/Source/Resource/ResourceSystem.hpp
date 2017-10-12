@@ -2,7 +2,7 @@
 
 #include "App/App.hpp"
 #include "Actor/Actor.hpp"
-#include "Renderable/Mesh.hpp"
+#include "Resource.hpp"
 #include <fstream>
 
 namespace vh
@@ -16,24 +16,54 @@ public:
     ResourceSystem() : Component() {}
 
     template<typename T>
-    bool Load(const char* path, T* res);
+    bool Load(const char* path, std::shared_ptr<T> res);
 
     template<typename T>
-    bool Save(const char* path, const T* res);
+    bool Save(const char* path, std::shared_ptr<const T> res);
 
-    std::shared_ptr<Mesh> GetMesh(const char* name);
+    template<typename T>
+    std::shared_ptr<T> GetResource(const char* name)
+    {
+        auto iter = mStorage.find(name);
+        if (iter == mStorage.end())
+        {
+            std::shared_ptr<T> ptr = std::make_shared<T>();
+            if (!ptr)
+            {
+                LOG(FATAL) << "Unable to allocate resource";
+                return nullptr;
+            }
+            mStorage[std::string(name)] = ptr;
+            if (Load<T>(name, ptr))
+            {
+                LOG(INFO) << "Loaded resource " << name;
+                return ptr;
+            }
+            else
+            {
+                LOG(FATAL) << "Unable to load resource " << name;
+                return nullptr;
+            }
+        }
+        else
+        {
+            // FIXME no type safety!!
+            return std::static_pointer_cast<T>(iter->second);
+        }
+    }
 
     virtual void TickInit(uint32_t delta);
     virtual void TickClose(uint32_t delta);
 
+    std::string GetFullPath(const char* relPath);
+
 private:
-    std::unordered_map<std::string, std::shared_ptr<Mesh>> mMeshStorage;
+    std::unordered_map<std::string, std::shared_ptr<Resource>> mStorage;
+
+    std::string mCurrDir;
 };
 
-template<> bool ResourceSystem::Load(const char* path, Mesh* mesh);
-template<> bool ResourceSystem::Save(const char* path, const Mesh* mesh);
-
-template<> bool ResourceSystem::Load(const char* path, Actor* actor);
-template<> bool ResourceSystem::Save(const char* path, const Actor* actor);
+template<> bool ResourceSystem::Load(const char* path, std::shared_ptr<Actor> actor);
+template<> bool ResourceSystem::Save(const char* path, std::shared_ptr<const Actor> actor);
 
 }

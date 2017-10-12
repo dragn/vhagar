@@ -14,7 +14,7 @@ in lowp vec3 fPLightDir_cameraspace[MAX_PLIGHTS];
 in lowp vec3 fEyeDirection_cameraspace;
 in lowp float fLightDistance;
 
-out lowp vec3 color;
+out vec4 color;
 
 uniform int uPLightNum;                 // number of point lights
 uniform float uPLightInt[MAX_PLIGHTS];  // point lights intencities
@@ -45,5 +45,5 @@ void main() {
   vec3 ambient = (fAmbientColor + texture(textureSampler, fUV).rgb) * 0.1; 
 
   // TODO apply gamma correction
-  color = ambient + diffuse + specular;
+  color = vec4(ambient + diffuse + specular, 1.0);
 }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Actor/ActorBehavior.hpp"
-#include "Renderer/Renderer.hpp"
 #include "Renderable/Mesh.hpp"
 #include "Renderable/RenderableBehavior.hpp"
 #include "Utils/Property.hpp"
@@ -18,11 +16,22 @@ public:
 
     virtual void SetupPayload(Mesh::Payload* payload) override;
 
+    virtual uint16_t GetFlags() override
+    {
+        return eRenderBlockFlags::Active | (mInterpolated ? eRenderBlockFlags::Interpolated : 0x0);
+    }
+
     // -- indicates whether the mesh was loaded successfully
     bool IsValid();
 
+    void SetInterpolated(bool interpolated)
+    {
+        mInterpolated = interpolated;
+    }
+
 private:
     glm::mat4 mModel;
+    bool mInterpolated = true;
 };
 
 } // namespace vh

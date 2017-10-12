@@ -32,6 +32,8 @@ void PutUniformFloat(GLuint programID, const std::string &name, float data);
 // Get shader program specified by key (compiles on first access)
 GLuint GetShaderProgram(const std::string &key);
 
+void ReportGLError(int error);
+
 } // namespace Utils
 
 } // namespace vh

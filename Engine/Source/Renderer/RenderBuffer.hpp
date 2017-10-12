@@ -33,7 +33,7 @@ enum class eRenderBlockType : uint16_t
 namespace RenderBufferConstants
 {
 const size_t PAYLOAD_SIZE = 128;
-const size_t MAX_RENDER_BLOCKS = 8192;
+const size_t MAX_RENDER_BLOCKS = 32768;
 }
 
 struct RenderBlock 

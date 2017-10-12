@@ -34,6 +34,10 @@
 
 #include "Math/Math.hpp"
 
+#define VH_STR(A) #A
+#define VH_XSTR(A) VH_STR(A)
+#define VH_CONCAT(A, B) A ## B
+
 #define UNCOPYABLE(Class) \
   Class(const Class&) = delete; \
   Class& operator=(const Class&) = delete;

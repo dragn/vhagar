@@ -5,6 +5,7 @@
 #include "Console/ConsoleCommands.hpp"
 #include "Utils/GLUtils.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 namespace vh
 {
@@ -149,7 +150,16 @@ void Renderer::DoRender(const RenderBuffer* last, const RenderBuffer* cur, float
         // collect lights
         else if (block.type == eRenderBlockType::Light && (block.flags & eRenderBlockFlags::Active))
         {
-            lights.push_back(*reinterpret_cast<const PointLight::Payload*>(block.payload));
+            if (last->blocks[idx].type == eRenderBlockType::Light)
+            {
+                PointLight::Payload lastPayload = *reinterpret_cast<const PointLight::Payload*>(last->blocks[idx].payload);
+                PointLight::Payload curPayload = *reinterpret_cast<const PointLight::Payload*>(cur->blocks[idx].payload);
+                if (block.flags & eRenderBlockFlags::Interpolated)
+                {
+                    lastPayload.pos = glm::mix(lastPayload.pos, curPayload.pos, factor);
+                }
+                lights.push_back(lastPayload);
+            }
         }
     }
 
@@ -369,27 +379,23 @@ void Renderer::RenderThread()
     SDL_GL_DeleteContext(mGLContext);
 }
 
-void Renderer::AddLoadTask(Renderable* renderable)
+void Renderer::AddLoadTask(std::shared_ptr<Renderable> renderable)
 {
-    LOG(INFO) << "Renderable load " << renderable;
-
     std::lock_guard<std::mutex> lock(mTaskQueueLock);
 
     RenderTask task;
     task.action = RenderTask::Action::Load;
-    task.renderable = renderable;
+    task.renderable = renderable.get();
     mTaskQueue.push(task);
 }
 
-void Renderer::AddReleaseTask(Renderable* renderable)
+void Renderer::AddReleaseTask(std::shared_ptr<Renderable> renderable)
 {
-    LOG(INFO) << "Renderable unload " << renderable;
-
     std::lock_guard<std::mutex> lock(mTaskQueueLock);
 
     RenderTask task;
     task.action = RenderTask::Action::Release;
-    task.renderable = renderable;
+    task.renderable = renderable.get();
     mTaskQueue.push(task);
 }
 

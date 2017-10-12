@@ -4,6 +4,8 @@
 #include "App/App.hpp"
 #include "Utils/GLUtils.hpp"
 #include "Mesh.hpp"
+#include "Resource/ReadWrite.hpp"
+#include "Utils/ImportUtils.hpp"
 
 #include <algorithm>
 
@@ -136,6 +138,142 @@ bool vh::Mesh::DoUnload()
     mGLInfo.attribBuffer = 0;
     mGLInfo.attribBufferSize = 0;
     mGLInfo.texture = 0;
+
+    return true;
+}
+
+/*
+    Load mesh from binary stream
+    Data layout:
+        - sizeof(GLuint) bytes index size
+        - sizeof(GLuint) bytes attrib size
+        - sizeof(GLuint) bytes attrib count
+        - sizeof(GLint) * index size bytes index data
+        - sizeof(GLfloat) * attrib size * attrib count bytes attrib data
+*/
+template<> bool vh::ResourceSystem::Load(const char* path, std::shared_ptr<vh::Mesh> mesh)
+{
+    CHECK(mesh);
+
+    std::regex objRegex(".*\\.obj");
+    std::regex vhRegex(".*\\.vhmesh");
+    std::cmatch match;
+
+    if (std::regex_match(path, match, objRegex))
+    {
+        return vh::Utils::ImportWavefront(mesh.get(), path);
+    }
+    else if (!std::regex_match(path, match, vhRegex))
+    {
+        LOG(ERROR) << "Unsupported mesh file: " << path;
+        return false;
+    }
+
+    std::ifstream stream;
+
+    std::string fullPath = GetFullPath(path);
+
+    if (!OpenFile(stream, fullPath, std::ios_base::in | std::ios_base::binary)) return false;
+
+    GLuint vertexCount, attrCount, indexSize, dim;
+    GLfloat* attrData = nullptr;
+    GLuint* indexData = nullptr;
+
+    Read(stream, &dim);
+    CHECK(dim == 3 || dim == 4) << "invalid dimensions";
+
+    Read(stream, &indexSize);
+    Read(stream, &vertexCount);
+    Read(stream, &attrCount);
+
+    indexData = new GLuint[indexSize];
+    Read(stream, indexData, indexSize);
+    if (stream.fail() || stream.eof())
+    {
+        LOG(FATAL) << "Resource load error";
+        return false;
+    }
+
+    size_t dataSize = vertexCount * (dim + 3 * attrCount);
+    attrData = new GLfloat[dataSize];
+    Read(stream, attrData, dataSize);
+    if (stream.fail())
+    {
+        LOG(FATAL) << "Resource load error";
+        delete[] attrData;
+        return false;
+    }
+
+    mesh->SetDim(dim);
+    mesh->SetAttribData(vertexCount, attrCount, attrData);
+    mesh->SetIndexData(indexSize, indexData);
+
+    // -- load texture
+    if (!stream.eof())
+    {
+        GLsizei texW, texH;
+        Read(stream, &texW);
+        Read(stream, &texH);
+        if (texW > 0 && texH > 0)
+        {
+            GLuint* data = new GLuint[texW * texH];
+            Read(stream, data, texW * texH);
+            mesh->SetTexture(data, texW, texH);
+        }
+    }
+
+    stream.close();
+
+    return true;
+}
+
+/*
+    Save mesh as binary data
+    Data layout:
+        - sizeof(GLuint) bytes index size
+        - sizeof(GLuint) bytes attrib size
+        - sizeof(GLuint) bytes attrib count
+        - sizeof(GLint) * index size bytes index data
+        - sizeof(GLfloat) * attrib size * attrib count bytes attrib data
+*/
+template<> bool vh::ResourceSystem::Save(const char* path, std::shared_ptr<const vh::Mesh> mesh)
+{
+    std::ofstream stream;
+
+    stream.open(GetFullPath(path), std::ios_base::out | std::ios_base::binary);
+    if (!stream.is_open())
+    {
+        LOG(WARNING) << "Could not open file for writing: " << GetFullPath(path);
+    }
+
+    CHECK(mesh);
+
+    GLuint vertexCount, attrCount, indexSize;
+    GLuint dim = mesh->GetDim();
+    GLfloat* attrData = nullptr;
+    GLuint* indexData = nullptr;
+
+    mesh->GetAttribData(vertexCount, attrCount, attrData);
+    mesh->GetIndexData(indexSize, indexData);
+
+    Write(stream, &dim);
+    Write(stream, &indexSize);
+    Write(stream, &vertexCount);
+    Write(stream, &attrCount);
+
+    Write(stream, indexData, indexSize);
+    Write(stream, attrData, mesh->GetAttribDataSize());
+
+    // -- serializing textures
+    GLuint* texDta;
+    GLsizei texW, texH;
+    mesh->GetTexture(texDta, texW, texH);
+
+    Write(stream, &texW);
+    Write(stream, &texH);
+    if (texDta != nullptr) Write(stream, texDta, texW * texH);
+
+    stream.close();
 
     return true;
 }

@@ -2,6 +2,7 @@
 
 #include "Renderable.hpp"
 #include "Renderer/RenderBuffersHandler.hpp"
+#include "Resource/ResourceSystem.hpp"
 
 namespace vh
 {
@@ -11,7 +12,7 @@ class MeshBehavior;
 /*
     Internal mesh representation
 */
-class Mesh : public Renderable
+class Mesh : public Renderable, public Resource
 {
 public:
 
@@ -98,6 +99,8 @@ private:
     GLint mShaderId = -1;
 };
 
+template<> bool ResourceSystem::Load(const char* path, std::shared_ptr<Mesh> mesh);
+template<> bool ResourceSystem::Save(const char* path, std::shared_ptr<const Mesh> mesh);
 
 static_assert(sizeof(Mesh::Payload) <= RenderBufferConstants::PAYLOAD_SIZE, "invalid payload size");
 

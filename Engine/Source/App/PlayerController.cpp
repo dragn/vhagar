@@ -38,10 +38,10 @@ void PlayerController::TickRun(uint32_t delta)
 
     mActor->ForEachBehaviorOfType<ControlBehavior>([this, sec] (ControlBehavior* behavior)
     {
-        if (mPressed['w']) behavior->MoveForward(sec);
-        if (mPressed['s']) behavior->MoveForward(-sec);
-        if (mPressed['a']) behavior->MoveRight(-sec);
-        if (mPressed['d']) behavior->MoveRight(sec);
+        if (mPressed['w']) behavior->MoveForward(1.0f);
+        if (mPressed['s']) behavior->MoveForward(-1.0f);
+        if (mPressed['a']) behavior->MoveRight(-1.0f);
+        if (mPressed['d']) behavior->MoveRight(1.0f);
     });
 }
 

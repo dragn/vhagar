@@ -10,13 +10,17 @@ namespace vh
 PointLightBehavior::PointLightBehavior(float intensity)
     : mIntensity(intensity)
 {
-    Set(&mLight);
 }
 
 void PointLightBehavior::SetupPayload(PointLight::Payload* payload)
 {
-    payload->pos = GetOwner()->GetPos();
+    payload->pos = GetPos();
     payload->intensity = mIntensity;
+}
+
+uint16_t PointLightBehavior::GetFlags()
+{
+    return eRenderBlockFlags::Active | eRenderBlockFlags::Interpolated;
 }
 
 } // namespace vh

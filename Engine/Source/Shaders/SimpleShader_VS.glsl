@@ -17,6 +17,7 @@ out vec3 fSpecularColor;
 
 out vec3 fNormal_cameraspace;
 out vec3 fPLightDir_cameraspace[MAX_PLIGHTS];
+out float fPLightDist[MAX_PLIGHTS];
 
 out vec3 fEyeDirection_cameraspace;
 
@@ -47,6 +48,7 @@ void main() {
   for (int i = 0; i < uPLightNum; i++)
   {
     fPLightDir_cameraspace[i] = (uV * vec4(uPLightPos[i], 1)).xyz + fEyeDirection_cameraspace;
+	fPLightDist[i] = distance(uPLightPos[i], (uM * vec4(iVertexPos, 1)).xyz);
   }
 
   fUV = iUV;

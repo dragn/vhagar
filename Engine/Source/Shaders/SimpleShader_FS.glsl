@@ -10,11 +10,12 @@ in lowp vec3 fSpecularColor;
 
 in lowp vec3 fNormal_cameraspace;
 in lowp vec3 fPLightDir_cameraspace[MAX_PLIGHTS];
+in lowp float fPLightDist[MAX_PLIGHTS];
 
 in lowp vec3 fEyeDirection_cameraspace;
 in lowp float fLightDistance;
 
-out lowp vec3 color;
+out vec4 color;
 
 uniform int uPLightNum;                 // number of point lights
 uniform float uPLightInt[MAX_PLIGHTS];  // point lights intencities
@@ -35,15 +36,15 @@ void main() {
     lowp float cosAlpha = clamp(dot(E, R), 0, 1);
     lowp float cosTheta = clamp(dot(n, l), 0, 1);
 
-    diffuse += (fDiffuseColor + texture(textureSampler, fUV).rgb) * cosTheta * uPLightInt[i];
+    diffuse += (fDiffuseColor + texture(textureSampler, fUV).rgb) * cosTheta * uPLightInt[i] / (1.0f + fPLightDist[i]);
 
     // TODO take shininess from material properties
-    specular += (fSpecularColor + texture(textureSampler, fUV).rgb) * pow(cosAlpha, 5) * uPLightInt[i];
+    specular += (fSpecularColor + texture(textureSampler, fUV).rgb) * pow(cosAlpha, 5) * uPLightInt[i] / (1.0f + fPLightDist[i]);
   }
 
   // TODO replace 0.1 with ambient color amount
   vec3 ambient = (fAmbientColor + texture(textureSampler, fUV).rgb) * 0.1; 
 
   // TODO apply gamma correction
-  color = ambient + diffuse + specular;
+  color = vec4(ambient + diffuse + specular, 1.0);
 }

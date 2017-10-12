@@ -29,7 +29,7 @@ void vh::TextOverlay::SetSize(uint32_t width, uint32_t height)
 void vh::TextOverlay::Create()
 {
     mOverlay.Init();
-    mFont = TTF_OpenFont("Assets/Fonts/Roboto-regular.ttf", 12);
+    mFont = TTF_OpenFont(VH_CONCAT(VH_XSTR(VH_ENGINE_ASSETS_DIR), "/Fonts/Roboto-Regular.ttf"), 12);
     if (!mFont)
     {
         LOG(ERROR) << "Could not open font";

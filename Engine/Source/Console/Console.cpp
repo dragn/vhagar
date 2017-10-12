@@ -24,10 +24,12 @@ void Console::TickInit(uint32_t delta)
         return;
     }
 
-    mFont = TTF_OpenFont("Assets/Fonts/Roboto-regular.ttf", FONT_SIZE);
+    mFont = TTF_OpenFont(VH_CONCAT(VH_XSTR(VH_ENGINE_ASSETS_DIR), "/Fonts/Roboto-Regular.ttf"), FONT_SIZE);
     if (!mFont)
     {
-        LOG(ERROR) << "Could not open font";
+        LOG(WARNING) << "Could not open font. Console will not be started.";
+        Close();
+        return;
     }
 
     Uint32 rmask = 0x000000ff;

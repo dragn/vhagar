@@ -2,10 +2,10 @@
 
 in lowp vec3 fTexCoord;
 
-out lowp vec3 color;
+out vec4 color;
 
 uniform samplerCube uSkySampler;
 
 void main() {
-  color = texture(uSkySampler, fTexCoord).rgb;
+  color = texture(uSkySampler, fTexCoord);
 }

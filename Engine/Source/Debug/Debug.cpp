@@ -39,8 +39,13 @@ void vh::Debug::TickInit(uint32_t delta)
 
     mWorld = App::Get<World>();
 
-    mFont = TTF_OpenFont("Assets/Fonts/Roboto-Regular.ttf", 16);
-    CHECK(mFont) << "Could not open font";
+    mFont = TTF_OpenFont(VH_CONCAT(VH_XSTR(VH_ENGINE_ASSETS_DIR), "/Fonts/Roboto-Regular.ttf"), 16);
+    if (mFont == nullptr)
+    {
+        LOG(WARNING) << "Could not open font. Debug won't load.";
+        Close();
+        return;
+    }
 
     REGISTER_COMMAND(toggle_labels);
 

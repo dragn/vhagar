@@ -3,11 +3,12 @@
 #include "Renderable.hpp"
 #include "Utils/GLUtils.hpp"
 #include "Renderer/RenderBuffer.hpp"
+#include "Resource/Resource.hpp"
 
 namespace vh
 {
 
-class SkyBox : public Renderable
+class SkyBox : public Renderable, public Resource
 {
     friend class SkyBoxBehavior;
 
