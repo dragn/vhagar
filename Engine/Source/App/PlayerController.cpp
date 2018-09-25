@@ -16,13 +16,18 @@ PlayerController::PlayerController() :
     mActor(nullptr),
     mCameraTurnSpeed(0.001f)
 {
-    App::CheckRequired<Renderer>();
-    App::CheckRequired<World>();
 }
 
 void PlayerController::TickInit(uint32_t delta)
 {
+    App::CheckRequired<Renderer>();
+    App::CheckRequired<World>();
+
     mConsole = App::Get<Console>();
+    if (!mConsole->IsRunning())
+    {
+        return;
+    }
 
     FinishInit();
 }

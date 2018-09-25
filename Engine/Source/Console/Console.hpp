@@ -48,8 +48,6 @@ public:
         , mEngine(nullptr)
         , mRenderer(nullptr)
     {
-        App::CheckRequired<ConsoleEngine>();
-        App::CheckRequired<Renderer>();
     }
 
     /* Component interface */

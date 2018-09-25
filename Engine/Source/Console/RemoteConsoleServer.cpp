@@ -5,6 +5,9 @@ VH_COMPONENT_IMPL(vh::RemoteConsoleServer);
 
 void vh::RemoteConsoleServer::TickInit(uint32_t delta)
 {
+    App::CheckRequired<ConsoleEngine>();
+    App::CheckRequired<Network>();
+
     mServer.SetListener(this);
     mServer.Init();
 

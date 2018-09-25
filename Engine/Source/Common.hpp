@@ -35,7 +35,9 @@
 #include "Math/Math.hpp"
 
 #define VH_STR(A) #A
+#define VH_WSTR(A) L#A
 #define VH_XSTR(A) VH_STR(A)
+#define VH_XWSTR(A) VH_WSTR(A)
 #define VH_CONCAT(A, B) A ## B
 
 #define UNCOPYABLE(Class) \

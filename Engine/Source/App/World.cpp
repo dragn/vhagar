@@ -132,11 +132,12 @@ DEFINE_COMMAND(spawn_mesh_actor)
 
 World::World() : Component(eTickFrequency::NORMAL)
 {
-    App::CheckRequired<Renderer>();
 }
 
 void World::TickInit(uint32_t delta)
 {
+    App::CheckRequired<Renderer>();
+
     Physics* physics = App::Get<Physics>();
     if (!physics->IsRunning()) return;
 

@@ -30,8 +30,6 @@ class RemoteConsoleServer : public Component, public net::TcpServer::EventListen
 public:
     RemoteConsoleServer() : Component(eTickFrequency::NORMAL)
     {
-        App::CheckRequired<ConsoleEngine>();
-        App::CheckRequired<Network>();
     }
     
     virtual void TickInit(uint32_t delta);

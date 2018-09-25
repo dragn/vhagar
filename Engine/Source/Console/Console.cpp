@@ -12,6 +12,9 @@ VH_COMPONENT_IMPL(Console);
 
 void Console::TickInit(uint32_t delta)
 {
+    App::CheckRequired<ConsoleEngine>();
+    App::CheckRequired<Renderer>();
+
     mEngine = App::Get<ConsoleEngine>();
     CHECK(mEngine);
 

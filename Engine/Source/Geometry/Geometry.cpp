@@ -9,8 +9,6 @@ using namespace vh;
 
 vh::Geometry::Geometry()
 {
-    App::CheckRequired<World>();
-    App::CheckRequired<Renderer>();
 }
 
 /*
@@ -40,6 +38,9 @@ DEFINE_COMMAND(spawn_box)
 
 void vh::Geometry::TickInit(uint32_t delta)
 {
+    App::CheckRequired<World>();
+    App::CheckRequired<Renderer>();
+
     FinishInit();
 }
 

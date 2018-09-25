@@ -24,12 +24,13 @@ vh::Debug::Debug()
     : Component(eTickFrequency::NORMAL)
     , mStatOverlay(5, 5, 200, 50)
 {
-    App::CheckRequired<Renderer>();
-    App::CheckRequired<World>();
 }
 
 void vh::Debug::TickInit(uint32_t delta)
 {
+    App::CheckRequired<Renderer>();
+    App::CheckRequired<World>();
+
     mRenderer = App::Get<Renderer>();
 
     // wait for renderer to start
