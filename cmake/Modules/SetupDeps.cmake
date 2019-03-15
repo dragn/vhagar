@@ -1,11 +1,14 @@
 set(3RDPARTY "${CMAKE_SOURCE_DIR}/../vhagar-deps" CACHE STRING "3rd party libraries folder")
 
+add_definitions(-DVH_DEPS_FOLDER=${3RDPARTY})
+
 set(ENV{GLM_ROOT_DIR} "${3RDPARTY}/glm")
 set(ENV{SDL2DIR} "${3RDPARTY}/SDL2-2.0.5")
 set(ENV{SDL2TTFDIR} "${3RDPARTY}/SDL2_ttf-2.0.14")
 set(ENV{SDL2IMAGEDIR} "${3RDPARTY}/SDL2_image-2.0.1")
-set(glog_DIR "${3RDPARTY}/glog/Release/lib/cmake/glog")
+set(glog_DIR "${3RDPARTY}/glog/Debug/lib/cmake/glog")
 set(gflags_DIR "${3RDPARTY}/gflags/CMake")
+set(lpp_DIR "${3RDPARTY}/LivePP")
 
 list(APPEND CMAKE_PREFIX_PATH
   "${3RDPARTY}/glew"
@@ -71,7 +74,7 @@ if (CMAKE_COMPILER_IS_GNUCXX OR APPLE)
 endif()
 
 if (MSVC)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:msvcrt")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:msvcrt /FUNCTIONPADMIN /OPT:NOREF /OPT:NOICF")
   list(APPEND DEP_LIBRARIES "opengl32")
   list(APPEND DEP_LIBRARIES ${SDL2MAIN_LIBRARY} $<$<CONFIG:Debug>:msvcrtd> $<$<CONFIG:Release>:msvcrt>)
 endif()
@@ -79,3 +82,5 @@ endif()
 if (CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 endif()
+
+include_directories(${lpp_DIR}/API)
