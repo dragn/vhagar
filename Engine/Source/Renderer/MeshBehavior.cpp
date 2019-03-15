@@ -1,4 +1,4 @@
-#include "Common.hpp"
+#include "Vhagar_PCH.hpp"
 #include "MeshBehavior.hpp"
 #include "App/App.hpp"
 #include "Utils/GLUtils.hpp"

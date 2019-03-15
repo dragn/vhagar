@@ -1,4 +1,4 @@
-#include "Common.hpp"
+#include "Vhagar_PCH.hpp"
 #include "RemoteConsoleServer.hpp"
 
 VH_COMPONENT_IMPL(vh::RemoteConsoleServer);

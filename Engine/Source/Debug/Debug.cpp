@@ -1,4 +1,4 @@
-#include "Common.hpp"
+#include "Vhagar_PCH.hpp"
 #include "Debug.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Console/ConsoleCommands.hpp"

@@ -17,7 +17,7 @@ endif()
 
 set_target_properties (Vhagar PROPERTIES COMPILE_FLAGS "${VHAGAR_COMPILE_FLAGS}")
 
-setup_pch(Vhagar_SRC Common.hpp ${PROJECT_SOURCE_DIR}/Source/Common.cpp ${PROJECT_SOURCE_DIR}/Source/Common.hpp)
+setup_pch(Vhagar_SRC Vhagar_PCH.hpp ${PROJECT_SOURCE_DIR}/Source/Vhagar_PCH.cpp ${PROJECT_SOURCE_DIR}/Source/Vhagar_PCH.hpp)
 
 if(MSVC)
   target_link_libraries(Vhagar Ws2_32)

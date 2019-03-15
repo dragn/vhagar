@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Common.hpp"
+#include "Vhagar_PCH.hpp"
 #include "ActorBehavior.hpp"
 
 namespace vh

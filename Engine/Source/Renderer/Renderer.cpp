@@ -1,6 +1,6 @@
 #include "Renderer.hpp"
 
-#include "Common.hpp"
+#include "Vhagar_PCH.hpp"
 #include "App/App.hpp"
 #include "Console/ConsoleCommands.hpp"
 #include "Utils/GLUtils.hpp"

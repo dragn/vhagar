@@ -1,4 +1,4 @@
-#include "Common.hpp"
+#include "Vhagar_PCH.hpp"
 
 #include "App.hpp"
 #include <csignal>

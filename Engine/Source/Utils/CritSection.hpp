@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Common.hpp"
+#include "Vhagar_PCH.hpp"
 
 /*
     Cross-platform syncronization primitives
