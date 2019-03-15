@@ -18,7 +18,7 @@ class ConsoleEngine : public Component
 
 public:
     ConsoleEngine()
-        : Component(eTickFrequency::RARE)
+        : Component(TickFrequency::RARE)
     {
     }
 

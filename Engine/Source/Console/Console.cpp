@@ -40,7 +40,9 @@ void Console::TickInit(uint32_t delta)
     Uint32 bmask = 0x00ff0000;
     Uint32 amask = 0xff000000;
 
-    mSurf = SDL_CreateRGBSurface(0, mRenderer->GetOptions().screenWidth - 40,
+    CHECK(mRenderer->GetOptions().screenWidth > 40);
+
+    mSurf = SDL_CreateRGBSurface(0, static_cast<Uint32>(mRenderer->GetOptions().screenWidth - 40),
         (NUM_LINES + 1) * (FONT_SIZE + LINE_SPACE), 32, rmask, gmask, bmask, amask);
 
     if (!mSurf)
@@ -110,7 +112,7 @@ void Console::_Redraw()
         {
             text = TTF_RenderText_Blended(mFont, mMessages[(mMsgIdx + idx) % NUM_LINES].c_str(), fg);
 
-            dstrect.y = idx * (FONT_SIZE + LINE_SPACE);
+            dstrect.y = static_cast<Uint32>(idx * (FONT_SIZE + LINE_SPACE));
 
             SDL_BlitSurface(text, NULL, mSurf, &dstrect);
 

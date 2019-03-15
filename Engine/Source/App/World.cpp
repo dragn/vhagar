@@ -130,7 +130,7 @@ DEFINE_COMMAND(spawn_mesh_actor)
     }
 }
 
-World::World() : Component(eTickFrequency::NORMAL)
+World::World() : Component(TickFrequency::NORMAL)
 {
 }
 

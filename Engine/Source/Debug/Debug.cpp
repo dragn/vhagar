@@ -21,7 +21,7 @@ DEFINE_COMMAND(toggle_labels)
 }
 
 vh::Debug::Debug()
-    : Component(eTickFrequency::NORMAL)
+    : Component(TickFrequency::NORMAL)
     , mStatOverlay(5, 5, 200, 50)
 {
 }

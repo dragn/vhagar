@@ -52,7 +52,7 @@ void gui::ButtonWidget::Draw(int32_t x, int32_t y)
     TTF_Font* font = mFont;
     if (font == nullptr)
     {
-        gui::GUI2D* gui = vh::App::Get<gui::GUI2D>();
+        GUI2D* gui = vh::App::Get<GUI2D>();
         CHECK(gui);
         font = gui->GetFont();
     }
@@ -75,7 +75,7 @@ void gui::ButtonWidget::Draw(int32_t x, int32_t y)
 SDL_Cursor* gui::ButtonWidget::GetCursor()
 {
     if (mCursor != nullptr) return mCursor;
-    gui::GUI2D* gui = vh::App::Get<gui::GUI2D>();
+    GUI2D* gui = vh::App::Get<GUI2D>();
     CHECK(gui);
     mCursor = gui->GetHandCursor();
     return mCursor;

@@ -30,7 +30,7 @@ class GUI2D : public vh::Component
 
 public:
     GUI2D(const GUI2DOptions& opts)
-        : vh::Component(vh::eTickFrequency::NORMAL)
+        : vh::Component(vh::TickFrequency::NORMAL)
         , mView(nullptr)
         , mNextView(nullptr)
         , mNextModalView(nullptr)

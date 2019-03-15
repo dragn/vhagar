@@ -28,7 +28,7 @@ class RemoteConsoleServer : public Component, public net::TcpServer::EventListen
     VH_COMPONENT(RemoteConsoleServer);
 
 public:
-    RemoteConsoleServer() : Component(eTickFrequency::NORMAL)
+    RemoteConsoleServer() : Component(TickFrequency::NORMAL)
     {
     }
     

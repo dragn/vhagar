@@ -11,13 +11,13 @@ void Component::Tick()
 
     switch (mState)
     {
-        case eCompState::INIT:
+        case CompState::INIT:
             TickInit(mTickDelta);
             break;
-        case eCompState::RUN:
+        case CompState::RUN:
             TickRun(mTickDelta);
             break;
-        case eCompState::CLOSE:
+        case CompState::CLOSE:
             TickClose(mTickDelta);
             break;
         default:
@@ -38,28 +38,28 @@ void Component::TickClose(uint32_t delta)
 void Component::FinishInit()
 {
     LOG(INFO) << "Component " << GetName() << ": init finished";
-    mState = eCompState::RUN;
+    mState = CompState::RUN;
 }
 
 void Component::FinishClose()
 {
     LOG(INFO) << "Component " << GetName() << ": close finished";
-    mState = eCompState::CLOSED;
+    mState = CompState::CLOSED;
 }
 
 void Component::Close()
 {
-    if (mState != eCompState::CLOSED && mState != eCompState::CLOSE)
+    if (mState != CompState::CLOSED && mState != CompState::CLOSE)
     {
         LOG(INFO) << "Component " << GetName() << ": close";
-        mState = eCompState::CLOSE;
+        mState = CompState::CLOSE;
     }
 }
 
 void Component::StartFrame_Internal(uint32_t time)
 {
     // negative tick step - do not tick in running
-    if (mTickStep < 0 && mState == eCompState::RUN)
+    if (mTickStep < 0 && mState == CompState::RUN)
     {
         mTickDelta = 0; // no tick
         return;

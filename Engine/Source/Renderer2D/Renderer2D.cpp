@@ -5,7 +5,7 @@
 VH_COMPONENT_IMPL(vh::Renderer2D);
 
 vh::Renderer2D::Renderer2D()
-    : Component(eTickFrequency::NORMAL)
+    : Component(TickFrequency::NORMAL)
     , mWindow(nullptr)
     , mRenderer(nullptr)
     , mFrameBuf(nullptr)

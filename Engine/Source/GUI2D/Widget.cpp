@@ -65,7 +65,7 @@ void gui::Widget::SetSize(int32_t width, int32_t height)
 SDL_Cursor* gui::Widget::GetCursor()
 {
     if (mCursor != nullptr) return mCursor;
-    gui::GUI2D* gui = vh::App::Get<gui::GUI2D>();
+    GUI2D* gui = vh::App::Get<GUI2D>();
     CHECK(gui);
     mCursor = gui->GetArrowCursor();
     return mCursor;

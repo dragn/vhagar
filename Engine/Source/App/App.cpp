@@ -102,11 +102,11 @@ void App::DoRun()
         {
             const std::unique_ptr<Component>& comp = mComponents[compIdx];
 
-            if (comp->GetState() == eCompState::CLOSE)
+            if (comp->GetState() == CompState::CLOSE)
             {
                 break; // encountered closing component - wait for it to close
             }
-            else if (comp->GetState() == eCompState::CLOSED)
+            else if (comp->GetState() == CompState::CLOSED)
             {
                 // component is closed - remove the reference and proceed to next one
                 LOG(INFO) << "Destroying component " << comp->GetName();

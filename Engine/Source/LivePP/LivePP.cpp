@@ -1,6 +1,6 @@
 #include "Common.hpp"
 
-#include "LivePP/LivePPComponent.hpp"
+#include "LivePP/LivePP.hpp"
 
 namespace vh
 {

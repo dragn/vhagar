@@ -23,8 +23,8 @@ const static size_t MAX_DIRECTION_LIGHTS = 10;
  */
 struct RendererOptions {
     const char *resourceRoot = ".";
-    size_t screenWidth = 1024;
-    size_t screenHeight = 768;
+    int screenWidth = 1024;
+    int screenHeight = 768;
     bool borderless = true;
 
     enum
@@ -70,7 +70,7 @@ class Renderer : public vh::Component {
 public:
 
     Renderer(const RendererOptions& opts)
-        : Component(eTickFrequency::NEVER)
+        : Component(TickFrequency::NEVER)
         , mOptions(opts)
         , mStatOverlay(10, 10, 100, 20)
     {}

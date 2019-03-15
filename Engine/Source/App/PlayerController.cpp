@@ -12,7 +12,7 @@ namespace vh
 VH_COMPONENT_IMPL(PlayerController);
 
 PlayerController::PlayerController() :
-    Component(eTickFrequency::NORMAL),
+    Component(TickFrequency::NORMAL),
     mActor(nullptr),
     mCameraTurnSpeed(0.001f)
 {

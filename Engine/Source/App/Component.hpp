@@ -7,28 +7,22 @@
 namespace vh
 {
 
-namespace eCompState
-{
-enum Type
+enum class CompState
 {
     INIT,       // component is initaliazing
     RUN,        // running
     CLOSE,      // Close() called, component is in process of releasing resources
     CLOSED      // component released all resources and can be destroyed
 };
-}
 
-namespace eTickFrequency
-{
-enum Type : int32_t
+enum class TickFrequency
 {
     NEVER = -1,     // Tick disabled while running
     EACH = 0,       // Tick as fast as possible
     NORMAL = 16,    // Normal tick ~60 fps
-    HALF = 32,      // Hald rate ~30 fps
+    HALF = 32,      // Half rate ~30 fps
     RARE = 50       // Rare tick
 };
-}
 
 typedef uint32_t CompID;
 static const CompID CompID_Invalid = CompID(-1);
@@ -37,7 +31,7 @@ static const CompID CompID_Invalid = CompID(-1);
 friend class vh::App;                                               \
 public:                                                             \
     static const char* GetNameStatic() { return #name; }            \
-    virtual const char* GetName() { return #name; }                 \
+    virtual const char* GetName() const { return #name; }                 \
     static vh::CompID GetIDStatic() { return name::_ID; }           \
     virtual vh::CompID GetID() const { return name::GetIDStatic(); }\
                                                                     \
@@ -52,39 +46,39 @@ class Component
     friend class App;
 
 public:
-    Component(int32_t tickStep = eTickFrequency::NEVER) :
-        mState(eCompState::INIT),
-        mTickStep(tickStep),
+    Component(TickFrequency tickFreq = TickFrequency::NEVER) :
+        mState(CompState::INIT),
+        mTickStep(static_cast<int32_t>(tickFreq)),
         mLastTick(0)
     {}
 
     virtual ~Component()
     {
-        CHECK(mState == eCompState::CLOSED);
+        CHECK(mState == CompState::CLOSED);
     }
 
-    virtual const char* GetName() = 0;
+    virtual const char* GetName() const = 0;
 
     void Tick();
 
-    int32_t GetTickStep()
+    int32_t GetTickStep() const
     {
         return mTickStep;
     }
 
-    uint32_t GetLastTick()
+    uint32_t GetLastTick() const
     {
         return mLastTick;
     }
 
-    eCompState::Type GetState()
+    CompState GetState() const
     {
         return mState;
     }
 
-    bool IsRunning()
+    bool IsRunning() const
     {
-        return mState == eCompState::RUN;
+        return mState == CompState::RUN;
     }
 
     void Close();
@@ -114,7 +108,7 @@ protected:
     void FinishClose();
 
 private:
-    eCompState::Type mState;
+    CompState mState;
     int32_t mTickStep;
 
     // used by App to mark component for ticks

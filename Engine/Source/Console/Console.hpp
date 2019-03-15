@@ -36,7 +36,7 @@ class Console : public Component, public google::LogSink
 
 public:
     Console()
-        : Component(eTickFrequency::NORMAL)
+        : Component(TickFrequency::NORMAL)
         , mShowConsole(false)
         , mFont(nullptr)
         , mMessages(NUM_LINES)

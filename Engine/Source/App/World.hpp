@@ -7,7 +7,8 @@
 #include "Actor/ActorFactory.hpp"
 #include "Renderer/Renderer.hpp"
 
-namespace vh {
+namespace vh
+{
 
 class World : public Component
 {

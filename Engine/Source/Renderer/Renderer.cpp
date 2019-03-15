@@ -246,7 +246,7 @@ void Renderer::DoRenderMesh(glm::mat4 view, glm::mat4 projection, const Mesh::Pa
     GLint uidPLightInt = glGetUniformLocation(payload->progId, "uPLightInt");
 
     // -- setup lights
-    glUniform1i(uidPLightNum, lights.size());
+    glUniform1i(uidPLightNum, static_cast<GLint>(lights.size()));
     V3 lightPos[MAX_POINT_LIGHTS];
     float lightInt[MAX_POINT_LIGHTS];
     for (size_t i = 0; i < lights.size(); ++i)
@@ -254,8 +254,8 @@ void Renderer::DoRenderMesh(glm::mat4 view, glm::mat4 projection, const Mesh::Pa
         lightPos[i] = lights[i].pos;
         lightInt[i] = lights[i].intensity;
     }
-    glUniform3fv(uidPLightPos, lights.size(), reinterpret_cast<GLfloat*>(lightPos));
-    glUniform1fv(uidPLightInt, lights.size(), reinterpret_cast<GLfloat*>(lightInt));
+    glUniform3fv(uidPLightPos, static_cast<GLsizei>(lights.size()), reinterpret_cast<GLfloat*>(lightPos));
+    glUniform1fv(uidPLightInt, static_cast<GLsizei>(lights.size()), reinterpret_cast<GLfloat*>(lightInt));
 
     // -- setup transforms
     glUniformMatrix4fv(uidMVP, 1, GL_FALSE, reinterpret_cast<float*>(&MVP[0][0]));

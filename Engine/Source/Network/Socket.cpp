@@ -292,7 +292,7 @@ namespace net
 extern bool ParseIP4Addr(const char* str, IP4Addr& outAddr)
 {
     uint32_t a, b, c, d;
-    if (sscanf(str, "%u.%u.%u.%u", &a, &b, &c, &d) != 4)
+    if (sscanf_s(str, "%u.%u.%u.%u", &a, &b, &c, &d) != 4)
         return false;
     outAddr.bytes.a = (uint8_t)a;
     outAddr.bytes.b = (uint8_t)b;
@@ -304,7 +304,7 @@ extern bool ParseIP4Addr(const char* str, IP4Addr& outAddr)
 extern bool ParseInAddr(const char* str, InAddr& outAddr)
 {
     uint32_t a, b, c, d, port;
-    if (sscanf(str, "%u.%u.%u.%u:%u", &a, &b, &c, &d, &port) != 5)
+    if (sscanf_s(str, "%u.%u.%u.%u:%u", &a, &b, &c, &d, &port) != 5)
         return false;
     outAddr.ipAddr.bytes.a = (uint8_t)a;
     outAddr.ipAddr.bytes.b = (uint8_t)b;
@@ -316,7 +316,7 @@ extern bool ParseInAddr(const char* str, InAddr& outAddr)
 
 extern void InAddrToStr(const InAddr& addr, char* str)
 {
-    sprintf(str, "%hhu.%hhu.%hhu.%hhu:%hu", addr.ipAddr.bytes.a, addr.ipAddr.bytes.b, addr.ipAddr.bytes.c, addr.ipAddr.bytes.d, addr.ipPort);
+    sprintf_s(str, 18, "%hhu.%hhu.%hhu.%hhu:%hu", addr.ipAddr.bytes.a, addr.ipAddr.bytes.b, addr.ipAddr.bytes.c, addr.ipAddr.bytes.d, addr.ipPort);
 }
 
 extern bool InAddrEquals(const InAddr& a, const InAddr& b)
@@ -354,7 +354,7 @@ bool DatagramSocket::Bind(const IPPort& port, bool blocking /* = false */)
         return false;
     }
 
-    mSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    mSocket = static_cast<int>(socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP));
 
     if (mSocket == -1)
     {
@@ -400,7 +400,7 @@ int DatagramSocket::SendTo(const InAddr& addr, const char* data, size_t dataSize
     memcpy(&to.sin_addr, &addr.ipAddr, sizeof(addr.ipAddr));
     to.sin_port = htons(addr.ipPort);
 
-    int result = sendto(mSocket, data, dataSize, 0, (sockaddr*)&to, sizeof(to));
+    int result = sendto(mSocket, data, static_cast<int>(dataSize), 0, (sockaddr*)&to, sizeof(to));
 
     if (result == SOCKET_ERROR)
     {
@@ -422,7 +422,7 @@ int DatagramSocket::RecvFrom(InAddr& outAddr, char* outData, size_t dataSize)
     sockaddr_in from;
     socklen_t fromSize = sizeof(from);
 
-    int result = recvfrom(mSocket, outData, dataSize, 0, (sockaddr*)&from, &fromSize);
+    int result = recvfrom(mSocket, outData, static_cast<int>(dataSize), 0, (sockaddr*)&from, &fromSize);
 
     if (result == SOCKET_ERROR)
     {
@@ -501,7 +501,7 @@ bool ClientStreamSocket::Connect(const InAddr& addr)
         return false;
     }
 
-    mSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    mSocket = static_cast<int>(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
 
     if (mSocket == -1)
     {
@@ -581,7 +581,7 @@ int ClientStreamSocket::Send(const char* data, size_t dataSize)
         return -1;
     }
 
-    int result = send(mSocket, data, dataSize, 0);
+    int result = send(mSocket, data, static_cast<int>(dataSize), 0);
     if (result < 0)
     {
         const char* error = GetStringForError(LAST_ERROR);
@@ -601,7 +601,7 @@ int ClientStreamSocket::Recv(char* outData, size_t dataSize)
         return -1;
     }
 
-    int result = recv(mSocket, outData, dataSize, 0);
+    int result = recv(mSocket, outData, static_cast<int>(dataSize), 0);
     if (result == 0)
     {
         // for a TCP socket recv returns 0 when remote end closed the connection
@@ -635,7 +635,7 @@ bool ServerStreamSocket::Listen(const InAddr& addr)
         return false;
     }
 
-    mSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    mSocket = static_cast<int>(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
 
     if (mSocket == -1)
     {
@@ -705,7 +705,7 @@ bool ServerStreamSocket::Accept(int& sock, InAddr& addr)
     memcpy(&sa.sin_addr, &mAddr.ipAddr, sizeof(mAddr.ipAddr));
     sa.sin_port = htons(mAddr.ipPort);
 
-    sock = accept(mSocket, (sockaddr*) &sa, &len);
+    sock = static_cast<int>(accept(mSocket, (sockaddr*) &sa, &len));
 
     if (sock == -1)
     {
