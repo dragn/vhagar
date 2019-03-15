@@ -24,6 +24,24 @@ App* GetApp()
     return sApp;
 }
 
+std::unordered_set<std::string> sCmdFlagsRegistry;
+
+CmdFlag::CmdFlag(const char* key)
+{
+    mKey = key;
+    sCmdFlagsRegistry.insert(key);
+}
+
+CmdFlag::~CmdFlag()
+{
+    sCmdFlagsRegistry.erase(mKey);
+}
+
+const char* CmdFlag::GetKey() const
+{
+    return mKey;
+}
+
 void Signal(int signal)
 {
     SDL_Event event;
@@ -51,6 +69,22 @@ void App::Run()
 
         // TODO switch to event-based main thread?
         cs::Sleep(5);
+    }
+}
+
+void App::ParseCmd(int argc, char* argv[])
+{
+    for (size_t idx = 0; idx < argc; ++idx)
+    {
+        std::string key(argv[idx]);
+        if (sCmdFlagsRegistry.find(key) != sCmdFlagsRegistry.end())
+        {
+            mCmdFlags.insert(key);
+        }
+        else
+        {
+            LOG(ERROR) << "Unknown command line key: " << key;
+        }
     }
 }
 
@@ -118,6 +152,16 @@ void App::DoRun()
 void App::Close()
 {
     mState = eAppState::CLOSE;
+}
+
+bool App::GetCmdFlag(const char* flag) const
+{
+    return mCmdFlags.find(flag) != mCmdFlags.end();
+}
+
+bool App::GetCmdFlag(const CmdFlag& flag) const
+{
+    return GetCmdFlag(flag.GetKey());
 }
 
 void App::HandleEvents()

@@ -5,6 +5,7 @@
 #include <memory>
 #include <cstdint>
 #include <regex>
+#include <string>
 
 #define HAVE_M_PI
 #include "SDL.h"

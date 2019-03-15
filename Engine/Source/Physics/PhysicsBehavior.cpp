@@ -85,6 +85,12 @@ void PhysicsBehavior::SetSphereGeometry(float radius)
 
 void vh::PhysicsBehavior::EndPlay()
 {
+    // TODO react to physics closing properly
+    if (!mPhysics->IsRunning())
+    {
+        return;
+    }
+
     if (mActor)
     {
         mPhysics->mScene->removeActor(*mActor);

@@ -37,6 +37,12 @@ void vh::CapsuleCharacterBehavior::StartPlay()
 
 void vh::CapsuleCharacterBehavior::EndPlay()
 {
+    // TODO react to physics closing properly
+    if (!mPhysics || !mPhysics->IsRunning())
+    {
+        return;
+    }
+
     if (mController)
     {
         mController->release();
@@ -51,6 +57,13 @@ void vh::CapsuleCharacterBehavior::EndPlay()
 
 void vh::CapsuleCharacterBehavior::Tick(uint32_t delta)
 {
+    // TODO behaviors should have a dependecy on component, and the should be turned off when the component shuts down
+    mPhysics = App::Get<Physics>();
+    if (!mPhysics || !mPhysics->IsRunning())
+    {
+        return;
+    }
+
     // -- update actor's position
     if (mController)
     {

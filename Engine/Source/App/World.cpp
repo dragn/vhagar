@@ -176,7 +176,7 @@ void World::TickClose(uint32_t delta)
 
 void World::StartFrame()
 {
-    if (IsRunning())
+    if (IsRunning() && mRenderer->IsRunning())
     {
         RenderBuffer* buffer = mRenderer->GetBufferHandler().GetNextBuffer();
         if (buffer)
@@ -200,7 +200,7 @@ void World::StartFrame()
 
 void World::EndFrame()
 {
-    if (IsRunning())
+    if (IsRunning() && mRenderer->IsRunning())
     {
         RenderBuffer* buffer = mRenderer->GetBufferHandler().GetNextBuffer();
         if (buffer)

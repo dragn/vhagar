@@ -42,7 +42,7 @@ private:
     physx::PxMaterial* mMaterial = nullptr;
     CameraBehavior* mCamera = nullptr;
     float mTurnSpeed = 0.001f;
-    float mWalkSpeed = 5.0f;
+    float mWalkSpeed = 0.1f;
     physx::PxControllerFilters mFilters;
     float mCameraPitch = 0.0f;
 };
