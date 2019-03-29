@@ -176,14 +176,15 @@ void Actor::Tick(uint32_t delta)
     }
 }
 
-Actor::Actor(World* world, V3 pos, Rot rot, V3 scale) :
-    mOwner(world),
-    mPlaying(false),
-    mPos(pos),
-    mScale(scale),
-    mYaw(rot.yaw),
-    mPitch(rot.pitch),
-    mRootBehavior()
+Actor::Actor(World* world, ActorID id, V3 pos, Rot rot, V3 scale)
+    : mOwner(world)
+    , mId(id)
+    , mPlaying(false)
+    , mPos(pos)
+    , mScale(scale)
+    , mYaw(rot.yaw)
+    , mPitch(rot.pitch)
+    , mRootBehavior()
 {
     mQuat = Quat(V3(mPitch, mYaw, 0));
     _UpdateTransform();

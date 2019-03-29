@@ -219,5 +219,20 @@ void World::EndFrame()
     }
 }
 
+vh::Actor* World::CreateActor(const std::string& name)
+{
+    std::string tmp(name);
+    tmp.append("_");
+    tmp.append(std::to_string(mActors.size()));
+
+    ActorID id = mActorID++;
+    mActors.emplace_back(this, id);
+    Actor& actor = mActors.back();
+
+    actor.SetName(tmp);
+
+    return actor;
+}
+
 } // namespace vh
 

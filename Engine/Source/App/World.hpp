@@ -26,24 +26,23 @@ public:
     virtual void StartFrame() override;
     virtual void EndFrame() override;
 
-    template<typename T> void DestroyActor(T*& actor)
+    void DestroyActor(ActorID id)
     {
-        auto iter = mActors.begin();
-        while (iter != mActors.end())
-        {
-            if (iter->get() == actor)
+        mActors.erase(
+            std::remove_if(mActors.begin(), mActors.end(), [id](const Actor& actor)
             {
-                iter = mActors.erase(iter);
-                actor = nullptr;
-            }
-            else
-            {
-                ++iter;
-            }
-        }
+                return actor.mId == id;
+            }),
+            mActors.end()
+        );
     }
 
-    const std::list<std::unique_ptr<Actor>>& GetActors()
+    template<typename T> void DestroyActor(T*& actor)
+    {
+        DestroyActor(actor->mId);
+    }
+
+    const std::vector<Actor>& GetActors()
     {
         return mActors;
     }
@@ -61,22 +60,13 @@ public:
         return nullptr;
     }
 
-    Actor* CreateActor(const std::string& name)
-    {
-        std::string tmp(name);
-        tmp.append("_");
-        tmp.append(std::to_string(mActors.size()));
-
-        Actor* actor = new Actor(this);
-        actor->SetName(tmp);
-        mActors.push_back(std::unique_ptr<Actor>(actor));
-        return actor;
-    }
+    Actor* CreateActor(const std::string& name);
 
 private:
-    std::list<std::unique_ptr<Actor>> mActors;
+    std::vector<Actor> mActors;
     ActorFactory mActorFactory;
     Renderer* mRenderer;
+    size_t mActorID = 0;
 
     UNCOPYABLE(World);
 };
