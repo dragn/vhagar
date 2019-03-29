@@ -2,9 +2,11 @@
 
 #include "Renderable.hpp"
 
-namespace vh {
+namespace vh
+{
 
-class Overlay {
+class Overlay : public Renderable
+{
 
 public:
     ~Overlay();
@@ -18,12 +20,16 @@ public:
 
     virtual void Render();
 
+protected:
+    virtual bool DoLoad() override;
+    virtual bool DoUnload() override;
+
 private:
     uint32_t mPosX = 0;
     uint32_t mPosY = 0;
 
     GLuint vertexBuffer = 0;
-    GLuint programID = 0;
+    GLuint mShaderId = 0;
 
     GLfloat vertices[18];
     V4 mBounds;

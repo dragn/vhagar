@@ -40,8 +40,8 @@ public:
     Renderer2D(const Renderer2DOptions& options);
 
     /* vh::Component interface */
-    virtual void TickInit(uint32_t delta) override;
-    virtual void TickClose(uint32_t delta) override;
+    virtual Ret TickInit(uint32_t delta) override;
+    virtual Ret TickClose(uint32_t delta) override;
 
     virtual void StartFrame() override;
     virtual void EndFrame() override;

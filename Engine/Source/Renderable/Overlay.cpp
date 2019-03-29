@@ -14,8 +14,8 @@ void Overlay::SetTexture(SDL_Surface *s)
 
 void Overlay::Init()
 {
-    programID = Utils::GetShaderProgram("OSD");
-    if (programID < 0)
+    mShaderId = Utils::GetShaderProgram("OSD");
+    if (mShaderId < 0)
     {
         LOG(INFO) << "Unable to load program OSD";
         return;
@@ -61,9 +61,9 @@ void Overlay::_UpdateVertices(uint32_t w, uint32_t h)
 void Overlay::Render()
 {
     glDisable(GL_CULL_FACE);
-    glUseProgram(programID);
+    glUseProgram(mShaderId);
 
-    Utils::PutUniformVec4(programID, "uBounds", mBounds);
+    Utils::PutUniformVec4(mShaderId, "uBounds", mBounds);
 
     if (texId > 0) glBindTexture(GL_TEXTURE_2D, texId);
 
@@ -88,4 +88,14 @@ void vh::Overlay::SetPos(uint32_t x, uint32_t y)
 {
     mPosX = x;
     mPosY = y;
+}
+
+bool vh::Overlay::DoLoad()
+{
+    return true;
+}
+
+bool vh::Overlay::DoUnload()
+{
+    return true;
 }

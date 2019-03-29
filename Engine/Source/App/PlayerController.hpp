@@ -11,7 +11,8 @@ namespace vh {
  * PlayerController handles input events from human.
  * PlayerController has a camera, that specifies what the human sees.
  */
-class PlayerController : public Component {
+class PlayerController : public Component
+{
     VH_COMPONENT(PlayerController);
 
 public:
@@ -25,9 +26,8 @@ public:
 
     virtual void HandleEvent(SDL_Event *event);
 
-    virtual void TickInit(uint32_t delta);
-    virtual void TickRun(uint32_t delta);
-    virtual void TickClose(uint32_t delta);
+    virtual Ret TickInit(uint32_t delta) override;
+    virtual Ret TickRun(uint32_t delta) override;
 
     Actor* GetControlledActor()
     {

@@ -7,9 +7,7 @@
 
 using namespace vh;
 
-vh::Geometry::Geometry()
-{
-}
+VH_COMPONENT_IMPL(Geometry);
 
 /*
     spawn_box <pos> [<ambient color>] [<diffues color>] [<specular color>]
@@ -36,15 +34,12 @@ DEFINE_COMMAND(spawn_box)
     */
 }
 
-void vh::Geometry::TickInit(uint32_t delta)
+vh::Ret vh::Geometry::TickInit(uint32_t delta)
 {
-    App::CheckRequired<World>();
-    App::CheckRequired<Renderer>();
+    if (App::Get<World>() && App::Get<Renderer>())
+    {
+        return Ret::SUCCESS;
+    }
 
-    FinishInit();
-}
-
-void vh::Geometry::TickClose(uint32_t delta)
-{
-    FinishClose();
+    return Ret::CONTINUE;
 }

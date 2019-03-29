@@ -25,7 +25,7 @@ vh::Physics::Physics()
 
 }
 
-void vh::Physics::TickInit(uint32_t delta)
+vh::Ret vh::Physics::TickInit(uint32_t delta)
 {
     static ErrorCallback gErrorCallback;
     static PxDefaultAllocator gDefaultAllocatorCallback;
@@ -34,16 +34,14 @@ void vh::Physics::TickInit(uint32_t delta)
     if (!mFoundation)
     {
         LOG(FATAL) << "PxCreateFoundation failed!";
-        Close();
-        return;
+        return Ret::FAILURE;
     }
 
     mPhysics = PxCreateBasePhysics(PX_PHYSICS_VERSION, *mFoundation, mScale);
     if (!mPhysics)
     {
         LOG(FATAL) << "PxCreatePhysics failed!";
-        Close();
-        return;
+        return Ret::FAILURE;
     }
 
     // -- Register any additional features here
@@ -58,16 +56,15 @@ void vh::Physics::TickInit(uint32_t delta)
     if (!mScene)
     {
         LOG(FATAL) << "CreateScene failed!";
-        Close();
-        return;
+        return Ret::FAILURE;
     }
 
     mControllerManager = PxCreateControllerManager(*mScene);
 
-    FinishInit();
+    return Ret::SUCCESS;
 }
 
-void vh::Physics::TickClose(uint32_t delta)
+vh::Ret vh::Physics::TickClose(uint32_t delta)
 {
     if (mControllerManager != nullptr)
     {
@@ -90,11 +87,7 @@ void vh::Physics::TickClose(uint32_t delta)
         mFoundation = nullptr;
     }
 
-    FinishClose();
-}
-
-void vh::Physics::TickRun(uint32_t delta)
-{
+    return Ret::SUCCESS;
 }
 
 void vh::Physics::StartFrame()

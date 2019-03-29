@@ -40,30 +40,28 @@ DEFINE_COMMAND(toggle_wireframe)
     renderer->Toggle(RenderFlags::DRAW_WIREFRAMES);
 }
 
-void Renderer::TickInit(uint32_t delta)
+vh::Ret Renderer::TickInit(uint32_t delta)
 {
     if (mRenderThreadStarted)
     {
         if (mRenderThreadReady)
         {
-            FinishInit();
+            return Ret::SUCCESS;
         }
-        return;
+        return Ret::CONTINUE;
     }
 
     LOG(INFO) << "SDL Initialization";
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         LOG(FATAL) << SDL_GetError();
-        Close();
-        return;
+        return Ret::FAILURE;
     }
 
     if (TTF_Init() < 0)
     {
         LOG(FATAL) << TTF_GetError();
-        Close();
-        return;
+        return Ret::FAILURE;
     }
 
     Uint32 flags = SDL_WINDOW_OPENGL;
@@ -99,9 +97,11 @@ void Renderer::TickInit(uint32_t delta)
 
     mRenderThread = std::thread(&Renderer::RenderThreadStatic, this);
     mRenderThreadStarted = true;
+
+    return Ret::CONTINUE;
 }
 
-void Renderer::TickClose(uint32_t delta)
+vh::Ret Renderer::TickClose(uint32_t delta)
 {
     mRenderThreadExit = true;
     mRenderThread.join();
@@ -113,7 +113,7 @@ void Renderer::TickClose(uint32_t delta)
     TTF_Quit();
     SDL_Quit();
 
-    FinishClose();
+    return Ret::SUCCESS;
 }
 
 void Renderer::DoRender(const RenderBuffer* last, const RenderBuffer* cur, float factor)

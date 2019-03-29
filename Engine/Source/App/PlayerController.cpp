@@ -18,26 +18,26 @@ PlayerController::PlayerController() :
 {
 }
 
-void PlayerController::TickInit(uint32_t delta)
+vh::Ret PlayerController::TickInit(uint32_t delta)
 {
     App::CheckRequired<Renderer>();
     App::CheckRequired<World>();
 
     mConsole = App::Get<Console>();
-    if (!mConsole->IsRunning())
+    if (!mConsole || !mConsole->IsRunning())
     {
-        return;
+        return Ret::CONTINUE;
     }
 
-    FinishInit();
+    return Ret::SUCCESS;
 }
 
-void PlayerController::TickRun(uint32_t delta)
+vh::Ret PlayerController::TickRun(uint32_t delta)
 {
-    if (mActor == nullptr) return;
+    if (mActor == nullptr) return Ret::CONTINUE;
 
     // do nothing if console is open
-    if (mConsole->IsShown()) return;
+    if (mConsole->IsShown()) return Ret::CONTINUE;
 
     float sec = delta / 1000.0f;
 
@@ -48,11 +48,8 @@ void PlayerController::TickRun(uint32_t delta)
         if (mPressed['a']) behavior->MoveRight(-1.0f);
         if (mPressed['d']) behavior->MoveRight(1.0f);
     });
-}
 
-void PlayerController::TickClose(uint32_t delta)
-{
-    FinishClose();
+    return Ret::CONTINUE;
 }
 
 void PlayerController::Control(Actor *actor)

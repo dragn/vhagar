@@ -19,9 +19,9 @@ public:
 
     template<typename T, typename... Args> T* SpawnActor(Args... args) { return AddActor(new T(args...)); }
 
-    virtual void TickInit(uint32_t delta) override;
-    virtual void TickRun(uint32_t delta) override;
-    virtual void TickClose(uint32_t delta) override;
+    virtual Ret TickInit(uint32_t delta) override;
+    virtual Ret TickRun(uint32_t delta) override;
+    virtual Ret TickClose(uint32_t delta) override;
 
     virtual void StartFrame() override;
     virtual void EndFrame() override;

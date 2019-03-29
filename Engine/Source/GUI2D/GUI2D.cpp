@@ -10,7 +10,7 @@ namespace gui
 
 VH_COMPONENT_IMPL(GUI2D);
 
-void GUI2D::TickInit(uint32_t delta)
+vh::Ret GUI2D::TickInit(uint32_t delta)
 {
     App::CheckRequired<Renderer2D>();
 
@@ -35,10 +35,10 @@ void GUI2D::TickInit(uint32_t delta)
     mBeamCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM);
     mHandCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
 
-    FinishInit();
+    return Ret::SUCCESS;
 }
 
-void GUI2D::TickRun(uint32_t delta)
+vh::Ret GUI2D::TickRun(uint32_t delta)
 {
     ApplyTransition();
 
@@ -53,7 +53,7 @@ void GUI2D::TickRun(uint32_t delta)
 
     if (mNextView != nullptr)
     {
-        if (!WaitForTransition()) return;
+        if (!WaitForTransition()) return Ret::CONTINUE;
 
         /* clear focus */
         SetFocus(nullptr);
@@ -79,12 +79,12 @@ void GUI2D::TickRun(uint32_t delta)
             mModalViewStack.clear();
         });
 
-        return;
+        return Ret::CONTINUE;
     }
 
     if (mNextModalView != nullptr)
     {
-        if (!WaitForTransition()) return;
+        if (!WaitForTransition()) return Ret::CONTINUE;
 
         /* clear focus */
         SetFocus(nullptr);
@@ -103,12 +103,12 @@ void GUI2D::TickRun(uint32_t delta)
 
         mNextModalView = nullptr;
 
-        return;
+        return Ret::CONTINUE;
     }
 
     if (mGoBack)
     {
-        if (!WaitForTransition()) return;
+        if (!WaitForTransition()) return Ret::CONTINUE;
 
         mGoBack = false;
 
@@ -129,12 +129,12 @@ void GUI2D::TickRun(uint32_t delta)
             mModalViewStack.back()->mRootWidget->SetDirty();
         }
 
-        return;
+        return Ret::CONTINUE;
     }
 
     if (mGoBackToMain)
     {
-        if (!WaitForTransition()) return;
+        if (!WaitForTransition()) return Ret::CONTINUE;
 
         mGoBackToMain = false;
 
@@ -145,11 +145,13 @@ void GUI2D::TickRun(uint32_t delta)
         // set dirty flag to main view
         if (mView && mView->mRootWidget) mView->mRootWidget->SetDirty();
 
-        return;
+        return Ret::CONTINUE;
     }
+
+    return Ret::CONTINUE;
 }
 
-void GUI2D::TickClose(uint32_t delta)
+vh::Ret GUI2D::TickClose(uint32_t delta)
 {
     if (mFont) TTF_CloseFont(mFont);
 
@@ -179,7 +181,7 @@ void GUI2D::TickClose(uint32_t delta)
         mHandCursor = nullptr;
     }
 
-    FinishClose();
+    return Ret::SUCCESS;
 }
 
 void GUI2D::SetView(View* view, bool withFade)

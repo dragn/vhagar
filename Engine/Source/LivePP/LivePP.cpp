@@ -8,7 +8,7 @@ namespace vh
 
     VH_COMPONENT_IMPL(LivePP);
 
-    void LivePP::TickInit(uint32_t delta)
+    vh::Ret LivePP::TickInit(uint32_t delta)
     {
         if (GetApp()->GetCmdFlag(sLivePPEnabled))
         {
@@ -25,17 +25,17 @@ namespace vh
 #endif
         }
 
-        FinishInit();
+        return Ret::SUCCESS;
     }
 
-    void LivePP::TickClose(uint32_t delta)
+    Ret LivePP::TickClose(uint32_t delta)
     {
         if (GetApp()->GetCmdFlag(sLivePPEnabled))
         {
             lpp::lppDisableAllCallingModulesSync(livePP);
         }
 
-        FinishClose();
+        return Ret::SUCCESS;
     }
 
 } // namespace vh

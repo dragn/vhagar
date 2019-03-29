@@ -76,8 +76,8 @@ public:
     {}
     virtual ~Renderer() {}
 
-    virtual void TickInit(uint32_t delta) override;
-    virtual void TickClose(uint32_t delta) override;
+    virtual Ret TickInit(uint32_t delta) override;
+    virtual Ret TickClose(uint32_t delta) override;
 
     const RendererOptions& GetOptions() const
     {

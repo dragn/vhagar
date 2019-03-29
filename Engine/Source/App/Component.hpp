@@ -7,6 +7,7 @@
 namespace vh
 {
 
+// -- Defines a state of a component
 enum class CompState
 {
     INIT,       // component is initaliazing
@@ -15,6 +16,7 @@ enum class CompState
     CLOSED      // component released all resources and can be destroyed
 };
 
+// -- Used to define how often should an object be updated
 enum class TickFrequency
 {
     NEVER = -1,     // Tick disabled while running
@@ -24,6 +26,15 @@ enum class TickFrequency
     RARE = 50       // Rare tick
 };
 
+// -- This enum is used to define a result of running an action,
+//    e.g. components init, tick and close
+enum class Ret
+{
+    SUCCESS,        // result is successful, proceed to next state
+    FAILURE,        // result is a failure, rollback and try to recover
+    CONTINUE        // the running is in progress, call the action again on the next cycle
+};
+
 typedef uint32_t CompID;
 static const CompID CompID_Invalid = CompID(-1);
 
@@ -31,7 +42,7 @@ static const CompID CompID_Invalid = CompID(-1);
 friend class vh::App;                                               \
 public:                                                             \
     static const char* GetNameStatic() { return #name; }            \
-    virtual const char* GetName() const { return #name; }                 \
+    virtual const char* GetName() const { return #name; }           \
     static vh::CompID GetIDStatic() { return name::_ID; }           \
     virtual vh::CompID GetID() const { return name::GetIDStatic(); }\
                                                                     \
@@ -88,24 +99,21 @@ public:
 protected:
     // this function called when component is in state INIT
     // call FinishInit inside this function to move to state RUN
-    virtual void TickInit(uint32_t delta);
+    virtual Ret TickInit(uint32_t delta);
 
     // this tick function called when component is in state RUN
-    virtual void TickRun(uint32_t delta) {};
+    virtual Ret TickRun(uint32_t delta) { return Ret::CONTINUE; };
 
     // this tick function called when component in in state CLOSE
     // call FinishClose to move to CLOSED state (and mark this component
     // ready to be destroyed)
-    virtual void TickClose(uint32_t delta);
+    virtual Ret TickClose(uint32_t delta);
 
     // called at the start of new frame
     virtual void StartFrame() {};
 
     // called at the end of the frame
     virtual void EndFrame() {};
-
-    void FinishInit();
-    void FinishClose();
 
 private:
     CompState mState;

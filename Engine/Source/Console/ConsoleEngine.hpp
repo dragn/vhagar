@@ -23,8 +23,8 @@ public:
     }
 
     /* Component interface */
-    virtual void TickInit(uint32_t delta);
-    virtual void TickRun(uint32_t delta);
+    virtual Ret TickInit(uint32_t delta) override;
+    virtual Ret TickRun(uint32_t delta) override;
 
     /* Register command */
     void Register(const std::string& name, CmdHandler handler);

@@ -46,9 +46,9 @@ public:
         , mTransition(-1)
     {}
 
-    virtual void TickInit(uint32_t delta);
-    virtual void TickRun(uint32_t delta);
-    virtual void TickClose(uint32_t delta);
+    virtual vh::Ret TickInit(uint32_t delta) override;
+    virtual vh::Ret TickRun(uint32_t delta) override;
+    virtual vh::Ret TickClose(uint32_t delta) override;
 
     void SetView(View* view, bool withFade = true);
     View* GetView() const { return mView; }
@@ -59,7 +59,7 @@ public:
     void Back(eTransitionMode mode = eTransitionMode::FADE); // go back to previous view in stack
     void BackToMain(eTransitionMode mode = eTransitionMode::FADE); // clear the view stack and go back to main view
 
-    virtual void HandleEvent(SDL_Event* event);
+    virtual void HandleEvent(SDL_Event* event) override;
 
     TTF_Font* GetFont() const { return mFont; }
     TTF_Font* GetHdr1Font() const { return mHdr1Font; }

@@ -7,13 +7,12 @@ namespace vh
 
 class Geometry : public Component
 {
-public:
-    static const char* VH_COMPONENT;
+    VH_COMPONENT(Geometry);
 
+public:
     Geometry();
 
-    virtual void TickInit(uint32_t delta);
-    virtual void TickClose(uint32_t delta);
+    virtual Ret TickInit(uint32_t delta) override;
 };
 
 } // namespace vh

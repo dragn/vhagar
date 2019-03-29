@@ -17,9 +17,9 @@ public:
     Debug();
 
     /* Component interface */
-    virtual void TickInit(uint32_t delta);
-    virtual void TickRun(uint32_t delta);
-    virtual void TickClose(uint32_t delta);
+    virtual Ret TickInit(uint32_t delta);
+    virtual Ret TickRun(uint32_t delta);
+    virtual Ret TickClose(uint32_t delta);
 
 private:
     DebugVisual mDebugVisual;

@@ -13,8 +13,8 @@ class Network : public Component
     VH_COMPONENT(Network);
 
 public:
-    virtual void TickInit(uint32_t delta);
-    virtual void TickClose(uint32_t delta);
+    virtual Ret TickInit(uint32_t delta) override;
+    virtual Ret TickClose(uint32_t delta) override;
 };
 
 } // namespace vh

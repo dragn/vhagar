@@ -72,7 +72,7 @@ bool vh::ResourceSystem::Load(const char* path, std::shared_ptr<Actor> actor)
     return false;
 }
 
-void vh::ResourceSystem::TickInit(uint32_t delta)
+vh::Ret vh::ResourceSystem::TickInit(uint32_t delta)
 {
     char cd[FILENAME_MAX];
     GetCurrentDir(cd, FILENAME_MAX);
@@ -97,14 +97,14 @@ void vh::ResourceSystem::TickInit(uint32_t delta)
         }
     }
 
-    FinishInit();
+    return Ret::SUCCESS;
 }
 
-void vh::ResourceSystem::TickClose(uint32_t delta)
+vh::Ret vh::ResourceSystem::TickClose(uint32_t delta)
 {
     mStorage.clear();
 
-    FinishClose();
+    return Ret::SUCCESS;
 }
 
 std::string ResourceSystem::GetFullPath(const char* relPath)

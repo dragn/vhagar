@@ -10,29 +10,34 @@ namespace vh
 
 VH_COMPONENT_IMPL(Console);
 
-void Console::TickInit(uint32_t delta)
+vh::Ret Console::TickInit(uint32_t delta)
 {
     App::CheckRequired<ConsoleEngine>();
     App::CheckRequired<Renderer>();
 
     mEngine = App::Get<ConsoleEngine>();
-    CHECK(mEngine);
+    if (!mEngine)
+    {
+        return Ret::CONTINUE;
+    }
 
     mRenderer = App::Get<Renderer>();
-    CHECK(mRenderer);
+    if (!mRenderer)
+    {
+        return Ret::CONTINUE;
+    }
 
     if (!mRenderer->IsRunning())
     {
         // Wait for renderer to init
-        return;
+        return Ret::CONTINUE;
     }
 
     mFont = TTF_OpenFont(VH_CONCAT(VH_XSTR(VH_ENGINE_ASSETS_DIR), "/Fonts/Roboto-Regular.ttf"), FONT_SIZE);
     if (!mFont)
     {
         LOG(WARNING) << "Could not open font. Console will not be started.";
-        Close();
-        return;
+        return Ret::FAILURE;
     }
 
     Uint32 rmask = 0x000000ff;
@@ -66,10 +71,10 @@ void Console::TickInit(uint32_t delta)
 
 //    mOverlay.Init();
 
-    FinishInit();
+    return Ret::SUCCESS;
 }
 
-void Console::TickClose(uint32_t delta)
+vh::Ret Console::TickClose(uint32_t delta)
 {
 //    mOverlay.Destroy();
 
@@ -91,7 +96,7 @@ void Console::TickClose(uint32_t delta)
         hist.close();
     }
 
-    FinishClose();
+    return Ret::SUCCESS;
 }
 
 void Console::_Redraw()
@@ -239,12 +244,14 @@ void Console::send(google::LogSeverity severity, const char* full_filename,
     PrintMessage(str);
 }
 
-void Console::TickRun(uint32_t delta)
+vh::Ret Console::TickRun(uint32_t delta)
 {
     if (mShowConsole)
     {
         mOverlay.Render();
     }
+
+    return Ret::CONTINUE;
 }
 
 } // namespace vh

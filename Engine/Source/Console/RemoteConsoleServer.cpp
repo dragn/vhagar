@@ -3,7 +3,7 @@
 
 VH_COMPONENT_IMPL(vh::RemoteConsoleServer);
 
-void vh::RemoteConsoleServer::TickInit(uint32_t delta)
+vh::Ret vh::RemoteConsoleServer::TickInit(uint32_t delta)
 {
     App::CheckRequired<ConsoleEngine>();
     App::CheckRequired<Network>();
@@ -13,19 +13,22 @@ void vh::RemoteConsoleServer::TickInit(uint32_t delta)
 
     LOG(INFO) << "Remote console server listening on " << mServer.GetAddr();
 
-    FinishInit();
+    return Ret::SUCCESS;
 }
 
-void vh::RemoteConsoleServer::TickRun(uint32_t delta)
+vh::Ret vh::RemoteConsoleServer::TickRun(uint32_t delta)
 {
     mServer.Poll();
+
+    return Ret::CONTINUE;
 }
 
-void vh::RemoteConsoleServer::TickClose(uint32_t delta)
+vh::Ret vh::RemoteConsoleServer::TickClose(uint32_t delta)
 {
     mSinks.clear();
     mServer.Close();
-    FinishClose();
+
+    return Ret::SUCCESS;
 }
 
 void vh::RemoteConsoleServer::OnConnect(net::TcpClient* clt)

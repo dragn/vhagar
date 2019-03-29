@@ -19,21 +19,20 @@ vh::Renderer2D::Renderer2D(const Renderer2DOptions& options)
     mOptions = options;
 }
 
-void vh::Renderer2D::TickInit(uint32_t delta)
+vh::Ret vh::Renderer2D::TickInit(uint32_t delta)
 {
     LOG(INFO) << "SDL Initialization";
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         LOG(FATAL) << SDL_GetError();
-        Close();
-        return;
+        return Ret::FAILURE;
     }
 
     int imgInitFlags = IMG_INIT_PNG;
     if ((IMG_Init(imgInitFlags) & imgInitFlags) != imgInitFlags)
     {
         LOG(FATAL) << "Failed to init SDL_Image: " << IMG_GetError();
-        Close();
+        return Ret::FAILURE;
     }
 
     Uint32 flags = 0;
@@ -52,8 +51,7 @@ void vh::Renderer2D::TickInit(uint32_t delta)
     if (mWindow == nullptr)
     {
         LOG(FATAL) << "SDL create windows error: " << SDL_GetError();
-        Close();
-        return;
+        return Ret::FAILURE;
     }
 
     mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED);
@@ -61,8 +59,7 @@ void vh::Renderer2D::TickInit(uint32_t delta)
     if (mRenderer == nullptr)
     {
         LOG(FATAL) << "SDL create renderer error: " << SDL_GetError();
-        Close();
-        return;
+        return Ret::FAILURE;
     }
     SDL_SetRenderDrawBlendMode(mRenderer, SDL_BLENDMODE_BLEND);
 
@@ -72,8 +69,7 @@ void vh::Renderer2D::TickInit(uint32_t delta)
     if (mFrameBuf == nullptr)
     {
         LOG(FATAL) << "Could not create frame buffer texture: " << SDL_GetError();
-        Close();
-        return;
+        return Ret::FAILURE;
     }
 
     mDstRect.x = 0;
@@ -81,17 +77,17 @@ void vh::Renderer2D::TickInit(uint32_t delta)
     mDstRect.w = mOptions.screenWidth * mOptions.scale;
     mDstRect.h = mOptions.screenHeight * mOptions.scale;
 
-    FinishInit();
+    return Ret::SUCCESS;
 }
 
-void vh::Renderer2D::TickClose(uint32_t delta)
+vh::Ret vh::Renderer2D::TickClose(uint32_t delta)
 {
     if (mRenderer) SDL_DestroyRenderer(mRenderer);
     if (mWindow) SDL_DestroyWindow(mWindow);
     IMG_Quit();
     SDL_Quit();
 
-    FinishClose();
+    return Ret::SUCCESS;
 }
 
 void vh::Renderer2D::StartFrame()

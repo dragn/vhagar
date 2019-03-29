@@ -134,15 +134,13 @@ World::World() : Component(TickFrequency::NORMAL)
 {
 }
 
-void World::TickInit(uint32_t delta)
+vh::Ret World::TickInit(uint32_t delta)
 {
-    App::CheckRequired<Renderer>();
-
     Physics* physics = App::Get<Physics>();
-    if (!physics->IsRunning()) return;
+    if (!physics->IsRunning()) return Ret::CONTINUE;
 
     mRenderer = App::Get<Renderer>();
-    if (!mRenderer->IsRunning()) return;
+    if (!mRenderer->IsRunning()) return Ret::CONTINUE;
 
     REGISTER_COMMAND(destroy_actor);
     REGISTER_COMMAND(pos_actor);
@@ -150,19 +148,21 @@ void World::TickInit(uint32_t delta)
     REGISTER_COMMAND(spawn_mesh_actor);
     REGISTER_COMMAND(rotate_actor);
 
-    FinishInit();
+    return Ret::SUCCESS;
 }
 
-void World::TickRun(uint32_t delta)
+vh::Ret World::TickRun(uint32_t delta)
 {
     // Tick each actor
     for (const std::unique_ptr<Actor>& actor : mActors)
     {
         actor->Tick(delta);
     }
+
+    return Ret::CONTINUE;
 }
 
-void World::TickClose(uint32_t delta)
+vh::Ret World::TickClose(uint32_t delta)
 {
     for (const std::unique_ptr<Actor>& actor : mActors)
     {
@@ -171,7 +171,7 @@ void World::TickClose(uint32_t delta)
     // Destroy all actors
     mActors.clear();
 
-    FinishClose();
+    return Ret::SUCCESS;
 }
 
 void World::StartFrame()

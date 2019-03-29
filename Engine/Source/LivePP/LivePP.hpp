@@ -11,8 +11,8 @@ namespace vh
         VH_COMPONENT(LivePP);
 
     public:
-        virtual void TickInit(uint32_t delta) override;
-        virtual void TickClose(uint32_t delta) override;
+        virtual Ret TickInit(uint32_t delta) override;
+        virtual Ret TickClose(uint32_t delta) override;
 
     private:
         HMODULE livePP;

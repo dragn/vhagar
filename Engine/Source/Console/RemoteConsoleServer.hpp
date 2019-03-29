@@ -32,14 +32,14 @@ public:
     {
     }
     
-    virtual void TickInit(uint32_t delta);
-    virtual void TickRun(uint32_t delta);
-    virtual void TickClose(uint32_t delta);
+    virtual Ret TickInit(uint32_t delta) override;
+    virtual Ret TickRun(uint32_t delta) override;
+    virtual Ret TickClose(uint32_t delta) override;
 
     /* TcpServer::EventListener interface */
-    virtual void OnConnect(net::TcpClient*);
-    virtual void OnDisconnect(net::TcpClient*);
-    virtual void OnData(net::TcpClient* client, char* data, size_t dataSz);
+    virtual void OnConnect(net::TcpClient*) override;
+    virtual void OnDisconnect(net::TcpClient*) override;
+    virtual void OnData(net::TcpClient* client, char* data, size_t dataSz) override;
 
 private:
     std::list<std::unique_ptr<ClientLogSink>> mSinks;

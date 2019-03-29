@@ -5,14 +5,13 @@
 
 VH_COMPONENT_IMPL(vh::Network);
 
-void vh::Network::TickInit(uint32_t delta)
+vh::Ret vh::Network::TickInit(uint32_t delta)
 {
-    net::Init();
-    FinishInit();
+    return net::Init() ? Ret::SUCCESS : Ret::FAILURE;
 }
 
-void vh::Network::TickClose(uint32_t delta)
+vh::Ret vh::Network::TickClose(uint32_t delta)
 {
     net::Close();
-    FinishClose();
+    return Ret::SUCCESS;
 }

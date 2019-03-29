@@ -11,14 +11,14 @@ namespace vh
 
 VH_COMPONENT_IMPL(ConsoleEngine)
 
-void ConsoleEngine::TickInit(uint32_t delta)
+vh::Ret ConsoleEngine::TickInit(uint32_t delta)
 {
     ConsoleCommands::RegisterAll(this);
 
-    FinishInit();
+    return Ret::SUCCESS;
 }
 
-void ConsoleEngine::TickRun(uint32_t delta)
+vh::Ret ConsoleEngine::TickRun(uint32_t delta)
 {
     if (!mCmdQueue.empty())
     {
@@ -31,6 +31,8 @@ void ConsoleEngine::TickRun(uint32_t delta)
             mCmdQueue.pop();
         }
     }
+
+    return Ret::CONTINUE;
 }
 
 void ConsoleEngine::Register(const std::string& name, CmdHandler handler)

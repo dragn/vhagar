@@ -26,7 +26,7 @@ vh::Debug::Debug()
 {
 }
 
-void vh::Debug::TickInit(uint32_t delta)
+vh::Ret vh::Debug::TickInit(uint32_t delta)
 {
     App::CheckRequired<Renderer>();
     App::CheckRequired<World>();
@@ -34,7 +34,10 @@ void vh::Debug::TickInit(uint32_t delta)
     mRenderer = App::Get<Renderer>();
 
     // wait for renderer to start
-    if (!mRenderer->IsRunning()) return;
+    if (!mRenderer || !mRenderer->IsRunning())
+    {
+        return Ret::CONTINUE;
+    }
 
     //mDebugVisual.Init();
 
@@ -44,18 +47,17 @@ void vh::Debug::TickInit(uint32_t delta)
     if (mFont == nullptr)
     {
         LOG(WARNING) << "Could not open font. Debug won't load.";
-        Close();
-        return;
+        return Ret::FAILURE;
     }
 
     REGISTER_COMMAND(toggle_labels);
 
     //mStatOverlay.Init();
 
-    FinishInit();
+    return Ret::SUCCESS;
 }
 
-void vh::Debug::TickRun(uint32_t delta)
+vh::Ret vh::Debug::TickRun(uint32_t delta)
 {
     /*
     mDebugVisual.GetLabels().clear();
@@ -71,9 +73,11 @@ void vh::Debug::TickRun(uint32_t delta)
     mStatOverlay.SetText(fps.c_str());
     mStatOverlay.Render();
     */
+
+    return Ret::CONTINUE;
 }
 
-void vh::Debug::TickClose(uint32_t delta)
+vh::Ret vh::Debug::TickClose(uint32_t delta)
 {
     Renderer* renderer = App::Get<Renderer>();
     CHECK(renderer);
@@ -81,5 +85,5 @@ void vh::Debug::TickClose(uint32_t delta)
     //mDebugVisual.Destroy();
     //mStatOverlay.Destroy();
 
-    FinishClose();
+    return Ret::SUCCESS;
 }

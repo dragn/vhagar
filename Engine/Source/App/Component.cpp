@@ -11,40 +11,66 @@ void Component::Tick()
 
     switch (mState)
     {
+        // -- State: Init
+        //
         case CompState::INIT:
-            TickInit(mTickDelta);
+            switch (TickInit(mTickDelta))
+            {
+            case Ret::SUCCESS:
+                LOG(INFO) << "Component " << GetName() << ": init finished";
+                mState = CompState::RUN;
+                break;
+            case Ret::FAILURE:
+                LOG(ERROR) << "Component " << GetName() << ": init failed - closing";
+                mState = CompState::CLOSE;
+                break;
+            }
             break;
+
+        // -- State: Run
+        //
         case CompState::RUN:
-            TickRun(mTickDelta);
+            switch (TickRun(mTickDelta))
+            {
+            case Ret::SUCCESS:
+                LOG(INFO) << "Component " << GetName() << ": tick finished - closing";
+                mState = CompState::CLOSE;
+                break;
+            case Ret::FAILURE:
+                LOG(ERROR) << "Component " << GetName() << ": tick failed - closing";
+                mState = CompState::CLOSE;
+                break;
+            }
             break;
+
+        // -- State: Close
+        //
         case CompState::CLOSE:
-            TickClose(mTickDelta);
+            switch (TickClose(mTickDelta))
+            {
+            case Ret::SUCCESS:
+                LOG(INFO) << "Component " << GetName() << ": close finished";
+                mState = CompState::CLOSED;
+                break;
+            case Ret::FAILURE:
+                LOG(ERROR) << "Component " << GetName() << ": close failed";
+                mState = CompState::CLOSED;
+                break;
+            }
             break;
         default:
             break;
     }
 }
 
-void Component::TickInit(uint32_t delta)
+vh::Ret Component::TickInit(uint32_t delta)
 {
-    FinishInit();
+    return Ret::SUCCESS;
 }
 
-void Component::TickClose(uint32_t delta)
+vh::Ret Component::TickClose(uint32_t delta)
 {
-    FinishClose();
-}
-
-void Component::FinishInit()
-{
-    LOG(INFO) << "Component " << GetName() << ": init finished";
-    mState = CompState::RUN;
-}
-
-void Component::FinishClose()
-{
-    LOG(INFO) << "Component " << GetName() << ": close finished";
-    mState = CompState::CLOSED;
+    return Ret::SUCCESS;
 }
 
 void Component::Close()
