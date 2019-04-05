@@ -1,7 +1,7 @@
 #include "Vhagar_PCH.hpp"
 #include "App/App.hpp"
 #include "Actor/Actor.hpp"
-#include "Renderer.hpp"
+#include "Renderer/Renderer.hpp"
 #include "PointLightBehavior.hpp"
 
 namespace vh

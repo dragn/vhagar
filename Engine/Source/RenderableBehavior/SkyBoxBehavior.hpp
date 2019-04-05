@@ -3,7 +3,7 @@
 #include "Actor/ActorBehavior.hpp"
 #include "Utils/GLUtils.hpp"
 #include "Renderer/Renderer.hpp"
-#include "Renderable/RenderableBehavior.hpp"
+#include "RenderableBehavior/RenderableBehavior.hpp"
 #include "Renderable/SkyBox.hpp"
 
 namespace vh

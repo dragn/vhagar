@@ -8,7 +8,7 @@
 
 #include "Resource/ResourceSystem.hpp"
 
-#include "Renderer/MeshBehavior.hpp"
+#include "RenderableBehavior/MeshBehavior.hpp"
 
 namespace vh
 {

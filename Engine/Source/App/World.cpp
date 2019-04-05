@@ -5,7 +5,7 @@
 #include "Renderer/Renderer.hpp"
 #include "Console/ConsoleCommands.hpp"
 #include "Resource/ResourceSystem.hpp"
-#include "Renderer/MeshBehavior.hpp"
+#include "RenderableBehavior/MeshBehavior.hpp"
 #include "Utils/ImportUtils.hpp"
 #include "App/PlayerController.hpp"
 #include "Actor/CameraBehavior.hpp"

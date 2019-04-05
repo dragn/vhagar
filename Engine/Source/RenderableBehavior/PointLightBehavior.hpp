@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Actor/ActorBehavior.hpp"
-#include "Renderable/RenderableBehavior.hpp"
+#include "RenderableBehavior/RenderableBehavior.hpp"
 #include "Renderable/Lights.hpp"
 
 namespace vh

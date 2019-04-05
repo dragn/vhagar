@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Renderable/Mesh.hpp"
-#include "Renderable/RenderableBehavior.hpp"
+#include "RenderableBehavior/RenderableBehavior.hpp"
 #include "Utils/Property.hpp"
 
 namespace vh
