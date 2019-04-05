@@ -58,7 +58,7 @@ struct RenderTask
         Release
     } action;
 
-    Renderable* renderable;
+    std::shared_ptr<Renderable> renderable;
 };
 
 /**

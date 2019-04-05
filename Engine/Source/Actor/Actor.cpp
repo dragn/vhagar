@@ -176,9 +176,8 @@ void Actor::Tick(uint32_t delta)
     }
 }
 
-Actor::Actor(World* world, ActorID id, V3 pos, Rot rot, V3 scale)
-    : mOwner(world)
-    , mId(id)
+Actor::Actor(ActorID id, V3 pos, Rot rot, V3 scale)
+    : mId(id)
     , mPlaying(false)
     , mPos(pos)
     , mScale(scale)
@@ -188,7 +187,6 @@ Actor::Actor(World* world, ActorID id, V3 pos, Rot rot, V3 scale)
 {
     mQuat = Quat(V3(mPitch, mYaw, 0));
     _UpdateTransform();
-    mRootBehavior.Attach(this, nullptr);
 }
 
 } // namespace vh

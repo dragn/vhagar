@@ -385,7 +385,7 @@ void Renderer::AddLoadTask(std::shared_ptr<Renderable> renderable)
 
     RenderTask task;
     task.action = RenderTask::Action::Load;
-    task.renderable = renderable.get();
+    task.renderable = renderable;
     mTaskQueue.push(task);
 }
 
@@ -395,7 +395,7 @@ void Renderer::AddReleaseTask(std::shared_ptr<Renderable> renderable)
 
     RenderTask task;
     task.action = RenderTask::Action::Release;
-    task.renderable = renderable.get();
+    task.renderable = renderable;
     mTaskQueue.push(task);
 }
 

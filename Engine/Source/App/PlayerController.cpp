@@ -11,10 +11,9 @@ namespace vh
 
 VH_COMPONENT_IMPL(PlayerController);
 
-PlayerController::PlayerController() :
-    Component(TickFrequency::NORMAL),
-    mActor(nullptr),
-    mCameraTurnSpeed(0.001f)
+PlayerController::PlayerController()
+    : Component(TickFrequency::NORMAL)
+    , mCameraTurnSpeed(0.001f)
 {
 }
 
@@ -34,14 +33,14 @@ vh::Ret PlayerController::TickInit(uint32_t delta)
 
 vh::Ret PlayerController::TickRun(uint32_t delta)
 {
-    if (mActor == nullptr) return Ret::CONTINUE;
+    if (mActor.expired()) return Ret::CONTINUE;
 
     // do nothing if console is open
     if (mConsole->IsShown()) return Ret::CONTINUE;
 
     float sec = delta / 1000.0f;
 
-    mActor->ForEachBehaviorOfType<ControlBehavior>([this, sec] (ControlBehavior* behavior)
+    mActor.lock()->ForEachBehaviorOfType<ControlBehavior>([this, sec] (ControlBehavior* behavior)
     {
         if (mPressed['w']) behavior->MoveForward(1.0f);
         if (mPressed['s']) behavior->MoveForward(-1.0f);
@@ -52,7 +51,7 @@ vh::Ret PlayerController::TickRun(uint32_t delta)
     return Ret::CONTINUE;
 }
 
-void PlayerController::Control(Actor *actor)
+void PlayerController::Control(std::weak_ptr<Actor> actor)
 {
     mActor = actor;
     for (bool &b : mPressed) b = false;
@@ -60,8 +59,7 @@ void PlayerController::Control(Actor *actor)
 
 void PlayerController::HandleEvent(SDL_Event *event)
 {
-
-    if (mActor == nullptr) return;
+    if (mActor.expired()) return;
 
     switch (event->type)
     {
@@ -103,9 +101,9 @@ void PlayerController::_HandleKey(uint32_t type, SDL_KeyboardEvent *event)
 
 void PlayerController::_HandleMouse(int32_t xrel, int32_t yrel)
 {
-    if (mActor == nullptr) return;
+    if (mActor.expired()) return;
 
-    mActor->ForEachBehaviorOfType<ControlBehavior>([xrel, yrel] (ControlBehavior* behavior)
+    mActor.lock()->ForEachBehaviorOfType<ControlBehavior>([xrel, yrel] (ControlBehavior* behavior)
     {
         behavior->TurnRight(static_cast<float>(xrel));
         behavior->TurnUp(static_cast<float>(-yrel));

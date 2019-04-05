@@ -25,14 +25,15 @@ DEFINE_COMMAND(destroy_actor)
     }
 
     std::string name = params[1];
-    Actor* actor = App::Get<World>()->GetActorByName<Actor>(name);
-    if (actor == nullptr)
+    std::weak_ptr<Actor> wActor = App::Get<World>()->GetActorByName(name);
+
+    if (wActor.expired())
     {
         LOG(INFO) << "Actor " << name << " not found";
         return;
     }
 
-    App::Get<World>()->DestroyActor(actor);
+    App::Get<World>()->DestroyActor(wActor.lock()->GetID());
     LOG(INFO) << "Actor " << name << " destroyed";
 }
 
@@ -45,8 +46,8 @@ DEFINE_COMMAND(pos_actor)
         return;
     }
 
-    Actor* actor = App::Get<World>()->GetActorByName<Actor>(params[1]);
-    if (actor == nullptr)
+    std::weak_ptr<Actor> wActor = App::Get<World>()->GetActorByName(params[1]);
+    if (wActor.expired())
     {
         LOG(INFO) << "Actor " << params[1] << " not found";
         return;
@@ -56,7 +57,7 @@ DEFINE_COMMAND(pos_actor)
     float y = std::stof(params[3]);
     float z = std::stof(params[4]);
 
-    actor->SetPos(V3(x, y, z));
+    wActor.lock()->SetPos(V3(x, y, z));
 }
 
 DEFINE_COMMAND(move_actor)
@@ -68,8 +69,8 @@ DEFINE_COMMAND(move_actor)
         return;
     }
 
-    Actor* actor = App::Get<World>()->GetActorByName<Actor>(params[1]);
-    if (actor == nullptr)
+    std::weak_ptr<Actor> wActor = App::Get<World>()->GetActorByName(params[1]);
+    if (wActor.expired())
     {
         LOG(INFO) << "Actor " << params[1] << " not found";
         return;
@@ -79,7 +80,7 @@ DEFINE_COMMAND(move_actor)
     float y = std::stof(params[3]);
     float z = std::stof(params[4]);
 
-    actor->AddPos(V3(x, y, z));
+    wActor.lock()->AddPos(V3(x, y, z));
 }
 
 DEFINE_COMMAND(rotate_actor)
@@ -90,8 +91,8 @@ DEFINE_COMMAND(rotate_actor)
         LOG(INFO) << "Usage: " << params[0] << " <name> <yaw> <pitch> <roll>";
     }
 
-    Actor* actor = App::Get<World>()->GetActorByName<Actor>(params[1]);
-    if (actor == nullptr)
+    std::weak_ptr<Actor> wActor = App::Get<World>()->GetActorByName(params[1]);
+    if (wActor.expired())
     {
         LOG(INFO) << "Actor " << params[1] << " not found";
         return;
@@ -101,7 +102,7 @@ DEFINE_COMMAND(rotate_actor)
     float y = std::stof(params[3]);
     float z = std::stof(params[4]);
 
-    actor->AddRot(vh::Rot(x, y, z));
+    wActor.lock()->AddRot(vh::Rot(x, y, z));
 }
 
 DEFINE_COMMAND(spawn_mesh_actor)
@@ -118,15 +119,19 @@ DEFINE_COMMAND(spawn_mesh_actor)
         return;
     }
 
-    Actor* actor = world->CreateActor("Mesh");
-    MeshBehavior* mb = actor->AddBehavior<MeshBehavior>(params[1].c_str());
+    std::weak_ptr<Actor> wActor = world->CreateActor("Mesh");
+
+    CHECK(!wActor.expired());
+
+    std::shared_ptr<Actor> sActor = wActor.lock();
+    MeshBehavior* mb = sActor->AddBehavior<MeshBehavior>(params[1].c_str());
     if (mb->IsValid())
     {
-        actor->StartPlay();
+        sActor->StartPlay();
     }
     else
     {
-        world->DestroyActor(actor);
+        world->DestroyActor(sActor->GetID());
     }
 }
 
@@ -137,10 +142,10 @@ World::World() : Component(TickFrequency::NORMAL)
 vh::Ret World::TickInit(uint32_t delta)
 {
     Physics* physics = App::Get<Physics>();
-    if (!physics->IsRunning()) return Ret::CONTINUE;
+    if (!physics || !physics->IsRunning()) return Ret::CONTINUE;
 
     mRenderer = App::Get<Renderer>();
-    if (!mRenderer->IsRunning()) return Ret::CONTINUE;
+    if (!mRenderer || !mRenderer->IsRunning()) return Ret::CONTINUE;
 
     REGISTER_COMMAND(destroy_actor);
     REGISTER_COMMAND(pos_actor);
@@ -154,7 +159,7 @@ vh::Ret World::TickInit(uint32_t delta)
 vh::Ret World::TickRun(uint32_t delta)
 {
     // Tick each actor
-    for (const std::unique_ptr<Actor>& actor : mActors)
+    for (const std::shared_ptr<Actor>& actor : mActors)
     {
         actor->Tick(delta);
     }
@@ -164,7 +169,9 @@ vh::Ret World::TickRun(uint32_t delta)
 
 vh::Ret World::TickClose(uint32_t delta)
 {
-    for (const std::unique_ptr<Actor>& actor : mActors)
+    CHECK(mActors.empty()) << "the world is not empty";
+
+    for (const std::shared_ptr<Actor>& actor : mActors)
     {
         actor->EndPlay();
     }
@@ -186,9 +193,9 @@ void World::StartFrame()
             buffer->header.timestep = 16;
 
             PlayerController* controller = App::Get<PlayerController>();
-            if (controller && controller->GetControlledActor())
+            if (controller && !controller->GetControlledActor().expired())
             {
-                CameraBehavior* camera = controller->GetControlledActor()->GetBehaviorOfType<CameraBehavior>();
+                CameraBehavior* camera = controller->GetControlledActor().lock()->GetBehaviorOfType<CameraBehavior>();
                 if (camera)
                 {
                     buffer->header.view = camera->GetView();
@@ -206,9 +213,9 @@ void World::EndFrame()
         if (buffer)
         {
             PlayerController* controller = App::Get<PlayerController>();
-            if (controller && controller->GetControlledActor())
+            if (controller && !controller->GetControlledActor().expired())
             {
-                CameraBehavior* camera = controller->GetControlledActor()->GetBehaviorOfType<CameraBehavior>();
+                CameraBehavior* camera = controller->GetControlledActor().lock()->GetBehaviorOfType<CameraBehavior>();
                 if (camera)
                 {
                     buffer->header.view = camera->GetView();
@@ -219,19 +226,33 @@ void World::EndFrame()
     }
 }
 
-vh::Actor* World::CreateActor(const std::string& name)
+std::weak_ptr<vh::Actor> World::CreateActor(const std::string& name)
 {
     std::string tmp(name);
     tmp.append("_");
     tmp.append(std::to_string(mActors.size()));
 
-    ActorID id = mActorID++;
-    mActors.emplace_back(this, id);
-    Actor& actor = mActors.back();
+    std::shared_ptr<Actor> actor = std::make_shared<Actor>(GenerateActorID());
 
-    actor.SetName(tmp);
+    // TODO fix root behavior initialization
+    actor->mRootBehavior.Attach(actor, nullptr);
 
-    return actor;
+    mActors.push_back(actor);
+
+    actor->SetName(tmp);
+
+    return std::weak_ptr<Actor>(actor);
+}
+
+void World::ClearWorld()
+{
+    for (std::shared_ptr<Actor>& actor : mActors)
+    {
+        CHECK(actor.unique()) << "attempt to delete locked actor";
+        actor->EndPlay();
+    }
+
+    mActors.clear();
 }
 
 } // namespace vh

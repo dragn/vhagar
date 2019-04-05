@@ -12,12 +12,16 @@ namespace vh
      * Actor is something that could be placed in Scene,
      * something with position and rotation, but not necessarily drawable or movable.
      */
-    class Actor
+    class Actor : public std::enable_shared_from_this<Actor>
     {
         friend class World;
 
     public:
+        Actor(ActorID id, V3 pos = V3(), Rot rot = Rot(), V3 scale = V3(1.0f, 1.0f, 1.0f));
         virtual ~Actor();
+
+        // -- id
+        ActorID GetID() const { return mId; }
 
         // -- transform
         const M4& GetTransform() const { return mTransform; }
@@ -113,7 +117,6 @@ namespace vh
     private:
         ActorID mId = ActorID_Invalid;
 
-        World* mOwner;
         bool mPlaying;
 
         V3 mPos;
@@ -131,9 +134,6 @@ namespace vh
 
         // Actor ticks are called from World
         void Tick(uint32_t delta);
-
-        // Construction of Actor is only allowed in World
-        Actor(World* world, ActorID id, V3 pos = V3(), Rot rot = Rot(), V3 scale = V3(1.0f, 1.0f, 1.0f));
     };
 
 } // namespace vh

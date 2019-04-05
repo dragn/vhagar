@@ -78,15 +78,15 @@ DEFINE_COMMAND(save_mesh)
         return;
     }
 
-    Actor* actor = world->GetActorByName<Actor>(params[1]);
-    if (actor == nullptr)
+    std::weak_ptr<Actor> actor = world->GetActorByName(params[1]);
+    if (actor.expired())
     {
         LOG(INFO) << "Could not find actor " << params[1];
         return;
     }
 
     const char* filename = params[2].c_str();
-    actor->ForEachBehaviorOfType<MeshBehavior>([rs, filename] (MeshBehavior* behavior)
+    actor.lock()->ForEachBehaviorOfType<MeshBehavior>([rs, filename] (MeshBehavior* behavior)
     {
         if (behavior->Get())
         {

@@ -13,7 +13,7 @@ V3 ActorBehavior::GetPos()
     }
     else
     {
-        return mOwner->GetPos(); // root component position
+        return LockOwner()->GetPos(); // root component position
     }
 }
 
@@ -25,7 +25,7 @@ glm::quat ActorBehavior::GetRot()
     }
     else
     {
-        return mOwner->GetQuat(); // root component rotation
+        return LockOwner()->GetQuat(); // root component rotation
     }
 }
 
@@ -37,7 +37,7 @@ vh::V3 ActorBehavior::GetScale()
     }
     else
     {
-        return mOwner->GetScale(); // root component scale
+        return LockOwner()->GetScale(); // root component scale
     }
 }
 

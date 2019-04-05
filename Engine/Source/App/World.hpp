@@ -28,45 +28,52 @@ public:
 
     void DestroyActor(ActorID id)
     {
-        mActors.erase(
-            std::remove_if(mActors.begin(), mActors.end(), [id](const Actor& actor)
+        decltype(mActors)::iterator it = std::find_if(mActors.begin(), mActors.end(), [id](const std::shared_ptr<Actor>& actor)
+        {
+            return actor->mId == id;
+        });
+        if (it != mActors.end())
+        {
+            std::shared_ptr<Actor>& pActor = *it;
+            CHECK(pActor.unique()) << "Attempt to delete locked actor";
+            pActor->EndPlay();
+            if (pActor != mActors.back())
             {
-                return actor.mId == id;
-            }),
-            mActors.end()
-        );
+                std::swap(*it, mActors.back());
+            }
+            mActors.pop_back();
+        }
     }
 
-    template<typename T> void DestroyActor(T*& actor)
-    {
-        DestroyActor(actor->mId);
-    }
-
-    const std::vector<Actor>& GetActors()
+    // TODO Switch to visitor pattern
+    const std::vector<std::shared_ptr<Actor>>& GetActors() const
     {
         return mActors;
     }
 
-    template<typename T>
-    T* GetActorByName(const std::string& name)
+    std::weak_ptr<Actor> GetActorByName(const std::string& name) const
     {
-        for (const std::unique_ptr<Actor>& actor : mActors)
+        for (const std::shared_ptr<Actor>& actor : mActors)
         {
             if (actor->GetName() == name)
             {
-                return reinterpret_cast<T*>(actor.get());
+                return std::weak_ptr<Actor>(actor);
             }
         }
-        return nullptr;
+        return std::weak_ptr<Actor>();
     }
 
-    Actor* CreateActor(const std::string& name);
+    std::weak_ptr<Actor> CreateActor(const std::string& name);
+
+    void ClearWorld();
 
 private:
-    std::vector<Actor> mActors;
+    std::vector<std::shared_ptr<Actor>> mActors;
     ActorFactory mActorFactory;
     Renderer* mRenderer;
-    size_t mActorID = 0;
+
+    ActorID GenerateActorID() { return mActorID++; }
+    ActorID mActorID = 0;
 
     UNCOPYABLE(World);
 };

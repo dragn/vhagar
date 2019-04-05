@@ -22,8 +22,8 @@ void PhysicsBehavior::StartPlay()
     }
 
     PxTransform pose;
-    pose.p = ToPhysX(mOwner->GetPos());
-    pose.q = ToPhysX(mOwner->GetQuat());
+    pose.p = ToPhysX(LockOwner()->GetPos());
+    pose.q = ToPhysX(LockOwner()->GetQuat());
     if (mIsStatic)
     {
         mActor = mPhysics->mPhysics->createRigidStatic(pose);
@@ -41,7 +41,7 @@ void PhysicsBehavior::StartPlay()
         return;
     }
 
-    mActor->userData = (void*) mOwner;
+    mActor->userData = (void*) LockOwner().get();
 
     mMaterial = mPhysics->mPhysics->createMaterial(1.0, 1.0, 0.5);
 

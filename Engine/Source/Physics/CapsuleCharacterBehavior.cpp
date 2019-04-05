@@ -22,7 +22,7 @@ void vh::CapsuleCharacterBehavior::StartPlay()
     desc.radius = mRadius;
     desc.height = 2 * mHeight;
     desc.reportCallback = this;
-    desc.userData = (void*) mOwner;
+    desc.userData = (void*) LockOwner().get();
     mMaterial = mPhysics->mPhysics->createMaterial(0.5f, 0.5f, 0.0);
     desc.material = mMaterial;
     mController = mPhysics->mControllerManager->createController(desc);
@@ -32,7 +32,7 @@ void vh::CapsuleCharacterBehavior::StartPlay()
     }
 
     // -- get custom camera behavior
-    mCamera = mOwner->GetBehaviorOfType<CameraBehavior>();
+    mCamera = LockOwner()->GetBehaviorOfType<CameraBehavior>();
 }
 
 void vh::CapsuleCharacterBehavior::EndPlay()
@@ -58,13 +58,15 @@ void vh::CapsuleCharacterBehavior::Tick(uint32_t delta)
         return;
     }
 
+    CHECK(LockOwner());
+
     // -- update actor's position
     if (mController)
     {
         PxVec3 disp = PxVec3(0.0f, -1.0f, 0.0f); // apply gravity
         mController->move(disp, 0.001f, 1.0f / 60.f, mFilters);
 
-        mOwner->SetPos(FromPhysX(mController->getPosition()));
+        LockOwner()->SetPos(FromPhysX(mController->getPosition()));
     }
 }
 
@@ -72,7 +74,7 @@ void vh::CapsuleCharacterBehavior::MoveForward(float value)
 {
     if (mController)
     {
-        PxVec3 disp = ToPhysX(mOwner->GetForward() * mWalkSpeed * value);
+        PxVec3 disp = ToPhysX(LockOwner()->GetForward() * mWalkSpeed * value);
         mController->move(disp, 0.001f, 1.0f / 60.f, mFilters);
     }
 }
@@ -81,7 +83,7 @@ void vh::CapsuleCharacterBehavior::MoveRight(float value)
 {
     if (mController)
     {
-        PxVec3 disp = ToPhysX(mOwner->GetRight() * mWalkSpeed * value);
+        PxVec3 disp = ToPhysX(LockOwner()->GetRight() * mWalkSpeed * value);
         mController->move(disp, 0.001f, 1.0f / 60.f, mFilters);
     }
 }
@@ -89,14 +91,14 @@ void vh::CapsuleCharacterBehavior::MoveRight(float value)
 void vh::CapsuleCharacterBehavior::TurnRight(float value)
 {
     // update character's yaw
-    mOwner->AddYaw(- mTurnSpeed * value);
+    LockOwner()->AddYaw(- mTurnSpeed * value);
 }
 
 void vh::CapsuleCharacterBehavior::TurnUp(float value)
 {
     if (mCamera)
     {
-        mCameraPitch = Math::Clamp<float>(mCameraPitch + value * mTurnSpeed, - (M_PI_2 - 0.02f), M_PI_2 - 0.02f);
+        mCameraPitch = Math::Clamp<float>(mCameraPitch + value * mTurnSpeed, - (float(M_PI_2) - 0.02f), float(M_PI_2) - 0.02f);
         mCamera->SetRelRot(glm::rotate(glm::quat(), mCameraPitch, V3(1.0f, 0.0f, 0.0f)));
     }
 }

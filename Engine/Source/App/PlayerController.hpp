@@ -19,7 +19,7 @@ public:
     PlayerController();
 
     // Take possession of the object
-    void Control(Actor *actor);
+    void Control(std::weak_ptr<Actor> actor);
 
     // Release previously possessed object
     void Release();
@@ -29,14 +29,14 @@ public:
     virtual Ret TickInit(uint32_t delta) override;
     virtual Ret TickRun(uint32_t delta) override;
 
-    Actor* GetControlledActor()
+    std::weak_ptr<Actor> GetControlledActor()
     {
         return mActor;
     }
 
 private:
     Console* mConsole;
-    Actor* mActor;
+    std::weak_ptr<Actor> mActor;
 
     float mCameraTurnSpeed;
 

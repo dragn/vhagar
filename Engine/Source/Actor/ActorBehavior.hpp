@@ -10,6 +10,7 @@ class Actor;
 class ActorBehavior
 {
     friend class Actor;
+    friend class World;
 
     VH_PROPERTY_RW(glm::vec3, RelPos);
     VH_PROPERTY_RW(glm::quat, RelRot);
@@ -17,8 +18,7 @@ class ActorBehavior
 
 public:
     ActorBehavior()
-        : mOwner(nullptr)
-        , mParent(nullptr)
+        : mParent(nullptr)
         , mRelPos(0.0f)
         , mRelRot()
         , mRelScale(1.0f)
@@ -33,7 +33,7 @@ public:
 
     virtual void Tick(uint32_t delta) {}
 
-    const Actor* GetOwner() const { return mOwner; }
+    std::weak_ptr<Actor> GetOwner() const { return mOwner; }
 
     V3 GetPos();
     glm::quat GetRot();
@@ -64,11 +64,18 @@ public:
     }
 
 protected:
-    ActorBehavior* mParent;
-    Actor* mOwner;
-    std::list<std::unique_ptr<ActorBehavior>> mChildren;
+    std::shared_ptr<Actor> LockOwner() const
+    {
+        CHECK(!mOwner.expired());
+        return mOwner.lock();
+    }
 
-    void Attach(Actor* owner, ActorBehavior* parent)
+private:
+    ActorBehavior* mParent;
+    std::list<std::unique_ptr<ActorBehavior>> mChildren;
+    std::weak_ptr<Actor> mOwner;
+
+    void Attach(std::weak_ptr<Actor> owner, ActorBehavior* parent)
     {
         mOwner = owner;
         mParent = parent;
