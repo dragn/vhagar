@@ -36,7 +36,7 @@ class Console : public Component, public google::LogSink
 
 public:
     Console()
-        : Component(TickFrequency::NORMAL)
+        : Component(TickFrequency::NEVER)
         , mShowConsole(false)
         , mFont(nullptr)
         , mMessages(NUM_LINES)
@@ -52,7 +52,6 @@ public:
 
     /* Component interface */
     virtual Ret TickInit(uint32_t delta) override;
-    virtual Ret TickRun(uint32_t delta) override;
     virtual Ret TickClose(uint32_t delta) override;
 
     virtual void HandleEvent(SDL_Event* event);

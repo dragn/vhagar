@@ -244,14 +244,4 @@ void Console::send(google::LogSeverity severity, const char* full_filename,
     PrintMessage(str);
 }
 
-vh::Ret Console::TickRun(uint32_t delta)
-{
-    if (mShowConsole)
-    {
-        mOverlay.Render();
-    }
-
-    return Ret::CONTINUE;
-}
-
 } // namespace vh

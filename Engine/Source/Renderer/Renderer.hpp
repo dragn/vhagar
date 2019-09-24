@@ -134,6 +134,7 @@ private:
     void DoRender(const RenderBuffer* last, const RenderBuffer* cur, float factor);
     void DoRenderMesh(glm::mat4 view, glm::mat4 projection, const Mesh::Payload* payload, const std::vector<PointLight::Payload>& lights);
     void DoRenderSkyBox(glm::mat4 view, glm::mat4 projection, const SkyBox::Payload& payload);
+    void DoRenderOverlay(const Overlay::Payload& payload);
 
     std::mutex mTaskQueueLock;
     std::queue<RenderTask> mTaskQueue;

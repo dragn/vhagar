@@ -14,7 +14,7 @@ const GLuint indexDataSize = 36;
 
 void vh::SkyBoxBehavior::SetupPayload(typename SkyBox::Payload* payload)
 {
-    payload->progId = Get()->mShaderId;
-    payload->info = Get()->mGLInfo;
+    payload->progId = mResource->mShaderId;
+    payload->info = mResource->mGLInfo;
 }
 

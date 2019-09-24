@@ -1,24 +1,28 @@
 #pragma once
 
 #include "Renderable.hpp"
+#include "Renderer/RenderBuffer.hpp"
 
 namespace vh
 {
 
 class Overlay : public Renderable
 {
+    friend class OverlayBehavior;
 
 public:
+    struct Payload
+    {
+        GLuint progId;
+        V4 bounds;
+        GLuint texId;
+        GLuint vertexBuffer;
+    };
+
     ~Overlay();
 
     void SetPos(uint32_t x, uint32_t y);
-
     void SetTexture(SDL_Surface *surf);
-
-    void Init();
-    void Destroy();
-
-    virtual void Render();
 
 protected:
     virtual bool DoLoad() override;
@@ -28,14 +32,16 @@ private:
     uint32_t mPosX = 0;
     uint32_t mPosY = 0;
 
-    GLuint vertexBuffer = 0;
+    GLuint mVertexBuffer = 0;
     GLuint mShaderId = 0;
 
-    GLfloat vertices[18];
+    GLfloat mVertices[18];
     V4 mBounds;
-    GLuint texId = 0;
+    GLuint mTexId = 0;
 
     void _UpdateVertices(uint32_t w, uint32_t h);
 };
+
+static_assert(sizeof(Overlay::Payload) <= RenderBufferConstants::PAYLOAD_SIZE, "invalid payload size");
 
 } // namespace vh

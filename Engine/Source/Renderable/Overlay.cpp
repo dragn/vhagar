@@ -5,34 +5,17 @@ using namespace vh;
 void Overlay::SetTexture(SDL_Surface *s)
 {
     // TODO optimize performance (use PBO? or FBO?)
-    glDeleteTextures(1, &texId);
+    glDeleteTextures(1, &mTexId);
 
-    texId = Utils::BufferTexture2D(s);
+    mTexId = Utils::BufferTexture2D(s);
 
     _UpdateVertices(s->w, s->h);
-}
-
-void Overlay::Init()
-{
-    mShaderId = Utils::GetShaderProgram("OSD");
-    if (mShaderId < 0)
-    {
-        LOG(INFO) << "Unable to load program OSD";
-        return;
-    }
-}
-
-void Overlay::Destroy()
-{
-    glDeleteTextures(1, &texId);
-    texId = 0;
-    glDeleteBuffers(1, &vertexBuffer);
-    vertexBuffer = 0;
 }
 
 void Overlay::_UpdateVertices(uint32_t w, uint32_t h)
 {
     Renderer* render = App::Get<Renderer>();
+    if (!render) return;
 
     CHECK(render);
 
@@ -50,38 +33,18 @@ void Overlay::_UpdateVertices(uint32_t w, uint32_t h)
         glX,                glY - h / height,
         glX,                glY
     };
-    std::copy(v, v + 12, vertices);
+    std::copy(v, v + 12, mVertices);
     mBounds = V4(glX, glY, w / width, h / height);
 
     // -- update vertex buffer
-    glDeleteBuffers(1, &vertexBuffer);
-    vertexBuffer = Utils::BufferData(12, vertices);
-}
-
-void Overlay::Render()
-{
-    glDisable(GL_CULL_FACE);
-    glUseProgram(mShaderId);
-
-    Utils::PutUniformVec4(mShaderId, "uBounds", mBounds);
-
-    if (texId > 0) glBindTexture(GL_TEXTURE_2D, texId);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    glDisableVertexAttribArray(0);
-
-    glEnable(GL_CULL_FACE);
+    glDeleteBuffers(1, &mVertexBuffer);
+    mVertexBuffer = Utils::BufferData(12, mVertices);
 }
 
 vh::Overlay::~Overlay()
 {
-    Destroy();
+    CHECK(mTexId == 0);
+    CHECK(mVertexBuffer == 0);
 }
 
 void vh::Overlay::SetPos(uint32_t x, uint32_t y)
@@ -92,10 +55,18 @@ void vh::Overlay::SetPos(uint32_t x, uint32_t y)
 
 bool vh::Overlay::DoLoad()
 {
+    mShaderId = Utils::GetShaderProgram("OSD");
+    CHECK(mShaderId >= 0) << "Unable to load program OSD";
+
     return true;
 }
 
 bool vh::Overlay::DoUnload()
 {
+    glDeleteTextures(1, &mTexId);
+    mTexId = 0;
+    glDeleteBuffers(1, &mVertexBuffer);
+    mVertexBuffer = 0;
+
     return true;
 }

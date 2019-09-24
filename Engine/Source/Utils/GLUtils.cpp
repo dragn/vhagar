@@ -238,25 +238,25 @@ GLuint LoadCubeMapTexture(const CubeMap &skyBox)
     return texId;
 }
 
-void PutUniformMat4(GLuint programID, const std::string &name, M4 &data)
+void PutUniformMat4(GLuint programID, const std::string &name, const M4 &data)
 {
     GLuint id = glGetUniformLocation(programID, name.c_str());
     glUniformMatrix4fv(id, 1, GL_FALSE, &data[0][0]);
 }
 
-void PutUniformVec3(GLuint programID, const std::string &name, V3 &data)
+void PutUniformVec3(GLuint programID, const std::string &name, const V3 &data)
 {
     GLuint id = glGetUniformLocation(programID, name.c_str());
     glUniform3fv(id, 1, &data[0]);
 }
 
-void PutUniformVec4(GLuint programID, const std::string &name, V4 &data)
+void PutUniformVec4(GLuint programID, const std::string& name, const V4& data)
 {
     GLuint id = glGetUniformLocation(programID, name.c_str());
     glUniform4fv(id, 1, &data[0]);
 }
 
-void PutUniformFloat(GLuint programID, const std::string &name, float data)
+void PutUniformFloat(GLuint programID, const std::string& name, float data)
 {
     GLuint id = glGetUniformLocation(programID, name.c_str());
     glUniform1f(id, data);

@@ -2,6 +2,7 @@
 
 #include "Renderable/Overlay.hpp"
 #include "SDL_ttf.h"
+#include "Actor/Actor.hpp"
 
 namespace vh
 {
@@ -17,14 +18,15 @@ public:
     void Destroy();
 
     void SetText(const char* text);
-    void Render();
 
 private:
     uint32_t mPosX;
     uint32_t mPosY;
     TTF_Font* mFont;
     SDL_Surface* mSurf;
-    Overlay mOverlay;
+
+    std::weak_ptr<Actor> mActor;
+    std::shared_ptr<Overlay> mOverlay;
 };
 
 } // namespace vh

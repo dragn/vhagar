@@ -2,6 +2,8 @@
 #include "TextOverlay.hpp"
 #include "App/App.hpp"
 #include "Renderer/Renderer.hpp"
+#include "App/World.hpp"
+#include "RenderableBehavior/OverlayBehavior.hpp"
 
 vh::TextOverlay::TextOverlay(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
     : mPosX(x)
@@ -28,20 +30,26 @@ void vh::TextOverlay::SetSize(uint32_t width, uint32_t height)
 
 void vh::TextOverlay::Create()
 {
-    mOverlay.Init();
+    mActor = App::Get<World>()->CreateActor("TextOverlay");
+    mOverlay = mActor.lock()->AddBehavior<OverlayBehavior>()->Get();
+
+    mActor.lock()->StartPlay();
+
     mFont = TTF_OpenFont(VH_CONCAT(VH_XSTR(VH_ENGINE_ASSETS_DIR), "/Fonts/Roboto-Regular.ttf"), 12);
     if (!mFont)
     {
         LOG(ERROR) << "Could not open font";
     }
-    SetText("");
+    // SetText("");
 }
 
 void vh::TextOverlay::Destroy()
 {
-    mOverlay.Destroy();
-    SDL_FreeSurface(mSurf);
-    mSurf = nullptr;
+    if (mSurf != nullptr)
+    {
+        SDL_FreeSurface(mSurf);
+        mSurf = nullptr;
+    }
 }
 
 void vh::TextOverlay::SetText(const char* text)
@@ -57,10 +65,8 @@ void vh::TextOverlay::SetText(const char* text)
         SDL_FreeSurface(temp);
     }
 
-    mOverlay.SetTexture(mSurf);
-}
-
-void vh::TextOverlay::Render()
-{
-    mOverlay.Render();
+    if (mOverlay)
+    {
+        mOverlay->SetTexture(mSurf);
+    }
 }

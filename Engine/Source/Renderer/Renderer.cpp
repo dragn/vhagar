@@ -98,11 +98,15 @@ vh::Ret Renderer::TickInit(uint32_t delta)
     mRenderThread = std::thread(&Renderer::RenderThreadStatic, this);
     mRenderThreadStarted = true;
 
+    //mStatOverlay.Create();
+
     return Ret::CONTINUE;
 }
 
 vh::Ret Renderer::TickClose(uint32_t delta)
 {
+    //mStatOverlay.Destroy();
+
     mRenderThreadExit = true;
     mRenderThread.join();
 
@@ -224,6 +228,18 @@ void Renderer::DoRender(const RenderBuffer* last, const RenderBuffer* cur, float
                 }
             }
             DoRenderMesh(view, projection, &lastPayload, lights);
+        }
+    }
+
+    // fourth pass - render overlays
+    for (size_t idx = 0; idx < last->header.size; ++idx)
+    {
+        const RenderBlock& block = last->blocks[idx];
+
+        if (block.type == eRenderBlockType::Overlay && (block.flags & eRenderBlockFlags::Active))
+        {
+            Overlay::Payload payload = *reinterpret_cast<const Overlay::Payload*>(cur->blocks[idx].payload);
+            DoRenderOverlay(payload);
         }
     }
 }
@@ -354,15 +370,13 @@ void Renderer::RenderThread()
         int error = glGetError();
         if (error) reportGLError(error);
 
-        mStatOverlay.Render();
-
         mFrameCount++;
 
         if (SDL_GetTicks() - mLastFPSReport > 1000)
         {
             std::string txt("FPS: ");
             txt.append(std::to_string(1000.0f * (float) mFrameCount / (SDL_GetTicks() - mLastFPSReport)));
-            mStatOverlay.SetText(txt.c_str());
+            //mStatOverlay.SetText(txt.c_str());
             mLastFPSReport = SDL_GetTicks();
             mFrameCount = 0;
         }
@@ -375,7 +389,6 @@ void Renderer::RenderThread()
         HandleTasks();
     }
 
-    mStatOverlay.Destroy();
     SDL_GL_DeleteContext(mGLContext);
 }
 
@@ -485,8 +498,6 @@ void Renderer::DoInit()
     mWireProgramID = Utils::GetShaderProgram("Wireframe");  // wireframe shader
 
     mBufferHandler.Create();
-
-    mStatOverlay.Create();
 }
 
 void Renderer::DoRenderSkyBox(glm::mat4 _view, glm::mat4 projection, const SkyBox::Payload& payload)
@@ -511,6 +522,29 @@ void Renderer::DoRenderSkyBox(glm::mat4 _view, glm::mat4 projection, const SkyBo
 
     glDisableVertexAttribArray(0);
     glDepthMask(GL_TRUE);
+    glEnable(GL_CULL_FACE);
+}
+
+void Renderer::DoRenderOverlay(const Overlay::Payload& payload)
+{
+    if (payload.texId == 0) return;
+
+    glDisable(GL_CULL_FACE);
+    glUseProgram(payload.progId);
+
+    Utils::PutUniformVec4(payload.progId, "uBounds", payload.bounds);
+
+    if (payload.texId > 0) glBindTexture(GL_TEXTURE_2D, payload.texId);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glBindBuffer(GL_ARRAY_BUFFER, payload.vertexBuffer);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDisableVertexAttribArray(0);
+
     glEnable(GL_CULL_FACE);
 }
 
