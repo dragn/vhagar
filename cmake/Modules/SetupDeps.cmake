@@ -6,7 +6,7 @@ set(ENV{GLM_ROOT_DIR} "${3RDPARTY}/glm")
 set(ENV{SDL2DIR} "${3RDPARTY}/SDL2-2.0.5")
 set(ENV{SDL2TTFDIR} "${3RDPARTY}/SDL2_ttf-2.0.14")
 set(ENV{SDL2IMAGEDIR} "${3RDPARTY}/SDL2_image-2.0.1")
-set(glog_DIR "${3RDPARTY}/glog/Debug/lib/cmake/glog")
+set(glog_DIR "${3RDPARTY}/glog/lib/cmake/glog")
 set(gflags_DIR "${3RDPARTY}/gflags/CMake")
 set(lpp_DIR "${3RDPARTY}/LivePP")
 
@@ -56,7 +56,7 @@ endif()
 
 if (glog_FOUND)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWITH_GLOG")
-  list(APPEND DEP_LIBRARIES glog::glog)
+  list(APPEND DEP_LIBRARIES $<$<CONFIG:Debug>:glog::glogd> $<$<CONFIG:Release>:glog::glog>)
 endif (glog_FOUND)
 
 if (PhysX_FOUND)
