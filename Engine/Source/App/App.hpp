@@ -46,32 +46,15 @@ namespace vh
 
         void Run();
 
-        template<typename COMP_TYPE>
-        COMP_TYPE* AddComponent()
+        template<typename COMP_TYPE, typename ... PARAMS>
+        COMP_TYPE* AddComponent(PARAMS ... param)
         {
             if (COMP_TYPE::GetIDStatic() != CompID_Invalid)
             {
                 LOG(FATAL) << "Component is already registered";
                 return nullptr;
             }
-            mComponents[mNumComp] = std::make_unique<COMP_TYPE>();
-            COMP_TYPE::_ID = CompID(mNumComp);
-            mNumComp++;
-
-            LOG(INFO) << "Registered component " << COMP_TYPE::GetNameStatic() << " with ID " << COMP_TYPE::_ID;
-
-            return Get<COMP_TYPE>();
-        }
-
-        template<typename COMP_TYPE, typename PARAM_TYPE>
-        COMP_TYPE* AddComponent(const PARAM_TYPE& param)
-        {
-            if (COMP_TYPE::GetIDStatic() != CompID_Invalid)
-            {
-                LOG(FATAL) << "Component is already registered";
-                return nullptr;
-            }
-            mComponents[mNumComp] = std::make_unique<COMP_TYPE>(param);
+            mComponents[mNumComp] = std::make_unique<COMP_TYPE>(param ...);
             COMP_TYPE::_ID = CompID(mNumComp);
             mNumComp++;
 
