@@ -1,6 +1,6 @@
 project (Vhagar)
 
-file(GLOB Vhagar_SRC Source/*/*.cpp Source/*/*.glsl Source/*/*.hpp Include/*/*.hpp Source/*.hpp Source/*.cpp)
+file(GLOB_RECURSE Vhagar_SRC Source/*.cpp Source/*.glsl Source/*.hpp Include/*.hpp)
 
 source_groups("Source Files" Source *.cpp *.hpp *.glsl)
 source_groups("Header Files" Include Vhagar.hpp)

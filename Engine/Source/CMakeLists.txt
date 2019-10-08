@@ -2,7 +2,7 @@
 
 set(shaders_src "Shaders/Shaders.hpp")
 
-file(GLOB ShaderFiles "Shaders/*.glsl")
+file(GLOB ShaderFiles "Shaders/GL/*.glsl")
 
 file(WRITE ${shaders_src} "#pragma once
 #include<unordered_map>
