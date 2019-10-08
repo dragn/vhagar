@@ -1,7 +1,7 @@
 #pragma once
 
 #include "PxPhysicsAPI.h"
-#include "Math/Math.hpp"
+#include "Math.hpp"
 
 namespace vh
 {

@@ -1,8 +1,19 @@
 #pragma once
 
-#include "Vhagar_PCH.hpp"
+#include <GL/glew.h>
+
+#ifdef APPLE
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
+
+#include "Math.hpp"
 
 #include <string>
+
+#define HAVE_M_PI
+#include "SDL.h"
 
 namespace vh {
 

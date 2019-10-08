@@ -1,5 +1,7 @@
 #include "Vhagar_PCH.hpp"
+
 #include "Thread.hpp"
+#include "Logging.hpp"
 
 #include <cstdint>
 

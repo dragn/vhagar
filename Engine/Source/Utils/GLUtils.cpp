@@ -6,6 +6,7 @@
 #include <string>
 #include <exception>
 #include "SDL_image.h"
+#include "Logging.hpp"
 
 namespace vh
 {
