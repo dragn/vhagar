@@ -3,13 +3,13 @@
 
 namespace vh
 {
-    static vh::CmdFlag sLivePPEnabled("-livepp");
+    // static vh::CmdFlag sLivePPEnabled("-livepp");
 
     VH_MODULE_IMPL(LivePP);
 
     vh::Ret LivePP::TickInit(uint32_t delta)
     {
-        if (GetApp()->GetCmdFlag(sLivePPEnabled))
+        if (GetApp()->GetCmdFlag("-livepp"))
         {
 #ifdef VH_DEPS_FOLDER
             livePP = lpp::lppLoadAndRegister(VH_XWSTR(VH_DEPS_FOLDER) L"/LivePP", "Quickstart");
@@ -29,7 +29,7 @@ namespace vh
 
     Ret LivePP::TickClose(uint32_t delta)
     {
-        if (GetApp()->GetCmdFlag(sLivePPEnabled))
+        if (GetApp()->GetCmdFlag("-livepp"))
         {
             lpp::lppDisableAllCallingModulesSync(livePP);
         }

@@ -43,55 +43,6 @@ vh::Ret MWorld::TickClose(uint32_t delta)
     return Ret::SUCCESS;
 }
 
-void MWorld::StartFrame()
-{
-    /* TODO figure out where this code should be
-    if (IsRunning() && mRenderer->IsRunning())
-    {
-        RenderBuffer* buffer = mRenderer->GetBufferHandler().GetNextBuffer();
-        if (buffer)
-        {
-            buffer->header.size = 0;
-            buffer->header.time = SDL_GetTicks();
-            buffer->header.timestep = 16;
-
-            PlayerController* controller = App::Get<PlayerController>();
-            if (controller && !controller->GetControlledActor().expired())
-            {
-                CameraBehavior* camera = controller->GetControlledActor().lock()->GetBehaviorOfType<CameraBehavior>();
-                if (camera)
-                {
-                    buffer->header.view = camera->GetView();
-                }
-            }
-        }
-    }
-    */
-}
-
-void MWorld::EndFrame()
-{
-    /* TODO figure out where this code should be
-    if (IsRunning() && mRenderer->IsRunning())
-    {
-        RenderBuffer* buffer = mRenderer->GetBufferHandler().GetNextBuffer();
-        if (buffer)
-        {
-            PlayerController* controller = App::Get<PlayerController>();
-            if (controller && !controller->GetControlledActor().expired())
-            {
-                CameraBehavior* camera = controller->GetControlledActor().lock()->GetBehaviorOfType<CameraBehavior>();
-                if (camera)
-                {
-                    buffer->header.view = camera->GetView();
-                }
-            }
-        }
-        mRenderer->GetBufferHandler().FlipBuffers();
-    }
-    */
-}
-
 std::weak_ptr<vh::Actor> MWorld::CreateActor(const std::string& name)
 {
     std::string tmp(name);

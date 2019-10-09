@@ -66,7 +66,7 @@ class Renderer : public vh::Module {
 public:
 
     Renderer(const RendererOptions& opts)
-        : Module(TickFrequency::NEVER)
+        : Module(TickFrequency::NORMAL)
         , mOptions(opts)
         , mStatOverlay(10, 10, 100, 20)
     {}
@@ -74,6 +74,9 @@ public:
 
     virtual Ret TickInit(uint32_t delta) override;
     virtual Ret TickClose(uint32_t delta) override;
+
+    virtual void StartFrame() override;
+    virtual void EndFrame() override;
 
     const RendererOptions& GetOptions() const
     {

@@ -1,7 +1,7 @@
 project (Vhagar)
 
 file(GLOB_RECURSE VhagarModules_SRC Source/Modules/*.cpp Source/Modules/*.hpp)
-file(GLOB_RECURSE VhagarCore_SRC Source/Core/*.cpp Source/Modules/*.hpp)
+file(GLOB_RECURSE VhagarCore_SRC Source/Core/*.cpp Source/Core/*.hpp)
 file(GLOB_RECURSE VhagarUtils_SRC Source/Utils/*.cpp Source/Utils/*.hpp)
 
 source_groups("Source Files" Source *.cpp *.hpp *.glsl)

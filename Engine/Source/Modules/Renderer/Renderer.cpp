@@ -2,6 +2,8 @@
 #include "Renderer.hpp"
 
 #include "Modules/Console/ConsoleCommands.hpp"
+#include "Modules/PlayerController/PlayerController.hpp"
+#include "Modules/World/CameraBehavior.hpp"
 
 namespace vh
 {
@@ -114,6 +116,51 @@ vh::Ret Renderer::TickClose(uint32_t delta)
     SDL_Quit();
 
     return Ret::SUCCESS;
+}
+
+void Renderer::StartFrame()
+{
+    if (IsRunning())
+    {
+        RenderBuffer* buffer = mBufferHandler.GetNextBuffer();
+        if (buffer)
+        {
+            buffer->header.size = 0;
+            buffer->header.time = SDL_GetTicks();
+            buffer->header.timestep = 16;
+
+            PlayerController* controller = App::Get<PlayerController>();
+            if (controller && !controller->GetControlledActor().expired())
+            {
+                CameraBehavior* camera = controller->GetControlledActor().lock()->GetBehaviorOfType<CameraBehavior>();
+                if (camera)
+                {
+                    buffer->header.view = camera->GetView();
+                }
+            }
+        }
+    }
+}
+
+void Renderer::EndFrame()
+{
+    if (IsRunning())
+    {
+        RenderBuffer* buffer = mBufferHandler.GetNextBuffer();
+        if (buffer)
+        {
+            PlayerController* controller = App::Get<PlayerController>();
+            if (controller && !controller->GetControlledActor().expired())
+            {
+                CameraBehavior* camera = controller->GetControlledActor().lock()->GetBehaviorOfType<CameraBehavior>();
+                if (camera)
+                {
+                    buffer->header.view = camera->GetView();
+                }
+            }
+        }
+        mBufferHandler.FlipBuffers();
+    }
 }
 
 void Renderer::DoRender(const RenderBuffer* last, const RenderBuffer* cur, float factor)

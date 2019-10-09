@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../Source/Utils/GLUtils.hpp"
-#include "../Source/Core/Actor/Actor.hpp"
+#include "Modules/standard.hpp"
 #include "../Source/Modules/World/ControlBehavior.hpp"
 #include "../Source/Modules/World/FreeFloatingBehavior.hpp"
 #include "../Source/Modules/Renderer/Renderable/Renderable.hpp"
@@ -13,8 +12,6 @@
 #include "../Source/Modules/Renderer/RenderableBehavior/MeshBehavior.hpp"
 #include "../Source/Modules/Renderer/RenderableBehavior/SkyBoxBehavior.hpp"
 #include "../Source/Modules/PlayerController/PlayerController.hpp"
-#include "../Source/Core/Modules/MWorld.hpp"
-#include "../Source/Core/App/App.hpp"
 #include "../Source/Modules/Console/ConsoleEngine.hpp"
 #include "../Source/Modules/Console/RemoteConsoleServer.hpp"
 #include "../Source/Modules/Network/Network.hpp"
@@ -24,6 +21,3 @@
 #include "../Source/Modules/Physics/PhysicsBehavior.hpp"
 #include "../Source/Modules/Physics/CapsuleCharacterBehavior.hpp"
 #include "../Source/Modules/LivePP/LivePP.hpp"
-#include "../Source/Utils/Math.hpp"
-#include "../Source/Utils/PhysXUtils.hpp"
-#include "../Source/Utils/Defs.hpp"

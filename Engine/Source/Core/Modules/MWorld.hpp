@@ -26,9 +26,6 @@ namespace vh
         virtual Ret TickRun(uint32_t delta) override;
         virtual Ret TickClose(uint32_t delta) override;
 
-        virtual void StartFrame() override;
-        virtual void EndFrame() override;
-
         void DestroyActor(ActorID id)
         {
             decltype(mActors)::iterator it = std::find_if(mActors.begin(), mActors.end(), [id](const std::shared_ptr<Actor>& actor)
