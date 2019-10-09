@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Actor/ActorBehavior.hpp"
+#include "Modules/standard.hpp"
 
 namespace vh
 {

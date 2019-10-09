@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Core/Actor/ActorBehavior.hpp"
-#include "Utils/GLUtils.hpp"
 #include "Modules/Renderer/Renderer.hpp"
 #include "Modules/Renderer/RenderableBehavior/RenderableBehavior.hpp"
 #include "Modules/Renderer/Renderable/SkyBox.hpp"
+#include "Modules/standard.hpp"
 
 namespace vh
 {

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Renderable.hpp"
-#include "Utils/GLUtils.hpp"
+#include "Modules/Renderer/Renderable/Renderable.hpp"
 #include "Modules/Renderer/RenderBuffer.hpp"
 #include "Modules/ResourceSystem/Resource.hpp"
+#include "Modules/standard.hpp"
 
 namespace vh
 {

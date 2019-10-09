@@ -1,17 +1,11 @@
-#include "Vhagar_PCH.hpp"
+#include "Utils/VhUtils_PCH.hpp"
 
 #include "Thread.hpp"
 #include "Logging.hpp"
 
-#include <cstdint>
-
 #if defined(CMAKE_PLATFORM_WINDOWS)
-#include <process.h>
-#include <windows.h>
-#include <TlHelp32.h>
 #include "Thread_WINDOWS.hpp"
 #elif defined(CMAKE_PLATFORM_UNIX)
-#include "pthread.h"
 #include "Thread_UNIX.hpp"
 #else
 #error Undefined operation system

@@ -1,7 +1,6 @@
-#include "Vhagar_PCH.hpp"
+#include "Core/VhCore_PCH.hpp"
 
 #include "Actor.hpp"
-#include <glm/gtx/rotate_vector.hpp>
 
 namespace vh {
 

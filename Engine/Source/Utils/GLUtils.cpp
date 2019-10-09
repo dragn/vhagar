@@ -1,11 +1,8 @@
-#include "Vhagar_PCH.hpp"
+#include "Utils/VhUtils_PCH.hpp"
 
 #include "GLUtils.hpp"
 
 #include "Shaders/Shaders.hpp"
-#include <string>
-#include <exception>
-#include "SDL_image.h"
 #include "Logging.hpp"
 
 namespace vh

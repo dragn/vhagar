@@ -1,6 +1,5 @@
-#include "Vhagar_PCH.hpp"
-
-#include "Modules/Renderer2D/Renderer2D.hpp"
+#include "Modules/VhModules_PCH.hpp"
+#include "Renderer2D.hpp"
 
 VH_MODULE_IMPL(vh::Renderer2D);
 

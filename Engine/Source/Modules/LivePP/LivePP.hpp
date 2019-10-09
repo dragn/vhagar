@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Core/App/App.hpp"
-#include <windows.h>
+#include "Modules/standard.hpp"
 #include "LPP_API.h"
 
 namespace vh

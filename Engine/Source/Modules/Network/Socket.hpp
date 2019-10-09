@@ -1,7 +1,8 @@
 #pragma once
 
-#include <ostream>
-#include <cstdint>
+// TODO: Move low-level network to utils
+
+#include "Modules/standard.hpp"
 
 namespace net
 {

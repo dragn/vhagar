@@ -1,9 +1,6 @@
-#include "Vhagar_PCH.hpp"
+#include "Core/VhCore_PCH.hpp"
 
 #include "App.hpp"
-#include <csignal>
-#include "Utils/Logging.hpp"
-#include "Utils/CritSection.hpp"
 
 namespace vh
 {

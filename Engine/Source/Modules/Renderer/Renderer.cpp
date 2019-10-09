@@ -1,11 +1,7 @@
+#include "Modules/VhModules_PCH.hpp"
 #include "Renderer.hpp"
 
-#include "Vhagar_PCH.hpp"
-#include "Core/App/App.hpp"
 #include "Modules/Console/ConsoleCommands.hpp"
-#include "Utils/GLUtils.hpp"
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/string_cast.hpp>
 
 namespace vh
 {

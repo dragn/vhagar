@@ -1,10 +1,6 @@
 #pragma once
 
-#include "Utils/Logging.hpp"
-#include "Utils/Defs.hpp"
-#include <cstdint>
-#include <string>
-#include "SDL.h"
+#include "Core/standard.hpp"
 
 namespace vh
 {

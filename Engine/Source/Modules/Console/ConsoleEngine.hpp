@@ -1,11 +1,6 @@
 #pragma once
 
-#include <map>
-#include <queue>
-#include <list>
-
-#include "Core/App/App.hpp"
-#include "Utils/CritSection.hpp"
+#include "Modules/standard.hpp"
 
 namespace vh
 {

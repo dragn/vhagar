@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Utils/Math.hpp"
-#include "ControlBehavior.hpp"
+#include "Modules/standard.hpp"
+#include "Modules/World/ControlBehavior.hpp"
 
 namespace vh
 {

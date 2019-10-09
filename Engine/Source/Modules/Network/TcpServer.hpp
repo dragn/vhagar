@@ -1,10 +1,13 @@
 #pragma once
 
-#include "Utils/Logging.hpp"
-#include "Socket.hpp"
+#include "Modules/Network/Socket.hpp"
+#include "Modules/standard.hpp"
 
-#include <list>
-#include "Poll.hpp"
+#if CMAKE_PLATFORM_WINDOWS
+#define poll WSAPoll
+#define pollfd WSAPOLLFD
+typedef ULONG nfds_t;
+#endif
 
 static const size_t MAX_FDS = 16;
 static const size_t BUFFER_SIZE = 512;

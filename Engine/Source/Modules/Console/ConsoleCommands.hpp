@@ -1,8 +1,6 @@
 #pragma once
 
-#include <vector>
-#include <string>
-
+#include "Modules/standard.hpp"
 #include "Modules/Console/ConsoleEngine.hpp"
 
 namespace vh

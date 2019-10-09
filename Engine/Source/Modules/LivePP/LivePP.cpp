@@ -1,6 +1,5 @@
-#include "Vhagar_PCH.hpp"
-
-#include "Modules/LivePP/LivePP.hpp"
+#include "Modules/VhModules_PCH.hpp"
+#include "LivePP.hpp"
 
 namespace vh
 {

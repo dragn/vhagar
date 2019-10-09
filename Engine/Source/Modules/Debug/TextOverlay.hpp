@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Modules/Renderer/Renderable/Overlay.hpp"
-#include "SDL_ttf.h"
-#include "Core/Actor/Actor.hpp"
+#include "Modules/standard.hpp"
 
 namespace vh
 {

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "RenderBuffer.hpp"
-#include "Renderable.hpp"
+#include "Modules/Renderer/RenderBuffer.hpp"
+#include "Modules/Renderer/Renderable/Renderable.hpp"
 
 namespace vh {
 

@@ -1,4 +1,7 @@
-#include "Vhagar.hpp"
+#include "Modules/VhModules_PCH.hpp"
+#include "Overlay.hpp"
+
+#include "Modules/Renderer/Renderer.hpp"
 
 using namespace vh;
 

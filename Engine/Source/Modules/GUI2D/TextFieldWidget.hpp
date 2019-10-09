@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Widget.hpp"
-#include <string>
-#include "Utils/Delegate.hpp"
+#include "Modules/GUI2D/Widget.hpp"
+#include "Modules/standard.hpp"
 
 namespace gui
 {

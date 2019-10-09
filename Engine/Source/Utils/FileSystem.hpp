@@ -1,8 +1,6 @@
 #pragma once
 
-#ifdef CMAKE_PLATFORM_WINDOWS
-#include <windows.h>
-#endif // CMAKE_PLATFORM_WINDOWS
+#include "Utils/standard.hpp"
 
 namespace vh
 {

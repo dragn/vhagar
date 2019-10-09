@@ -1,9 +1,6 @@
 #pragma once
 
-#include "Utils/Logging.hpp"
-#include "Utils/Defs.hpp"
-#include "Utils/Math.hpp"
-#include "Utils/Property.hpp"
+#include "Core/standard.hpp"
 
 namespace vh
 {

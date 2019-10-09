@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Core/Actor/ActorBehavior.hpp"
-
 namespace vh
 {
 

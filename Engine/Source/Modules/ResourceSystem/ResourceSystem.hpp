@@ -1,9 +1,7 @@
 #pragma once
 
-#include "Core/App/App.hpp"
-#include "Core/Actor/Actor.hpp"
-#include "Resource.hpp"
-#include <fstream>
+#include "Modules/ResourceSystem/Resource.hpp"
+#include "Modules/standard.hpp"
 
 namespace vh
 {

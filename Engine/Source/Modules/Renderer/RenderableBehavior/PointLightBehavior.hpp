@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Core/Actor/ActorBehavior.hpp"
 #include "Modules/Renderer/RenderableBehavior/RenderableBehavior.hpp"
 #include "Modules/Renderer/Renderable/Lights.hpp"
+#include "Modules/standard.hpp"
 
 namespace vh
 {

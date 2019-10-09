@@ -1,10 +1,8 @@
-#include "Network/Socket.hpp"
-#include "Network/Poll.hpp"
+#include "Modules/Network/Socket.hpp"
+#include "Modules/Network/Poll.hpp"
 
 #include "Utils/Thread.hpp"
-
-#include <iostream>
-#include <string>
+#include "Utils/standard.hpp"
 
 const char* PROMPT = "> ";
 

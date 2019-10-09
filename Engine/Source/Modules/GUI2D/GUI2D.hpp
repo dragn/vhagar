@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Core/App/Module.hpp"
-#include "View.hpp"
-#include "SDL_ttf.h"
+#include "Modules/GUI2D/View.hpp"
 #include "Modules/Renderer2D/Renderer2D.hpp"
+#include "Modules/standard.hpp"
 
 namespace gui
 {

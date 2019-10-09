@@ -1,12 +1,9 @@
 #pragma once
 
-#include <algorithm>
 #include "Core/Actor/Actor.hpp"
 #include "Core/Actor/ActorFactory.hpp"
-#include "Utils/Defs.hpp"
 #include "Core/App/Module.hpp"
-#include "glog/logging.h"
-#include <list>
+#include "Core/standard.hpp"
 
 namespace vh
 {

@@ -1,6 +1,5 @@
-#include "Vhagar_PCH.hpp"
+#include "Modules/VhModules_PCH.hpp"
 #include "SkyBoxBehavior.hpp"
-#include "Core/App/App.hpp"
 
 using namespace vh;
 

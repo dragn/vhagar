@@ -1,7 +1,7 @@
 project (Vhagar)
 
 file(GLOB_RECURSE VhagarModules_SRC Source/Modules/*.cpp Source/Modules/*.hpp)
-file(GLOB_RECURSE VhagarCore_SRC Source/Core/*.cpp Source/Core/*.hpp)
+file(GLOB_RECURSE VhagarCore_SRC Source/Core/*.cpp Source/Modules/*.hpp)
 file(GLOB_RECURSE VhagarUtils_SRC Source/Utils/*.cpp Source/Utils/*.hpp)
 
 source_groups("Source Files" Source *.cpp *.hpp *.glsl)
@@ -31,5 +31,9 @@ if(MSVC)
   target_link_libraries(VhCore Ws2_32)
   target_link_libraries(VhModules Ws2_32)
 endif(MSVC)
+
+target_setup_pch(VhUtils VhagarUtils_SRC Utils/VhUtils_PCH.hpp Source/Utils/VhUtils_PCH.cpp ${PROJECT_SOURCE_DIR}/Source/Utils/VhUtils_PCH.hpp)
+target_setup_pch(VhCore VhagarCore_SRC Core/VhCore_PCH.hpp Source/Core/VhCore_PCH.cpp ${PROJECT_SOURCE_DIR}/Source/Core/VhCore_PCH.hpp)
+target_setup_pch(VhModules VhagarModules_SRC Modules/VhModules_PCH.hpp Source/Modules/VhModules_PCH.cpp ${PROJECT_SOURCE_DIR}/Source/Modules/VhModules_PCH.hpp)
 
 add_subdirectory (Source)

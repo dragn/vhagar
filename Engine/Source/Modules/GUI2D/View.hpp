@@ -1,8 +1,8 @@
 #pragma once
 
+#include "Modules/GUI2D/Widget.hpp"
 #include "Modules/Renderer2D/Color.hpp"
-#include "Widget.hpp"
-#include <list>
+#include "Modules/standard.hpp"
 
 namespace gui
 {

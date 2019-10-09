@@ -1,7 +1,7 @@
 #pragma once
 
-#include "RenderBuffer.hpp"
-#include <mutex>
+#include "Modules/Renderer/RenderBuffer.hpp"
+#include "Modules/standard.hpp"
 
 namespace vh
 {

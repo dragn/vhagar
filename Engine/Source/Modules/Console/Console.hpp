@@ -1,17 +1,10 @@
 #pragma once
 
-#include <map>
-#include <queue>
-#include <list>
-
-#include "Core/App/App.hpp"
-#include "ConsoleCommands.hpp"
-#include "Utils/CritSection.hpp"
+#include "Modules/Console/ConsoleEngine.hpp"
+#include "Modules/Console/ConsoleCommands.hpp"
 #include "Modules/Renderer/Renderable/Overlay.hpp"
 #include "Modules/Renderer/Renderer.hpp"
-#include "ConsoleEngine.hpp"
-
-#include "SDL_ttf.h"
+#include "Modules/standard.hpp"
 
 namespace vh
 {

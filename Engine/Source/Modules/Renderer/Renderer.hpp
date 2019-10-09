@@ -1,16 +1,12 @@
 #pragma once
 
-#include <queue>
-#include <thread>
-#include <vector>
-#include <forward_list>
-#include "Renderable/Renderable.hpp"
-#include "Core/App/Module.hpp"
-#include "RenderBuffersHandler.hpp"
-#include "Renderable/Mesh.hpp"
-#include "Renderable/SkyBox.hpp"
-#include "Renderable/Lights.hpp"
 #include "Modules/Debug/TextOverlay.hpp"
+#include "Modules/Renderer/Renderable/Renderable.hpp"
+#include "Modules/Renderer/RenderBuffersHandler.hpp"
+#include "Modules/Renderer/Renderable/Mesh.hpp"
+#include "Modules/Renderer/Renderable/SkyBox.hpp"
+#include "Modules/Renderer/Renderable/Lights.hpp"
+#include "Modules/standard.hpp"
 
 namespace vh {
 

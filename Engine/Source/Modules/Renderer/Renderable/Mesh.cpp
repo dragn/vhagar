@@ -1,13 +1,9 @@
-#include "Vhagar_PCH.hpp"
+#include "Modules/VhModules_PCH.hpp"
+#include "Mesh.hpp"
 
 #include "Modules/Renderer/Renderer.hpp"
-#include "Core/App/App.hpp"
-#include "Utils/GLUtils.hpp"
-#include "Mesh.hpp"
 #include "Modules/ResourceSystem/ReadWrite.hpp"
 #include "Modules/Renderer/ImportUtils.hpp"
-
-#include <algorithm>
 
 using namespace vh;
 

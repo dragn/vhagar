@@ -1,8 +1,7 @@
-#include "Vhagar_PCH.hpp"
-
+#include "Modules/VhModules_PCH.hpp"
 #include "ImageWidget.hpp"
+
 #include "Modules/Renderer2D/Renderer2D.hpp"
-#include "Core/App/App.hpp"
 
 using namespace vh;
 using namespace gui;

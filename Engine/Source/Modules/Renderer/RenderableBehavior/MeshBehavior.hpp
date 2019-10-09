@@ -2,7 +2,7 @@
 
 #include "Modules/Renderer/Renderable/Mesh.hpp"
 #include "Modules/Renderer/RenderableBehavior/RenderableBehavior.hpp"
-#include "Utils/Property.hpp"
+#include "Modules/standard.hpp"
 
 namespace vh
 {

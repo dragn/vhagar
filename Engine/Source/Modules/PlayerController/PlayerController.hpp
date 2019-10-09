@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Core/Actor/Actor.hpp"
-#include "Core/App/Module.hpp"
-#include "Modules/World/ControlBehavior.hpp"
 #include "Modules/Console/Console.hpp"
+#include "Modules/standard.hpp"
+#include "Modules/World/ControlBehavior.hpp"
 
 namespace vh {
 

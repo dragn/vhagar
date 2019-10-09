@@ -1,18 +1,7 @@
-#include "Vhagar_PCH.hpp"
-
-#include <algorithm>
+#include "Modules/VhModules_PCH.hpp"
 #include "ResourceSystem.hpp"
-#include "Modules/Renderer/ImportUtils.hpp"
-#include "Utils/FileSystem.hpp"
 
-#include <cstdio>
-#ifdef CMAKE_PLATFORM_WINDOWS
-#include <direct.h>
-#define GetCurrentDir _getcwd
-#else
-#include <unistd.h>
-#define GetCurrentDir getcwd
-#endif
+#include "Modules/Renderer/ImportUtils.hpp"
 
 using namespace vh;
 

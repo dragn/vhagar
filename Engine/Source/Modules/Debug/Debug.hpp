@@ -1,10 +1,8 @@
 #pragma once
 
-#include "Core/App/App.hpp"
-#include "Core/Modules/MWorld.hpp"
-#include "DebugVisual.hpp"
-#include <SDL_ttf.h>
-#include "TextOverlay.hpp"
+#include "Modules/Debug/DebugVisual.hpp"
+#include "Modules/Debug/TextOverlay.hpp"
+#include "Modules/standard.hpp"
 
 namespace vh
 {

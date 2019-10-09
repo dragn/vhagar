@@ -1,13 +1,8 @@
-#include "Vhagar_PCH.hpp"
-
-#include "Core/Modules/MWorld.hpp"
-#include "Core/App/App.hpp"
-
+#include "Modules/VhModules_PCH.hpp"
 #include "ConsoleCommands.hpp"
-#include "Console.hpp"
 
+#include "Modules/Console/Console.hpp"
 #include "Modules/ResourceSystem/ResourceSystem.hpp"
-
 #include "Modules/Renderer/RenderableBehavior/MeshBehavior.hpp"
 
 namespace vh

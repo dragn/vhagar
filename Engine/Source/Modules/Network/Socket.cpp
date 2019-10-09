@@ -1,25 +1,12 @@
+#include "Modules/VhModules_PCH.hpp"
 #include "Socket.hpp"
 
-#include <cstring>
-
 #if CMAKE_PLATFORM_WINDOWS
-#include <winsock2.h>
-#include <ws2tcpip.h>
 #define close closesocket
 #define LAST_ERROR WSAGetLastError()
-
 #elif CMAKE_PLATFORM_UNIX
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <fcntl.h>
 #define LAST_ERROR errno
 #define SOCKET_ERROR -1
-
-#else
-#error Unsupported system. Check that CMAKE_PLATFORM is defined.
 #endif
 
 static const char* GetStringForError(const int err)

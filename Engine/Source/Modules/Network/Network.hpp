@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/App/Module.hpp"
+#include "Modules/standard.hpp"
 
 namespace vh
 {

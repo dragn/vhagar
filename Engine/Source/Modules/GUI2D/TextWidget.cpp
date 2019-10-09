@@ -1,7 +1,7 @@
-#include "Vhagar_PCH.hpp"
+#include "Modules/VhModules_PCH.hpp"
 #include "TextWidget.hpp"
+
 #include "Modules/GUI2D/GUI2D.hpp"
-#include "Core/App/App.hpp"
 #include "Modules/Renderer2D/Renderer2D.hpp"
 
 using vh::App;

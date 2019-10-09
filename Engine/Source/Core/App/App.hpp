@@ -1,10 +1,7 @@
 #pragma once
 
-#include "Utils/Defs.hpp"
-#include "Module.hpp"
-#include <string>
-#include <unordered_map>
-#include <unordered_set>
+#include "Core/App/Module.hpp"
+#include "Core/standard.hpp"
 
 namespace vh
 {

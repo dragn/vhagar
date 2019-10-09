@@ -1,7 +1,8 @@
-#include "Vhagar_PCH.hpp"
+#include "Modules/VhModules_PCH.hpp"
 #include "Debug.hpp"
-#include "Modules/Renderer/Renderer.hpp"
+
 #include "Modules/Console/ConsoleCommands.hpp"
+#include "Modules/Renderer/Renderer.hpp"
 
 using namespace vh;
 

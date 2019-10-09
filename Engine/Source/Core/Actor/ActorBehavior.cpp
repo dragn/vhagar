@@ -1,5 +1,6 @@
-#include "Vhagar_PCH.hpp"
-#include "Core/Actor/ActorBehavior.hpp"
+#include "Core/VhCore_PCH.hpp"
+
+#include "ActorBehavior.hpp"
 #include "Actor.hpp"
 
 namespace vh

@@ -1,16 +1,5 @@
-#include "Vhagar_PCH.hpp"
-
+#include "Modules/VhModules_PCH.hpp"
 #include "ImportUtils.hpp"
-#include "Utils/GLUtils.hpp"
-
-#include <cstdio>
-#include <iostream>
-#include <string>
-#include <cstring>
-#include <limits>
-#include <glm/gtx/string_cast.hpp>
-#include <unordered_map>
-#include <vector>
 
 const size_t MAX_LEN = 512;
 

@@ -1,7 +1,7 @@
-#include "Vhagar_PCH.hpp"
-
-#include "Socket.hpp"
+#include "Modules/VhModules_PCH.hpp"
 #include "Network.hpp"
+
+#include "Modules/Network/Socket.hpp"
 
 VH_MODULE_IMPL(vh::Network);
 

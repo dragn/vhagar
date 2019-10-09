@@ -1,7 +1,4 @@
-#include "Vhagar_PCH.hpp"
-
-#include "Utils/Defs.hpp"
-#include "Utils/Logging.hpp"
+#include "Modules/VhModules_PCH.hpp"
 #include "RenderBuffersHandler.hpp"
 
 namespace vh

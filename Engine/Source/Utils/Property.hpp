@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utils/Delegate.hpp"
+#include "Delegate.hpp"
 
 /*
     Basic read/write property

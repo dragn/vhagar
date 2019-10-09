@@ -1,9 +1,7 @@
-#include "Vhagar_PCH.hpp"
-
+#include "Modules/VhModules_PCH.hpp"
 #include "PlayerController.hpp"
-#include "Core/App/App.hpp"
+
 #include "Modules/Renderer/Renderer.hpp"
-#include "Core/Modules/MWorld.hpp"
 #include "Modules/World/CameraBehavior.hpp"
 
 namespace vh

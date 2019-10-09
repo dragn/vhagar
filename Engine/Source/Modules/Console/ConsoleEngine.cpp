@@ -1,10 +1,7 @@
-#include "Vhagar_PCH.hpp"
-
+#include "Modules/VhModules_PCH.hpp"
 #include "ConsoleCommands.hpp"
-#include "ConsoleEngine.hpp"
-#include <sstream>
-#include <iterator>
-#include <fstream>
+
+#include "Modules/Console/ConsoleEngine.hpp"
 
 namespace vh
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/App/Module.hpp"
+#include "Modules/standard.hpp"
 #include "Color.hpp"
 
 #undef DrawText

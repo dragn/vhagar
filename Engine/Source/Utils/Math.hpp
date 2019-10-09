@@ -1,22 +1,6 @@
 #pragma once
 
-#define GLM_FORCE_RADIANS
-
-#ifdef _MSC_VER
-// glm data alignment issue https://github.com/g-truc/glm/issues/283
-#define GLM_FORCE_PURE
-// disable secure function warnings
-#define _CRT_SECURE_NO_WARNINGS
-#endif
-
-#define _USE_MATH_DEFINES
-#include <math.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
-#include <glm/gtx/quaternion.hpp>
-
-#include <ostream>
+#include "Utils/standard.hpp"
 
 namespace vh
 {

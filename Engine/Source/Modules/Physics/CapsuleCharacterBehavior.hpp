@@ -2,10 +2,11 @@
 
 #include "Modules/World/ControlBehavior.hpp"
 #include "Modules/World/CameraBehavior.hpp"
-#include "Physics.hpp"
+#include "Modules/standard.hpp"
 
 namespace vh
 {
+    class Physics;
 
 /*
     Control behavior that uses PhysX character controller for

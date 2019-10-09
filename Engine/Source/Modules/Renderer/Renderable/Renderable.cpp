@@ -1,6 +1,5 @@
-#include "Vhagar_PCH.hpp"
+#include "Modules/VhModules_PCH.hpp"
 #include "Renderable.hpp"
-#include "Utils/Logging.hpp"
 
 namespace vh
 {

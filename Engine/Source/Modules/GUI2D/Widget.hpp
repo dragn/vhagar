@@ -1,8 +1,7 @@
 #pragma once
 
-#include <list>
 #include "Modules/Renderer2D/Color.hpp"
-#include "Utils/Delegate.hpp"
+#include "Modules/standard.hpp"
 
 namespace gui
 {

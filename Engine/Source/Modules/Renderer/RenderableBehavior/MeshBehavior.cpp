@@ -1,8 +1,5 @@
-#include "Vhagar_PCH.hpp"
+#include "Modules/VhModules_PCH.hpp"
 #include "MeshBehavior.hpp"
-#include "Core/App/App.hpp"
-#include "Utils/GLUtils.hpp"
-#include "Core/Actor/Actor.hpp"
 
 vh::MeshBehavior::MeshBehavior(const char* name)
     : RenderableBehavior(name), mIgnoreDepth(false)

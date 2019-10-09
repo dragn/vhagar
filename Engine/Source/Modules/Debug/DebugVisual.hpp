@@ -1,37 +1,37 @@
 #pragma once
 
-#include "Utils/Math.hpp"
-#include "Modules/Renderer/Renderable/Renderable.hpp"
+#include "Modules/standard.hpp"
 
 namespace vh
 {
+    class Renderer;
 
-struct DebugLabel
-{
-    V3 pos;
-    const char* text;
-};
+    struct DebugLabel
+    {
+        V3 pos;
+        const char* text;
+    };
 
-class DebugVisual
-{
-public:
-    DebugVisual() : mGLBuf(0) {}
-    ~DebugVisual();
+    class DebugVisual
+    {
+    public:
+        DebugVisual() : mGLBuf(0) {}
+        ~DebugVisual();
 
-    std::vector<DebugLabel>& GetLabels() { return mLabels; };
+        std::vector<DebugLabel>& GetLabels() { return mLabels; };
 
-    void Init();
-    void Destroy();
-    void Render(const Renderer* renderer);
+        void Init();
+        void Destroy();
+        void Render(const Renderer* renderer);
 
-private:
-    std::vector<DebugLabel> mLabels;
+    private:
+        std::vector<DebugLabel> mLabels;
 
-    GLuint mProgramId;
-    GLuint mGLBuf;
+        GLuint mProgramId;
+        GLuint mGLBuf;
 
-    GLint uidColor;
-    GLuint uidMVP;
-};
+        GLint uidColor;
+        GLuint uidMVP;
+    };
 
 } // namespace vh

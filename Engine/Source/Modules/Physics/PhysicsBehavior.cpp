@@ -1,8 +1,7 @@
-#include "Vhagar_PCH.hpp"
+#include "Modules/VhModules_PCH.hpp"
 #include "PhysicsBehavior.hpp"
-#include "Core/App/App.hpp"
-#include "Core/Actor/Actor.hpp"
-#include "Utils/PhysXUtils.hpp"
+
+#include "Modules/Physics/Physics.hpp"
 
 using namespace vh;
 using namespace physx;

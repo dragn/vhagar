@@ -1,8 +1,6 @@
-#include "Vhagar_PCH.hpp"
-
+#include "Modules/VhModules_PCH.hpp"
 #include "DebugVisual.hpp"
-#include "Utils/GLUtils.hpp"
-#include <glm/gtx/transform.hpp>
+
 #include "Modules/Renderer/Renderer.hpp"
 
 static const GLfloat crossData[] = {
