@@ -1,7 +1,7 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "TextOverlay.hpp"
 
-#include "Modules/Renderer/Renderer.hpp"
+#include "Modules/Renderer/MRenderer3D.hpp"
 #include "Modules/Renderer/RenderableBehavior/OverlayBehavior.hpp"
 
 vh::TextOverlay::TextOverlay(uint32_t x, uint32_t y, uint32_t width, uint32_t height)

@@ -1,7 +1,7 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "PhysicsBehavior.hpp"
 
-#include "Modules/Physics/Physics.hpp"
+#include "Modules/Physics/MPhysics.hpp"
 
 using namespace vh;
 using namespace physx;
@@ -12,7 +12,7 @@ PhysicsBehavior::PhysicsBehavior(bool isStatic /*= true*/)
 
 void PhysicsBehavior::StartPlay()
 {
-    mPhysics = App::Get<Physics>();
+    mPhysics = App::Get<MPhysics>();
     CHECK(mPhysics);
 
     if (!mCollisionGeometry)

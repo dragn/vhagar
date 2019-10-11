@@ -1,7 +1,7 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "CapsuleCharacterBehavior.hpp"
 
-#include "Modules/Physics/Physics.hpp"
+#include "Modules/Physics/MPhysics.hpp"
 
 using namespace vh;
 using namespace physx;
@@ -14,7 +14,7 @@ vh::CapsuleCharacterBehavior::CapsuleCharacterBehavior(float radius, float heigh
 
 void vh::CapsuleCharacterBehavior::StartPlay()
 {
-    mPhysics = App::Get<Physics>();
+    mPhysics = App::Get<MPhysics>();
     CHECK(mPhysics);
 
     // -- setup character controller

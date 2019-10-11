@@ -42,3 +42,6 @@
 #ifdef WITH_PHYSX
 #include "Utils/PhysXUtils.hpp"
 #endif
+#include "Utils/Network/Socket.hpp"
+#include "Utils/Network/TcpServer.hpp"
+#include "Utils/Network/TcpLogSink.hpp"

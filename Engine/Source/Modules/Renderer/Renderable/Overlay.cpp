@@ -1,7 +1,7 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "Overlay.hpp"
 
-#include "Modules/Renderer/Renderer.hpp"
+#include "Modules/Renderer/MRenderer3D.hpp"
 
 using namespace vh;
 
@@ -17,7 +17,7 @@ void Overlay::SetTexture(SDL_Surface *s)
 
 void Overlay::_UpdateVertices(uint32_t w, uint32_t h)
 {
-    Renderer* render = App::Get<Renderer>();
+    MRenderer3D* render = App::Get<MRenderer3D>();
     if (!render) return;
 
     CHECK(render);

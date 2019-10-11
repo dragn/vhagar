@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Modules/Console/ConsoleEngine.hpp"
+#include "Modules/Console/MConsoleEngine.hpp"
 #include "Modules/Console/ConsoleCommands.hpp"
 #include "Modules/Renderer/Renderable/Overlay.hpp"
-#include "Modules/Renderer/Renderer.hpp"
+#include "Modules/Renderer/MRenderer3D.hpp"
 #include "Modules/standard.hpp"
 
 namespace vh
@@ -23,12 +23,19 @@ const size_t NUM_HISTORY = 10;
 
 typedef void(*CmdHandler)(const std::vector<std::string>&);
 
-class Console : public Module, public google::LogSink
+/*
+      //            \\
+    MMMM ConsoleGUI MMMM
+      \\            //
+
+    UI interface for a 3D renderer to view and run console commands.
+*/
+class MConsoleGUI : public Module, public google::LogSink
 {
-    VH_MODULE(Console);
+    VH_MODULE(MConsoleGUI);
 
 public:
-    Console()
+    MConsoleGUI()
         : Module(TickFrequency::NEVER)
         , mShowConsole(false)
         , mFont(nullptr)
@@ -76,8 +83,8 @@ private:
     SDL_Surface* mSurf;
     Overlay mOverlay;
 
-    ConsoleEngine* mEngine;
-    Renderer* mRenderer;
+    MConsoleEngine* mEngine;
+    MRenderer3D* mRenderer;
 
     void _Redraw();
 

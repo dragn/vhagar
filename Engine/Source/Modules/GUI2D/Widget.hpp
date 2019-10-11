@@ -37,7 +37,7 @@ enum Type
 class Widget
 {
     friend class View;
-    friend class GUI2D;
+    friend class MGUI2D;
 
 public:
     Widget();

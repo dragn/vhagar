@@ -1,14 +1,14 @@
 #include "Modules/VhModules_PCH.hpp"
-#include "Renderer.hpp"
+#include "MRenderer3D.hpp"
 
 #include "Modules/Console/ConsoleCommands.hpp"
-#include "Modules/PlayerController/PlayerController.hpp"
+#include "Modules/PlayerController/MPlayerController.hpp"
 #include "Modules/World/CameraBehavior.hpp"
 
 namespace vh
 {
 
-VH_MODULE_IMPL(Renderer);
+VH_MODULE_IMPL(MRenderer3D);
 
 namespace
 {
@@ -32,13 +32,13 @@ void reportGLError(int error)
 
 DEFINE_COMMAND(toggle_wireframe)
 {
-    Renderer* renderer = App::Get<Renderer>();
+    MRenderer3D* renderer = App::Get<MRenderer3D>();
     CHECK(renderer);
 
     renderer->Toggle(RenderFlags::DRAW_WIREFRAMES);
 }
 
-vh::Ret Renderer::TickInit(uint32_t delta)
+vh::Ret MRenderer3D::TickInit(uint32_t delta)
 {
     if (mRenderThreadStarted)
     {
@@ -93,7 +93,7 @@ vh::Ret Renderer::TickInit(uint32_t delta)
     // Set relative mouse mode
     SDL_SetRelativeMouseMode(SDL_TRUE);
 
-    mRenderThread = std::thread(&Renderer::RenderThreadStatic, this);
+    mRenderThread = std::thread(&MRenderer3D::RenderThreadStatic, this);
     mRenderThreadStarted = true;
 
     //mStatOverlay.Create();
@@ -101,7 +101,7 @@ vh::Ret Renderer::TickInit(uint32_t delta)
     return Ret::CONTINUE;
 }
 
-vh::Ret Renderer::TickClose(uint32_t delta)
+vh::Ret MRenderer3D::TickClose(uint32_t delta)
 {
     //mStatOverlay.Destroy();
 
@@ -118,7 +118,7 @@ vh::Ret Renderer::TickClose(uint32_t delta)
     return Ret::SUCCESS;
 }
 
-void Renderer::StartFrame()
+void MRenderer3D::StartFrame()
 {
     if (IsRunning())
     {
@@ -129,7 +129,7 @@ void Renderer::StartFrame()
             buffer->header.time = SDL_GetTicks();
             buffer->header.timestep = 16;
 
-            PlayerController* controller = App::Get<PlayerController>();
+            MPlayerController* controller = App::Get<MPlayerController>();
             if (controller && !controller->GetControlledActor().expired())
             {
                 CameraBehavior* camera = controller->GetControlledActor().lock()->GetBehaviorOfType<CameraBehavior>();
@@ -142,14 +142,14 @@ void Renderer::StartFrame()
     }
 }
 
-void Renderer::EndFrame()
+void MRenderer3D::EndFrame()
 {
     if (IsRunning())
     {
         RenderBuffer* buffer = mBufferHandler.GetNextBuffer();
         if (buffer)
         {
-            PlayerController* controller = App::Get<PlayerController>();
+            MPlayerController* controller = App::Get<MPlayerController>();
             if (controller && !controller->GetControlledActor().expired())
             {
                 CameraBehavior* camera = controller->GetControlledActor().lock()->GetBehaviorOfType<CameraBehavior>();
@@ -163,7 +163,7 @@ void Renderer::EndFrame()
     }
 }
 
-void Renderer::DoRender(const RenderBuffer* last, const RenderBuffer* cur, float factor)
+void MRenderer3D::DoRender(const RenderBuffer* last, const RenderBuffer* cur, float factor)
 {
     glm::mat4 view = glm::mix(last->header.view, cur->header.view, factor);
     glm::mat4 projection = mProjection;
@@ -287,7 +287,7 @@ void Renderer::DoRender(const RenderBuffer* last, const RenderBuffer* cur, float
     }
 }
 
-void Renderer::DoRenderMesh(glm::mat4 view, glm::mat4 projection, const Mesh::Payload* payload, const std::vector<PointLight::Payload>& lights)
+void MRenderer3D::DoRenderMesh(glm::mat4 view, glm::mat4 projection, const Mesh::Payload* payload, const std::vector<PointLight::Payload>& lights)
 {
     glm::mat4 model = glm::translate(glm::mat4(1.f), payload->translate) * glm::mat4_cast(payload->rotate) * glm::scale(M4(1.f), payload->scale);
     glm::mat4 MVP = projection * view * model;
@@ -377,12 +377,12 @@ void Renderer::DoRenderMesh(glm::mat4 view, glm::mat4 projection, const Mesh::Pa
     }
 }
 
-void Renderer::RenderThreadStatic(Renderer* renderer)
+void MRenderer3D::RenderThreadStatic(MRenderer3D* renderer)
 {
     renderer->RenderThread();
 }
 
-void Renderer::RenderThread()
+void MRenderer3D::RenderThread()
 {
     DoInit();
 
@@ -435,7 +435,7 @@ void Renderer::RenderThread()
     SDL_GL_DeleteContext(mGLContext);
 }
 
-void Renderer::AddLoadTask(std::shared_ptr<Renderable> renderable)
+void MRenderer3D::AddLoadTask(std::shared_ptr<Renderable> renderable)
 {
     std::lock_guard<std::mutex> lock(mTaskQueueLock);
 
@@ -445,7 +445,7 @@ void Renderer::AddLoadTask(std::shared_ptr<Renderable> renderable)
     mTaskQueue.push(task);
 }
 
-void Renderer::AddReleaseTask(std::shared_ptr<Renderable> renderable)
+void MRenderer3D::AddReleaseTask(std::shared_ptr<Renderable> renderable)
 {
     std::lock_guard<std::mutex> lock(mTaskQueueLock);
 
@@ -455,7 +455,7 @@ void Renderer::AddReleaseTask(std::shared_ptr<Renderable> renderable)
     mTaskQueue.push(task);
 }
 
-void Renderer::HandleTasks()
+void MRenderer3D::HandleTasks()
 {
     if (mTaskQueue.size())
     {
@@ -477,7 +477,7 @@ void Renderer::HandleTasks()
     }
 }
 
-void Renderer::DoInit()
+void MRenderer3D::DoInit()
 {
     // Create an OpenGL context associated with the mWindow.
     mGLContext = SDL_GL_CreateContext(mWindow);
@@ -543,7 +543,7 @@ void Renderer::DoInit()
     mBufferHandler.Create();
 }
 
-void Renderer::DoRenderSkyBox(glm::mat4 _view, glm::mat4 projection, const SkyBox::Payload& payload)
+void MRenderer3D::DoRenderSkyBox(glm::mat4 _view, glm::mat4 projection, const SkyBox::Payload& payload)
 {
     glDisable(GL_CULL_FACE);
     glDepthMask(GL_FALSE);
@@ -568,7 +568,7 @@ void Renderer::DoRenderSkyBox(glm::mat4 _view, glm::mat4 projection, const SkyBo
     glEnable(GL_CULL_FACE);
 }
 
-void Renderer::DoRenderOverlay(const Overlay::Payload& payload)
+void MRenderer3D::DoRenderOverlay(const Overlay::Payload& payload)
 {
     if (payload.texId == 0) return;
 

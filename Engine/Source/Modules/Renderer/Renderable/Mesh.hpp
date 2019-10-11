@@ -2,7 +2,7 @@
 
 #include "Modules/Renderer/Renderable/Renderable.hpp"
 #include "Modules/Renderer/RenderBuffersHandler.hpp"
-#include "Modules/ResourceSystem/ResourceSystem.hpp"
+#include "Modules/ResourceSystem/MResourceSystem.hpp"
 #include "Modules/standard.hpp"
 
 namespace vh
@@ -100,8 +100,8 @@ private:
     GLint mShaderId = -1;
 };
 
-template<> bool ResourceSystem::Load(const char* path, std::shared_ptr<Mesh> mesh);
-template<> bool ResourceSystem::Save(const char* path, std::shared_ptr<const Mesh> mesh);
+template<> bool MResourceSystem::Load(const char* path, std::shared_ptr<Mesh> mesh);
+template<> bool MResourceSystem::Save(const char* path, std::shared_ptr<const Mesh> mesh);
 
 static_assert(sizeof(Mesh::Payload) <= RenderBufferConstants::PAYLOAD_SIZE, "invalid payload size");
 

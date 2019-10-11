@@ -6,7 +6,7 @@
 
 namespace vh
 {
-    class Physics;
+    class MPhysics;
 
 /*
     Control behavior that uses PhysX character controller for
@@ -38,7 +38,7 @@ private:
     float mRadius;
     float mHeight;
 
-    Physics* mPhysics = nullptr;
+    MPhysics* mPhysics = nullptr;
     physx::PxController* mController = nullptr;
     physx::PxMaterial* mMaterial = nullptr;
     CameraBehavior* mCamera = nullptr;

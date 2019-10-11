@@ -1,23 +1,23 @@
 #include "Modules/VhModules_PCH.hpp"
-#include "Console.hpp"
+#include "MConsoleGUI.hpp"
 
 namespace vh
 {
 
-VH_MODULE_IMPL(Console);
+VH_MODULE_IMPL(MConsoleGUI);
 
-vh::Ret Console::TickInit(uint32_t delta)
+vh::Ret MConsoleGUI::TickInit(uint32_t delta)
 {
-    App::CheckRequired<ConsoleEngine>();
-    App::CheckRequired<Renderer>();
+    App::CheckRequired<MConsoleEngine>();
+    App::CheckRequired<MRenderer3D>();
 
-    mEngine = App::Get<ConsoleEngine>();
+    mEngine = App::Get<MConsoleEngine>();
     if (!mEngine)
     {
         return Ret::CONTINUE;
     }
 
-    mRenderer = App::Get<Renderer>();
+    mRenderer = App::Get<MRenderer3D>();
     if (!mRenderer)
     {
         return Ret::CONTINUE;
@@ -70,7 +70,7 @@ vh::Ret Console::TickInit(uint32_t delta)
     return Ret::SUCCESS;
 }
 
-vh::Ret Console::TickClose(uint32_t delta)
+vh::Ret MConsoleGUI::TickClose(uint32_t delta)
 {
 //    mOverlay.Destroy();
 
@@ -95,7 +95,7 @@ vh::Ret Console::TickClose(uint32_t delta)
     return Ret::SUCCESS;
 }
 
-void Console::_Redraw()
+void MConsoleGUI::_Redraw()
 {
     mOverlay.SetPos(20, 20);
 
@@ -133,7 +133,7 @@ void Console::_Redraw()
     mOverlay.SetTexture(mSurf);
 }
 
-void Console::PrintMessage(const std::string& msg)
+void MConsoleGUI::PrintMessage(const std::string& msg)
 {
     mMsgCS.Enter();
 
@@ -148,7 +148,7 @@ void Console::PrintMessage(const std::string& msg)
     mMsgCS.Leave();
 }
 
-void Console::ToggleConsole()
+void MConsoleGUI::ToggleConsole()
 {
     if (mShowConsole)
     {
@@ -163,7 +163,7 @@ void Console::ToggleConsole()
     }
 }
 
-void Console::HandleEvent(SDL_Event* event)
+void MConsoleGUI::HandleEvent(SDL_Event* event)
 {
     IF_KEYDOWN(event, SDL_SCANCODE_GRAVE)
     {
@@ -231,7 +231,7 @@ void Console::HandleEvent(SDL_Event* event)
     }
 }
 
-void Console::send(google::LogSeverity severity, const char* full_filename,
+void MConsoleGUI::send(google::LogSeverity severity, const char* full_filename,
     const char* base_filename, int line,
     const struct ::tm* tm_time,
     const char* message, size_t message_len)

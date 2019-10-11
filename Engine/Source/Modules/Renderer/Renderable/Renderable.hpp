@@ -5,7 +5,7 @@
 namespace vh
 {
 
-class Renderer; // forward decl
+class MRenderer3D; // forward decl
 
 struct GLBufferInfo
 {

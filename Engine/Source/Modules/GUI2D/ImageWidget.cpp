@@ -1,7 +1,7 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "ImageWidget.hpp"
 
-#include "Modules/Renderer2D/Renderer2D.hpp"
+#include "Modules/Renderer2D/MRenderer2D.hpp"
 
 using namespace vh;
 using namespace gui;
@@ -39,7 +39,7 @@ void gui::ImageWidget::Draw(int32_t x, int32_t y)
 {
     if (mSurf == nullptr) return;
 
-    Renderer2D* render = App::Get<Renderer2D>();
+    MRenderer2D* render = App::Get<MRenderer2D>();
     CHECK(render);
 
     render->DrawImage(mSurf, x, y, mSurf->w, mSurf->h);

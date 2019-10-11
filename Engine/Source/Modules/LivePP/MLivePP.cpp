@@ -1,13 +1,13 @@
 #include "Modules/VhModules_PCH.hpp"
-#include "LivePP.hpp"
+#include "MLivePP.hpp"
 
 namespace vh
 {
     // static vh::CmdFlag sLivePPEnabled("-livepp");
 
-    VH_MODULE_IMPL(LivePP);
+    VH_MODULE_IMPL(MLivePP);
 
-    vh::Ret LivePP::TickInit(uint32_t delta)
+    vh::Ret MLivePP::TickInit(uint32_t delta)
     {
         if (GetApp()->GetCmdFlag("-livepp"))
         {
@@ -27,7 +27,7 @@ namespace vh
         return Ret::SUCCESS;
     }
 
-    Ret LivePP::TickClose(uint32_t delta)
+    Ret MLivePP::TickClose(uint32_t delta)
     {
         if (GetApp()->GetCmdFlag("-livepp"))
         {

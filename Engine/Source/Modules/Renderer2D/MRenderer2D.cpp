@@ -1,9 +1,9 @@
 #include "Modules/VhModules_PCH.hpp"
-#include "Renderer2D.hpp"
+#include "MRenderer2D.hpp"
 
-VH_MODULE_IMPL(vh::Renderer2D);
+VH_MODULE_IMPL(vh::MRenderer2D);
 
-vh::Renderer2D::Renderer2D()
+vh::MRenderer2D::MRenderer2D()
     : Module(TickFrequency::NORMAL)
     , mWindow(nullptr)
     , mRenderer(nullptr)
@@ -12,13 +12,13 @@ vh::Renderer2D::Renderer2D()
 {
 }
 
-vh::Renderer2D::Renderer2D(const Renderer2DOptions& options)
-    : Renderer2D()
+vh::MRenderer2D::MRenderer2D(const Renderer2DOptions& options)
+    : MRenderer2D()
 {
     mOptions = options;
 }
 
-vh::Ret vh::Renderer2D::TickInit(uint32_t delta)
+vh::Ret vh::MRenderer2D::TickInit(uint32_t delta)
 {
     LOG(INFO) << "SDL Initialization";
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -79,7 +79,7 @@ vh::Ret vh::Renderer2D::TickInit(uint32_t delta)
     return Ret::SUCCESS;
 }
 
-vh::Ret vh::Renderer2D::TickClose(uint32_t delta)
+vh::Ret vh::MRenderer2D::TickClose(uint32_t delta)
 {
     if (mRenderer) SDL_DestroyRenderer(mRenderer);
     if (mWindow) SDL_DestroyWindow(mWindow);
@@ -89,12 +89,12 @@ vh::Ret vh::Renderer2D::TickClose(uint32_t delta)
     return Ret::SUCCESS;
 }
 
-void vh::Renderer2D::StartFrame()
+void vh::MRenderer2D::StartFrame()
 {
     SDL_SetRenderTarget(mRenderer, mFrameBuf);
 }
 
-void vh::Renderer2D::EndFrame()
+void vh::MRenderer2D::EndFrame()
 {
     SDL_SetRenderTarget(mRenderer, nullptr);
 
@@ -108,7 +108,7 @@ void vh::Renderer2D::EndFrame()
     SDL_RenderPresent(mRenderer);
 }
 
-void vh::Renderer2D::DrawRect(int32_t x, int32_t y, int32_t width, int32_t height, Color color)
+void vh::MRenderer2D::DrawRect(int32_t x, int32_t y, int32_t width, int32_t height, Color color)
 {
     SDL_Rect rect;
     rect.x = x;
@@ -120,7 +120,7 @@ void vh::Renderer2D::DrawRect(int32_t x, int32_t y, int32_t width, int32_t heigh
     SDL_RenderDrawRect(mRenderer, &rect);
 }
 
-void vh::Renderer2D::FillRect(int32_t x, int32_t y, int32_t width, int32_t height, Color color)
+void vh::MRenderer2D::FillRect(int32_t x, int32_t y, int32_t width, int32_t height, Color color)
 {
     SDL_Rect rect;
     rect.x = x;
@@ -132,7 +132,7 @@ void vh::Renderer2D::FillRect(int32_t x, int32_t y, int32_t width, int32_t heigh
     SDL_RenderFillRect(mRenderer, &rect);
 }
 
-void vh::Renderer2D::CalcTextSize(TTF_Font* font, const char* text, int32_t& outWidth, int32_t& outHeight, int32_t wrap /* = 0 */)
+void vh::MRenderer2D::CalcTextSize(TTF_Font* font, const char* text, int32_t& outWidth, int32_t& outHeight, int32_t wrap /* = 0 */)
 {
     CHECK(font);
     CHECK(text);
@@ -157,7 +157,7 @@ void vh::Renderer2D::CalcTextSize(TTF_Font* font, const char* text, int32_t& out
     SDL_FreeSurface(surf);
 }
 
-void vh::Renderer2D::DrawText(TTF_Font* font, const char* text, Color clr, int32_t x, int32_t y, int32_t maxW /* = 0*/, bool wrap /* = false */)
+void vh::MRenderer2D::DrawText(TTF_Font* font, const char* text, Color clr, int32_t x, int32_t y, int32_t maxW /* = 0*/, bool wrap /* = false */)
 {
     CHECK(font);
     CHECK(text);
@@ -198,7 +198,7 @@ void vh::Renderer2D::DrawText(TTF_Font* font, const char* text, Color clr, int32
     SDL_FreeSurface(surf);
 }
 
-void vh::Renderer2D::DrawImage(SDL_Surface* surf, int32_t x, int32_t y, int32_t w /* = 0 */, int32_t h /* = 0 */)
+void vh::MRenderer2D::DrawImage(SDL_Surface* surf, int32_t x, int32_t y, int32_t w /* = 0 */, int32_t h /* = 0 */)
 {
     SDL_Rect dst;
     dst.x = x;
@@ -209,7 +209,7 @@ void vh::Renderer2D::DrawImage(SDL_Surface* surf, int32_t x, int32_t y, int32_t 
     DrawImage(surf, NULL, &dst);
 }
 
-void vh::Renderer2D::DrawImage(SDL_Surface* surf, SDL_Rect* src, SDL_Rect* dst)
+void vh::MRenderer2D::DrawImage(SDL_Surface* surf, SDL_Rect* src, SDL_Rect* dst)
 {
     CHECK(surf);
 
@@ -225,7 +225,7 @@ void vh::Renderer2D::DrawImage(SDL_Surface* surf, SDL_Rect* src, SDL_Rect* dst)
     SDL_DestroyTexture(tex);
 }
 
-void vh::Renderer2D::DrawImage(SDL_Surface* surf, int32_t x, int32_t y, float scale)
+void vh::MRenderer2D::DrawImage(SDL_Surface* surf, int32_t x, int32_t y, float scale)
 {
     DrawImage(surf, x, y, surf->w * scale, surf->h * scale);
 }

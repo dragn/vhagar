@@ -5,7 +5,7 @@
 
 namespace vh
 {
-    class Physics;
+    class MPhysics;
 
     class PhysicsBehavior : public ActorBehavior
     {
@@ -33,7 +33,7 @@ namespace vh
         bool mIsStatic;
         std::unique_ptr<Geometry> mCollisionGeometry;
 
-        Physics* mPhysics;
+        MPhysics* mPhysics;
         physx::PxRigidActor* mActor;
         physx::PxMaterial* mMaterial;
     };

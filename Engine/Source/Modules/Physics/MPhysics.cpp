@@ -1,5 +1,5 @@
 #include "Modules/VhModules_PCH.hpp"
-#include "Physics.hpp"
+#include "MPhysics.hpp"
 
 using namespace physx;
 
@@ -14,9 +14,9 @@ class ErrorCallback : public PxErrorCallback
 };
 }
 
-VH_MODULE_IMPL(vh::Physics);
+VH_MODULE_IMPL(vh::MPhysics);
 
-vh::Physics::Physics()
+vh::MPhysics::MPhysics()
     : Module(TickFrequency::NORMAL)
     , mFoundation(nullptr)
     , mPhysics(nullptr)
@@ -24,7 +24,7 @@ vh::Physics::Physics()
 
 }
 
-vh::Ret vh::Physics::TickInit(uint32_t delta)
+vh::Ret vh::MPhysics::TickInit(uint32_t delta)
 {
     static ErrorCallback gErrorCallback;
     static PxDefaultAllocator gDefaultAllocatorCallback;
@@ -63,7 +63,7 @@ vh::Ret vh::Physics::TickInit(uint32_t delta)
     return Ret::SUCCESS;
 }
 
-vh::Ret vh::Physics::TickClose(uint32_t delta)
+vh::Ret vh::MPhysics::TickClose(uint32_t delta)
 {
     if (mControllerManager != nullptr)
     {
@@ -89,7 +89,7 @@ vh::Ret vh::Physics::TickClose(uint32_t delta)
     return Ret::SUCCESS;
 }
 
-void vh::Physics::StartFrame()
+void vh::MPhysics::StartFrame()
 {
     if (IsRunning())
     {
@@ -99,7 +99,7 @@ void vh::Physics::StartFrame()
     }
 }
 
-void vh::Physics::EndFrame()
+void vh::MPhysics::EndFrame()
 {
     if (IsRunning() && mSimCalled)
     {

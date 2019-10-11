@@ -7,11 +7,11 @@
 namespace gui
 {
 
-class GUI2D; // forward decl
+class MGUI2D; // forward decl
 
 class View
 {
-    friend class GUI2D;
+    friend class MGUI2D;
 
 public:
     View(const char* name = "NonameView");

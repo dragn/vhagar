@@ -1,19 +1,19 @@
 #include "Modules/VhModules_PCH.hpp"
-#include "Debug.hpp"
+#include "MDebug.hpp"
 
 #include "Modules/Console/ConsoleCommands.hpp"
-#include "Modules/Renderer/Renderer.hpp"
+#include "Modules/Renderer/MRenderer3D.hpp"
 
 using namespace vh;
 
-VH_MODULE_IMPL(Debug);
+VH_MODULE_IMPL(MDebug);
 
 DEFINE_COMMAND(toggle_labels)
 {
-    Debug* debug = App::Get<Debug>();
+    MDebug* debug = App::Get<MDebug>();
     if (debug == nullptr)
     {
-        GetApp()->AddModule<Debug>();
+        GetApp()->AddModule<MDebug>();
     }
     else
     {
@@ -21,18 +21,18 @@ DEFINE_COMMAND(toggle_labels)
     }
 }
 
-vh::Debug::Debug()
+vh::MDebug::MDebug()
     : Module(TickFrequency::NORMAL)
     , mStatOverlay(5, 5, 200, 50)
 {
 }
 
-vh::Ret vh::Debug::TickInit(uint32_t delta)
+vh::Ret vh::MDebug::TickInit(uint32_t delta)
 {
-    App::CheckRequired<Renderer>();
+    App::CheckRequired<MRenderer3D>();
     App::CheckRequired<MWorld>();
 
-    mRenderer = App::Get<Renderer>();
+    mRenderer = App::Get<MRenderer3D>();
 
     // wait for renderer to start
     if (!mRenderer || !mRenderer->IsRunning())
@@ -58,7 +58,7 @@ vh::Ret vh::Debug::TickInit(uint32_t delta)
     return Ret::SUCCESS;
 }
 
-vh::Ret vh::Debug::TickRun(uint32_t delta)
+vh::Ret vh::MDebug::TickRun(uint32_t delta)
 {
     /*
     mDebugVisual.GetLabels().clear();
@@ -78,9 +78,9 @@ vh::Ret vh::Debug::TickRun(uint32_t delta)
     return Ret::CONTINUE;
 }
 
-vh::Ret vh::Debug::TickClose(uint32_t delta)
+vh::Ret vh::MDebug::TickClose(uint32_t delta)
 {
-    Renderer* renderer = App::Get<Renderer>();
+    MRenderer3D* renderer = App::Get<MRenderer3D>();
     CHECK(renderer);
 
     //mDebugVisual.Destroy();

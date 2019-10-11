@@ -1,8 +1,8 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "ButtonWidget.hpp"
 
-#include "Modules/GUI2D/GUI2D.hpp"
-#include "Modules/Renderer2D/Renderer2D.hpp"
+#include "Modules/GUI2D/MGUI2D.hpp"
+#include "Modules/Renderer2D/MRenderer2D.hpp"
 
 gui::ButtonWidget::ButtonWidget()
     : mFont(nullptr)
@@ -46,13 +46,13 @@ void gui::ButtonWidget::SetBorder(const vh::Color& color)
 
 void gui::ButtonWidget::Draw(int32_t x, int32_t y)
 {
-    vh::Renderer2D* render = vh::App::Get<vh::Renderer2D>();
+    vh::MRenderer2D* render = vh::App::Get<vh::MRenderer2D>();
     CHECK(render);
 
     TTF_Font* font = mFont;
     if (font == nullptr)
     {
-        GUI2D* gui = vh::App::Get<GUI2D>();
+        MGUI2D* gui = vh::App::Get<MGUI2D>();
         CHECK(gui);
         font = gui->GetFont();
     }
@@ -75,7 +75,7 @@ void gui::ButtonWidget::Draw(int32_t x, int32_t y)
 SDL_Cursor* gui::ButtonWidget::GetCursor()
 {
     if (mCursor != nullptr) return mCursor;
-    GUI2D* gui = vh::App::Get<GUI2D>();
+    MGUI2D* gui = vh::App::Get<MGUI2D>();
     CHECK(gui);
     mCursor = gui->GetHandCursor();
     return mCursor;

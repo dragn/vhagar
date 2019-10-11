@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Modules/Network/Socket.hpp"
-#include "Modules/standard.hpp"
+#include "Utils/Logging.hpp"
+#include "Utils/Network/Socket.hpp"
+#include "Utils/standard.hpp"
 
 #if CMAKE_PLATFORM_WINDOWS
 #define poll WSAPoll

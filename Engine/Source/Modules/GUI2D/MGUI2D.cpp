@@ -1,18 +1,18 @@
 #include "Modules/VhModules_PCH.hpp"
-#include "GUI2D.hpp"
+#include "MGUI2D.hpp"
 
-#include "Modules/Renderer2D/Renderer2D.hpp"
+#include "Modules/Renderer2D/MRenderer2D.hpp"
 
 using namespace vh;
 
 namespace gui
 {
 
-VH_MODULE_IMPL(GUI2D);
+VH_MODULE_IMPL(MGUI2D);
 
-vh::Ret GUI2D::TickInit(uint32_t delta)
+vh::Ret MGUI2D::TickInit(uint32_t delta)
 {
-    App::CheckRequired<Renderer2D>();
+    App::CheckRequired<MRenderer2D>();
 
     TTF_Init();
     CHECK(TTF_WasInit()) << "Error initialising SDL_ttf";
@@ -26,7 +26,7 @@ vh::Ret GUI2D::TickInit(uint32_t delta)
     mHdr2Font = TTF_OpenFont(mOptions.hdr2FontPath, mOptions.hdr2FontSize);
     CHECK(mHdr2Font) << "Could not open font: " << mOptions.hdr2FontPath;
 
-    mRenderer = App::Get<Renderer2D>();
+    mRenderer = App::Get<MRenderer2D>();
     CHECK(mRenderer);
 
     mScale = mRenderer->GetScale();
@@ -38,7 +38,7 @@ vh::Ret GUI2D::TickInit(uint32_t delta)
     return Ret::SUCCESS;
 }
 
-vh::Ret GUI2D::TickRun(uint32_t delta)
+vh::Ret MGUI2D::TickRun(uint32_t delta)
 {
     ApplyTransition();
 
@@ -93,7 +93,7 @@ vh::Ret GUI2D::TickRun(uint32_t delta)
         mModalViewStack.push_back(mNextModalView);
 
         // stretch root widget to all available space
-        Renderer2D* mRenderer = App::Get<Renderer2D>();
+        MRenderer2D* mRenderer = App::Get<MRenderer2D>();
         CHECK(mRenderer);
 
         if (mNextModalView->mRootWidget)
@@ -151,7 +151,7 @@ vh::Ret GUI2D::TickRun(uint32_t delta)
     return Ret::CONTINUE;
 }
 
-vh::Ret GUI2D::TickClose(uint32_t delta)
+vh::Ret MGUI2D::TickClose(uint32_t delta)
 {
     if (mFont) TTF_CloseFont(mFont);
 
@@ -184,7 +184,7 @@ vh::Ret GUI2D::TickClose(uint32_t delta)
     return Ret::SUCCESS;
 }
 
-void GUI2D::SetView(View* view, bool withFade)
+void MGUI2D::SetView(View* view, bool withFade)
 {
     if (IsInTransition()) return;
 
@@ -194,7 +194,7 @@ void GUI2D::SetView(View* view, bool withFade)
     mNextView = view;
 }
 
-void GUI2D::HandleEvent(SDL_Event* event)
+void MGUI2D::HandleEvent(SDL_Event* event)
 {
     if (IsInTransition()) return;
 
@@ -229,20 +229,20 @@ void GUI2D::HandleEvent(SDL_Event* event)
     }
 }
 
-void GUI2D::FocusedDestroyed(Widget* widget)
+void MGUI2D::FocusedDestroyed(Widget* widget)
 {
     CHECK(widget == mFocused);
 
     mFocused = nullptr;
 }
 
-void GUI2D::SetFocus(Widget* widget)
+void MGUI2D::SetFocus(Widget* widget)
 {
     if (mFocused != nullptr)
     {
         mFocused->mFocused = false;
         mFocused->OnBlurInternal();
-        mFocused->OnDestroy.Remove(this, &GUI2D::FocusedDestroyed);
+        mFocused->OnDestroy.Remove(this, &MGUI2D::FocusedDestroyed);
     }
 
     mFocused = widget;
@@ -251,26 +251,26 @@ void GUI2D::SetFocus(Widget* widget)
     {
         mFocused->mFocused = true;
         mFocused->OnFocusInternal();
-        mFocused->OnDestroy.Add(this, &GUI2D::FocusedDestroyed);
+        mFocused->OnDestroy.Add(this, &MGUI2D::FocusedDestroyed);
     }
 }
 
-SDL_Cursor* GUI2D::GetArrowCursor()
+SDL_Cursor* MGUI2D::GetArrowCursor()
 {
     return mArrowCursor;
 }
 
-SDL_Cursor* GUI2D::GetHandCursor()
+SDL_Cursor* MGUI2D::GetHandCursor()
 {
     return mHandCursor;
 }
 
-SDL_Cursor* GUI2D::GetBeamCursor()
+SDL_Cursor* MGUI2D::GetBeamCursor()
 {
     return mBeamCursor;
 }
 
-void GUI2D::SetModalView(View* view, eTransitionMode mode)
+void MGUI2D::SetModalView(View* view, eTransitionMode mode)
 {
     if (mode == eTransitionMode::FADE) StartTransition();
 
@@ -278,27 +278,27 @@ void GUI2D::SetModalView(View* view, eTransitionMode mode)
     mNextModalView = view;
 }
 
-void GUI2D::Back(eTransitionMode mode)
+void MGUI2D::Back(eTransitionMode mode)
 {
     if (mode == eTransitionMode::FADE) StartTransition();
 
     mGoBack = true;
 }
 
-void GUI2D::BackToMain(eTransitionMode mode)
+void MGUI2D::BackToMain(eTransitionMode mode)
 {
     if (mode == eTransitionMode::FADE) StartTransition();
 
     mGoBackToMain = true;
 }
 
-void GUI2D::CalcTextSize(const char* text, int32_t& outWidth, int32_t& outHeight)
+void MGUI2D::CalcTextSize(const char* text, int32_t& outWidth, int32_t& outHeight)
 {
-    Renderer2D* mRenderer = App::Get<Renderer2D>();
+    MRenderer2D* mRenderer = App::Get<MRenderer2D>();
     mRenderer->CalcTextSize(mFont, text, outWidth, outHeight);
 }
 
-void GUI2D::ApplyTransition()
+void MGUI2D::ApplyTransition()
 {
     if (mTransition >= 0x0 && mTransition < 0x200)
     {
@@ -315,7 +315,7 @@ void GUI2D::ApplyTransition()
     }
 }
 
-bool GUI2D::WaitForTransition()
+bool MGUI2D::WaitForTransition()
 {
     if (!IsInTransition()) return true;
 
@@ -323,12 +323,12 @@ bool GUI2D::WaitForTransition()
     return mTransition >= 0x100;
 }
 
-bool GUI2D::IsInTransition()
+bool MGUI2D::IsInTransition()
 {
     return mTransition >= 0;
 }
 
-void GUI2D::StartTransition()
+void MGUI2D::StartTransition()
 {
     mTransition = mView == nullptr ? 0x100 : 0x0;
 }

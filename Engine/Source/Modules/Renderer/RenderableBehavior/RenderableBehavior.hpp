@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Modules/Renderer/Renderer.hpp"
-#include "Modules/ResourceSystem/ResourceSystem.hpp"
+#include "Modules/Renderer/MRenderer3D.hpp"
+#include "Modules/ResourceSystem/MResourceSystem.hpp"
 #include "Modules/standard.hpp"
 
 namespace vh
@@ -30,7 +30,7 @@ public:
         // -- request resource from resource system
         CHECK(resourceName) << "resource name is null";
 
-        ResourceSystem* rs = App::Get<ResourceSystem>();
+        MResourceSystem* rs = App::Get<MResourceSystem>();
         if (rs)
         {
             mResource = rs->GetResource<RENDERABLE_TYPE>(resourceName);
@@ -43,7 +43,7 @@ public:
 
     virtual void StartPlay() override
     {
-        mRenderer = App::Get<Renderer>();
+        mRenderer = App::Get<MRenderer3D>();
 
         if (mResource == nullptr)
         {
@@ -90,7 +90,7 @@ public:
     }
 
 protected:
-    Renderer* mRenderer;
+    MRenderer3D* mRenderer;
     std::shared_ptr<RENDERABLE_TYPE> mResource;
 };
 

@@ -24,8 +24,8 @@ bool checkFilename(const char *objFilename)
 void getMtlFilename(char *mtlFilename, const char *objFilename)
 {
     size_t len = strlen(objFilename);
-    strncpy(mtlFilename, objFilename, MAX_LEN);
-    strncpy(mtlFilename + (len - 4), ".mtl", 4);
+    strncpy_s(mtlFilename, MAX_LEN, objFilename, MAX_LEN);
+    strncpy_s(mtlFilename + (len - 4), MAX_LEN, ".mtl", 4);
 }
 
 void readMaterials(FILE *mtlFile,
@@ -41,23 +41,23 @@ void readMaterials(FILE *mtlFile,
 
     while (fgets(line, MAX_LEN, mtlFile) != NULL)
     {
-        sscanf(line, "newmtl %s", material);
-        if (sscanf(line, "Ka %f %f %f", &vec3.x, &vec3.y, &vec3.z))
+        sscanf_s(line, "newmtl %s", material, (unsigned) MAX_LEN);
+        if (sscanf_s(line, "Ka %f %f %f", &vec3.x, &vec3.y, &vec3.z))
         {
             aColorMap.insert(std::pair<std::string, V3>(std::string(material), vec3));
             LOG(INFO) << material << ": " << glm::to_string(vec3);
         }
-        if (sscanf(line, "Kd %f %f %f", &vec3.x, &vec3.y, &vec3.z))
+        if (sscanf_s(line, "Kd %f %f %f", &vec3.x, &vec3.y, &vec3.z))
         {
             dColorMap.insert(std::pair<std::string, V3>(std::string(material), vec3));
             LOG(INFO) << material << ": " << glm::to_string(vec3);
         }
-        if (sscanf(line, "Ks %f %f %f", &vec3.x, &vec3.y, &vec3.z))
+        if (sscanf_s(line, "Ks %f %f %f", &vec3.x, &vec3.y, &vec3.z))
         {
             sColorMap.insert(std::pair<std::string, V3>(std::string(material), vec3));
             LOG(INFO) << material << ": " << glm::to_string(vec3);
         }
-        if (sscanf_s(line, "map_Kd %s", texFile, MAX_LEN))
+        if (sscanf_s(line, "map_Kd %s", texFile, (unsigned) MAX_LEN))
         {
             textures[std::string(material)] = std::string(texFile);
             LOG(INFO) << material << ": texture " << texFile;
@@ -81,9 +81,10 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename)
         return false;
     }
 
-    FILE *objFile = fopen(objFilename, "r");
+    FILE* objFile;
+    errno_t err = fopen_s(&objFile, objFilename, "r");
 
-    if (objFile == NULL)
+    if (err)
     {
         LOG(ERROR) << "Can't open objFile: " << objFilename;
         return false;
@@ -96,15 +97,16 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename)
     char mtlFilename[MAX_LEN];
     getMtlFilename(mtlFilename, objFilename);
 
-    FILE *mtlFile = fopen(mtlFilename, "r");
+    FILE* mtlFile;
+    err = fopen_s(&mtlFile, mtlFilename, "r");
 
-    if (mtlFile != NULL)
+    if (err)
     {
-        LOG(INFO) << "Found material library file: " << mtlFilename;
+        LOG(INFO) << "No material library found at " << mtlFilename;
     }
     else
     {
-        LOG(INFO) << "No material library found at " << mtlFilename;
+        LOG(INFO) << "Found material library file: " << mtlFilename;
     }
 
     std::vector<V3> vertices, normals, aColor, dColor, sColor;
@@ -145,7 +147,7 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename)
         // read next line
         if (fgets(line, MAX_LEN, objFile) == NULL) break;
 
-        if (sscanf(line, "usemtl %s", temp))
+        if (sscanf_s(line, "usemtl %s", temp, (unsigned) MAX_LEN))
         {
             mtl = temp;
             LOG(INFO) << "Using material: " << mtl;
@@ -156,21 +158,21 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename)
             currTex = 0;
         }
 
-        if (sscanf(line, "v %f %f %f", &vec3.x, &vec3.y, &vec3.z))
+        if (sscanf_s(line, "v %f %f %f", &vec3.x, &vec3.y, &vec3.z))
         {
             vertices.push_back(vec3);
         }
-        else if (sscanf(line, "vt %f %f", &vec3.x, &vec3.y))
+        else if (sscanf_s(line, "vt %f %f", &vec3.x, &vec3.y))
         {
-            vec3.z = currTex;
+            vec3.z = (float) currTex;
             uvs.push_back(vec3);
 
         }
-        else if (sscanf(line, "vn %f %f %f", &vec3.x, &vec3.y, &vec3.z))
+        else if (sscanf_s(line, "vn %f %f %f", &vec3.x, &vec3.y, &vec3.z))
         {
             normals.push_back(vec3);
         }
-        else if (sscanf(line, "f %s %s %s", s1, s2, s3))
+        else if (sscanf_s(line, "f %s %s %s", s1, (unsigned)MAX_LEN, s2, (unsigned)MAX_LEN, s3, (unsigned)MAX_LEN))
         {
             // finding vertices with identical values for position/normals/uv (and material)
             if (map.count(std::string(s1)))
@@ -236,12 +238,12 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename)
     if (aColor.size() > 0) attribCount += 3;    // add color triad if specified
     if (uvs.size() > 0) attribCount += 1;       // add UV coordinates if specified
 
-    GLuint vertexNum = values.size();
-    GLuint attribSize = values.size() * (3 + 3 * attribCount);      // for each vertex: vec3 coordinates + vec3 * attribCount
+    GLuint vertexNum = (GLuint) values.size();
+    GLuint attribSize = (GLuint) values.size() * (3 + 3 * attribCount);      // for each vertex: vec3 coordinates + vec3 * attribCount
     GLfloat* attribData = new GLfloat[attribSize];
 
     // Allocate index data
-    GLuint indexSize = indices.size();
+    GLuint indexSize = (GLuint) indices.size();
     GLuint* indexData = new GLuint[indexSize];
 
     Uint32 v = 0, vt = 0, vn = 0;
@@ -254,11 +256,11 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename)
         str = values[i];
         if (str.find("//") != std::string::npos)
         {
-            sscanf(str.c_str(), "%d//%d", &v, &vn);
+            sscanf_s(str.c_str(), "%d//%d", &v, &vn);
         }
         else
         {
-            sscanf(str.c_str(), "%d/%d/%d", &v, &vt, &vn);
+            sscanf_s(str.c_str(), "%d/%d/%d", &v, &vt, &vn);
         }
 
         // Vertices
@@ -318,7 +320,7 @@ bool vh::Utils::ImportWavefront(vh::Mesh* mesh, const char* objFilename)
 
     for (size_t i = 0; i < indices.size(); i++)
     {
-        indexData[i] = indices[i];
+        indexData[i] = (GLuint) indices[i];
     }
 
     // Set attrib and index data to mesh

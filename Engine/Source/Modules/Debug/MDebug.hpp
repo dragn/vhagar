@@ -7,12 +7,12 @@
 namespace vh
 {
 
-class Debug : public Module
+class MDebug : public Module
 {
-    VH_MODULE(Debug);
+    VH_MODULE(MDebug);
 
 public:
-    Debug();
+    MDebug();
 
     /* Component interface */
     virtual Ret TickInit(uint32_t delta);
@@ -21,7 +21,7 @@ public:
 
 private:
     DebugVisual mDebugVisual;
-    Renderer* mRenderer;
+    MRenderer3D* mRenderer;
     MWorld* mWorld;
     TTF_Font* mFont;
     TextOverlay mStatOverlay;

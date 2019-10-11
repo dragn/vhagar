@@ -1,8 +1,8 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "TextFieldWidget.hpp"
 
-#include "Modules/Renderer2D/Renderer2D.hpp"
-#include "Modules/GUI2D/GUI2D.hpp"
+#include "Modules/Renderer2D/MRenderer2D.hpp"
+#include "Modules/GUI2D/MGUI2D.hpp"
 
 gui::TextFieldWidget::TextFieldWidget()
     : mMaxSize(20)
@@ -18,10 +18,10 @@ gui::TextFieldWidget::~TextFieldWidget()
 
 void gui::TextFieldWidget::Draw(int32_t x, int32_t y)
 {
-    vh::Renderer2D* renderer = vh::App::Get<vh::Renderer2D>();
+    vh::MRenderer2D* renderer = vh::App::Get<vh::MRenderer2D>();
     CHECK(renderer);
 
-    GUI2D* gui = vh::App::Get<GUI2D>();
+    MGUI2D* gui = vh::App::Get<MGUI2D>();
     CHECK(gui);
 
     int32_t width, height;
@@ -39,7 +39,7 @@ void gui::TextFieldWidget::Draw(int32_t x, int32_t y)
 SDL_Cursor* gui::TextFieldWidget::GetCursor()
 {
     if (mCursor != nullptr) return mCursor;
-    GUI2D* gui = vh::App::Get<GUI2D>();
+    MGUI2D* gui = vh::App::Get<MGUI2D>();
     CHECK(gui);
     mCursor = gui->GetBeamCursor();
     return mCursor;

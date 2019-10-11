@@ -7,12 +7,17 @@ namespace vh
 
 typedef void (*CmdHandler)(const std::vector<std::string>&);
 
-class ConsoleEngine : public Module
+/*
+    MMMM ConsoleEngine MMMM
+
+    Allows to register and run command strings.
+*/
+class MConsoleEngine : public Module
 {
-    VH_MODULE(ConsoleEngine);
+    VH_MODULE(MConsoleEngine);
 
 public:
-    ConsoleEngine()
+    MConsoleEngine()
         : Module(TickFrequency::RARE)
     {
     }

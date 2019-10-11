@@ -1,21 +1,21 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "ConsoleCommands.hpp"
 
-#include "Modules/Console/ConsoleEngine.hpp"
+#include "Modules/Console/MConsoleEngine.hpp"
 
 namespace vh
 {
 
-VH_MODULE_IMPL(ConsoleEngine)
+VH_MODULE_IMPL(MConsoleEngine)
 
-vh::Ret ConsoleEngine::TickInit(uint32_t delta)
+vh::Ret MConsoleEngine::TickInit(uint32_t delta)
 {
     ConsoleCommands::RegisterAll(this);
 
     return Ret::SUCCESS;
 }
 
-vh::Ret ConsoleEngine::TickRun(uint32_t delta)
+vh::Ret MConsoleEngine::TickRun(uint32_t delta)
 {
     if (!mCmdQueue.empty())
     {
@@ -32,12 +32,12 @@ vh::Ret ConsoleEngine::TickRun(uint32_t delta)
     return Ret::CONTINUE;
 }
 
-void ConsoleEngine::Register(const std::string& name, CmdHandler handler)
+void MConsoleEngine::Register(const std::string& name, CmdHandler handler)
 {
     mCommands[name] = handler;
 }
 
-void ConsoleEngine::_Exec(const std::string& cmd)
+void MConsoleEngine::_Exec(const std::string& cmd)
 {
     LOG(INFO) << "> " << cmd;
 
@@ -64,14 +64,14 @@ void ConsoleEngine::_Exec(const std::string& cmd)
     entry->second(params);
 }
 
-void ConsoleEngine::Exec(const std::string& cmd)
+void MConsoleEngine::Exec(const std::string& cmd)
 {
     cs::CritSectionLock lock(mCmdQueueCS);
 
     mCmdQueue.push(cmd);
 }
 
-void ConsoleEngine::PrintHelp()
+void MConsoleEngine::PrintHelp()
 {
     LOG(INFO) << "Commands list:";
     for (const std::pair<std::string, CmdHandler>& cmd : mCommands)

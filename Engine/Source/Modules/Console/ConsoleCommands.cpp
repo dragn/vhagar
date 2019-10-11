@@ -1,8 +1,8 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "ConsoleCommands.hpp"
 
-#include "Modules/Console/Console.hpp"
-#include "Modules/ResourceSystem/ResourceSystem.hpp"
+#include "Modules/Console/MConsoleGUI.hpp"
+#include "Modules/ResourceSystem/MResourceSystem.hpp"
 #include "Modules/Renderer/RenderableBehavior/MeshBehavior.hpp"
 
 namespace vh
@@ -13,7 +13,7 @@ namespace vh
 namespace ConsoleCommands
 {
 
-void RegisterAll(ConsoleEngine* console)
+void RegisterAll(MConsoleEngine* console)
 {
     CHECK(console);
 
@@ -61,12 +61,12 @@ DEFINE_COMMAND(quit)
 
 DEFINE_COMMAND(help)
 {
-    App::Get<ConsoleEngine>()->PrintHelp();
+    App::Get<MConsoleEngine>()->PrintHelp();
 }
 
 DEFINE_COMMAND(save_mesh)
 {
-    ResourceSystem* rs = App::Get<ResourceSystem>();
+    MResourceSystem* rs = App::Get<MResourceSystem>();
     MWorld* world = App::Get<MWorld>();
 
     CHECK(world);
@@ -190,7 +190,7 @@ DEFINE_COMMAND(rotate_actor)
 
 DEFINE_COMMAND(spawn_mesh_actor)
 {
-    ResourceSystem* rs = App::Get<ResourceSystem>();
+    MResourceSystem* rs = App::Get<MResourceSystem>();
     MWorld* world = App::Get<MWorld>();
 
     CHECK(world);

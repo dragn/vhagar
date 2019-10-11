@@ -1,26 +1,26 @@
 #include "Modules/VhModules_PCH.hpp"
-#include "PlayerController.hpp"
+#include "MPlayerController.hpp"
 
-#include "Modules/Renderer/Renderer.hpp"
+#include "Modules/Renderer/MRenderer3D.hpp"
 #include "Modules/World/CameraBehavior.hpp"
 
 namespace vh
 {
 
-VH_MODULE_IMPL(PlayerController);
+VH_MODULE_IMPL(MPlayerController);
 
-PlayerController::PlayerController()
+MPlayerController::MPlayerController()
     : Module(TickFrequency::NORMAL)
     , mCameraTurnSpeed(0.001f)
 {
 }
 
-vh::Ret PlayerController::TickInit(uint32_t delta)
+vh::Ret MPlayerController::TickInit(uint32_t delta)
 {
-    App::CheckRequired<Renderer>();
+    App::CheckRequired<MRenderer3D>();
     App::CheckRequired<MWorld>();
 
-    mConsole = App::Get<Console>();
+    mConsole = App::Get<MConsoleGUI>();
     if (!mConsole || !mConsole->IsRunning())
     {
         return Ret::CONTINUE;
@@ -29,7 +29,7 @@ vh::Ret PlayerController::TickInit(uint32_t delta)
     return Ret::SUCCESS;
 }
 
-vh::Ret PlayerController::TickRun(uint32_t delta)
+vh::Ret MPlayerController::TickRun(uint32_t delta)
 {
     if (mActor.expired()) return Ret::CONTINUE;
 
@@ -49,13 +49,13 @@ vh::Ret PlayerController::TickRun(uint32_t delta)
     return Ret::CONTINUE;
 }
 
-void PlayerController::Control(std::weak_ptr<Actor> actor)
+void MPlayerController::Control(std::weak_ptr<Actor> actor)
 {
     mActor = actor;
     for (bool &b : mPressed) b = false;
 }
 
-void PlayerController::HandleEvent(SDL_Event *event)
+void MPlayerController::HandleEvent(SDL_Event *event)
 {
     if (mActor.expired()) return;
 
@@ -82,7 +82,7 @@ void PlayerController::HandleEvent(SDL_Event *event)
     }
 }
 
-void PlayerController::_HandleKey(uint32_t type, SDL_KeyboardEvent *event)
+void MPlayerController::_HandleKey(uint32_t type, SDL_KeyboardEvent *event)
 {
     SDL_Keycode k = event->keysym.sym;
     if (k > 127) return; // handle only symbol keys for now...
@@ -97,7 +97,7 @@ void PlayerController::_HandleKey(uint32_t type, SDL_KeyboardEvent *event)
     }
 }
 
-void PlayerController::_HandleMouse(int32_t xrel, int32_t yrel)
+void MPlayerController::_HandleMouse(int32_t xrel, int32_t yrel)
 {
     if (mActor.expired()) return;
 

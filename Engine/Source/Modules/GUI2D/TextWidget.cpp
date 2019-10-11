@@ -1,12 +1,12 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "TextWidget.hpp"
 
-#include "Modules/GUI2D/GUI2D.hpp"
-#include "Modules/Renderer2D/Renderer2D.hpp"
+#include "Modules/GUI2D/MGUI2D.hpp"
+#include "Modules/Renderer2D/MRenderer2D.hpp"
 
 using vh::App;
-using vh::Renderer2D;
-using gui::GUI2D;
+using vh::MRenderer2D;
+using gui::MGUI2D;
 
 gui::TextWidget::TextWidget(const char* text /* = nullptr */)
     : mFont(nullptr)
@@ -47,7 +47,7 @@ void gui::TextWidget::Draw(int32_t x, int32_t y)
 {
     if (mText.empty()) return;
 
-    vh::Renderer2D* renderer = vh::App::Get<vh::Renderer2D>();
+    vh::MRenderer2D* renderer = vh::App::Get<vh::MRenderer2D>();
     CHECK(renderer);
 
     if (mWrap > 0)
@@ -73,7 +73,7 @@ void gui::TextWidget::UpdateSize()
 {
     if (mFont == nullptr)
     {
-        GUI2D* gui = App::Get<GUI2D>();
+        MGUI2D* gui = App::Get<MGUI2D>();
         CHECK(gui);
         mFont = gui->GetFont();
     }
@@ -84,7 +84,7 @@ void gui::TextWidget::UpdateSize()
         return;
     }
 
-    vh::Renderer2D* renderer = vh::App::Get<vh::Renderer2D>();
+    vh::MRenderer2D* renderer = vh::App::Get<vh::MRenderer2D>();
     CHECK(renderer);
 
     int32_t width, height;

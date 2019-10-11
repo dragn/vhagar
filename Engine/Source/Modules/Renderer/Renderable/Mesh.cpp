@@ -1,7 +1,7 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "Mesh.hpp"
 
-#include "Modules/Renderer/Renderer.hpp"
+#include "Modules/Renderer/MRenderer3D.hpp"
 #include "Modules/ResourceSystem/ReadWrite.hpp"
 #include "Modules/Renderer/ImportUtils.hpp"
 
@@ -147,7 +147,7 @@ bool vh::Mesh::DoUnload()
         - sizeof(GLint) * index size bytes index data
         - sizeof(GLfloat) * attrib size * attrib count bytes attrib data
 */
-template<> bool vh::ResourceSystem::Load(const char* path, std::shared_ptr<vh::Mesh> mesh)
+template<> bool vh::MResourceSystem::Load(const char* path, std::shared_ptr<vh::Mesh> mesh)
 {
     CHECK(mesh);
 
@@ -232,7 +232,7 @@ template<> bool vh::ResourceSystem::Load(const char* path, std::shared_ptr<vh::M
         - sizeof(GLint) * index size bytes index data
         - sizeof(GLfloat) * attrib size * attrib count bytes attrib data
 */
-template<> bool vh::ResourceSystem::Save(const char* path, std::shared_ptr<const vh::Mesh> mesh)
+template<> bool vh::MResourceSystem::Save(const char* path, std::shared_ptr<const vh::Mesh> mesh)
 {
     std::ofstream stream;
 

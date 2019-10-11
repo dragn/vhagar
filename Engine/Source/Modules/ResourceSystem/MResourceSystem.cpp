@@ -1,11 +1,11 @@
 #include "Modules/VhModules_PCH.hpp"
-#include "ResourceSystem.hpp"
+#include "MResourceSystem.hpp"
 
 #include "Modules/Renderer/ImportUtils.hpp"
 
 using namespace vh;
 
-VH_MODULE_IMPL(ResourceSystem);
+VH_MODULE_IMPL(MResourceSystem);
 
 /*
     Save actor as ASCII human-readable file *.vhactor
@@ -50,18 +50,18 @@ VH_MODULE_IMPL(ResourceSystem);
         PHYSICS DYNAMIC BOX 1.0 1.0 1.0
 */
 template<>
-bool vh::ResourceSystem::Save(const char* path, std::shared_ptr<const Actor> actor)
+bool vh::MResourceSystem::Save(const char* path, std::shared_ptr<const Actor> actor)
 {
     return false;
 }
 
 template<>
-bool vh::ResourceSystem::Load(const char* path, std::shared_ptr<Actor> actor)
+bool vh::MResourceSystem::Load(const char* path, std::shared_ptr<Actor> actor)
 {
     return false;
 }
 
-vh::Ret vh::ResourceSystem::TickInit(uint32_t delta)
+vh::Ret vh::MResourceSystem::TickInit(uint32_t delta)
 {
     char cd[FILENAME_MAX];
     GetCurrentDir(cd, FILENAME_MAX);
@@ -89,14 +89,14 @@ vh::Ret vh::ResourceSystem::TickInit(uint32_t delta)
     return Ret::SUCCESS;
 }
 
-vh::Ret vh::ResourceSystem::TickClose(uint32_t delta)
+vh::Ret vh::MResourceSystem::TickClose(uint32_t delta)
 {
     mStorage.clear();
 
     return Ret::SUCCESS;
 }
 
-std::string ResourceSystem::GetFullPath(const char* relPath)
+std::string MResourceSystem::GetFullPath(const char* relPath)
 {
     std::string fullPath(mCurrDir);
     fullPath.append("/");

@@ -1,11 +1,11 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "Widget.hpp"
 
-#include "Modules/Renderer2D/Renderer2D.hpp"
-#include "Modules/GUI2D/GUI2D.hpp"
+#include "Modules/Renderer2D/MRenderer2D.hpp"
+#include "Modules/GUI2D/MGUI2D.hpp"
 
 using vh::App;
-using vh::Renderer2D;
+using vh::MRenderer2D;
 
 gui::Widget::Widget()
     : mCursor(nullptr)
@@ -64,7 +64,7 @@ void gui::Widget::SetSize(int32_t width, int32_t height)
 SDL_Cursor* gui::Widget::GetCursor()
 {
     if (mCursor != nullptr) return mCursor;
-    GUI2D* gui = vh::App::Get<GUI2D>();
+    MGUI2D* gui = vh::App::Get<MGUI2D>();
     CHECK(gui);
     mCursor = gui->GetArrowCursor();
     return mCursor;
@@ -124,7 +124,7 @@ void gui::Widget::OnClickInternal(int32_t x, int32_t y)
 
     if (IsFocusable())
     {
-        vh::App::Get<gui::GUI2D>()->SetFocus(this);
+        vh::App::Get<gui::MGUI2D>()->SetFocus(this);
         mFocused = true;
         SetDirty();
     }
@@ -211,7 +211,7 @@ void gui::Widget::Draw(Widget* parent, bool force /* = false*/)
         CalcAbsPos(parent);
 
         /* draw background */
-        Renderer2D* render = vh::App::Get<Renderer2D>();
+        MRenderer2D* render = vh::App::Get<MRenderer2D>();
         CHECK(render);
         render->FillRect(mAbsPosX, mAbsPosY, mWidth, mHeight, mBgColor);
 
