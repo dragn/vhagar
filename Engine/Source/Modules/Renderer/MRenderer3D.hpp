@@ -47,6 +47,9 @@ namespace vh
     {
         VH_MODULE(MRenderer3D);
 
+        template<eRenderBlockType TYPE, typename RENDERABLE_TYPE>
+        friend class RenderableBehavior;
+
     public:
 
         MRenderer3D(const RendererOptions& opts)
@@ -82,15 +85,6 @@ namespace vh
             mFlags ^= flag;
         }
 
-        // Get writable render buffer
-        RenderBufferHandler& GetBufferHandler()
-        {
-            return mBufferHandler;
-        }
-
-        void AddLoadTask(std::shared_ptr<Renderable> renderable);
-        void AddReleaseTask(std::shared_ptr<Renderable> renderable);
-
     private:
         RendererOptions mOptions;
 
@@ -118,6 +112,9 @@ namespace vh
         void DoRenderMesh(glm::mat4 view, glm::mat4 projection, const Mesh::Payload* payload, const std::vector<PointLight::Payload>& lights);
         void DoRenderSkyBox(glm::mat4 view, glm::mat4 projection, const SkyBox::Payload& payload);
         void DoRenderOverlay(const Overlay::Payload& payload);
+
+        void AddLoadTask(std::shared_ptr<Renderable> renderable);
+        void AddReleaseTask(std::shared_ptr<Renderable> renderable);
 
         std::mutex mTaskQueueLock;
         std::queue<RenderTask> mTaskQueue;

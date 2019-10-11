@@ -56,12 +56,6 @@ vh::Ret MRenderer3D::TickInit(uint32_t delta)
         return Ret::FAILURE;
     }
 
-    if (TTF_Init() < 0)
-    {
-        LOG(FATAL) << TTF_GetError();
-        return Ret::FAILURE;
-    }
-
     Uint32 flags = SDL_WINDOW_OPENGL;
 
     if (mOptions.borderless) flags |= SDL_WINDOW_BORDERLESS;
@@ -112,7 +106,6 @@ vh::Ret MRenderer3D::TickClose(uint32_t delta)
 
     SDL_DestroyWindow(mWindow);
 
-    TTF_Quit();
     SDL_Quit();
 
     return Ret::SUCCESS;

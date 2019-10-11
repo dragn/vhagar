@@ -1,6 +1,9 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "MConsoleGUI.hpp"
 
+#include "Modules/ResourceSystem/MResourceSystem.hpp"
+#include "Modules/ResourceSystem/ResourceTypes/RFont.hpp"
+
 namespace vh
 {
 
@@ -8,39 +11,19 @@ VH_MODULE_IMPL(MConsoleGUI);
 
 vh::Ret MConsoleGUI::TickInit(uint32_t delta)
 {
-    App::CheckRequired<MConsoleEngine>();
-    App::CheckRequired<MRenderer3D>();
+    WAIT_REQUIRED(MConsoleEngine);
+    WAIT_REQUIRED(MRenderer3D);
+    WAIT_REQUIRED(MResourceSystem);
 
-    mEngine = App::Get<MConsoleEngine>();
-    if (!mEngine)
-    {
-        return Ret::CONTINUE;
-    }
-
-    mRenderer = App::Get<MRenderer3D>();
-    if (!mRenderer)
-    {
-        return Ret::CONTINUE;
-    }
-
-    if (!mRenderer->IsRunning())
-    {
-        // Wait for renderer to init
-        return Ret::CONTINUE;
-    }
-
-    mFont = TTF_OpenFont(VH_CONCAT(VH_XSTR(VH_ENGINE_ASSETS_DIR), "/Fonts/Roboto-Regular.ttf"), FONT_SIZE);
-    if (!mFont)
-    {
-        LOG(WARNING) << "Could not open font. Console will not be started.";
-        return Ret::FAILURE;
-    }
+    mFont = App::Get<MResourceSystem>()->GetResource<RFont>("Fonts/Roboto-Regular.ttf")->GetFont(FONT_SIZE);
+    CHECK(mFont) << "Font missing for console GUI";
 
     Uint32 rmask = 0x000000ff;
     Uint32 gmask = 0x0000ff00;
     Uint32 bmask = 0x00ff0000;
     Uint32 amask = 0xff000000;
 
+    mRenderer = App::Get<MRenderer3D>();
     CHECK(mRenderer->GetOptions().screenWidth > 40);
 
     mSurf = SDL_CreateRGBSurface(0, static_cast<Uint32>(mRenderer->GetOptions().screenWidth - 40),

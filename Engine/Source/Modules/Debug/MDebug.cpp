@@ -3,6 +3,7 @@
 
 #include "Modules/Console/ConsoleCommands.hpp"
 #include "Modules/Renderer/MRenderer3D.hpp"
+#include "Modules/ResourceSystem/ResourceTypes/RFont.hpp"
 
 using namespace vh;
 
@@ -29,27 +30,16 @@ vh::MDebug::MDebug()
 
 vh::Ret vh::MDebug::TickInit(uint32_t delta)
 {
-    App::CheckRequired<MRenderer3D>();
-    App::CheckRequired<MWorld>();
-
-    mRenderer = App::Get<MRenderer3D>();
-
-    // wait for renderer to start
-    if (!mRenderer || !mRenderer->IsRunning())
-    {
-        return Ret::CONTINUE;
-    }
+    WAIT_REQUIRED(MResourceSystem);
+    WAIT_REQUIRED(MRenderer3D);
+    WAIT_REQUIRED(MWorld);
 
     //mDebugVisual.Init();
 
     mWorld = App::Get<MWorld>();
 
-    mFont = TTF_OpenFont(VH_CONCAT(VH_XSTR(VH_ENGINE_ASSETS_DIR), "/Fonts/Roboto-Regular.ttf"), 16);
-    if (mFont == nullptr)
-    {
-        LOG(WARNING) << "Could not open font. Debug won't load.";
-        return Ret::FAILURE;
-    }
+    mFont = App::Get<MResourceSystem>()->GetResource<RFont>("Fonts/Roboto-Regular.ttf")->GetFont(16);
+    CHECK(mFont) << "Could not open font. Debug won't load.";
 
     REGISTER_COMMAND(toggle_labels);
 

@@ -17,14 +17,8 @@ MPlayerController::MPlayerController()
 
 vh::Ret MPlayerController::TickInit(uint32_t delta)
 {
-    App::CheckRequired<MRenderer3D>();
-    App::CheckRequired<MWorld>();
-
-    mConsole = App::Get<MConsoleGUI>();
-    if (!mConsole || !mConsole->IsRunning())
-    {
-        return Ret::CONTINUE;
-    }
+    WAIT_REQUIRED(MRenderer3D);
+    WAIT_REQUIRED(MWorld);
 
     return Ret::SUCCESS;
 }
@@ -33,8 +27,7 @@ vh::Ret MPlayerController::TickRun(uint32_t delta)
 {
     if (mActor.expired()) return Ret::CONTINUE;
 
-    // do nothing if console is open
-    if (mConsole->IsShown()) return Ret::CONTINUE;
+    if (mInputBlocked) return Ret::CONTINUE;
 
     float sec = delta / 1000.0f;
 
@@ -47,6 +40,11 @@ vh::Ret MPlayerController::TickRun(uint32_t delta)
     });
 
     return Ret::CONTINUE;
+}
+
+void MPlayerController::SetInputBlocked(bool blocked)
+{
+    mInputBlocked = blocked;
 }
 
 void MPlayerController::Control(std::weak_ptr<Actor> actor)

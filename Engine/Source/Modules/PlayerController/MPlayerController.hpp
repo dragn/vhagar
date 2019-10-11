@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Modules/Console/MConsoleGUI.hpp"
 #include "Modules/standard.hpp"
 #include "Modules/World/ControlBehavior.hpp"
 
@@ -37,8 +36,9 @@ namespace vh {
             return mActor;
         }
 
+        void SetInputBlocked(bool blocked);
+
     private:
-        MConsoleGUI* mConsole;
         std::weak_ptr<Actor> mActor;
 
         float mCameraTurnSpeed;
@@ -47,6 +47,7 @@ namespace vh {
         void _HandleMouse(int32_t xrel, int32_t yrel);
 
         bool mPressed[128];
+        bool mInputBlocked;
     };
 
 } // namespace vh

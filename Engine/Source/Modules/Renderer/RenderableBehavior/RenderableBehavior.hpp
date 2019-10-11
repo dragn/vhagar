@@ -68,7 +68,7 @@ public:
         // start rendering as soon as it's loaded (in render thread)
         if (mResource && mResource->IsLoaded())
         {
-            RenderBlock* block = mRenderer->GetBufferHandler().AllocateNewBlock();
+            RenderBlock* block = mRenderer->mBufferHandler.AllocateNewBlock();
             if (block == nullptr) return;
 
             block->flags = GetFlags();

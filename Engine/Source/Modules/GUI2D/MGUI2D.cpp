@@ -2,6 +2,7 @@
 #include "MGUI2D.hpp"
 
 #include "Modules/Renderer2D/MRenderer2D.hpp"
+#include "Modules/ResourceSystem/MResourceSystem.hpp"
 
 using namespace vh;
 
@@ -12,19 +13,8 @@ VH_MODULE_IMPL(MGUI2D);
 
 vh::Ret MGUI2D::TickInit(uint32_t delta)
 {
-    App::CheckRequired<MRenderer2D>();
-
-    TTF_Init();
-    CHECK(TTF_WasInit()) << "Error initialising SDL_ttf";
-
-    mFont = TTF_OpenFont(mOptions.fontPath, mOptions.fontSize);
-    CHECK(mFont) << "Could not open font: " << mOptions.fontPath;
-
-    mHdr1Font = TTF_OpenFont(mOptions.hdr1FontPath, mOptions.hdr1FontSize);
-    CHECK(mHdr1Font) << "Could not open font: " << mOptions.hdr1FontPath;
-
-    mHdr2Font = TTF_OpenFont(mOptions.hdr2FontPath, mOptions.hdr2FontSize);
-    CHECK(mHdr2Font) << "Could not open font: " << mOptions.hdr2FontPath;
+    WAIT_REQUIRED(MRenderer2D);
+    WAIT_REQUIRED(MResourceSystem);
 
     mRenderer = App::Get<MRenderer2D>();
     CHECK(mRenderer);
@@ -153,10 +143,6 @@ vh::Ret MGUI2D::TickRun(uint32_t delta)
 
 vh::Ret MGUI2D::TickClose(uint32_t delta)
 {
-    if (mFont) TTF_CloseFont(mFont);
-
-    if (TTF_WasInit()) TTF_Quit();
-
     SafeDelete(mView);
     SafeDelete(mNextView);
     for (View* view : mModalViewStack) SafeDelete(view);
@@ -229,6 +215,21 @@ void MGUI2D::HandleEvent(SDL_Event* event)
     }
 }
 
+TTF_Font* MGUI2D::GetFont() const
+{
+    return App::Get<MResourceSystem>()->GetResource<RFont>(mOptions.fontPath)->GetFont(mOptions.fontSize);
+}
+
+TTF_Font* MGUI2D::GetHdr1Font() const
+{
+    return App::Get<MResourceSystem>()->GetResource<RFont>(mOptions.hdr1FontPath)->GetFont(mOptions.hdr1FontSize);
+}
+
+TTF_Font* MGUI2D::GetHdr2Font() const
+{
+    return App::Get<MResourceSystem>()->GetResource<RFont>(mOptions.hdr2FontPath)->GetFont(mOptions.hdr2FontSize);
+}
+
 void MGUI2D::FocusedDestroyed(Widget* widget)
 {
     CHECK(widget == mFocused);
@@ -295,7 +296,7 @@ void MGUI2D::BackToMain(eTransitionMode mode)
 void MGUI2D::CalcTextSize(const char* text, int32_t& outWidth, int32_t& outHeight)
 {
     MRenderer2D* mRenderer = App::Get<MRenderer2D>();
-    mRenderer->CalcTextSize(mFont, text, outWidth, outHeight);
+    mRenderer->CalcTextSize(GetFont(), text, outWidth, outHeight);
 }
 
 void MGUI2D::ApplyTransition()

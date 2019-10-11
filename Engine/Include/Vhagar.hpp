@@ -13,6 +13,7 @@
 #include "Modules/Renderer/RenderableBehavior/SkyBoxBehavior.hpp"
 #include "Modules/PlayerController/MPlayerController.hpp"
 #include "Modules/Console/MConsoleEngine.hpp"
+#include "Modules/Console/MConsoleGUI.hpp"
 #include "Modules/Console/MRemoteConsoleServer.hpp"
 #include "Modules/Network/MNetwork.hpp"
 #include "Modules/ResourceSystem/MResourceSystem.hpp"

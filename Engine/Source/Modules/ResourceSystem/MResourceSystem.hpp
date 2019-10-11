@@ -39,7 +39,7 @@ namespace vh
                 }
                 else
                 {
-                    LOG(FATAL) << "Unable to load resource " << name;
+                    LOG(ERROR) << "Unable to load resource " << name;
                     return nullptr;
                 }
             }

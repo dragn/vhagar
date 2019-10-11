@@ -110,4 +110,13 @@ namespace vh
         UNCOPYABLE(App);
     };
 
+#define WAIT_REQUIRED(MODULE_TYPE)                                  \
+    {                                                               \
+        MODULE_TYPE* mod = App::Get<MODULE_TYPE>();                 \
+        if (mod == nullptr || !mod->IsRunning())                    \
+        {                                                           \
+            return Ret::CONTINUE;                                   \
+        }                                                           \
+    }                                                               \
+
 } // namespace vh

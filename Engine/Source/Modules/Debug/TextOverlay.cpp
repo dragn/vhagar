@@ -3,6 +3,7 @@
 
 #include "Modules/Renderer/MRenderer3D.hpp"
 #include "Modules/Renderer/RenderableBehavior/OverlayBehavior.hpp"
+#include "Modules/ResourceSystem/ResourceTypes/RFont.hpp"
 
 vh::TextOverlay::TextOverlay(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
     : mPosX(x)
@@ -34,12 +35,8 @@ void vh::TextOverlay::Create()
 
     mActor.lock()->StartPlay();
 
-    mFont = TTF_OpenFont(VH_CONCAT(VH_XSTR(VH_ENGINE_ASSETS_DIR), "/Fonts/Roboto-Regular.ttf"), 12);
-    if (!mFont)
-    {
-        LOG(ERROR) << "Could not open font";
-    }
-    // SetText("");
+    mFont = App::Get<MResourceSystem>()->GetResource<RFont>("Fonts/Roboto-Regular.ttf")->GetFont(16);
+    CHECK(mFont) << "Could not open font";
 }
 
 void vh::TextOverlay::Destroy()

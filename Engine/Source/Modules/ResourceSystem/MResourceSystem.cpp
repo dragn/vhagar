@@ -86,12 +86,18 @@ vh::Ret vh::MResourceSystem::TickInit(uint32_t delta)
         }
     }
 
+    // Initialize SDL_ttf for font resources
+    TTF_Init();
+    CHECK(TTF_WasInit()) << "Error initialising SDL_ttf";
+
     return Ret::SUCCESS;
 }
 
 vh::Ret vh::MResourceSystem::TickClose(uint32_t delta)
 {
     mStorage.clear();
+
+    if (TTF_WasInit()) TTF_Quit();
 
     return Ret::SUCCESS;
 }

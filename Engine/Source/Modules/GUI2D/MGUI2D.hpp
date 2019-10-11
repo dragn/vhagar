@@ -2,6 +2,7 @@
 
 #include "Modules/GUI2D/View.hpp"
 #include "Modules/Renderer2D/MRenderer2D.hpp"
+#include "Modules/ResourceSystem/ResourceTypes/RFont.hpp"
 #include "Modules/standard.hpp"
 
 namespace gui
@@ -41,7 +42,6 @@ namespace gui
             , mNextView(nullptr)
             , mNextModalView(nullptr)
             , mScale(1)
-            , mFont(nullptr)
             , mOptions(opts)
             , mFocused(nullptr)
             , mArrowCursor(nullptr)
@@ -67,9 +67,9 @@ namespace gui
 
         virtual void HandleEvent(SDL_Event* event) override;
 
-        TTF_Font* GetFont() const { return mFont; }
-        TTF_Font* GetHdr1Font() const { return mHdr1Font; }
-        TTF_Font* GetHdr2Font() const { return mHdr2Font; }
+        TTF_Font* GetFont() const;
+        TTF_Font* GetHdr1Font() const;
+        TTF_Font* GetHdr2Font() const;
 
         /* Calculate text size rendered with default font */
         void CalcTextSize(const char* text, int32_t& outWidth, int32_t& outHeight);
@@ -95,9 +95,6 @@ namespace gui
         View* mNextModalView;
         uint32_t mScale;
 
-        TTF_Font* mFont;
-        TTF_Font* mHdr1Font;
-        TTF_Font* mHdr2Font;
         GUI2DOptions mOptions;
 
         Widget* mFocused;
