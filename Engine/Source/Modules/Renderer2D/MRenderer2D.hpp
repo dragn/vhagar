@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Modules/Renderer2D/Renderer2DOptions.hpp
+#include "Modules/Renderer2D/Renderer2DOptions.hpp"
 #include "Modules/Renderer2D/Color.hpp"
 #include "Modules/standard.hpp"
 

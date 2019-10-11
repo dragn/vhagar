@@ -4,7 +4,7 @@
 VH_MODULE_IMPL(vh::MRenderer2D);
 
 vh::MRenderer2D::MRenderer2D()
-    : Module(TickFrequency::NORMAL)
+    : Module(TickFrequency::EACH)
     , mWindow(nullptr)
     , mRenderer(nullptr)
     , mFrameBuf(nullptr)
