@@ -2,7 +2,7 @@
 #include "MDebug.hpp"
 
 #include "Modules/Console/ConsoleCommands.hpp"
-#include "Modules/Renderer/MRenderer3D.hpp"
+#include "Modules/Renderer/MRenderer3D_Old.hpp"
 #include "Modules/ResourceSystem/ResourceTypes/RFont.hpp"
 
 using namespace vh;
@@ -31,7 +31,7 @@ vh::MDebug::MDebug()
 vh::Ret vh::MDebug::TickInit(uint32_t delta)
 {
     WAIT_REQUIRED(MResourceSystem);
-    WAIT_REQUIRED(MRenderer3D);
+    WAIT_REQUIRED(MRenderer3D_Old);
     WAIT_REQUIRED(MWorld);
 
     //mDebugVisual.Init();
@@ -70,7 +70,7 @@ vh::Ret vh::MDebug::TickRun(uint32_t delta)
 
 vh::Ret vh::MDebug::TickClose(uint32_t delta)
 {
-    MRenderer3D* renderer = App::Get<MRenderer3D>();
+    MRenderer3D_Old* renderer = App::Get<MRenderer3D_Old>();
     CHECK(renderer);
 
     //mDebugVisual.Destroy();

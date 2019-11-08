@@ -4,10 +4,8 @@
 namespace vh
 {
 
-void RenderBufferHandler::Create()
+RenderBufferHandler::RenderBufferHandler()
 {
-    mBuffers = new RenderBuffer[3];
-
     // set initial sizes
     mBuffers[0].header.size = 0;
     mBuffers[0].header.time = 0;
@@ -15,11 +13,6 @@ void RenderBufferHandler::Create()
     mBuffers[1].header.time = 0;
     mBuffers[2].header.time = 0;
     mBuffers[2].header.size = 0;
-}
-
-void RenderBufferHandler::Destroy()
-{
-    SafeDeleteArray(mBuffers);
 }
 
 void RenderBufferHandler::LockRead()
@@ -32,25 +25,25 @@ void RenderBufferHandler::UnlockRead()
     mReadMtx.unlock();
 }
 
-const vh::RenderBuffer* RenderBufferHandler::GetLastBuffer()
+const vh::RenderBuffer& RenderBufferHandler::GetLastBuffer()
 {
     CHECK(mBuffers != nullptr) << "Buffers are not initialized";
 
-    return &mBuffers[mLastIdx];
+    return mBuffers[mLastIdx];
 }
 
-const vh::RenderBuffer* RenderBufferHandler::GetCurrentBuffer()
+const vh::RenderBuffer& RenderBufferHandler::GetCurrentBuffer()
 {
     CHECK(mBuffers != nullptr) << "Buffers are not initialized";
 
-    return &mBuffers[mCurIdx];
+    return mBuffers[mCurIdx];
 }
 
-vh::RenderBuffer* RenderBufferHandler::GetNextBuffer()
+vh::RenderBuffer& RenderBufferHandler::GetNextBuffer()
 {
     CHECK(mBuffers != nullptr) << "Buffers are not initialized";
 
-    return &mBuffers[mNextIdx];
+    return mBuffers[mNextIdx];
 }
 
 void RenderBufferHandler::FlipBuffers()
@@ -63,22 +56,6 @@ void RenderBufferHandler::FlipBuffers()
     mNextIdx = (mNextIdx + 1) % 3;
 
     mReadMtx.unlock();
-}
-
-vh::RenderBlock* RenderBufferHandler::AllocateNewBlock()
-{
-    if (mBuffers == nullptr) return nullptr;
-
-    // must only be called from main thread, so no lock is necessary
-    RenderBuffer& buffer = mBuffers[mNextIdx];
-
-    if (buffer.header.size >= RenderBufferConstants::MAX_RENDER_BLOCKS)
-    {
-        LOG(WARNING) << "RenderBuffer overflow!";
-        return nullptr;
-    }
-    buffer.header.size++;
-    return &buffer.blocks[buffer.header.size - 1];
 }
 
 } // namespace vh

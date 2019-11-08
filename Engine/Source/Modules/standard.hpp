@@ -15,6 +15,7 @@
 #include <mutex>
 #include <forward_list>
 #include <regex>
+#include <atomic>
 
 //////////////////////////////////////////////////////////////////////////
 // Platform-specific

@@ -88,9 +88,9 @@ DEFINE_COMMAND(save_mesh)
     const char* filename = params[2].c_str();
     actor.lock()->ForEachBehaviorOfType<MeshBehavior>([rs, filename] (MeshBehavior* behavior)
     {
-        if (behavior->Get())
+        if (behavior->GetMesh())
         {
-            if (rs->Save<Mesh>(filename, behavior->Get()))
+            if (rs->Save<Mesh>(filename, behavior->GetMesh()))
             {
                 LOG(INFO) << "Saved mesh successfully";
             }
@@ -208,14 +208,7 @@ DEFINE_COMMAND(spawn_mesh_actor)
 
     std::shared_ptr<Actor> sActor = wActor.lock();
     MeshBehavior* mb = sActor->AddBehavior<MeshBehavior>(params[1].c_str());
-    if (mb->IsValid())
-    {
-        sActor->StartPlay();
-    }
-    else
-    {
-        world->DestroyActor(sActor->GetID());
-    }
+    sActor->StartPlay();
 }
 
 } // namespace ConsoleCommands

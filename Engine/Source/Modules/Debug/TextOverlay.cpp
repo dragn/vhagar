@@ -1,7 +1,7 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "TextOverlay.hpp"
 
-#include "Modules/Renderer/MRenderer3D.hpp"
+#include "Modules/Renderer/MRenderer3D_Old.hpp"
 #include "Modules/Renderer/RenderableBehavior/OverlayBehavior.hpp"
 #include "Modules/ResourceSystem/ResourceTypes/RFont.hpp"
 
@@ -31,7 +31,7 @@ void vh::TextOverlay::SetSize(uint32_t width, uint32_t height)
 void vh::TextOverlay::Create()
 {
     mActor = App::Get<MWorld>()->CreateActor("TextOverlay");
-    mOverlay = mActor.lock()->AddBehavior<OverlayBehavior>()->Get();
+    // mOverlay = mActor.lock()->AddBehavior<OverlayBehavior>()->Get();
 
     mActor.lock()->StartPlay();
 

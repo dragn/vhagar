@@ -1,19 +1,25 @@
 #pragma once
 
-#include "Modules/Renderer/MRenderer3D.hpp"
 #include "Modules/Renderer/RenderableBehavior/RenderableBehavior.hpp"
-#include "Modules/Renderer/Renderable/SkyBox.hpp"
 #include "Modules/standard.hpp"
 
 namespace vh
 {
 
-class SkyBoxBehavior : public RenderableBehavior<eRenderBlockType::SkyBox, SkyBox>
-{
-public:
-    SkyBoxBehavior(std::shared_ptr<SkyBox> resource) : RenderableBehavior(resource) {};
+    class SkyBoxBehavior : public RenderableBehavior
+    {
+        VH_PROPERTY_RW(Utils::CubeMap, SkyBox);
 
-    virtual void SetupPayload(typename SkyBox::Payload* payload);
-};
+    public:
+        SkyBoxBehavior(Utils::CubeMap skybox) : mSkyBox(skybox) {};
+
+        virtual void Tick(uint32_t delta) override
+        {
+            if (MRenderer3D* renderer = App::Get<MRenderer3D>())
+            {
+                renderer->TickRenderable<decltype(this)>(this);
+            }
+        }
+    };
 
 } // namespace vh

@@ -4,6 +4,7 @@
 namespace vh
 {
 
+/*
 PointLightBehavior::PointLightBehavior(float intensity)
     : mIntensity(intensity)
 {
@@ -19,5 +20,6 @@ uint16_t PointLightBehavior::GetFlags()
 {
     return eRenderBlockFlags::Active | eRenderBlockFlags::Interpolated;
 }
+*/
 
 } // namespace vh

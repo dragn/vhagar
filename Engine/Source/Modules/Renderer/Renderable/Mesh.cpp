@@ -1,9 +1,9 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "Mesh.hpp"
 
-#include "Modules/Renderer/MRenderer3D.hpp"
+#include "Modules/Renderer/MRenderer3D_Old.hpp"
 #include "Modules/ResourceSystem/ReadWrite.hpp"
-#include "Modules/Renderer/ImportUtils.hpp"
+#include "Modules/Renderer3D_GL/ImportUtils.hpp"
 
 using namespace vh;
 

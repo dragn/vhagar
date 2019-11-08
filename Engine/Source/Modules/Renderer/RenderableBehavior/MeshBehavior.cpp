@@ -2,10 +2,10 @@
 #include "MeshBehavior.hpp"
 
 vh::MeshBehavior::MeshBehavior(const char* name)
-    : RenderableBehavior(name), mIgnoreDepth(false)
 {
 }
 
+/*
 void vh::MeshBehavior::SetupPayload(Mesh::Payload* payload)
 {
     payload->progId = Get()->GetShaderId();
@@ -26,3 +26,4 @@ bool vh::MeshBehavior::IsValid()
     Get()->GetIndexData(size, data);
     return size > 0;
 }
+*/

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Modules/Renderer/Renderable/Renderable.hpp"
-#include "Modules/Renderer/RenderBuffersHandler.hpp"
+#include "Modules/Renderer3D_GL/RenderBuffersHandler.hpp"
 #include "Modules/ResourceSystem/MResourceSystem.hpp"
 #include "Modules/standard.hpp"
 

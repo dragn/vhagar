@@ -9,6 +9,7 @@ namespace vh
         int screenWidth = 1024;
         int screenHeight = 768;
         bool borderless = true;
+        bool vsync = true;
 
         enum
         {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Modules/Renderer/RenderBuffer.hpp"
+#include "Modules/Renderer3D_GL/RenderBuffer.hpp"
 #include "Modules/standard.hpp"
 
 namespace vh
@@ -9,8 +9,7 @@ namespace vh
 class RenderBufferHandler
 {
 public:
-    void Create();
-    void Destroy();
+    RenderBufferHandler();
 
     // Lock/Unlock buffers for reading
     // called from render thread
@@ -19,27 +18,24 @@ public:
 
     // Get buffers for reading
     // Called from render thread
-    const RenderBuffer* GetLastBuffer();
-    const RenderBuffer* GetCurrentBuffer();
+    const RenderBuffer& GetLastBuffer();
+    const RenderBuffer& GetCurrentBuffer();
 
     // Get next buffer (writable)
     // Must only be called from main thread, access is not locked
-    RenderBuffer* GetNextBuffer();
+    RenderBuffer& GetNextBuffer();
 
     // Proceed to next buffer
     // Blocks while trying to acquire a read lock
     // Called from main thread when buffers are filled for current frame
     void FlipBuffers();
 
-    // Allocate new block
-    RenderBlock* AllocateNewBlock();
-
 private:
     size_t mLastIdx = 0;
     size_t mCurIdx = 1;
     size_t mNextIdx = 2;
 
-    RenderBuffer* mBuffers = nullptr;
+    RenderBuffer mBuffers[3];
 
     std::mutex mReadMtx;
 };

@@ -21,7 +21,7 @@ public:
 
 private:
     DebugVisual mDebugVisual;
-    MRenderer3D* mRenderer;
+    MRenderer3D_Old* mRenderer;
     MWorld* mWorld;
     TTF_Font* mFont;
     TextOverlay mStatOverlay;

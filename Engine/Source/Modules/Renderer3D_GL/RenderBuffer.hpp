@@ -47,6 +47,8 @@ struct RenderBuffer
 {
     RenderBufferHeader header;
     RenderBlock blocks[RenderBufferConstants::MAX_RENDER_BLOCKS];
+
+    RenderBlock* AllocateNewBlock();
 };
 
 } // namespace vh

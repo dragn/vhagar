@@ -2,7 +2,7 @@
 #include "SkyBoxBehavior.hpp"
 
 using namespace vh;
-
+/*
 namespace
 {
 const GLfloat vertexData[] = { -1, -1, -1, -1, -1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1, -1, -1, 1, -1, 1, 1, 1, 1, 1, -1, 1, -1, -1, 1, -1, 1, 1, -1, -1, -1, -1, 1, -1, -1, 1, 1, -1, 1, -1, -1, -1, -1, 1, -1, -1, 1, -1, -1, -1, 1, -1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1 };
@@ -16,4 +16,4 @@ void vh::SkyBoxBehavior::SetupPayload(typename SkyBox::Payload* payload)
     payload->progId = mResource->mShaderId;
     payload->info = mResource->mGLInfo;
 }
-
+*/

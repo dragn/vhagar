@@ -1,6 +1,7 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "OverlayBehavior.hpp"
 
+/*
 void vh::OverlayBehavior::SetupPayload(Overlay::Payload* payload)
 {
     payload->progId = mResource->mShaderId;
@@ -8,3 +9,4 @@ void vh::OverlayBehavior::SetupPayload(Overlay::Payload* payload)
     payload->vertexBuffer = mResource->mVertexBuffer;
     payload->bounds = mResource->mBounds;
 }
+*/
