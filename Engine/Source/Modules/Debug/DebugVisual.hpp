@@ -4,8 +4,6 @@
 
 namespace vh
 {
-    class MRenderer3D_Old;
-
     struct DebugLabel
     {
         V3 pos;
@@ -22,7 +20,6 @@ namespace vh
 
         void Init();
         void Destroy();
-        void Render(const MRenderer3D_Old* renderer);
 
     private:
         std::vector<DebugLabel> mLabels;

@@ -12,7 +12,7 @@ VH_MODULE_IMPL(MConsoleGUI);
 vh::Ret MConsoleGUI::TickInit(uint32_t delta)
 {
     WAIT_REQUIRED(MConsoleEngine);
-    WAIT_REQUIRED(MRenderer3D_Old);
+    WAIT_REQUIRED(MRenderer3D);
     WAIT_REQUIRED(MResourceSystem);
 
     mFont = App::Get<MResourceSystem>()->GetResource<RFont>("Fonts/Roboto-Regular.ttf")->GetFont(FONT_SIZE);
@@ -23,7 +23,7 @@ vh::Ret MConsoleGUI::TickInit(uint32_t delta)
     Uint32 bmask = 0x00ff0000;
     Uint32 amask = 0xff000000;
 
-    mRenderer = App::Get<MRenderer3D_Old>();
+    mRenderer = App::Get<MRenderer3D>();
     CHECK(mRenderer->GetOptions().screenWidth > 40);
 
     mSurf = SDL_CreateRGBSurface(0, static_cast<Uint32>(mRenderer->GetOptions().screenWidth - 40),
@@ -80,7 +80,7 @@ vh::Ret MConsoleGUI::TickClose(uint32_t delta)
 
 void MConsoleGUI::_Redraw()
 {
-    mOverlay.SetPos(20, 20);
+    // mOverlay.SetPos(20, 20);
 
     SDL_FillRect(mSurf, NULL, SDL_MapRGB(mSurf->format, 16, 16, 16));
 
@@ -113,7 +113,7 @@ void MConsoleGUI::_Redraw()
         SDL_FreeSurface(text);
     }
 
-    mOverlay.SetTexture(mSurf);
+    // mOverlay.SetTexture(mSurf);
 }
 
 void MConsoleGUI::PrintMessage(const std::string& msg)

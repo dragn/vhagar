@@ -1,5 +1,5 @@
 #include "Modules/VhModules_PCH.hpp"
-#include "SkyBox.hpp"
+#include "RSkyBox_GL.hpp"
 
 namespace
 {
@@ -9,7 +9,7 @@ const GLuint indexData[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1
 const GLuint indexDataSize = 36;
 }
 
-bool vh::SkyBox::DoLoad()
+bool vh::RSkyBox_GL::DoLoad()
 {
     mGLInfo.texture = Utils::LoadCubeMapTexture(mCubeMap);
     mShaderId = Utils::GetShaderProgram("SkyDome");
@@ -24,7 +24,7 @@ bool vh::SkyBox::DoLoad()
     return true;
 }
 
-bool vh::SkyBox::DoUnload()
+bool vh::RSkyBox_GL::DoUnload()
 {
     GLuint ids[] = { mGLInfo.indexBuffer, mGLInfo.attribBuffer };
     glDeleteBuffers(2, ids);

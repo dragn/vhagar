@@ -91,6 +91,21 @@ namespace vh
         bool GetCmdFlag(const char* flag) const;
         bool GetCmdFlag(const CmdFlag& flag) const;
 
+        template<typename FUNC>
+        void ForEachModule(FUNC func)
+        {
+            for (std::unique_ptr<Module>& pModule : mModules)
+            {
+                if (pModule)
+                {
+                    if (!func(pModule.get()))
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+
     protected:
         virtual void HandleEvent(SDL_Event *event);
 

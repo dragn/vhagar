@@ -1,7 +1,6 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "TextOverlay.hpp"
 
-#include "Modules/Renderer/MRenderer3D_Old.hpp"
 #include "Modules/Renderer/RenderableBehavior/OverlayBehavior.hpp"
 #include "Modules/ResourceSystem/ResourceTypes/RFont.hpp"
 
@@ -61,8 +60,10 @@ void vh::TextOverlay::SetText(const char* text)
         SDL_FreeSurface(temp);
     }
 
+    /*
     if (mOverlay)
     {
         mOverlay->SetTexture(mSurf);
     }
+    */
 }

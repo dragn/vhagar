@@ -2,8 +2,7 @@
 
 #include "Modules/Console/MConsoleEngine.hpp"
 #include "Modules/Console/ConsoleCommands.hpp"
-#include "Modules/Renderer/Renderable/Overlay.hpp"
-#include "Modules/Renderer/MRenderer3D_Old.hpp"
+#include "Modules/Renderer/MRenderer3D.hpp"
 #include "Modules/standard.hpp"
 
 namespace vh
@@ -81,10 +80,10 @@ private:
     size_t mCurrHistoryIdx;
 
     SDL_Surface* mSurf;
-    Overlay mOverlay;
+    // Overlay mOverlay;
 
     MConsoleEngine* mEngine;
-    MRenderer3D_Old* mRenderer;
+    MRenderer3D* mRenderer;
 
     void _Redraw();
 

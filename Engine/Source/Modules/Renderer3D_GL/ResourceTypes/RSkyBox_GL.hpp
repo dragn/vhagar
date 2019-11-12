@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Modules/Renderer/Renderable/Renderable.hpp"
+#include "Modules/Renderer3D_GL/ResourceTypes/Resource_GL.hpp"
 #include "Modules/Renderer3D_GL/RenderBuffer.hpp"
 #include "Modules/ResourceSystem/Resource.hpp"
 #include "Modules/standard.hpp"
@@ -8,7 +8,7 @@
 namespace vh
 {
 
-class SkyBox : public Renderable, public Resource
+class RSkyBox_GL : public Resource_GL
 {
     friend class SkyBoxBehavior;
 
@@ -19,7 +19,7 @@ public:
         GLBufferInfo info;
     };
 
-    SkyBox(const Utils::CubeMap& cubeMap) : mCubeMap(cubeMap) {}
+    RSkyBox_GL(const Utils::CubeMap& cubeMap) : mCubeMap(cubeMap) {}
 
     virtual bool DoLoad() override;
     virtual bool DoUnload() override;
@@ -30,6 +30,6 @@ private:
     Utils::CubeMap mCubeMap;
 };
 
-static_assert(sizeof(SkyBox::Payload) <= RenderBufferConstants::PAYLOAD_SIZE, "invalid payload size");
+static_assert(sizeof(RSkyBox_GL::Payload) <= RenderBufferConstants::PAYLOAD_SIZE, "invalid payload size");
 
 } // namespace vh

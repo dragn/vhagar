@@ -3,7 +3,7 @@
 
 #include "Modules/Console/MConsoleGUI.hpp"
 #include "Modules/ResourceSystem/MResourceSystem.hpp"
-#include "Modules/Renderer/RenderableBehavior/MeshBehavior.hpp"
+#include "Modules/Renderer/RenderableBehavior/BMesh.hpp"
 
 namespace vh
 {
@@ -86,8 +86,9 @@ DEFINE_COMMAND(save_mesh)
     }
 
     const char* filename = params[2].c_str();
-    actor.lock()->ForEachBehaviorOfType<MeshBehavior>([rs, filename] (MeshBehavior* behavior)
+    actor.lock()->ForEachBehaviorOfType<BMesh>([rs, filename] (BMesh* behavior)
     {
+        /*
         if (behavior->GetMesh())
         {
             if (rs->Save<Mesh>(filename, behavior->GetMesh()))
@@ -95,6 +96,7 @@ DEFINE_COMMAND(save_mesh)
                 LOG(INFO) << "Saved mesh successfully";
             }
         }
+        */
     });
 }
 
@@ -207,7 +209,7 @@ DEFINE_COMMAND(spawn_mesh_actor)
     CHECK(!wActor.expired());
 
     std::shared_ptr<Actor> sActor = wActor.lock();
-    MeshBehavior* mb = sActor->AddBehavior<MeshBehavior>(params[1].c_str());
+    BMesh* mb = sActor->AddBehavior<BMesh>(params[1].c_str());
     sActor->StartPlay();
 }
 

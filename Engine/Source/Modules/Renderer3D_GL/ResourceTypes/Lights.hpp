@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Modules/Renderer3D_GL/RenderBuffer.hpp"
-#include "Modules/Renderer/Renderable/Renderable.hpp"
+#include "Modules/Renderer3D_GL/ResourceTypes/Resource_GL.hpp"
 
 namespace vh {
 
-class PointLight : public Renderable
+class PointLight : public Resource_GL
 {
 public:
     struct Payload

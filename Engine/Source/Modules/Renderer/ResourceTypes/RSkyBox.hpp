@@ -5,10 +5,10 @@
 namespace vh
 {
 
-    class SkyBox : public Resource
+    class RSkyBox_GL : public Resource
     {
     public:
-        SkyBox(const Utils::CubeMap& cubeMap) : mCubeMap(cubeMap) {}
+        RSkyBox_GL(const Utils::CubeMap& cubeMap) : mCubeMap(cubeMap) {}
 
     private:
         Utils::CubeMap mCubeMap;

@@ -1,9 +1,5 @@
 #include "Modules/VhModules_PCH.hpp"
-#include "MeshBehavior.hpp"
-
-vh::MeshBehavior::MeshBehavior(const char* name)
-{
-}
+#include "BMesh.hpp"
 
 /*
 void vh::MeshBehavior::SetupPayload(Mesh::Payload* payload)

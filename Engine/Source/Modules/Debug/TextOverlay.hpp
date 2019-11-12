@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Modules/Renderer/Renderable/Overlay.hpp"
+// #include "Modules/Renderer3D_GL/ResourceTypes/Overlay.hpp"
 #include "Modules/standard.hpp"
 
 namespace vh
@@ -25,7 +25,7 @@ private:
     SDL_Surface* mSurf;
 
     std::weak_ptr<Actor> mActor;
-    std::shared_ptr<Overlay> mOverlay;
+    // std::shared_ptr<Overlay> mOverlay;
 };
 
 } // namespace vh

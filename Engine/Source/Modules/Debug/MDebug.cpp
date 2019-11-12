@@ -2,7 +2,7 @@
 #include "MDebug.hpp"
 
 #include "Modules/Console/ConsoleCommands.hpp"
-#include "Modules/Renderer/MRenderer3D_Old.hpp"
+#include "Modules/Renderer/MRenderer3D.hpp"
 #include "Modules/ResourceSystem/ResourceTypes/RFont.hpp"
 
 using namespace vh;
@@ -31,12 +31,10 @@ vh::MDebug::MDebug()
 vh::Ret vh::MDebug::TickInit(uint32_t delta)
 {
     WAIT_REQUIRED(MResourceSystem);
-    WAIT_REQUIRED(MRenderer3D_Old);
+    WAIT_REQUIRED(MRenderer3D);
     WAIT_REQUIRED(MWorld);
 
     //mDebugVisual.Init();
-
-    mWorld = App::Get<MWorld>();
 
     mFont = App::Get<MResourceSystem>()->GetResource<RFont>("Fonts/Roboto-Regular.ttf")->GetFont(16);
     CHECK(mFont) << "Could not open font. Debug won't load.";
@@ -70,7 +68,7 @@ vh::Ret vh::MDebug::TickRun(uint32_t delta)
 
 vh::Ret vh::MDebug::TickClose(uint32_t delta)
 {
-    MRenderer3D_Old* renderer = App::Get<MRenderer3D_Old>();
+    MRenderer3D* renderer = App::Get<MRenderer3D>();
     CHECK(renderer);
 
     //mDebugVisual.Destroy();

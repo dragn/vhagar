@@ -129,22 +129,13 @@ namespace vh
         // -- Dispatch StartFrame events (pass the same time for all modules,
         //    this will ensure, that modules with the same tick frequency will be ticked
         //    on the same frame.
-        for (size_t modIdx = 0; modIdx < mNumModules; ++modIdx) if (mModules[modIdx])
-        {
-            mModules[modIdx]->StartFrame_Internal(time);
-        }
+        ForEachModule([time](Module* module) { module->StartFrame_Internal(time); return true; });
 
         // -- Tick all modules
-        for (size_t modIdx = 0; modIdx < mNumModules; ++modIdx) if (mModules[modIdx])
-        {
-            mModules[modIdx]->Tick();
-        }
+        ForEachModule([](Module* module) { module->Tick(); return true; });
 
         // -- Dispatch EndFrame events
-        for (size_t modIdx = 0; modIdx < mNumModules; ++modIdx) if (mModules[modIdx])
-        {
-            mModules[modIdx]->EndFrame_Internal();
-        }
+        ForEachModule([](Module* module) { module->EndFrame_Internal(); return true; });
     }
 
     void App::Close()

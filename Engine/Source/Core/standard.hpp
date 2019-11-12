@@ -10,6 +10,8 @@
 #include <csignal>
 #include <unordered_map>
 #include <unordered_set>
+#include <typeindex>
+#include <functional>
 
 //////////////////////////////////////////////////////////////////////////
 // VhUtils

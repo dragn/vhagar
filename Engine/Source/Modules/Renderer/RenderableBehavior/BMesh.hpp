@@ -1,19 +1,21 @@
 #pragma once
 
-#include "Modules/Renderer/Renderable/Mesh.hpp"
 #include "Modules/Renderer/RenderableBehavior/RenderableBehavior.hpp"
 #include "Modules/standard.hpp"
 
 namespace vh
 {
 
-    class MeshBehavior : public RenderableBehavior
+    class BMesh : public RenderableBehavior
     {
         VH_PROPERTY_RW(bool, IgnoreDepth);
-        VH_PROPERTY_RW(std::shared_ptr<Mesh>, Mesh);
+        VH_PROPERTY_RW(std::string, Path);
 
     public:
-        MeshBehavior(const char* path);
+        BMesh() = default;
+        BMesh(const char* path)
+            : mPath(path)
+        {}
     };
 
 } // namespace vh

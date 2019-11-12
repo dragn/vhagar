@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Modules/Debug/TextOverlay.hpp"
-#include "Modules/Renderer/Renderable/Renderable.hpp"
 #include "Modules/Renderer3D_GL/RenderBuffersHandler.hpp"
-#include "Modules/Renderer/Renderable/Mesh.hpp"
-#include "Modules/Renderer/Renderable/SkyBox.hpp"
-#include "Modules/Renderer/Renderable/Lights.hpp"
+#include "Modules/Renderer3D_GL/ResourceTypes/RMesh_GL.hpp"
+#include "Modules/Renderer3D_GL/ResourceTypes/RSkyBox_GL.hpp"
+#include "Modules/Renderer3D_GL/ResourceTypes/Lights.hpp"
+#include "Modules/Renderer3D_GL/ResourceTypes/Resource_GL.hpp"
+#include "Modules/Renderer3D_GL/ResourceTypes/Overlay.hpp"
 #include "Modules/Renderer/RendererOptions.hpp"
 #include "Modules/standard.hpp"
 
@@ -33,7 +34,7 @@ namespace vh
             Release
         } action;
 
-        std::shared_ptr<Renderable> renderable;
+        std::shared_ptr<Resource_GL> renderable;
     };
 
     /*
@@ -106,12 +107,12 @@ namespace vh
 
         void DoInit();
         void DoRender(const RenderBuffer& last, const RenderBuffer& cur, float factor);
-        void DoRenderMesh(glm::mat4 view, glm::mat4 projection, const Mesh::Payload* payload, const std::vector<PointLight::Payload>& lights);
-        void DoRenderSkyBox(glm::mat4 view, glm::mat4 projection, const SkyBox::Payload& payload);
+        void DoRenderMesh(glm::mat4 view, glm::mat4 projection, const RMesh_GL::Payload* payload, const std::vector<PointLight::Payload>& lights);
+        void DoRenderSkyBox(glm::mat4 view, glm::mat4 projection, const RSkyBox_GL::Payload& payload);
         void DoRenderOverlay(const Overlay::Payload& payload);
 
-        void AddLoadTask(std::shared_ptr<Renderable> renderable);
-        void AddReleaseTask(std::shared_ptr<Renderable> renderable);
+        void AddLoadTask(std::shared_ptr<Resource_GL> renderable);
+        void AddReleaseTask(std::shared_ptr<Resource_GL> renderable);
 
         std::mutex mTaskQueueLock;
         std::queue<RenderTask> mTaskQueue;

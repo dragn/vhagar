@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Modules/Renderer/Renderable/Overlay.hpp"
 #include "Modules/Renderer/RenderableBehavior/RenderableBehavior.hpp"
 
 namespace vh

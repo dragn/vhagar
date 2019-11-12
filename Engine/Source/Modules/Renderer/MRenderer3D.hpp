@@ -1,21 +1,19 @@
 #pragma once
 
+#include "Modules/Renderer/RendererOptions.hpp"
+
 namespace vh
 {
     class MRenderer3D : public Module
     {
         VH_MODULE(MRenderer3D);
+        VH_PROPERTY_RO(RendererOptions, Options);
 
     public:
-        MRenderer3D(TickFrequency frequency)
-            : Module(frequency)
+        MRenderer3D(RendererOptions opts)
+            : Module(TickFrequency::NEVER)
+            , mOptions(opts)
         {}
-
-        template<typename RENDERABLE_TYPE>
-        void TickRenderable(RENDERABLE_TYPE behavior)
-        {
-            LOG(WARNING) << "Renderable implementation missing: " << VH_STR(RENDERABLE_TYPE);
-        }
     };
 
 } // namespace vh

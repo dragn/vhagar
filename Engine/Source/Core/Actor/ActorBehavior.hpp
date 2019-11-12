@@ -16,6 +16,9 @@ class ActorBehavior
     VH_PROPERTY_RW(Quat, RelRot);
     VH_PROPERTY_RW(V3, RelScale);
 
+private:
+    static std::unordered_map<std::type_index, std::function<std::unique_ptr<ActorBehavior>()>>& GetOverrides();
+
 public:
     ActorBehavior()
         : mParent(nullptr)
@@ -39,10 +42,37 @@ public:
     Quat GetRot();
     V3 GetScale();
 
+    template<typename TYPE_FROM, typename TYPE_TO>
+    static void AddOverride()
+    {
+        CHECK(GetOverrides().count(typeid(TYPE_FROM)) == 0);
+
+        GetOverrides()[typeid(TYPE_FROM)] = []() { return std::make_unique<TYPE_TO>(); };
+    }
+
+    template<typename TYPE_FROM>
+    static void RemoveOverride()
+    {
+        GetOverrides().erase(typeid(TYPE_FROM));
+    }
+
     template<typename BEHAVIOR_CLASS, typename... Args>
     BEHAVIOR_CLASS* AddChild(Args... args)
     {
-        std::unique_ptr<ActorBehavior> behavior = std::make_unique<BEHAVIOR_CLASS>(args...);
+        std::unique_ptr<ActorBehavior> behavior;
+
+        // -- Check if any modules overrides this behavior
+        if (GetOverrides().count(typeid(BEHAVIOR_CLASS)))
+        {
+            behavior = GetOverrides()[typeid(BEHAVIOR_CLASS)]();
+        }
+
+        // -- If not - construct the behavior using provided class
+        if (!behavior)
+        {
+            behavior = std::make_unique<BEHAVIOR_CLASS>(args...);
+        }
+        
         BEHAVIOR_CLASS* ptr = reinterpret_cast<BEHAVIOR_CLASS*>(behavior.get());
         behavior->Attach(mOwner, this);
         mChildren.push_back(std::forward<std::unique_ptr<ActorBehavior>>(behavior));

@@ -1,7 +1,7 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "MPlayerController.hpp"
 
-#include "Modules/Renderer/MRenderer3D_Old.hpp"
+#include "Modules/Renderer/MRenderer3D.hpp"
 #include "Modules/World/CameraBehavior.hpp"
 
 namespace vh
@@ -17,7 +17,7 @@ MPlayerController::MPlayerController()
 
 vh::Ret MPlayerController::TickInit(uint32_t delta)
 {
-    WAIT_REQUIRED(MRenderer3D_Old);
+    WAIT_REQUIRED(MRenderer3D);
     WAIT_REQUIRED(MWorld);
 
     return Ret::SUCCESS;

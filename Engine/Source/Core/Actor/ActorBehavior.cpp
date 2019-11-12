@@ -5,41 +5,47 @@
 
 namespace vh
 {
+    std::unordered_map<std::type_index, std::function<std::unique_ptr<vh::ActorBehavior>()>> sOverrides;
 
-V3 ActorBehavior::GetPos()
-{
-    if (mParent)
+    std::unordered_map<std::type_index, std::function<std::unique_ptr<vh::ActorBehavior>()>>& ActorBehavior::GetOverrides()
     {
-        return mParent->GetPos() + glm::toMat3(mParent->GetRot()) * mRelPos;
+        return sOverrides;
     }
-    else
-    {
-        return LockOwner()->GetPos(); // root component position
-    }
-}
 
-glm::quat ActorBehavior::GetRot()
-{
-    if (mParent)
+    V3 ActorBehavior::GetPos()
     {
-        return mParent->GetRot() * mRelRot;
+        if (mParent)
+        {
+            return mParent->GetPos() + glm::toMat3(mParent->GetRot()) * mRelPos;
+        }
+        else
+        {
+            return LockOwner()->GetPos(); // root component position
+        }
     }
-    else
-    {
-        return LockOwner()->GetQuat(); // root component rotation
-    }
-}
 
-vh::V3 ActorBehavior::GetScale()
-{
-    if (mParent)
+    glm::quat ActorBehavior::GetRot()
     {
-        return mParent->GetScale() * mRelScale;
+        if (mParent)
+        {
+            return mParent->GetRot() * mRelRot;
+        }
+        else
+        {
+            return LockOwner()->GetQuat(); // root component rotation
+        }
     }
-    else
+
+    vh::V3 ActorBehavior::GetScale()
     {
-        return LockOwner()->GetScale(); // root component scale
+        if (mParent)
+        {
+            return mParent->GetScale() * mRelScale;
+        }
+        else
+        {
+            return LockOwner()->GetScale(); // root component scale
+        }
     }
-}
 
 } // namespace vh

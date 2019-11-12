@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Modules/Renderer/Renderable/Renderable.hpp"
+#include "Modules/Renderer3D_GL/ResourceTypes/Resource_GL.hpp"
 #include "Modules/Renderer3D_GL/RenderBuffersHandler.hpp"
 #include "Modules/ResourceSystem/MResourceSystem.hpp"
 #include "Modules/standard.hpp"
@@ -8,12 +8,12 @@
 namespace vh
 {
 
-class MeshBehavior;
+class BMesh;
 
 /*
     Internal mesh representation
 */
-class Mesh : public Renderable, public Resource
+class RMesh_GL : public Resource_GL
 {
 public:
 
@@ -26,11 +26,11 @@ public:
         GLBufferInfo info;
         GLuint dim;
         GLsizei vertexCount;
-        MeshBehavior* owner;
+        BMesh* owner;
         bool ignoreDepth;
     };
 
-    virtual ~Mesh();
+    virtual ~RMesh_GL();
 
     void SetAttribData(GLuint vertexCount, GLuint attribCount, GLfloat* data)
     {
@@ -100,9 +100,9 @@ private:
     GLint mShaderId = -1;
 };
 
-template<> bool MResourceSystem::Load(const char* path, std::shared_ptr<Mesh> mesh);
-template<> bool MResourceSystem::Save(const char* path, std::shared_ptr<const Mesh> mesh);
+template<> bool MResourceSystem::Load(const char* path, std::shared_ptr<RMesh_GL> mesh);
+template<> bool MResourceSystem::Save(const char* path, std::shared_ptr<const RMesh_GL> mesh);
 
-static_assert(sizeof(Mesh::Payload) <= RenderBufferConstants::PAYLOAD_SIZE, "invalid payload size");
+static_assert(sizeof(RMesh_GL::Payload) <= RenderBufferConstants::PAYLOAD_SIZE, "invalid payload size");
 
 } // namespace vh

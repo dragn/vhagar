@@ -106,14 +106,14 @@ void Module::StartFrame_Internal(uint32_t time)
     mTickDelta = delta;
 
     // call override behavior for frame start
-    StartFrame();
+    if (IsRunning()) StartFrame();
 }
 
 
 void Module::EndFrame_Internal()
 {
     // if we ticked on this frame - call end frame
-    if (mTickDelta > 0) EndFrame();
+    if (mTickDelta > 0 && IsRunning()) EndFrame();
 }
 
 } // namespace vh

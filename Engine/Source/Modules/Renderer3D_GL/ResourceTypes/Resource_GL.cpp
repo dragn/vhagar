@@ -1,10 +1,10 @@
 #include "Modules/VhModules_PCH.hpp"
-#include "Renderable.hpp"
+#include "Resource_GL.hpp"
 
 namespace vh
 {
 
-void Renderable::AddRef()
+void Resource_GL::AddRef()
 {
     if (mRefCount == 0)
     {
@@ -21,7 +21,7 @@ void Renderable::AddRef()
     mRefCount++;
 }
 
-void Renderable::ReleaseRef()
+void Resource_GL::ReleaseRef()
 {
     if (mRefCount != 0)
     {
