@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Modules/Renderer/RendererOptions.hpp"
-#include "Modules/Renderer/MRenderer3D.hpp"
+#include "Modules/Renderer3D/RendererOptions.hpp"
+#include "Modules/Renderer3D/MRenderer3D.hpp"
 #include "Modules/Renderer3D_GL/Renderer3D_GL_Thread.hpp"
 
 namespace vh

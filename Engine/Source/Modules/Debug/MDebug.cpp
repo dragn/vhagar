@@ -2,7 +2,7 @@
 #include "MDebug.hpp"
 
 #include "Modules/Console/ConsoleCommands.hpp"
-#include "Modules/Renderer/MRenderer3D.hpp"
+#include "Modules/Renderer3D/MRenderer3D.hpp"
 #include "Modules/ResourceSystem/ResourceTypes/RFont.hpp"
 
 using namespace vh;

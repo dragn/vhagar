@@ -1,7 +1,7 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "TextOverlay.hpp"
 
-#include "Modules/Renderer/RenderableBehavior/OverlayBehavior.hpp"
+#include "Modules/Renderer3D/RenderableBehavior/OverlayBehavior.hpp"
 #include "Modules/ResourceSystem/ResourceTypes/RFont.hpp"
 
 vh::TextOverlay::TextOverlay(uint32_t x, uint32_t y, uint32_t width, uint32_t height)

@@ -2,7 +2,7 @@
 
 #include "Modules/Console/MConsoleEngine.hpp"
 #include "Modules/Console/ConsoleCommands.hpp"
-#include "Modules/Renderer/MRenderer3D.hpp"
+#include "Modules/Renderer3D/MRenderer3D.hpp"
 #include "Modules/standard.hpp"
 
 namespace vh

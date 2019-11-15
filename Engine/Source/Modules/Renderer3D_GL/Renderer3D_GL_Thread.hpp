@@ -6,7 +6,7 @@
 #include "Modules/Renderer3D_GL/GLResources/GLSkyBox.hpp"
 #include "Modules/Renderer3D_GL/GLResources/Overlay.hpp"
 #include "Modules/Renderer3D_GL/GLResources/Lights.hpp"
-#include "Modules/Renderer/RendererOptions.hpp"
+#include "Modules/Renderer3D/RendererOptions.hpp"
 
 namespace vh
 {

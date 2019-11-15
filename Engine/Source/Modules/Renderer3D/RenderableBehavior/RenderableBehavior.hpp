@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Modules/Renderer/MRenderer3D.hpp"
+#include "Modules/Renderer3D/MRenderer3D.hpp"
 #include "Modules/ResourceSystem/MResourceSystem.hpp"
 #include "Modules/standard.hpp"
 

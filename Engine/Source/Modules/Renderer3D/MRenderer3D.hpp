@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Modules/Renderer/RendererOptions.hpp"
+#include "Modules/Renderer3D/RendererOptions.hpp"
 
 namespace vh
 {

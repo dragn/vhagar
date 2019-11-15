@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Modules/Renderer/RenderableBehavior/BSkyBox.hpp"
+#include "Modules/Renderer3D/RenderableBehavior/BSkyBox.hpp"
 #include "Modules/Renderer3D_GL/GLBuffers.hpp"
 #include "Modules/Renderer3D_GL/GLResources/GLSkyBox.hpp"
 #include "Modules/Renderer3D_GL/RenderBuffer.hpp"

@@ -3,7 +3,7 @@
 
 #include "Modules/Console/MConsoleGUI.hpp"
 #include "Modules/ResourceSystem/MResourceSystem.hpp"
-#include "Modules/Renderer/RenderableBehavior/BMesh.hpp"
+#include "Modules/Renderer3D/RenderableBehavior/BMesh.hpp"
 
 namespace vh
 {

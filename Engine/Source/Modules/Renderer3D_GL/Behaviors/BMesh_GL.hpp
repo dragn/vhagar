@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Modules/Renderer/RenderableBehavior/BMesh.hpp"
+#include "Modules/Renderer3D/RenderableBehavior/BMesh.hpp"
 #include "Modules/Renderer3D_GL/GLResources/GLMesh.hpp"
 
 namespace vh

@@ -1,7 +1,7 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "DebugVisual.hpp"
 
-#include "Modules/Renderer/MRenderer3D.hpp"
+#include "Modules/Renderer3D/MRenderer3D.hpp"
 
 static const GLfloat crossData[] = {
     -0.1f, 0.0f, 0.0f,

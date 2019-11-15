@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Modules/Renderer/RenderableBehavior/RenderableBehavior.hpp"
+#include "Modules/Renderer3D/RenderableBehavior/RenderableBehavior.hpp"
 #include "Modules/ResourceSystem/ResourceTypes/RSkyBox.hpp"
 #include "Modules/standard.hpp"
 

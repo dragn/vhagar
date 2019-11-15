@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Modules/Renderer/RenderableBehavior/BPointLight.hpp"
+#include "Modules/Renderer3D/RenderableBehavior/BPointLight.hpp"
 #include "Modules/Renderer3D_GL/RenderBuffer.hpp"
 
 namespace vh
