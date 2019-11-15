@@ -1,6 +1,8 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "Renderer3D_GL_Thread.hpp"
 
+#include "Modules/Renderer3D_GL/GLBuffers.hpp"
+
 namespace vh
 {
     const static size_t MAX_POINT_LIGHTS = 10;
@@ -68,11 +70,18 @@ namespace vh
 
         mReady.store(true);
 
+        Utils::GetShaderProgram("SkyDome");
+
         while (!mRequestStop.load())
         {
+            // -- Reset frame
             glClearColor(0, 0, 0, 1);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+            // -- Process resource loading
+            ProcessLoadQueue();
+
+            // -- Main Render Loop
             mRenderBuffers.LockRead();
 
             uint32_t time = SDL_GetTicks();
@@ -87,25 +96,37 @@ namespace vh
             DoRender(last, cur, factor);
 
             mRenderBuffers.UnlockRead();
+            // --
 
+            // -- Process resource unloading
+            ProcessUnloadQueue();
+
+            // -- Error handling
             int error = glGetError();
             if (error) reportGLError(error);
 
-            mFrameCount++;
+            // -- Process frame counter
+            HandleFrameCount();
 
-            if (SDL_GetTicks() - mLastFPSReport > 1000)
-            {
-                std::string txt("FPS: ");
-                txt.append(std::to_string(1000.0f * (float)mFrameCount / (SDL_GetTicks() - mLastFPSReport)));
-                //mStatOverlay.SetText(txt.c_str());
-                mLastFPSReport = SDL_GetTicks();
-                mFrameCount = 0;
-            }
-
+            // -- Done. Flip the window.
             SDL_GL_SwapWindow(mWindow);
         }
 
         SDL_GL_DeleteContext(mGLContext);
+    }
+
+    void MRenderer3D_GL_Thread::HandleFrameCount()
+    {
+        mFrameCount++;
+
+        if (SDL_GetTicks() - mLastFPSReport > 1000)
+        {
+            std::string txt("FPS: ");
+            txt.append(std::to_string(1000.0f * (float)mFrameCount / (SDL_GetTicks() - mLastFPSReport)));
+            //mStatOverlay.SetText(txt.c_str());
+            mLastFPSReport = SDL_GetTicks();
+            mFrameCount = 0;
+        }
     }
 
     void MRenderer3D_GL_Thread::DoInit()
@@ -179,7 +200,7 @@ namespace vh
                 void* ptr = const_cast<void*>(reinterpret_cast<const void*>(block.payload));
                 if (ptr != nullptr)
                 {
-                    reinterpret_cast<Resource_GL*>(ptr)->AddRef();
+                    reinterpret_cast<GLResource*>(ptr)->AddRef();
                 }
             }
 
@@ -189,7 +210,7 @@ namespace vh
                 void* ptr = const_cast<void*>(reinterpret_cast<const void*>(block.payload));
                 if (ptr != nullptr)
                 {
-                    reinterpret_cast<Resource_GL*>(ptr)->ReleaseRef();
+                    reinterpret_cast<GLResource*>(ptr)->ReleaseRef();
                 }
             }
 
@@ -216,7 +237,7 @@ namespace vh
 
             if (block.type == eRenderBlockType::SkyBox && (block.flags & eRenderBlockFlags::Active))
             {
-                const RSkyBox_GL::Payload& payload = *reinterpret_cast<const RSkyBox_GL::Payload*>(block.payload);
+                const GLSkyBox::Payload& payload = *reinterpret_cast<const GLSkyBox::Payload*>(block.payload);
                 DoRenderSkyBox(view, projection, payload);
             }
         }
@@ -230,10 +251,10 @@ namespace vh
             if (block.type == eRenderBlockType::Mesh && (block.flags & eRenderBlockFlags::Active))
             {
                 // skip depth-ignore meshes
-                if (reinterpret_cast<const RMesh_GL::Payload*>(block.payload)->ignoreDepth) continue;
+                if (reinterpret_cast<const GLMesh::Payload*>(block.payload)->ignoreDepth) continue;
 
-                RMesh_GL::Payload lastPayload = *reinterpret_cast<const RMesh_GL::Payload*>(block.payload);
-                const RMesh_GL::Payload& curPayload = *reinterpret_cast<const RMesh_GL::Payload*>(cur.blocks[idx].payload);
+                GLMesh::Payload lastPayload = *reinterpret_cast<const GLMesh::Payload*>(block.payload);
+                const GLMesh::Payload& curPayload = *reinterpret_cast<const GLMesh::Payload*>(cur.blocks[idx].payload);
                 if (block.flags & eRenderBlockFlags::Interpolated)
                 {
                     if (lastPayload.owner == curPayload.owner)
@@ -256,10 +277,10 @@ namespace vh
             if (block.type == eRenderBlockType::Mesh && (block.flags & eRenderBlockFlags::Active))
             {
                 // render only depth-ignore meshes
-                if (!(reinterpret_cast<const RMesh_GL::Payload*>(block.payload)->ignoreDepth)) continue;
+                if (!(reinterpret_cast<const GLMesh::Payload*>(block.payload)->ignoreDepth)) continue;
 
-                RMesh_GL::Payload lastPayload = *reinterpret_cast<const RMesh_GL::Payload*>(block.payload);
-                const RMesh_GL::Payload& curPayload = *reinterpret_cast<const RMesh_GL::Payload*>(cur.blocks[idx].payload);
+                GLMesh::Payload lastPayload = *reinterpret_cast<const GLMesh::Payload*>(block.payload);
+                const GLMesh::Payload& curPayload = *reinterpret_cast<const GLMesh::Payload*>(cur.blocks[idx].payload);
                 if (block.flags & eRenderBlockFlags::Interpolated)
                 {
                     if (lastPayload.owner == curPayload.owner)
@@ -286,12 +307,12 @@ namespace vh
         }
     }
 
-    void MRenderer3D_GL_Thread::DoRenderMesh(glm::mat4 view, glm::mat4 projection, const RMesh_GL::Payload* payload, const std::vector<PointLight::Payload>& lights)
+    void MRenderer3D_GL_Thread::DoRenderMesh(glm::mat4 view, glm::mat4 projection, const GLMesh::Payload* payload, const std::vector<PointLight::Payload>& lights)
     {
         glm::mat4 model = glm::translate(glm::mat4(1.f), payload->translate) * glm::mat4_cast(payload->rotate) * glm::scale(M4(1.f), payload->scale);
         glm::mat4 MVP = projection * view * model;
 
-        const GLBufferInfo& glInfo = payload->info;
+        const GLBuffers& glInfo = payload->info;
 
         glUseProgram(payload->progId);
 
@@ -378,7 +399,7 @@ namespace vh
         */
     }
 
-    void MRenderer3D_GL_Thread::DoRenderSkyBox(glm::mat4 _view, glm::mat4 projection, const RSkyBox_GL::Payload& payload)
+    void MRenderer3D_GL_Thread::DoRenderSkyBox(glm::mat4 _view, glm::mat4 projection, const GLSkyBox::Payload& payload)
     {
         glDisable(GL_CULL_FACE);
         glDepthMask(GL_FALSE);
@@ -424,6 +445,38 @@ namespace vh
         glDisableVertexAttribArray(0);
 
         glEnable(GL_CULL_FACE);
+    }
+
+    void MRenderer3D_GL_Thread::ProcessLoadQueue()
+    {
+        cs::CritSectionLock lock(mLoadQueueCS);
+        while (!mLoadQueue.empty())
+        {
+            mLoadQueue.front()->AddRef();
+            mLoadQueue.pop();
+        }
+    }
+
+    void MRenderer3D_GL_Thread::ProcessUnloadQueue()
+    {
+        cs::CritSectionLock lock(mLoadQueueCS);
+        while (!mUnloadQueue.empty())
+        {
+            mUnloadQueue.front()->ReleaseRef();
+            mUnloadQueue.pop();
+        }
+    }
+
+    void MRenderer3D_GL_Thread::LoadRes(std::shared_ptr<GLResource> const& res)
+    {
+        cs::CritSectionLock lock(mLoadQueueCS);
+        mLoadQueue.push(res);
+    }
+
+    void MRenderer3D_GL_Thread::UnloadRes(std::shared_ptr<GLResource> const& res)
+    {
+        cs::CritSectionLock lock(mLoadQueueCS);
+        mUnloadQueue.push(res);
     }
 
 } // namespace vh

@@ -28,6 +28,14 @@ public:
     {}
     virtual ~ActorBehavior() {}
 
+    void operator=(ActorBehavior const& other)
+    {
+        mParent = other.mParent;
+        mRelPos = other.mRelPos;
+        mRelRot = other.mRelRot;
+        mRelScale = other.mRelScale;
+    }
+
     // Called when actor enters a World
     virtual void StartPlay() {}
 
@@ -65,6 +73,7 @@ public:
         if (GetOverrides().count(typeid(BEHAVIOR_CLASS)))
         {
             behavior = GetOverrides()[typeid(BEHAVIOR_CLASS)]();
+            *reinterpret_cast<BEHAVIOR_CLASS*>(behavior.get()) = BEHAVIOR_CLASS(args...);
         }
 
         // -- If not - construct the behavior using provided class

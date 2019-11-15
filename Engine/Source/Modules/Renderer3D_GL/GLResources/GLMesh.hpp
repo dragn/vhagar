@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Modules/Renderer3D_GL/ResourceTypes/Resource_GL.hpp"
+#include "Modules/Renderer3D_GL/GLBuffers.hpp"
+#include "Modules/Renderer3D_GL/GLResources/GLResource.hpp"
 #include "Modules/Renderer3D_GL/RenderBuffersHandler.hpp"
 #include "Modules/ResourceSystem/MResourceSystem.hpp"
 #include "Modules/standard.hpp"
@@ -13,7 +14,7 @@ class BMesh;
 /*
     Internal mesh representation
 */
-class RMesh_GL : public Resource_GL
+class GLMesh : public GLResource, public Resource
 {
 public:
 
@@ -23,14 +24,14 @@ public:
         glm::vec3 translate;
         glm::vec3 scale;
         glm::quat rotate;
-        GLBufferInfo info;
+        GLBuffers info;
         GLuint dim;
         GLsizei vertexCount;
         BMesh* owner;
         bool ignoreDepth;
     };
 
-    virtual ~RMesh_GL();
+    virtual ~GLMesh();
 
     void SetAttribData(GLuint vertexCount, GLuint attribCount, GLfloat* data)
     {
@@ -68,7 +69,7 @@ public:
 
     GLuint GetAttribDataSize() const;
 
-    const GLBufferInfo* GetBufferInfo() const;
+    const GLBuffers GetBufferInfo() const;
 
     GLint GetShaderId() const { return mShaderId; }
 
@@ -85,7 +86,7 @@ private:
     GLsizei mTexH = 0;
 
     // render context buffers
-    GLBufferInfo mGLInfo;
+    GLBuffers mGLInfo;
 
     // -- size of the vertex pos vector,
     // defaults to 3, 4 for homogeneous coordinates
@@ -100,9 +101,9 @@ private:
     GLint mShaderId = -1;
 };
 
-template<> bool MResourceSystem::Load(const char* path, std::shared_ptr<RMesh_GL> mesh);
-template<> bool MResourceSystem::Save(const char* path, std::shared_ptr<const RMesh_GL> mesh);
+template<> bool MResourceSystem::Load(const char* path, std::shared_ptr<GLMesh> mesh);
+template<> bool MResourceSystem::Save(const char* path, std::shared_ptr<const GLMesh> mesh);
 
-static_assert(sizeof(RMesh_GL::Payload) <= RenderBufferConstants::PAYLOAD_SIZE, "invalid payload size");
+static_assert(sizeof(GLMesh::Payload) <= RenderBufferConstants::PAYLOAD_SIZE, "invalid payload size");
 
 } // namespace vh

@@ -1,5 +1,5 @@
 #include "Modules/VhModules_PCH.hpp"
-#include "RMesh_GL.hpp"
+#include "GLMesh.hpp"
 
 #include "Modules/Renderer/MRenderer3D_Old.hpp"
 #include "Modules/ResourceSystem/ReadWrite.hpp"
@@ -7,7 +7,7 @@
 
 using namespace vh;
 
-RMesh_GL::~RMesh_GL()
+GLMesh::~GLMesh()
 {
     if (IsLoaded())
     {
@@ -25,7 +25,7 @@ RMesh_GL::~RMesh_GL()
     }
 }
 
-void vh::RMesh_GL::SetTexture(GLuint* rgbData, GLsizei texW, GLsizei texH)
+void vh::GLMesh::SetTexture(GLuint* rgbData, GLsizei texW, GLsizei texH)
 {
     mTexDta = rgbData;
     mTexW = texW;
@@ -34,14 +34,14 @@ void vh::RMesh_GL::SetTexture(GLuint* rgbData, GLsizei texW, GLsizei texH)
     LOG(INFO) << "Added texture data " << texW << "x" << texH;
 }
 
-void vh::RMesh_GL::GetTexture(GLuint*& rgbaData, GLsizei& width, GLsizei& height) const
+void vh::GLMesh::GetTexture(GLuint*& rgbaData, GLsizei& width, GLsizei& height) const
 {
     rgbaData = mTexDta;
     width = mTexW;
     height = mTexH;
 }
 
-void vh::RMesh_GL::SetDim(GLuint dim)
+void vh::GLMesh::SetDim(GLuint dim)
 {
     if (dim != 3 && dim != 4)
     {
@@ -55,22 +55,22 @@ void vh::RMesh_GL::SetDim(GLuint dim)
     }
 }
 
-GLuint vh::RMesh_GL::GetDim() const
+GLuint vh::GLMesh::GetDim() const
 {
     return mDim;
 }
 
-GLuint vh::RMesh_GL::GetAttribDataSize() const
+GLuint vh::GLMesh::GetAttribDataSize() const
 {
     return mVertexCount * (mDim + mAttribCount * 3);
 }
 
-const vh::GLBufferInfo* vh::RMesh_GL::GetBufferInfo() const
+const vh::GLBuffers vh::GLMesh::GetBufferInfo() const
 {
-    return &mGLInfo;
+    return mGLInfo;
 }
 
-bool vh::RMesh_GL::DoLoad()
+bool vh::GLMesh::DoLoad()
 {
     LOG(INFO) << "Mesh load " << this;
 
@@ -121,7 +121,7 @@ bool vh::RMesh_GL::DoLoad()
     return true;
 }
 
-bool vh::RMesh_GL::DoUnload()
+bool vh::GLMesh::DoUnload()
 {
     LOG(INFO) << "Mesh unload " << this;
 
@@ -147,7 +147,7 @@ bool vh::RMesh_GL::DoUnload()
         - sizeof(GLint) * index size bytes index data
         - sizeof(GLfloat) * attrib size * attrib count bytes attrib data
 */
-template<> bool vh::MResourceSystem::Load(const char* path, std::shared_ptr<vh::RMesh_GL> mesh)
+template<> bool vh::MResourceSystem::Load(const char* path, std::shared_ptr<vh::GLMesh> mesh)
 {
     CHECK(mesh);
 
@@ -232,7 +232,7 @@ template<> bool vh::MResourceSystem::Load(const char* path, std::shared_ptr<vh::
         - sizeof(GLint) * index size bytes index data
         - sizeof(GLfloat) * attrib size * attrib count bytes attrib data
 */
-template<> bool vh::MResourceSystem::Save(const char* path, std::shared_ptr<const vh::RMesh_GL> mesh)
+template<> bool vh::MResourceSystem::Save(const char* path, std::shared_ptr<const vh::GLMesh> mesh)
 {
     std::ofstream stream;
 

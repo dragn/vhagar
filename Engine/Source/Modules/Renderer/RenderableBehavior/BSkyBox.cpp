@@ -1,5 +1,5 @@
 #include "Modules/VhModules_PCH.hpp"
-#include "SkyBoxBehavior.hpp"
+#include "BSkyBox.hpp"
 
 using namespace vh;
 /*

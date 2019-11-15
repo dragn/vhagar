@@ -1,7 +1,7 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "MResourceSystem.hpp"
 
-#include "Modules/Renderer3D_GL/ResourceTypes/RMesh_GL.hpp"
+#include "Modules/Renderer3D_GL/GLResources/GLMesh.hpp"
 
 using namespace vh;
 
@@ -74,8 +74,8 @@ vh::Ret vh::MResourceSystem::TickInit(uint32_t delta)
     vh::Utils::ListFiles("Assets/Meshes", names);
     for (const std::string& name : names)
     {
-        std::shared_ptr<RMesh_GL> ptr = std::make_shared<RMesh_GL>();
-        if (Load<RMesh_GL>(name.c_str(), ptr))
+        std::shared_ptr<GLMesh> ptr = std::make_shared<GLMesh>();
+        if (Load<GLMesh>(name.c_str(), ptr))
         {
             LOG(INFO) << "Preloaded mesh " << name;
             mStorage[name] = ptr;

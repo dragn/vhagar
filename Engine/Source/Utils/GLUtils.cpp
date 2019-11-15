@@ -65,6 +65,9 @@ GLuint compileProgram(const std::string &vertexShader, const std::string &fragme
     GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
     GLuint fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
+    CHECK(vertexShaderID != 0);
+    CHECK(fragmentShaderID != 0);
+
     compileShader(vertexShaderID, vertexShader);
     compileShader(fragmentShaderID, fragmentShader);
 

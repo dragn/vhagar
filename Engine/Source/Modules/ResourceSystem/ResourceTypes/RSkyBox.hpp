@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Modules/ResourceSystem/MResourceSystem.hpp"
+
 namespace vh
 {
     /*
@@ -9,13 +11,15 @@ namespace vh
     */
     class RSkyBox : public Resource
     {
+        friend class MResourceSystem;
+
+    public:
+        Utils::CubeMap const& GetCubeMap() const { return mCubeMap; }
+
     private:
-        std::string mPosX;
-        std::string mNegX;
-        std::string pos_y;
-        std::string neg_y;
-        std::string pos_z;
-        std::string neg_z;
+        Utils::CubeMap mCubeMap;
     };
+
+    template<> bool MResourceSystem::Load(const char* path, std::shared_ptr<RSkyBox> skyBox);
 
 } // namespace vh

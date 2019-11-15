@@ -1,6 +1,6 @@
 #pragma once
 
-// #include "Modules/Renderer3D_GL/ResourceTypes/Overlay.hpp"
+// #include "Modules/Renderer3D_GL/GLResources/Overlay.hpp"
 #include "Modules/standard.hpp"
 
 namespace vh

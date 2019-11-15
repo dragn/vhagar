@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Modules/Renderer3D_GL/ResourceTypes/Resource_GL.hpp"
+#include "Modules/Renderer3D_GL/GLResources/GLResource.hpp"
 #include "Modules/Renderer3D_GL/RenderBuffer.hpp"
 #include "Modules/standard.hpp"
 
 namespace vh
 {
 
-class Overlay : public Resource_GL
+class Overlay : public GLResource
 {
     friend class OverlayBehavior;
 

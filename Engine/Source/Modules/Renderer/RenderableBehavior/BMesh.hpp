@@ -5,6 +5,13 @@
 
 namespace vh
 {
+    /*
+          //      \\
+        BBBB Mesh BBBB
+          \\      //
+
+        Mesh rendering behavior.
+    */
 
     class BMesh : public RenderableBehavior
     {
@@ -13,9 +20,7 @@ namespace vh
 
     public:
         BMesh() = default;
-        BMesh(const char* path)
-            : mPath(path)
-        {}
+        BMesh(const char* path) : mPath(path), mIgnoreDepth(false) {}
     };
 
 } // namespace vh

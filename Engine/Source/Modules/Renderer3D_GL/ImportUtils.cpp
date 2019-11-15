@@ -70,7 +70,7 @@ void readMaterials(FILE *mtlFile,
 /**
  * Constructor
  **/
-bool vh::Utils::ImportWavefront(vh::RMesh_GL* mesh, const char* objFilename)
+bool vh::Utils::ImportWavefront(vh::GLMesh* mesh, const char* objFilename)
 {
     CHECK(mesh);
 

@@ -12,7 +12,9 @@ namespace vh
     public:
         MRenderer3D_GL(const RendererOptions& opts)
             : MRenderer3D(opts)
-        {}
+        {
+            SetTickStep(static_cast<int32_t>(TickFrequency::NORMAL));
+        }
 
         virtual ~MRenderer3D_GL() {}
 
@@ -24,9 +26,14 @@ namespace vh
 
         RenderBuffer& GetWriteBuffer();
 
+        void LoadRes(std::shared_ptr<GLResource> const& res);
+        void UnloadRes(std::shared_ptr<GLResource> const& res);
+
+    private:
+        Ret InitSDL();
+
     private:
         SDL_Window* mWindow;
-        uint32_t mWindowID;
 
         glm::mat4 mProjection;
 

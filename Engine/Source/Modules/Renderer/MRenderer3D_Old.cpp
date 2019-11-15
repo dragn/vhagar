@@ -1,6 +1,7 @@
 #include "Modules/VhModules_PCH.hpp"
 #include "MRenderer3D_Old.hpp"
 
+#include "Modules/Renderer3D_GL/GLBuffers.hpp"
 #include "Modules/Console/ConsoleCommands.hpp"
 #include "Modules/PlayerController/MPlayerController.hpp"
 #include "Modules/World/CameraBehavior.hpp"
@@ -165,7 +166,7 @@ void MRenderer3D_Old::DoRender(const RenderBuffer& last, const RenderBuffer& cur
             void* ptr = const_cast<void*>(reinterpret_cast<const void*>(block.payload));
             if (ptr != nullptr)
             {
-                reinterpret_cast<Resource_GL*>(ptr)->AddRef();
+                // reinterpret_cast<Resource_GL*>(ptr)->AddRef();
             }
         }
 
@@ -175,7 +176,7 @@ void MRenderer3D_Old::DoRender(const RenderBuffer& last, const RenderBuffer& cur
             void* ptr = const_cast<void*>(reinterpret_cast<const void*>(block.payload));
             if (ptr != nullptr)
             {
-                reinterpret_cast<Resource_GL*>(ptr)->ReleaseRef();
+                // reinterpret_cast<Resource_GL*>(ptr)->ReleaseRef();
             }
         }
 
@@ -202,7 +203,7 @@ void MRenderer3D_Old::DoRender(const RenderBuffer& last, const RenderBuffer& cur
 
         if (block.type == eRenderBlockType::SkyBox && (block.flags & eRenderBlockFlags::Active))
         {
-            const RSkyBox_GL::Payload& payload = *reinterpret_cast<const RSkyBox_GL::Payload*>(block.payload);
+            const GLSkyBox::Payload& payload = *reinterpret_cast<const GLSkyBox::Payload*>(block.payload);
             DoRenderSkyBox(view, projection, payload);
         }
     }
@@ -216,10 +217,10 @@ void MRenderer3D_Old::DoRender(const RenderBuffer& last, const RenderBuffer& cur
         if (block.type == eRenderBlockType::Mesh && (block.flags & eRenderBlockFlags::Active))
         {
             // skip depth-ignore meshes
-            if (reinterpret_cast<const RMesh_GL::Payload*>(block.payload)->ignoreDepth) continue;
+            if (reinterpret_cast<const GLMesh::Payload*>(block.payload)->ignoreDepth) continue;
 
-            RMesh_GL::Payload lastPayload = *reinterpret_cast<const RMesh_GL::Payload*>(block.payload);
-            const RMesh_GL::Payload& curPayload = *reinterpret_cast<const RMesh_GL::Payload*>(cur.blocks[idx].payload);
+            GLMesh::Payload lastPayload = *reinterpret_cast<const GLMesh::Payload*>(block.payload);
+            const GLMesh::Payload& curPayload = *reinterpret_cast<const GLMesh::Payload*>(cur.blocks[idx].payload);
             if (block.flags & eRenderBlockFlags::Interpolated)
             {
                 if (lastPayload.owner == curPayload.owner)
@@ -242,10 +243,10 @@ void MRenderer3D_Old::DoRender(const RenderBuffer& last, const RenderBuffer& cur
         if (block.type == eRenderBlockType::Mesh && (block.flags & eRenderBlockFlags::Active))
         {
             // render only depth-ignore meshes
-            if (!(reinterpret_cast<const RMesh_GL::Payload*>(block.payload)->ignoreDepth)) continue;
+            if (!(reinterpret_cast<const GLMesh::Payload*>(block.payload)->ignoreDepth)) continue;
 
-            RMesh_GL::Payload lastPayload = *reinterpret_cast<const RMesh_GL::Payload*>(block.payload);
-            const RMesh_GL::Payload& curPayload = *reinterpret_cast<const RMesh_GL::Payload*>(cur.blocks[idx].payload);
+            GLMesh::Payload lastPayload = *reinterpret_cast<const GLMesh::Payload*>(block.payload);
+            const GLMesh::Payload& curPayload = *reinterpret_cast<const GLMesh::Payload*>(cur.blocks[idx].payload);
             if (block.flags & eRenderBlockFlags::Interpolated)
             {
                 if (lastPayload.owner == curPayload.owner)
@@ -272,12 +273,12 @@ void MRenderer3D_Old::DoRender(const RenderBuffer& last, const RenderBuffer& cur
     }
 }
 
-void MRenderer3D_Old::DoRenderMesh(glm::mat4 view, glm::mat4 projection, const RMesh_GL::Payload* payload, const std::vector<PointLight::Payload>& lights)
+void MRenderer3D_Old::DoRenderMesh(glm::mat4 view, glm::mat4 projection, const GLMesh::Payload* payload, const std::vector<PointLight::Payload>& lights)
 {
     glm::mat4 model = glm::translate(glm::mat4(1.f), payload->translate) * glm::mat4_cast(payload->rotate) * glm::scale(M4(1.f), payload->scale);
     glm::mat4 MVP = projection * view * model;
 
-    const GLBufferInfo& glInfo = payload->info;
+    const GLBuffers& glInfo = payload->info;
 
     glUseProgram(payload->progId);
 
@@ -420,7 +421,7 @@ void MRenderer3D_Old::RenderThread()
     SDL_GL_DeleteContext(mGLContext);
 }
 
-void MRenderer3D_Old::AddLoadTask(std::shared_ptr<Resource_GL> renderable)
+void MRenderer3D_Old::AddLoadTask(std::shared_ptr<GLResource> renderable)
 {
     std::lock_guard<std::mutex> lock(mTaskQueueLock);
 
@@ -430,7 +431,7 @@ void MRenderer3D_Old::AddLoadTask(std::shared_ptr<Resource_GL> renderable)
     mTaskQueue.push(task);
 }
 
-void MRenderer3D_Old::AddReleaseTask(std::shared_ptr<Resource_GL> renderable)
+void MRenderer3D_Old::AddReleaseTask(std::shared_ptr<GLResource> renderable)
 {
     std::lock_guard<std::mutex> lock(mTaskQueueLock);
 
@@ -452,11 +453,11 @@ void MRenderer3D_Old::HandleTasks()
             mTaskQueue.pop();
             if (task.action == RenderTask::Action::Load && task.renderable)
             {
-                task.renderable->AddRef();
+                // task.renderable->AddRef();
             }
             if (task.action == RenderTask::Action::Release && task.renderable)
             {
-                task.renderable->ReleaseRef();
+                // task.renderable->ReleaseRef();
             }
         }
     }
@@ -524,7 +525,7 @@ void MRenderer3D_Old::DoInit()
     mWireProgramID = Utils::GetShaderProgram("Wireframe");  // wireframe shader
 }
 
-void MRenderer3D_Old::DoRenderSkyBox(glm::mat4 _view, glm::mat4 projection, const RSkyBox_GL::Payload& payload)
+void MRenderer3D_Old::DoRenderSkyBox(glm::mat4 _view, glm::mat4 projection, const GLSkyBox::Payload& payload)
 {
     glDisable(GL_CULL_FACE);
     glDepthMask(GL_FALSE);

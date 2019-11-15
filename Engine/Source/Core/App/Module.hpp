@@ -69,6 +69,11 @@ vh::ModuleID name::_ID = vh::ModuleID_Invalid;                          \
 
         void Tick();
 
+        void SetTickStep(int32_t tickStep)
+        {
+            mTickStep = tickStep;
+        }
+
         int32_t GetTickStep() const
         {
             return mTickStep;

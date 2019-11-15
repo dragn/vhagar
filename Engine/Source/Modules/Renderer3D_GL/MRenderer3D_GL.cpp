@@ -3,6 +3,7 @@
 
 #include "Modules/PlayerController/MPlayerController.hpp"
 #include "Modules/Renderer3D_GL/Behaviors/BMesh_GL.hpp"
+#include "Modules/Renderer3D_GL/Behaviors/BSkyBox_GL.hpp"
 #include "Modules/World/CameraBehavior.hpp"
 
 namespace vh
@@ -15,9 +16,25 @@ namespace vh
             return mRenderThread.IsReady() ? Ret::SUCCESS : Ret::CONTINUE;
         }
 
+        // -- Actor Behavior overrides
         ActorBehavior::AddOverride<BMesh, BMesh_GL>();
+        ActorBehavior::AddOverride<BSkyBox, BSkyBox_GL>();
+        // --
 
+        if (InitSDL() == Ret::FAILURE)
+        {
+            return Ret::FAILURE;
+        }
+
+        mRenderThread.Start(mWindow, GetOptions());
+
+        return Ret::CONTINUE;
+    }
+
+    Ret MRenderer3D_GL::InitSDL()
+    {
         LOG(INFO) << "SDL Initialization";
+
         if (SDL_Init(SDL_INIT_VIDEO) < 0)
         {
             LOG(FATAL) << SDL_GetError();
@@ -50,14 +67,10 @@ namespace vh
             LOG(FATAL) << "SDL create windows error: " << SDL_GetError();
         }
 
-        mWindowID = SDL_GetWindowID(mWindow);
-
         // Set relative mouse mode
         SDL_SetRelativeMouseMode(SDL_TRUE);
 
-        mRenderThread.Start(mWindow, GetOptions());
-
-        return Ret::CONTINUE;
+        return Ret::SUCCESS;
     }
 
     vh::Ret MRenderer3D_GL::TickClose(uint32_t delta)
@@ -65,10 +78,12 @@ namespace vh
         mRenderThread.Stop();
 
         SDL_DestroyWindow(mWindow);
-
         SDL_Quit();
 
+        // -- Release behavior overrides
         ActorBehavior::RemoveOverride<BMesh>();
+        ActorBehavior::RemoveOverride<BSkyBox>();
+        // --
 
         return Ret::SUCCESS;
     }
@@ -103,6 +118,16 @@ namespace vh
     vh::RenderBuffer& MRenderer3D_GL::GetWriteBuffer()
     {
         return mRenderThread.GetWriteBuffer();
+    }
+
+    void MRenderer3D_GL::LoadRes(std::shared_ptr<GLResource> const& res)
+    {
+        mRenderThread.LoadRes(res);
+    }
+
+    void MRenderer3D_GL::UnloadRes(std::shared_ptr<GLResource> const& res)
+    {
+        mRenderThread.UnloadRes(res);
     }
 
     /*

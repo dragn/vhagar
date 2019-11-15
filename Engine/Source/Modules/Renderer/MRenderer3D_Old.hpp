@@ -2,11 +2,11 @@
 
 #include "Modules/Debug/TextOverlay.hpp"
 #include "Modules/Renderer3D_GL/RenderBuffersHandler.hpp"
-#include "Modules/Renderer3D_GL/ResourceTypes/RMesh_GL.hpp"
-#include "Modules/Renderer3D_GL/ResourceTypes/RSkyBox_GL.hpp"
-#include "Modules/Renderer3D_GL/ResourceTypes/Lights.hpp"
-#include "Modules/Renderer3D_GL/ResourceTypes/Resource_GL.hpp"
-#include "Modules/Renderer3D_GL/ResourceTypes/Overlay.hpp"
+#include "Modules/Renderer3D_GL/GLResources/GLMesh.hpp"
+#include "Modules/Renderer3D_GL/GLResources/GLSkyBox.hpp"
+#include "Modules/Renderer3D_GL/GLResources/Lights.hpp"
+#include "Modules/Renderer3D_GL/GLResources/GLResource.hpp"
+#include "Modules/Renderer3D_GL/GLResources/Overlay.hpp"
 #include "Modules/Renderer/RendererOptions.hpp"
 #include "Modules/standard.hpp"
 
@@ -34,7 +34,7 @@ namespace vh
             Release
         } action;
 
-        std::shared_ptr<Resource_GL> renderable;
+        std::shared_ptr<GLResource> renderable;
     };
 
     /*
@@ -107,12 +107,12 @@ namespace vh
 
         void DoInit();
         void DoRender(const RenderBuffer& last, const RenderBuffer& cur, float factor);
-        void DoRenderMesh(glm::mat4 view, glm::mat4 projection, const RMesh_GL::Payload* payload, const std::vector<PointLight::Payload>& lights);
-        void DoRenderSkyBox(glm::mat4 view, glm::mat4 projection, const RSkyBox_GL::Payload& payload);
+        void DoRenderMesh(glm::mat4 view, glm::mat4 projection, const GLMesh::Payload* payload, const std::vector<PointLight::Payload>& lights);
+        void DoRenderSkyBox(glm::mat4 view, glm::mat4 projection, const GLSkyBox::Payload& payload);
         void DoRenderOverlay(const Overlay::Payload& payload);
 
-        void AddLoadTask(std::shared_ptr<Resource_GL> renderable);
-        void AddReleaseTask(std::shared_ptr<Resource_GL> renderable);
+        void AddLoadTask(std::shared_ptr<GLResource> renderable);
+        void AddReleaseTask(std::shared_ptr<GLResource> renderable);
 
         std::mutex mTaskQueueLock;
         std::queue<RenderTask> mTaskQueue;
