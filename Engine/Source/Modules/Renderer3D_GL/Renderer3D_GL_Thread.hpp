@@ -4,7 +4,7 @@
 #include "Modules/Renderer3D_GL/Behaviors/BPointLight_GL.hpp"
 #include "Modules/Renderer3D_GL/GLResources/GLMesh.hpp"
 #include "Modules/Renderer3D_GL/GLResources/GLSkyBox.hpp"
-#include "Modules/Renderer3D_GL/GLResources/Overlay.hpp"
+#include "Modules/Renderer3D_GL/GLResources/GLOverlay.hpp"
 #include "Modules/Renderer3D_GL/GLResources/Lights.hpp"
 #include "Modules/Renderer3D/RendererOptions.hpp"
 
@@ -26,6 +26,8 @@ namespace vh
         void LoadRes(std::shared_ptr<GLResource> const& res);
         void UnloadRes(std::shared_ptr<GLResource> const& res);
 
+        float GetFPS() const { return mFPS.load(); }
+
     private:
         SDL_GLContext mGLContext;
         SDL_Window* mWindow;
@@ -41,11 +43,12 @@ namespace vh
         void DoRender(const RenderBuffer& last, const RenderBuffer& cur, float factor);
         void DoRenderMesh(glm::mat4 view, glm::mat4 projection, const GLMesh::Payload* payload, const std::vector<GLPointLight::Payload>& lights);
         void DoRenderSkyBox(glm::mat4 view, glm::mat4 projection, const GLSkyBox::Payload& payload);
-        void DoRenderOverlay(const Overlay::Payload& payload);
+        void DoRenderOverlay(const GLOverlay::Payload& payload);
 
         std::atomic<bool> mReady = false;
         std::atomic<bool> mStarted = false;
         std::atomic<bool> mRequestStop = false;
+        std::atomic<float> mFPS = 0.0f;
 
         M4 mProjection;
 

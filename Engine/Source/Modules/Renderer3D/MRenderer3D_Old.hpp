@@ -7,7 +7,7 @@
 #include "Modules/Renderer3D_GL/GLResources/GLSkyBox.hpp"
 #include "Modules/Renderer3D_GL/GLResources/Lights.hpp"
 #include "Modules/Renderer3D_GL/GLResources/GLResource.hpp"
-#include "Modules/Renderer3D_GL/GLResources/Overlay.hpp"
+#include "Modules/Renderer3D_GL/GLResources/GLOverlay.hpp"
 #include "Modules/Renderer3D/RendererOptions.hpp"
 #include "Modules/standard.hpp"
 
@@ -110,7 +110,7 @@ namespace vh
         void DoRender(const RenderBuffer& last, const RenderBuffer& cur, float factor);
         void DoRenderMesh(glm::mat4 view, glm::mat4 projection, const GLMesh::Payload* payload, const std::vector<GLPointLight::Payload>& lights);
         void DoRenderSkyBox(glm::mat4 view, glm::mat4 projection, const GLSkyBox::Payload& payload);
-        void DoRenderOverlay(const Overlay::Payload& payload);
+        void DoRenderOverlay(const GLOverlay::Payload& payload);
 
         void AddLoadTask(std::shared_ptr<GLResource> renderable);
         void AddReleaseTask(std::shared_ptr<GLResource> renderable);

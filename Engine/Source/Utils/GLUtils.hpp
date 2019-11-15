@@ -18,6 +18,7 @@ struct CubeMap {
 GLuint BufferData(GLsizeiptr size, const GLfloat *data);
 GLuint BufferElementArray(GLsizeiptr size, const GLuint *data);
 GLuint BufferTexture2D(SDL_Surface*);
+void BufferTexture2D(GLuint texId, SDL_Surface*);
 uint32_t* ConvertToRGBA(SDL_Surface*);
 SDL_Surface *LoadImage(const std::string &filename);
 GLuint LoadCubeMapTexture(const CubeMap &skyBox);

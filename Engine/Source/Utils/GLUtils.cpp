@@ -117,21 +117,21 @@ GLuint BufferElementArray(GLsizeiptr size, const GLuint *data)
 
 GLuint BufferTexture2D(SDL_Surface *surf)
 {
-    uint32_t* data = ConvertToRGBA(surf);
-
     GLuint texId;
-
     glGenTextures(1, &texId);
+    BufferTexture2D(texId, surf);
+    return texId;
+}
+
+void BufferTexture2D(GLuint texId, SDL_Surface* surf)
+{
+    uint32_t* data = ConvertToRGBA(surf);
     glBindTexture(GL_TEXTURE_2D, texId);
-
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surf->w, surf->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
     delete[] data;
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-    return texId;
 }
 
 uint32_t* ConvertToRGBA(SDL_Surface* surf)

@@ -5,7 +5,7 @@
 #include "Modules/World/FreeFloatingBehavior.hpp"
 #include "Modules/Renderer3D_GL/GLResources/GLResource.hpp"
 #include "Modules/Renderer3D_GL/GLResources/GLMesh.hpp"
-#include "Modules/Renderer3D_GL/GLResources/Overlay.hpp"
+#include "Modules/Renderer3D_GL/GLResources/GLOverlay.hpp"
 #include "Modules/Renderer3D_GL/MRenderer3D_GL.hpp"
 #include "Modules/Renderer3D/RenderableBehavior/BPointLight.hpp"
 #include "Modules/Renderer3D/RenderableBehavior/BMesh.hpp"

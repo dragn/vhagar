@@ -5,6 +5,7 @@
 #include "Modules/Renderer3D_GL/Behaviors/BMesh_GL.hpp"
 #include "Modules/Renderer3D_GL/Behaviors/BSkyBox_GL.hpp"
 #include "Modules/Renderer3D_GL/Behaviors/BPointLight_GL.hpp"
+#include "Modules/Renderer3D_GL/Behaviors/BOverlay_GL.hpp"
 #include "Modules/World/CameraBehavior.hpp"
 
 namespace vh
@@ -21,6 +22,7 @@ namespace vh
         ActorBehavior::AddOverride<BMesh, BMesh_GL>();
         ActorBehavior::AddOverride<BSkyBox, BSkyBox_GL>();
         ActorBehavior::AddOverride<BPointLight, BPointLight_GL>();
+        ActorBehavior::AddOverride<BOverlay, BOverlay_GL>();
         // --
 
         if (InitSDL() == Ret::FAILURE)
@@ -28,7 +30,18 @@ namespace vh
             return Ret::FAILURE;
         }
 
+        mStatOverlay.Create();
+
         mRenderThread.Start(mWindow, GetOptions());
+
+        return Ret::CONTINUE;
+    }
+
+    vh::Ret MRenderer3D_GL::TickRun(uint32_t delta)
+    {
+        std::string str("FPS: ");
+        str.append(std::to_string(mRenderThread.GetFPS()));
+        mStatOverlay.SetText(str.c_str());
 
         return Ret::CONTINUE;
     }
@@ -79,6 +92,8 @@ namespace vh
     {
         mRenderThread.Stop();
 
+        mStatOverlay.Destroy();
+
         SDL_DestroyWindow(mWindow);
         SDL_Quit();
 
@@ -86,6 +101,7 @@ namespace vh
         ActorBehavior::RemoveOverride<BMesh>();
         ActorBehavior::RemoveOverride<BSkyBox>();
         ActorBehavior::RemoveOverride<BPointLight>();
+        ActorBehavior::RemoveOverride<BOverlay>();
         // --
 
         return Ret::SUCCESS;
@@ -132,17 +148,5 @@ namespace vh
     {
         mRenderThread.UnloadRes(res);
     }
-
-    /*
-    void MRenderer3D_New::TickRenderable(RenderableBehavior* behavior)
-    {
-        RenderBlock* block = GetWriteBuffer().AllocateNewBlock();
-        if (block == nullptr) return;
-
-        block->flags = GetFlags();
-        block->type = TYPE;
-        behavior->SetupPayload(reinterpret_cast<typename RENDERABLE_TYPE::Payload*>(&block->payload));
-    }
-    */
 
 };

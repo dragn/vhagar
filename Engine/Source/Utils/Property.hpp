@@ -21,6 +21,6 @@ private: \
 */
 #define VH_PROPERTY_RO(TYPE, NAME) \
 public: \
-    const TYPE& Get ## NAME() const { return m ## NAME; } \
+    TYPE const& Get ## NAME() const { return m ## NAME; } \
 private: \
     TYPE m ## NAME;

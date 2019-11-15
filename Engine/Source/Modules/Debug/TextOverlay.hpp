@@ -1,31 +1,29 @@
 #pragma once
 
-// #include "Modules/Renderer3D_GL/GLResources/Overlay.hpp"
 #include "Modules/standard.hpp"
 
 namespace vh
 {
 
-class TextOverlay
-{
-public:
-    TextOverlay(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
+    class TextOverlay
+    {
+    public:
+        TextOverlay(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
 
-    void SetSize(uint32_t width, uint32_t height);
+        void Create();
+        void Destroy();
 
-    void Create();
-    void Destroy();
+        void SetText(const char* text);
 
-    void SetText(const char* text);
+    private:
+        uint32_t mPosX;
+        uint32_t mPosY;
+        uint32_t mWidth;
+        uint32_t mHeight;
 
-private:
-    uint32_t mPosX;
-    uint32_t mPosY;
-    TTF_Font* mFont;
-    SDL_Surface* mSurf;
+        TTF_Font* mFont;
 
-    std::weak_ptr<Actor> mActor;
-    // std::shared_ptr<Overlay> mOverlay;
-};
+        std::weak_ptr<Actor> mActor;
+    };
 
 } // namespace vh

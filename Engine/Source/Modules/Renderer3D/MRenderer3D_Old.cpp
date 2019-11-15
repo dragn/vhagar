@@ -267,7 +267,7 @@ void MRenderer3D_Old::DoRender(const RenderBuffer& last, const RenderBuffer& cur
 
         if (block.type == eRenderBlockType::Overlay && (block.flags & eRenderBlockFlags::Active))
         {
-            const Overlay::Payload& payload = *reinterpret_cast<const Overlay::Payload*>(block.payload);
+            const GLOverlay::Payload& payload = *reinterpret_cast<const GLOverlay::Payload*>(block.payload);
             DoRenderOverlay(payload);
         }
     }
@@ -550,7 +550,7 @@ void MRenderer3D_Old::DoRenderSkyBox(glm::mat4 _view, glm::mat4 projection, cons
     glEnable(GL_CULL_FACE);
 }
 
-void MRenderer3D_Old::DoRenderOverlay(const Overlay::Payload& payload)
+void MRenderer3D_Old::DoRenderOverlay(const GLOverlay::Payload& payload)
 {
     if (payload.texId == 0) return;
 

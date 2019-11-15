@@ -67,47 +67,12 @@ namespace vh
 
         void ClearWorld();
 
-        struct BehaviorResponse
-        {
-            std::shared_ptr<Actor> mActor;
-            std::shared_ptr<ActorBehavior> mBehavior;
-            ModuleID mModuleID;
-        };
-
-        template<typename BEHAVIOR_TYPE>
-        void RegisterBehavior(const std::shared_ptr<Actor>& actor, const std::shared_ptr<BEHAVIOR_TYPE>& behavior)
-        {
-            // register modules responses
-            for (std::unique_ptr<Module>& module : mModules)
-            {
-                if (module->RespondsTo<BEHAVIOR_TYPE>())
-                {
-                    BehaviorResponse br;
-                    br.mActor = actor;
-                    br.mBehavior = behavior;
-                    br.mModuleID = module::GetID();
-                    mBehaviorResponses.push_back(br);
-                }
-            }
-        }
-
-        void UnregisterBehaviors(const std::shared_ptr<Actor>& actor)
-        {
-            mBehaviorResponses.erase(std::remove_if(mBehaviorResponses.begin(), mBehaviorResponses.end(),
-                [&actor](const BehaviorResponse& response)
-            {
-                return response.mActor == actor;
-            }), mBehaviorResponses.end());
-        }
-
     private:
         std::vector<std::shared_ptr<Actor>> mActors;
         ActorFactory mActorFactory;
 
         ActorID GenerateActorID() { return mActorID++; }
         ActorID mActorID = 0;
-
-        std::vector<BehaviorResponse> mBehaviorResponses;
 
         UNCOPYABLE(MWorld);
     };

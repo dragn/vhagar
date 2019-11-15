@@ -7,9 +7,12 @@
 namespace vh
 {
 
-class Overlay : public GLResource
+class GLOverlay : public GLResource
 {
-    friend class OverlayBehavior;
+    friend class BOverlay;
+
+    VH_PROPERTY_RO(V2, Pos);
+    VH_PROPERTY_RO(V2, Size);
 
 public:
     struct Payload
@@ -20,29 +23,29 @@ public:
         GLuint vertexBuffer;
     };
 
-    ~Overlay();
+public:
+    GLOverlay() = default;
+    GLOverlay(V2 pos, V2 size) : mPos(pos), mSize(size) {}
+    virtual ~GLOverlay();
 
-    void SetPos(uint32_t x, uint32_t y);
-    void SetTexture(SDL_Surface *surf);
+    void SetupPayload(Payload& payload) const;
+    void BlitTexture(SDL_Surface* surf);
 
 protected:
     virtual bool DoLoad() override;
     virtual bool DoUnload() override;
 
 private:
-    uint32_t mPosX = 0;
-    uint32_t mPosY = 0;
-
     GLuint mVertexBuffer = 0;
     GLuint mShaderId = 0;
+    GLuint mTexId = 0;
 
     GLfloat mVertices[18];
     V4 mBounds;
-    GLuint mTexId = 0;
 
-    void _UpdateVertices(uint32_t w, uint32_t h);
+    void UpdateVertices();
 };
 
-static_assert(sizeof(Overlay::Payload) <= RenderBufferConstants::PAYLOAD_SIZE, "invalid payload size");
+static_assert(sizeof(GLOverlay::Payload) <= RenderBufferConstants::PAYLOAD_SIZE, "invalid payload size");
 
 } // namespace vh

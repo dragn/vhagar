@@ -1,23 +1,20 @@
 #include "Modules/VhModules_PCH.hpp"
-#include "Overlay.hpp"
+#include "GLOverlay.hpp"
 
 #include "Modules/Renderer3D/MRenderer3D_Old.hpp"
 
 using namespace vh;
 
-void Overlay::SetTexture(SDL_Surface *s)
+void GLOverlay::BlitTexture(SDL_Surface* surf)
 {
-    // TODO optimize performance (use PBO? or FBO?)
-    glDeleteTextures(1, &mTexId);
-
-    mTexId = Utils::BufferTexture2D(s);
-
-    _UpdateVertices(s->w, s->h);
+    CHECK(mTexId != 0);
+    CHECK(surf);
+    Utils::BufferTexture2D(mTexId, surf);
 }
 
-void Overlay::_UpdateVertices(uint32_t w, uint32_t h)
+void GLOverlay::UpdateVertices()
 {
-    MRenderer3D_Old* render = App::Get<MRenderer3D_Old>();
+    MRenderer3D* render = App::Get<MRenderer3D>();
     if (!render) return;
 
     CHECK(render);
@@ -25,8 +22,11 @@ void Overlay::_UpdateVertices(uint32_t w, uint32_t h)
     float width = 0.5f * static_cast<float>(render->GetOptions().screenWidth);
     float height = 0.5f * static_cast<float>(render->GetOptions().screenHeight);
 
-    float glX = -1.0f + mPosX / width;
-    float glY = 1.0f - mPosY / height;
+    float glX = -1.0f + mPos.x / width;
+    float glY = 1.0f - mPos.y / height;
+
+    float w = mSize.x;
+    float h = mSize.y;
 
     GLfloat v[] = {
         glX,                glY,
@@ -40,34 +40,43 @@ void Overlay::_UpdateVertices(uint32_t w, uint32_t h)
     mBounds = V4(glX, glY, w / width, h / height);
 
     // -- update vertex buffer
-    glDeleteBuffers(1, &mVertexBuffer);
+    CHECK(mVertexBuffer == 0);
     mVertexBuffer = Utils::BufferData(12, mVertices);
+
+    // -- create a texture
+    CHECK(mTexId == 0);
+    glGenTextures(1, &mTexId);
 }
 
-vh::Overlay::~Overlay()
+void vh::GLOverlay::SetupPayload(Payload& payload) const
+{
+    payload.progId = mShaderId;
+    payload.texId = mTexId;
+    payload.vertexBuffer = mVertexBuffer;
+    payload.bounds = mBounds;
+}
+
+vh::GLOverlay::~GLOverlay()
 {
     CHECK(mTexId == 0);
     CHECK(mVertexBuffer == 0);
 }
 
-void vh::Overlay::SetPos(uint32_t x, uint32_t y)
-{
-    mPosX = x;
-    mPosY = y;
-}
-
-bool vh::Overlay::DoLoad()
+bool vh::GLOverlay::DoLoad()
 {
     mShaderId = Utils::GetShaderProgram("OSD");
     CHECK(mShaderId >= 0) << "Unable to load program OSD";
 
+    UpdateVertices();
+
     return true;
 }
 
-bool vh::Overlay::DoUnload()
+bool vh::GLOverlay::DoUnload()
 {
     glDeleteTextures(1, &mTexId);
     mTexId = 0;
+
     glDeleteBuffers(1, &mVertexBuffer);
     mVertexBuffer = 0;
 

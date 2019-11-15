@@ -121,9 +121,7 @@ namespace vh
 
         if (SDL_GetTicks() - mLastFPSReport > 1000)
         {
-            std::string txt("FPS: ");
-            txt.append(std::to_string(1000.0f * (float)mFrameCount / (SDL_GetTicks() - mLastFPSReport)));
-            //mStatOverlay.SetText(txt.c_str());
+            mFPS.store(1000.0f * (float)mFrameCount / (SDL_GetTicks() - mLastFPSReport));
             mLastFPSReport = SDL_GetTicks();
             mFrameCount = 0;
         }
@@ -301,7 +299,7 @@ namespace vh
 
             if (block.type == eRenderBlockType::Overlay && (block.flags & eRenderBlockFlags::Active))
             {
-                const Overlay::Payload& payload = *reinterpret_cast<const Overlay::Payload*>(block.payload);
+                const GLOverlay::Payload& payload = *reinterpret_cast<const GLOverlay::Payload*>(block.payload);
                 DoRenderOverlay(payload);
             }
         }
@@ -424,7 +422,7 @@ namespace vh
         glEnable(GL_CULL_FACE);
     }
 
-    void MRenderer3D_GL_Thread::DoRenderOverlay(const Overlay::Payload& payload)
+    void MRenderer3D_GL_Thread::DoRenderOverlay(const GLOverlay::Payload& payload)
     {
         if (payload.texId == 0) return;
 
