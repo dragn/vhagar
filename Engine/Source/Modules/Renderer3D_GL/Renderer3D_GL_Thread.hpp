@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RenderBuffersHandler.hpp"
+#include "Modules/Renderer3D_GL/Behaviors/BPointLight_GL.hpp"
 #include "Modules/Renderer3D_GL/GLResources/GLMesh.hpp"
 #include "Modules/Renderer3D_GL/GLResources/GLSkyBox.hpp"
 #include "Modules/Renderer3D_GL/GLResources/Overlay.hpp"
@@ -38,7 +39,7 @@ namespace vh
 
         void DoInit();
         void DoRender(const RenderBuffer& last, const RenderBuffer& cur, float factor);
-        void DoRenderMesh(glm::mat4 view, glm::mat4 projection, const GLMesh::Payload* payload, const std::vector<PointLight::Payload>& lights);
+        void DoRenderMesh(glm::mat4 view, glm::mat4 projection, const GLMesh::Payload* payload, const std::vector<GLPointLight::Payload>& lights);
         void DoRenderSkyBox(glm::mat4 view, glm::mat4 projection, const GLSkyBox::Payload& payload);
         void DoRenderOverlay(const Overlay::Payload& payload);
 

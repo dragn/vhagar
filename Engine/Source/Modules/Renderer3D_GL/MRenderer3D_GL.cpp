@@ -4,6 +4,7 @@
 #include "Modules/PlayerController/MPlayerController.hpp"
 #include "Modules/Renderer3D_GL/Behaviors/BMesh_GL.hpp"
 #include "Modules/Renderer3D_GL/Behaviors/BSkyBox_GL.hpp"
+#include "Modules/Renderer3D_GL/Behaviors/BPointLight_GL.hpp"
 #include "Modules/World/CameraBehavior.hpp"
 
 namespace vh
@@ -19,6 +20,7 @@ namespace vh
         // -- Actor Behavior overrides
         ActorBehavior::AddOverride<BMesh, BMesh_GL>();
         ActorBehavior::AddOverride<BSkyBox, BSkyBox_GL>();
+        ActorBehavior::AddOverride<BPointLight, BPointLight_GL>();
         // --
 
         if (InitSDL() == Ret::FAILURE)
@@ -83,6 +85,7 @@ namespace vh
         // -- Release behavior overrides
         ActorBehavior::RemoveOverride<BMesh>();
         ActorBehavior::RemoveOverride<BSkyBox>();
+        ActorBehavior::RemoveOverride<BPointLight>();
         // --
 
         return Ret::SUCCESS;

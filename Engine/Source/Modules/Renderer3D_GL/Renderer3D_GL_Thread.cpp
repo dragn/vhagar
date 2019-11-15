@@ -189,7 +189,7 @@ namespace vh
         glm::mat4 projection = mProjection;
 
         // first pass - load/unload, collect lights
-        std::vector<PointLight::Payload> lights;
+        std::vector<GLPointLight::Payload> lights;
         for (size_t idx = 0; idx < cur.header.size; ++idx)
         {
             const RenderBlock& block = cur.blocks[idx];
@@ -219,8 +219,8 @@ namespace vh
             {
                 if (last.blocks[idx].type == eRenderBlockType::Light)
                 {
-                    PointLight::Payload lastPayload = *reinterpret_cast<const PointLight::Payload*>(last.blocks[idx].payload);
-                    const PointLight::Payload& curPayload = *reinterpret_cast<const PointLight::Payload*>(cur.blocks[idx].payload);
+                    GLPointLight::Payload lastPayload = *reinterpret_cast<const GLPointLight::Payload*>(last.blocks[idx].payload);
+                    const GLPointLight::Payload& curPayload = *reinterpret_cast<const GLPointLight::Payload*>(cur.blocks[idx].payload);
                     if (block.flags & eRenderBlockFlags::Interpolated)
                     {
                         lastPayload.pos = glm::mix(lastPayload.pos, curPayload.pos, factor);
@@ -307,7 +307,7 @@ namespace vh
         }
     }
 
-    void MRenderer3D_GL_Thread::DoRenderMesh(glm::mat4 view, glm::mat4 projection, const GLMesh::Payload* payload, const std::vector<PointLight::Payload>& lights)
+    void MRenderer3D_GL_Thread::DoRenderMesh(glm::mat4 view, glm::mat4 projection, const GLMesh::Payload* payload, const std::vector<GLPointLight::Payload>& lights)
     {
         glm::mat4 model = glm::translate(glm::mat4(1.f), payload->translate) * glm::mat4_cast(payload->rotate) * glm::scale(M4(1.f), payload->scale);
         glm::mat4 MVP = projection * view * model;

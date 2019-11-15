@@ -1,5 +1,5 @@
 #include "Modules/VhModules_PCH.hpp"
-#include "PointLightBehavior.hpp"
+#include "BPointLight.hpp"
 
 namespace vh
 {

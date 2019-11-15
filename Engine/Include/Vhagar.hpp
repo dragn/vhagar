@@ -7,7 +7,7 @@
 #include "Modules/Renderer3D_GL/GLResources/GLMesh.hpp"
 #include "Modules/Renderer3D_GL/GLResources/Overlay.hpp"
 #include "Modules/Renderer3D_GL/MRenderer3D_GL.hpp"
-#include "Modules/Renderer/RenderableBehavior/PointLightBehavior.hpp"
+#include "Modules/Renderer/RenderableBehavior/BPointLight.hpp"
 #include "Modules/Renderer/RenderableBehavior/BMesh.hpp"
 #include "Modules/Renderer/RenderableBehavior/BSkyBox.hpp"
 #include "Modules/Renderer3D_GL/ImportUtils.hpp"

@@ -15,7 +15,7 @@ namespace vh
         SkyBox rendering behavior.
     */
 
-    class BSkyBox : public RenderableBehavior
+    class BSkyBox : public ActorBehavior
     {
     public:
         BSkyBox() = default;

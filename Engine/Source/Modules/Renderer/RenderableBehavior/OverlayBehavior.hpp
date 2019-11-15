@@ -4,7 +4,7 @@
 
 namespace vh
 {
-    class OverlayBehavior : public RenderableBehavior
+    class OverlayBehavior : public ActorBehavior
     {
         VH_PROPERTY_RW(V2, Pos);
         VH_PROPERTY_RW(SDL_Surface*, Texture);

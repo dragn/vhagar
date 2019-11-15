@@ -13,7 +13,7 @@ namespace vh
         Mesh rendering behavior.
     */
 
-    class BMesh : public RenderableBehavior
+    class BMesh : public ActorBehavior
     {
         VH_PROPERTY_RW(bool, IgnoreDepth);
         VH_PROPERTY_RW(std::string, Path);
