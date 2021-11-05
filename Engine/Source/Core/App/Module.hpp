@@ -132,6 +132,8 @@ vh::ModuleID name::_ID = vh::ModuleID_Invalid;                          \
         uint32_t mLastTick = 0;
         uint32_t mTickDelta = 0;
 
+        bool mStartFrameCalled = false;
+
         void MarkForTick();
 
         // called by App

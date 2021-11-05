@@ -27,10 +27,15 @@ namespace vh
         virtual void StartFrame() override;
         virtual void EndFrame() override;
 
+        virtual void HandleEvent(SDL_Event* event) override;
+
         RenderBuffer& GetWriteBuffer();
 
         void LoadRes(std::shared_ptr<GLResource> const& res);
         void UnloadRes(std::shared_ptr<GLResource> const& res);
+
+		SDL_Window* GetSDLWindow() { return mWindow; }
+		SDL_GLContext GetGLContext() { return mRenderThread.GetGLContext(); }
 
     private:
         Ret InitSDL();

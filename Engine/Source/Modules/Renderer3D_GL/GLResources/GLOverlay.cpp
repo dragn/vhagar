@@ -7,9 +7,12 @@ using namespace vh;
 
 void GLOverlay::BlitTexture(SDL_Surface* surf)
 {
-    CHECK(mTexId != 0);
-    CHECK(surf);
-    Utils::BufferTexture2D(mTexId, surf);
+    if (IsLoaded())
+    {
+        CHECK(mTexId != 0);
+        CHECK(surf);
+        Utils::BufferTexture2D(mTexId, surf);
+    }
 }
 
 void GLOverlay::UpdateVertices()

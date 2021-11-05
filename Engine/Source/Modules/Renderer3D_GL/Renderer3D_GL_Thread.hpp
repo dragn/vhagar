@@ -27,6 +27,7 @@ namespace vh
         void UnloadRes(std::shared_ptr<GLResource> const& res);
 
         float GetFPS() const { return mFPS.load(); }
+		SDL_GLContext GetGLContext() const { return mGLContext; }
 
     private:
         SDL_GLContext mGLContext;
@@ -40,6 +41,7 @@ namespace vh
         void HandleFrameCount();
 
         void DoInit();
+        void DoShutdown();
         void DoRender(const RenderBuffer& last, const RenderBuffer& cur, float factor);
         void DoRenderMesh(glm::mat4 view, glm::mat4 projection, const GLMesh::Payload* payload, const std::vector<GLPointLight::Payload>& lights);
         void DoRenderSkyBox(glm::mat4 view, glm::mat4 projection, const GLSkyBox::Payload& payload);

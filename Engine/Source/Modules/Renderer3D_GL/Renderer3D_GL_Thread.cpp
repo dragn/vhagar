@@ -2,6 +2,8 @@
 #include "Renderer3D_GL_Thread.hpp"
 
 #include "Modules/Renderer3D_GL/GLBuffers.hpp"
+#include "Utils/imgui/imgui_impl_opengl3.h"
+#include "Utils/imgui/imgui_impl_sdl.h"
 
 namespace vh
 {
@@ -74,6 +76,11 @@ namespace vh
 
         while (!mRequestStop.load())
         {
+            // -- imgui frame
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplSDL2_NewFrame(mWindow);
+            ImGui::NewFrame();
+
             // -- Reset frame
             glClearColor(0, 0, 0, 1);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -108,11 +115,15 @@ namespace vh
             // -- Process frame counter
             HandleFrameCount();
 
+            // -- imgui frame
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
             // -- Done. Flip the window.
             SDL_GL_SwapWindow(mWindow);
         }
 
-        SDL_GL_DeleteContext(mGLContext);
+        DoShutdown();
     }
 
     void MRenderer3D_GL_Thread::HandleFrameCount()
@@ -125,10 +136,22 @@ namespace vh
             mLastFPSReport = SDL_GetTicks();
             mFrameCount = 0;
         }
+
+        ImGui::Begin("FPS Count");
+        ImGui::SetWindowSize(ImVec2(200, 50));
+        std::string str = "FPS: ";
+        str.append(std::to_string(mFPS.load()));
+        ImGui::Text(str.c_str());
+        ImGui::End();
     }
 
     void MRenderer3D_GL_Thread::DoInit()
     {
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+        //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+        //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+
         // Create an OpenGL context associated with the mWindow.
         mGLContext = SDL_GL_CreateContext(mWindow);
 
@@ -179,6 +202,22 @@ namespace vh
 
         // Enable multisampling
         if (mOptions.antialias != RendererOptions::AA_OFF) glEnable(GL_MULTISAMPLE);
+
+        // Init ImGUI
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO(); (void)io;
+        ImGui_ImplSDL2_InitForOpenGL(mWindow, mGLContext);
+        ImGui_ImplOpenGL3_Init("#version 130");
+    }
+
+    void MRenderer3D_GL_Thread::DoShutdown()
+    {
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplSDL2_Shutdown();
+        ImGui::DestroyContext();
+        
+        SDL_GL_DeleteContext(mGLContext);
     }
 
     void MRenderer3D_GL_Thread::DoRender(const RenderBuffer& last, const RenderBuffer& cur, float factor)
@@ -433,8 +472,8 @@ namespace vh
 
         if (payload.texId > 0) glBindTexture(GL_TEXTURE_2D, payload.texId);
 
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        //glEnable(GL_BLEND);
+        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glBindBuffer(GL_ARRAY_BUFFER, payload.vertexBuffer);
         glEnableVertexAttribArray(0);

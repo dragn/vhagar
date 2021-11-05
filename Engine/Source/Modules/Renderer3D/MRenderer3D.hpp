@@ -24,6 +24,8 @@ namespace vh
             : Module(TickFrequency::NEVER)
             , mOptions(opts)
         {}
+
+		virtual SDL_Window* GetSDLWindow() = 0;
     };
 
 } // namespace vh

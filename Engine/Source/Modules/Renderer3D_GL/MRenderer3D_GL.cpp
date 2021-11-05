@@ -8,6 +8,8 @@
 #include "Modules/Renderer3D_GL/Behaviors/BOverlay_GL.hpp"
 #include "Modules/World/CameraBehavior.hpp"
 
+#include "Utils/imgui/imgui_impl_sdl.h"
+
 namespace vh
 {
     vh::Ret MRenderer3D_GL::TickInit(uint32_t delta)
@@ -30,8 +32,6 @@ namespace vh
             return Ret::FAILURE;
         }
 
-        mStatOverlay.Create();
-
         mRenderThread.Start(mWindow, GetOptions());
 
         return Ret::CONTINUE;
@@ -39,10 +39,6 @@ namespace vh
 
     vh::Ret MRenderer3D_GL::TickRun(uint32_t delta)
     {
-        std::string str("FPS: ");
-        str.append(std::to_string(mRenderThread.GetFPS()));
-        mStatOverlay.SetText(str.c_str());
-
         return Ret::CONTINUE;
     }
 
@@ -92,8 +88,6 @@ namespace vh
     {
         mRenderThread.Stop();
 
-        mStatOverlay.Destroy();
-
         SDL_DestroyWindow(mWindow);
         SDL_Quit();
 
@@ -132,6 +126,11 @@ namespace vh
         CHECK(IsRunning());
 
         mRenderThread.FlipBuffers();
+    }
+
+    void MRenderer3D_GL::HandleEvent(SDL_Event* event)
+    {
+        ImGui_ImplSDL2_ProcessEvent(event);
     }
 
     vh::RenderBuffer& MRenderer3D_GL::GetWriteBuffer()

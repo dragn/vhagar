@@ -30,6 +30,7 @@ void Module::Tick()
         // -- State: Run
         //
         case ModuleState::RUN:
+            if (!mStartFrameCalled) break;
             switch (TickRun(mTickDelta))
             {
             case Ret::SUCCESS:
@@ -84,6 +85,8 @@ void Module::Close()
 
 void Module::StartFrame_Internal(uint32_t time)
 {
+    mStartFrameCalled = false;
+
     // negative tick step - do not tick in running
     if (mTickStep < 0 && mState == ModuleState::RUN)
     {
@@ -106,14 +109,18 @@ void Module::StartFrame_Internal(uint32_t time)
     mTickDelta = delta;
 
     // call override behavior for frame start
-    if (IsRunning()) StartFrame();
+    if (IsRunning())
+    {
+        StartFrame();
+        mStartFrameCalled = true;
+    }
 }
 
 
 void Module::EndFrame_Internal()
 {
     // if we ticked on this frame - call end frame
-    if (mTickDelta > 0 && IsRunning()) EndFrame();
+    if (mTickDelta > 0 && IsRunning() && mStartFrameCalled) EndFrame();
 }
 
 } // namespace vh

@@ -1,10 +1,10 @@
 project (Vhagar)
 
-file(GLOB_RECURSE VhagarModules_SRC Source/Modules/*.cpp Source/Modules/*.hpp)
-file(GLOB_RECURSE VhagarCore_SRC Source/Core/*.cpp Source/Core/*.hpp)
+file(GLOB_RECURSE VhagarModules_SRC Source/Modules/*.cpp Source/Modules/*.hpp Source/Modules/*.h Source/Shaders/*.glsl)
+file(GLOB_RECURSE VhagarCore_SRC Source/Core/*.cpp Source/Core/*.hpp Source/Core/*.hpp)
 file(GLOB_RECURSE VhagarUtils_SRC Source/Utils/*.cpp Source/Utils/*.hpp)
 
-source_groups("Source Files" Source *.cpp *.hpp *.glsl)
+source_groups("Source Files" Source *.cpp *.hpp *.h *.glsl)
 source_groups("Header Files" Include Vhagar.hpp)
 
 include_directories("Source")
