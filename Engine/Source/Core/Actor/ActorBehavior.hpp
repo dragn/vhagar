@@ -46,9 +46,9 @@ public:
 
     std::weak_ptr<Actor> GetOwner() const { return mOwner; }
 
-    V3 GetPos();
-    Quat GetRot();
-    V3 GetScale();
+    V3 GetPos() const;
+    Quat GetRot() const;
+    V3 GetScale() const;
 
     template<typename TYPE_FROM, typename TYPE_TO>
     static void AddOverride()

@@ -6,13 +6,6 @@ namespace vh
 
 RenderBufferHandler::RenderBufferHandler()
 {
-    // set initial sizes
-    mBuffers[0].header.size = 0;
-    mBuffers[0].header.time = 0;
-    mBuffers[1].header.size = 0;
-    mBuffers[1].header.time = 0;
-    mBuffers[2].header.time = 0;
-    mBuffers[2].header.size = 0;
 }
 
 void RenderBufferHandler::LockRead()
@@ -54,6 +47,8 @@ void RenderBufferHandler::FlipBuffers()
     mLastIdx = (mLastIdx + 1) % 3;
     mCurIdx = (mCurIdx + 1) % 3;
     mNextIdx = (mNextIdx + 1) % 3;
+
+    mBuffers[mNextIdx].header.frameIdx = mFrameIdx++;
 
     mReadMtx.unlock();
 }

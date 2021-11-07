@@ -35,6 +35,8 @@ private:
     size_t mCurIdx = 1;
     size_t mNextIdx = 2;
 
+    uint32_t mFrameIdx = 0;
+
     RenderBuffer mBuffers[3];
 
     std::mutex mReadMtx;

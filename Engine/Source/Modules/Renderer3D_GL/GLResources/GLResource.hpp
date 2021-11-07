@@ -8,6 +8,7 @@ namespace vh
     class GLResource
     {
         friend class MRenderer3D_GL_Thread;
+        friend class MRenderer3D_GL;
 
     public:
         bool IsLoaded() const { return mLoaded.load(); }

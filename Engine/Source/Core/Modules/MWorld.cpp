@@ -20,6 +20,8 @@ vh::Ret MWorld::TickInit(uint32_t delta)
 
 vh::Ret MWorld::TickRun(uint32_t delta)
 {
+    //LOG(INFO) << "World tick " << SDL_GetTicks();
+
     // Tick each actor
     for (const std::shared_ptr<Actor>& actor : mActors)
     {
@@ -57,6 +59,8 @@ std::weak_ptr<vh::Actor> MWorld::CreateActor(const std::string& name)
     mActors.push_back(actor);
 
     actor->SetName(tmp);
+
+    LOG(INFO) << "Add actor " << tmp;
 
     return std::weak_ptr<Actor>(actor);
 }

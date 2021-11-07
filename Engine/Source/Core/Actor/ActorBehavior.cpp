@@ -12,7 +12,7 @@ namespace vh
         return sOverrides;
     }
 
-    V3 ActorBehavior::GetPos()
+    V3 ActorBehavior::GetPos() const
     {
         if (mParent)
         {
@@ -24,7 +24,7 @@ namespace vh
         }
     }
 
-    glm::quat ActorBehavior::GetRot()
+    glm::quat ActorBehavior::GetRot() const
     {
         if (mParent)
         {
@@ -36,7 +36,7 @@ namespace vh
         }
     }
 
-    vh::V3 ActorBehavior::GetScale()
+    vh::V3 ActorBehavior::GetScale() const
     {
         if (mParent)
         {

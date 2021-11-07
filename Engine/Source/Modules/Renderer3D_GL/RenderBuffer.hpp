@@ -7,9 +7,10 @@ namespace vh
 
 struct RenderBufferHeader
 {
-    uint32_t time;
-    uint32_t timestep;
-    size_t size;
+    uint32_t time = 0;
+    uint32_t timestep = 0;
+    uint32_t frameIdx = 0;
+    size_t size = 0;
     glm::mat4 view;
     glm::mat4 projection;
 };
